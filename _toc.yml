@@ -3,7 +3,29 @@
 
 format: jb-book
 root: intro
-chapters:
-- file: markdown
-- file: notebooks
-- file: markdown-notebooks
+
+parts:
+- caption: Python
+  chapters:
+  - file: _pages/markdown
+  - file: _pages/notebooks
+  - file: _pages/markdown-notebooks
+  - file: _pages/design
+#   - file: chapter1_python
+#   - file: chapter2_basics
+#   - file: chapter3_io
+#   - file: chapter4_condition
+#   - file: chapter5_loop
+#   - file: chapter6_list
+#   - file: chapter7_dict_tuple_set
+#   - file: chapter8_function
+
+# - caption: Data Science
+#   chapters:
+#   - file: ds_overview
+#   - file: numpy_intro
+#   - file: pandas1
+#   - file: pandas2
+#   - file: viz
+#   - file: capstone
+#   - file: next_steps

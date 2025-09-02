@@ -1,9 +1,11 @@
 # Book settings
 # Learn more at https://jupyterbook.org/customize/config.html
 
-title: My sample book
-author: The Jupyter Book Community
-logo: logo.png
+title: 말레이시아 5급 Algorithm 수업
+author: Daye Lee
+language: ko
+logo: assets/logo.png
+only_build_toc_files: true
 
 # Force re-execution of notebooks on each build.
 # See https://jupyterbook.org/content/execute.html
@@ -28,5 +30,56 @@ repository:
 # Add GitHub buttons to your book
 # See https://jupyterbook.org/customize/config.html#add-a-link-to-your-repository
 html:
-  use_issues_button: true
+  favicon: assets/favicon.png
+  logo: assets/logo.png
+  use_edit_page_button: false
   use_repository_button: true
+  use_issues_button: false
+  home_page_in_navbar: true
+  navbar_number_sections: false
+  extra_navbar: ""   # 필요시 하단 HTML 가능
+  extra_footer: |
+    <div style="font-size:0.9em">
+      본 자료의 무단 복제·배포를 금합니다. © {{ config.author }}
+    </div>
+
+# 다크/라이트 자동 전환
+sphinx:
+  config:
+    html_theme: sphinx_book_theme
+    html_title: "말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업"
+    html_js_files:
+      - https://unpkg.com/jupyterquiz@1.1.8/dist/jupyterquiz.min.js
+    html_theme_options:
+      home_page_in_toc: true
+      repository_url: "https://github.com/Daye-Lee18/mybook"
+      use_repository_button: true
+      use_download_button: true
+      use_fullscreen_button: true
+      show_navbar_depth: 1
+      # 색/폰트 등은 custom.css에서 추가 조정
+    html_static_path: ["_static"]
+    html_css_files: ["custom.css"]   # 커스텀 CSS (아래 4절)
+    language: "ko"
+  extra_extensions:
+    - sphinx_design        # 카드/그리드/버튼 등
+    - sphinx_togglebutton  # 접기/펼치기
+    - sphinx_copybutton    # 코드복사 버튼
+  
+
+# 실행/Colab 버튼
+launch_buttons:
+  colab_url: "https://colab.research.google.com"
+  thebe: true        # 페이지에서 바로 코드 실행(선택)
+
+
+# 확장 플러그인 (아래 2절에서 설치)
+parse:
+  myst_enable_extensions:
+    - colon_fence
+    - deflist
+    - dollarmath
+    - html_admonition
+    - html_image
+    - linkify
+    - substitution

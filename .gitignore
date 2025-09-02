@@ -1,0 +1,32 @@
+# --- Jupyter Book / Sphinx build artifacts ---
+_build/
+.jupyter_cache/
+
+# Jupyter/Notebook
+**/.ipynb_checkpoints/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# OS / Editors
+.DS_Store
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# (옵션) Node
+node_modules/
+
+# (옵션) Logs
+*.log
