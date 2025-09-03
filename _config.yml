@@ -10,7 +10,7 @@ only_build_toc_files: true
 # Force re-execution of notebooks on each build.
 # See https://jupyterbook.org/content/execute.html
 execute:
-  execute_notebooks: force
+  execute_notebooks: "off"
 
 # Define the name of the latex output file for PDF builds
 latex:
@@ -31,9 +31,9 @@ repository:
 # See https://jupyterbook.org/customize/config.html#add-a-link-to-your-repository
 html:
   favicon: assets/favicon.png
-  logo: assets/logo.png
+  logo: assets/mylogo.png
   use_edit_page_button: false
-  use_repository_button: true
+  use_repository_button: false
   use_issues_button: false
   home_page_in_navbar: true
   navbar_number_sections: false
@@ -53,14 +53,18 @@ sphinx:
     html_theme_options:
       home_page_in_toc: true
       repository_url: "https://github.com/Daye-Lee18/mybook"
-      use_repository_button: true
+      use_repository_button: false
       use_download_button: true
       use_fullscreen_button: true
       show_navbar_depth: 1
+      footer_start: []
+      footer_end: []
+
       # 색/폰트 등은 custom.css에서 추가 조정
     html_static_path: ["_static"]
     html_css_files: ["custom.css"]   # 커스텀 CSS (아래 4절)
     language: "ko"
+    copyright: ""
   extra_extensions:
     - sphinx_design        # 카드/그리드/버튼 등
     - sphinx_togglebutton  # 접기/펼치기
