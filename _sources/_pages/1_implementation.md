@@ -133,5 +133,8 @@ for plan in plans:
     x, y = nx, ny 
 print(x, y)
 ```
+### 시각 
 
-
+- 난이도 하 | 시간 제한 2초 | 메모리 제한 128 MB 
+  
+정수 
