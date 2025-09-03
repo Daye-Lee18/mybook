@@ -1,11 +1,10 @@
-# Welcome to your Jupyter Book
+# Welcome to 말레이시아 5급 IT 수업
 
-This is a small sample book to give you a feel for how book content is
-structured.
-It shows off a few of the major file types, as well as some sample content.
-It does not go in-depth into any particular topic - check out [the Jupyter Book documentation](https://jupyterbook.org) for more information.
+안녕하세요. 2025년 가을학기 말레이시아 5급 IT 프로그램 수업을 맡게 된 이다예 입니다. 
 
-Check out the content pages bundled with this sample book to see more.
+- 파이썬을 이용한 다양한 알고리즘에 대해 학습한다. 
+- 다양한 실습을 통해, 문제푸는 방법을 익히고 창의적인 아이디어를 도출할 수 있는 능력을 배양한다. 
+
 
 ```{tableofcontents}
 ```

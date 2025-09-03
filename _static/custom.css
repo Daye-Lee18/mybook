@@ -1,0 +1,31 @@
+/* 베이스 폰트(필요시 웹폰트 연결)
+@import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap');
+:root {
+  --pst-font-family-base: "Pretendard", system-ui, -apple-system, "Noto Sans KR", Arial, sans-serif;
+}
+*/
+
+.bd-sidebar { width: 280px; }              /* 사이드바 약간 넓게 */
+.bd-content { max-width: 1000px; }         /* 본문 가독 폭 */
+p, li { line-height: 1.7; }
+
+/* 링크 컬러 살짝 강조 */
+a { text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* 코드 블록 가독성 */
+.highlight pre, pre, code {
+  font-size: 0.95rem;
+}
+
+/* 표(테이블) 넘침 방지 */
+table { display: block; overflow-x: auto; }
+
+/* 히어로(인트로) 섹션 여백 예쁘게 */
+.intro-hero {
+  margin: 1.2rem 0 1.6rem;
+  padding: 1rem 1.2rem;
+  border-left: 4px solid #3b82f6;
+  background: rgba(59,130,246,0.06);
+  border-radius: 8px;
+}
