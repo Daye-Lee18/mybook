@@ -4,7 +4,7 @@
 title: 말레이시아 5급 Algorithm 수업
 author: Daye Lee
 language: ko
-logo: assets/logo.png
+logo: assets/mylogo.png
 only_build_toc_files: true
 
 # Force re-execution of notebooks on each build.
