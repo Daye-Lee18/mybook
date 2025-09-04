@@ -347,6 +347,8 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">예제</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">상하좌우</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">시각</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">왕실의 나이트</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">게임 개발</a></li>
 </ul>
 </li>
 </ul>
@@ -506,11 +508,108 @@ R R R U D D</p>
 11475</p>
 </div>
 <div class="toggle docutils container">
-<p><strong>문제 해설</strong></p>
-<p><strong>정답 풀이</strong></p>
+<p><strong>문제 해설</strong><br>
+이 문제는 모든 시각의 경우를 하나씩 모두 세서 쉽게 풀 수 있는 문제다. 왜하면 하루는 86,400초로, 00시 00분 00초부터 23시 59분 59초까지의 모든 경우는 86,400가지 밖에 존재하지 않기 때문이다. <strong>다시 말해 경우의 수가 100,000개도 되지 않으므로 파이썬에서 문자열 연산을 이용해 3이 시각에 포함되어 있는지 확인해도 시간 제한 2초 안에 문제를 해결할 수 있다.</strong> 따라서 단순히 시각을 1씩 증가시키면서 3이 하나라도 포함되어 있는지 확인하면 될 것이다. 전체 시, 분, 초 대한 경우의 수는 24 x 60 x 60 이며 3중 반복문을 이용해 계산할 수 있다.</p>
+<p>이런 유형은 완전 탐색 (Brute forcing) 유형으로도 분류된다. 일반적으로 알고리즘 문제를 풀 때는 확인 (탐색)해야 할 전체 데이터의 개수가 100만개 이하일 때 완전 탐색을 사용하면 적절하다.</p>
+<p><strong>정답 풀이</strong><br></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="c1"># H를 입력받기 </span>
+<span class="n">H</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">())</span>
+
+<span class="n">count</span> <span class="o">=</span> <span class="mi">0</span> 
+<span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">H</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">60</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">60</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s1">&#39;3&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">h</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;3&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;3&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+                <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span> 
+
+<span class="nb">print</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+</section>
+<section id="id6">
+<h3>왕실의 나이트<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>난이도 하 | 시간 제한 1초 | 메모리 제한 128 MB</p></li>
+</ul>
+<p>행복 왕국의 왕실 정원은 체스판과 같은 <code class="docutils literal notranslate"><span class="pre">8x8</span></code> 좌표 정면이다. 왕실 정원의 특정한 한 칸에 <code class="docutils literal notranslate"><span class="pre">나이트</span></code>가 서있다. 나이트는 매우 충성스러운 신하로서 매일 무술을 연마한다. 나이트는 말을 타고 있기 때문에 이동을 할 때는 <code class="docutils literal notranslate"><span class="pre">L자</span> <span class="pre">형태로만</span> <span class="pre">이동</span></code>할 수 있으며 정원 밖으로는 나갈 수 없다. 나이트는 특정한 위치에서 다음과 같은 <code class="docutils literal notranslate"><span class="pre">2가지</span> <span class="pre">경우</span></code>로 이동할 수 있다.</p>
+<ol class="arabic simple">
+<li><p>수평으로 두 칸 이동한 뒤에 수직으로 한 칸 이동하기</p></li>
+<li><p>수직으로 두 칸 이동한 뒤에 수평으로 한 칸 이동하기</p></li>
+</ol>
+<a class="bg-primary mb-1 reference internal image-reference" href="../_images/3.png"><img alt="예시 이미지" class="bg-primary mb-1 align-center" src="../_images/3.png" style="width: 400px;" />
+</a>
+<p>이처럼 8x8 좌표 평면상에서 <code class="docutils literal notranslate"><span class="pre">나이트의</span> <span class="pre">위치가</span> <span class="pre">주어졌을</span> <span class="pre">때</span> <span class="pre">나이트가</span> <span class="pre">이동할</span> <span class="pre">수</span> <span class="pre">있는</span> <span class="pre">경우의</span> <span class="pre">수</span></code>를 출력하는 프로그램을 작성하시오. 이때 왕실의 정원에서 <code class="docutils literal notranslate"><span class="pre">행</span> <span class="pre">위치</span></code>를 표현할 때는 <code class="docutils literal notranslate"><span class="pre">1부터</span> <span class="pre">8</span></code>로 표현하며, 열 위치를 표현할 때는 <code class="docutils literal notranslate"><span class="pre">a부터</span> <span class="pre">h</span></code>로 표현한다.</p>
+<p>예를 들어 만약 나이트가 a1에 있을 때 이동할 수 있는 경우의 수는 다음 2가지이다. a1의 위치는 좌표 평면에서 구석의 위치에 해당하며 나이트는 정원의 밖으로는 나갈 수 없기 때문이다.</p>
+<ol class="arabic simple">
+<li><p>오른쪽으로 두 칸 이동 후 아래로 한 칸 이동하기 (c2)</p></li>
+<li><p>아래로 두 칸 이동 후 오른쪽으로 한 칸 이동하기 (b3)</p></li>
+</ol>
+<p>또 다른 예로 나이트가 c2에 위치해 있다면 나이트가 이동할 수 있는 경우의 수는 6가지이다.</p>
+<div class="note admonition">
+<p class="admonition-title">조건</p>
+<p><strong>입력 조건</strong></p>
+<ul class="simple">
+<li><p>첫째 줄에 8x8 좌표 평면상에서 현재 나이트가 위치한 곳의 좌표를 나타내는 두 문자로 구성된 문자열이 입력된다. 입력 문자는 a1처럼 열과 행으로 이뤄진다.</p></li>
+</ul>
+<p><strong>출력 조건</strong></p>
+<ul class="simple">
+<li><p>첫째 줄에 나이트가 이동할 수 있는 경우의 수를 출력하시오.</p></li>
+</ul>
+<p><strong>입력 예시</strong> <br>
+a1</p>
+<p><br><strong>출력 예시</strong><br>
+2</p>
+</div>
+<div class="toggle docutils container">
+<p><strong>문제 해설</strong><br>
+나이트가 이동할 수 있는 경로를 하나씩 확인하여 이동하면 된다.</p>
+<p><strong>풀이</strong><br></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#이동할 수 있는 8가지 경우 </span>
+<span class="n">dx</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">dy</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+
+<span class="n">pos</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
+<span class="n">cur_x</span> <span class="o">=</span> <span class="nb">ord</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="c1"># 1부터 시작하도록 </span>
+<span class="n">cur_y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="c1"># print(cur_x, cur_y)</span>
+
+<span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">nxt</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
+    <span class="c1"># 이동하고자 하는 위치 확인 </span>
+    <span class="n">nx</span> <span class="o">=</span> <span class="n">cur_x</span> <span class="o">+</span> <span class="n">dx</span><span class="p">[</span><span class="n">nxt</span><span class="p">]</span>
+    <span class="n">ny</span> <span class="o">=</span> <span class="n">cur_y</span> <span class="o">+</span> <span class="n">dy</span><span class="p">[</span><span class="n">nxt</span><span class="p">]</span>
+
+    <span class="c1"># 해당 위치로 이동이 가능하다면 카운트 증가 </span>
+    <span class="k">if</span> <span class="n">nx</span> <span class="o">&lt;</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">ny</span> <span class="o">&lt;</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">nx</span><span class="o">&gt;</span><span class="mi">8</span> <span class="ow">or</span> <span class="n">ny</span> <span class="o">&gt;</span><span class="mi">8</span> <span class="p">:</span>
+        <span class="k">continue</span> 
+    <span class="n">cnt</span> <span class="o">+=</span> <span class="mi">1</span> 
+
+<span class="nb">print</span><span class="p">(</span><span class="n">cnt</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="id7">
+<h3>게임 개발<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>난이도 중 | 시간 제한 1초 | 메모리 제한 128 MB</p></li>
+</ul>
+<p>현민이는 게임 캐릭터가 맵 안에서 움직이는 시스템을 개발 중이다. 캐릭터가 있는 장소는 1x1 크기의 정사각형으로 이뤄진 <code class="docutils literal notranslate"><span class="pre">NxM크기의</span> <span class="pre">직사각형</span></code>으로, 각각의 칸은 <code class="docutils literal notranslate"><span class="pre">육지</span></code> 또는 <code class="docutils literal notranslate"><span class="pre">바다</span></code>이다. 캐릭터는 <code class="docutils literal notranslate"><span class="pre">동서남북</span></code> 중 한 곳을 <code class="docutils literal notranslate"><span class="pre">바라본다</span></code>.</p>
+<p>맵의 각 칸은 <code class="docutils literal notranslate"><span class="pre">(A,</span> <span class="pre">B)</span></code>로 나타낼 수 있고, <code class="docutils literal notranslate"><span class="pre">A</span></code>는 <code class="docutils literal notranslate"><span class="pre">북쪽으로부터</span> <span class="pre">떨어진</span> <span class="pre">칸의</span> <span class="pre">개수</span></code>, <code class="docutils literal notranslate"><span class="pre">B</span></code>는 <code class="docutils literal notranslate"><span class="pre">서쪽으로부터</span> <span class="pre">떨어진</span> <span class="pre">칸의</span> <span class="pre">개수</span></code>이다. 캐릭터는 <code class="docutils literal notranslate"><span class="pre">상하좌우</span></code>로 움직일 수 있고, 바다로 되어 있는 공간에는 갈 수 없다. 캐릭터의 움직임을 설정하기 위해 정해 놓은 메뉴얼은 이러하다.</p>
+<ol class="arabic simple">
+<li><p>현재 위치에서 현재 방향을 기준으로 <code class="docutils literal notranslate"><span class="pre">왼쪽</span> <span class="pre">방향</span></code> (반시계 방향으로 90도 회전한 방향)부터 차례대로 갈 곳을 정한다.</p></li>
+<li><p>캐릭터의 바로 왼쪽 방향에 가보지 않은 칸이 없다면, 왼쪽 방향으로 회전만 수행하고 1단계로 돌아간다.</p></li>
+<li><p>만약 네 방향 모두 이미 가본 칸이거나 바다로 되어 있는 칸인 경우에는, 바라보는 방향을 유지한 채롤 한 칸 뒤로 가고 1단계로 돌아간다. 단, 이때 뒤쪽 방향이 바다인 칸이라 뒤로 갈 수 없는 경우에는 움직임을 멈춘다.</p></li>
+</ol>
+<p>현민이는 위 과정을 반복적으로 수행하면서 캐릭터의 움직임에 이상이 있는지 테스트하려고 한다. 메뉴얼에 따라 캐릭터를 이동시킨 뒤에, 캐릭터가 방문한 칸의 수를 출력하는 프로그램을 만드시오.</p>
+<div class="note admonition">
+<p class="admonition-title">조건</p>
+<p><strong>입력 조건</strong></p>
+<ul class="simple">
+<li><p>첫째 줄에</p></li>
+</ul>
 </div>
 </section>
 </section>
@@ -586,6 +685,8 @@ R R R U D D</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">예제</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">상하좌우</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">시각</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">왕실의 나이트</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">게임 개발</a></li>
 </ul>
 </li>
 </ul>

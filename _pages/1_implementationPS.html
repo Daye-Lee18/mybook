@@ -347,11 +347,41 @@ document.write(`
 <li><p><a class="reference external" href="https://www.acmicpc.net/problem/2578">1번: 백준 2578번</a></p></li>
 <li><p><a class="reference external" href="https://www.acmicpc.net/problem/12100">2번: 백준 12100번</a></p></li>
 <li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/magical-forest-exploration/description">3번: 코드트리 마법의 숲 탐색</a></p></li>
-<li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/cleaning-is-joyful/description">4번: 코드트리</a></p></li>
+<li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/cleaning-is-joyful/description">4번: 코드트리 청소는 즐거워</a></p></li>
 <li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/microbial-research/description">5번: 코드트리 미생물 연구</a></p></li>
 <li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/mint-choco-milk/description">6번: 코드트리 민트초코 우유</a></p></li>
 <li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/medusa-and-warriors/description">7번: 코드트리 메두사와 전사들</a></p></li>
 </ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#이동할 수 있는 8가지 경우 </span>
+<span class="n">dx</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">dy</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+
+<span class="n">pos</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
+<span class="n">cur_x</span> <span class="o">=</span> <span class="nb">ord</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="c1"># 1부터 시작하도록 </span>
+<span class="n">cur_y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="c1"># print(cur_x, cur_y)</span>
+
+<span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">nxt</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
+    <span class="n">nx</span> <span class="o">=</span> <span class="n">cur_x</span> <span class="o">+</span> <span class="n">dx</span><span class="p">[</span><span class="n">nxt</span><span class="p">]</span>
+    <span class="n">ny</span> <span class="o">=</span> <span class="n">cur_y</span> <span class="o">+</span> <span class="n">dy</span><span class="p">[</span><span class="n">nxt</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">nx</span> <span class="o">&lt;</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">ny</span> <span class="o">&lt;</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">nx</span><span class="o">&gt;</span><span class="mi">8</span> <span class="ow">or</span> <span class="n">ny</span> <span class="o">&gt;</span><span class="mi">8</span> <span class="p">:</span>
+        <span class="k">continue</span> 
+    <span class="n">cnt</span> <span class="o">+=</span> <span class="mi">1</span> 
+
+<span class="nb">print</span><span class="p">(</span><span class="n">cnt</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6
+</pre></div>
+</div>
+</div>
+</div>
 </section>
 
     <script type="text/x-thebe-config">
