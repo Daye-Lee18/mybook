@@ -401,7 +401,7 @@ document.write(`
 <p class="admonition-title">정리</p>
 <ul class="simple">
 <li><p>구현문제는 완전 탐색과 시뮬레이션으로 나뉜다.</p></li>
-<li><p>알고리즘 문제를 풀 때는 시간 제한 (파이썬 기준 1초 20,000 만번 연산)과 데이터의 개수를 먼저 확인한 뒤, 시간 복잡도 계산 후 그에 맞는 알고리즘을 사용해 작성해야한다.</p></li>
+<li><p>알고리즘 문제를 풀 때는 시간 제한 (파이썬 기준 1초 2,000 만번 연산)과 데이터의 개수를 먼저 확인한 뒤, 시간 복잡도 계산 후 그에 맞는 알고리즘을 사용해 작성해야한다.</p></li>
 </ul>
 </div>
 </section>
@@ -603,13 +603,106 @@ a1</p>
 <li><p>캐릭터의 바로 왼쪽 방향에 가보지 않은 칸이 없다면, 왼쪽 방향으로 회전만 수행하고 1단계로 돌아간다.</p></li>
 <li><p>만약 네 방향 모두 이미 가본 칸이거나 바다로 되어 있는 칸인 경우에는, 바라보는 방향을 유지한 채롤 한 칸 뒤로 가고 1단계로 돌아간다. 단, 이때 뒤쪽 방향이 바다인 칸이라 뒤로 갈 수 없는 경우에는 움직임을 멈춘다.</p></li>
 </ol>
-<p>현민이는 위 과정을 반복적으로 수행하면서 캐릭터의 움직임에 이상이 있는지 테스트하려고 한다. 메뉴얼에 따라 캐릭터를 이동시킨 뒤에, 캐릭터가 방문한 칸의 수를 출력하는 프로그램을 만드시오.</p>
+<p>현민이는 위 과정을 반복적으로 수행하면서 캐릭터의 움직임에 이상이 있는지 테스트하려고 한다. <strong>메뉴얼에 따라 캐릭터를 이동시킨 뒤에, 캐릭터가 방문한 칸의 수를 출력하는 프로그램</strong>을 만드시오.</p>
 <div class="note admonition">
 <p class="admonition-title">조건</p>
 <p><strong>입력 조건</strong></p>
 <ul class="simple">
-<li><p>첫째 줄에</p></li>
+<li><p>첫째 줄에 맵의 세로 크기 N과 가로 크기 M을 공백으로 구분하여 입력한다. (3 &lt;= N, M &lt;= 50)</p></li>
+<li><p>둘째 줄에 게임 캐릭터가 있는 칸의 좌표 (A,B)와 바라보는 방향 d가 각각 서로 공백으로 구분하여 주어진다. 방향 d의 값으로는 다음과 같이 4가지가 존재한다.</p>
+<ul>
+<li><p>0: 북쪽</p></li>
+<li><p>1: 동쪽</p></li>
+<li><p>2: 남쪽</p></li>
+<li><p>3: 서쪽</p></li>
 </ul>
+</li>
+<li><p>셋째 줄부터 맵이 육지인지 바다인지에 대한 정보가 주어진다. N개의 줄에 맵의 상태가 북쪽부터 남쪽 순서대로, 각 줄의 데이터는 서쪽부터 동쪽 순서대로 주어진다. 맵의 외곽은 항상 바다로 되어 있다.</p>
+<ul>
+<li><p>0: 육지</p></li>
+<li><p>1: 바다</p></li>
+</ul>
+</li>
+<li><p>처음에 게임 캐릭터가 위치한 칸의 상태는 항상 육지이다.</p></li>
+</ul>
+<p><strong>출력 조건</strong></p>
+<ul class="simple">
+<li><p>첫째 줄에 이동을 마친 후 캐릭터가 방문한 칸의 수를 출력한다.</p></li>
+</ul>
+<p><strong>입력 예시</strong><br>
+4 4      # 4x4맵 생성 <br>
+1 1 0    # (1, 1)에 북쪽 (0)을 바라보고 서 있는 캐릭터 <br>
+1 1 1 1  # 첫 줄은 모두 바다 <br>
+1 0 0 1  # 바다/육지/육지/바다<br>
+1 1 0 1  # 바다/바다/육지/바다<br>
+1 1 1 1  # 바다/바다/바다/바다<br></p>
+<p><br><strong>출력 예시</strong><br>
+3 <br></p>
+</div>
+<div class="toggle docutils container">
+<p><strong>문제 해설</strong><br>
+전형적인 시뮬레이션 문제이다. 별도의 알고리즘이 필요하기보다 문제에서 요구하는 내용을 오류 없이 성실하게 구현만 할 수 있다면 풀 수 있다.
+<strong>풀이</strong><br></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/Users/dayelee/Documents/GitHub/mybook/_pages/Input.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
+
+<span class="n">N</span><span class="p">,</span> <span class="n">M</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="c1"># N, M을 공백으로 구분하여 입력받기 </span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">direction</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+    <span class="n">graph</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())))</span>
+<span class="c1"># print(graph)</span>
+
+<span class="c1"># 현재 좌표 방문 처리 </span>
+<span class="n">graph</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> 
+
+<span class="c1"># 차례대로 북, 동, 남, 서일때 방향을 유지한채로 뒤로 가는 방향 </span>
+<span class="n">dx</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span> <span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">dy</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+
+
+<span class="n">count</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># 현재 있는 곳부터 카운트 </span>
+
+<span class="c1"># 시뮬레이션 시작 </span>
+<span class="n">turn_time</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="c1"># 왼쪽 방향부터 차례대로 갈 곳을 정한다. </span>
+    <span class="c1"># 다음 위치 및 방향 </span>
+    <span class="n">direction</span> <span class="o">=</span> <span class="p">(</span><span class="n">direction</span><span class="o">+</span><span class="mi">3</span><span class="p">)</span><span class="o">%</span><span class="mi">4</span> <span class="c1"># 방향은 바뀐 후에는 계속 유지 </span>
+    <span class="n">nx</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">dx</span><span class="p">[</span><span class="n">direction</span><span class="p">]</span>
+    <span class="n">ny</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">dy</span><span class="p">[</span><span class="n">direction</span><span class="p">]</span> 
+
+    <span class="c1"># 갈 곳이 있는 지 확인 </span>
+    <span class="k">if</span> <span class="n">nx</span> <span class="o">&lt;</span><span class="mi">0</span> <span class="ow">or</span> <span class="n">ny</span> <span class="o">&lt;</span><span class="mi">0</span> <span class="ow">or</span> <span class="n">nx</span> <span class="o">&gt;=</span> <span class="n">N</span> <span class="ow">or</span> <span class="n">ny</span> <span class="o">&gt;=</span> <span class="n">M</span><span class="p">:</span>  <span class="c1"># 그래프 밖</span>
+        <span class="n">turn_time</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">continue</span> 
+    <span class="k">if</span> <span class="n">graph</span><span class="p">[</span><span class="n">nx</span><span class="p">][</span><span class="n">ny</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># 갈 수 있으면 </span>
+        <span class="n">graph</span><span class="p">[</span><span class="n">nx</span><span class="p">][</span><span class="n">ny</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="c1"># 방문처리 </span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">nx</span> <span class="c1"># 이동 </span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">ny</span>
+        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span> 
+        <span class="n">turn_time</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">continue</span> 
+    <span class="k">else</span><span class="p">:</span> <span class="c1"># 바다 혹은 방문한 곳 </span>
+        <span class="n">turn_time</span> <span class="o">+=</span> <span class="mi">1</span> 
+
+    <span class="c1"># 네 방향 모두 가본 칸이거나 바다인 경우 </span>
+    <span class="c1"># 방향을 유지한채로 &quot;한 칸 뒤&quot;로 간다. </span>
+    <span class="k">if</span> <span class="n">turn_time</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="n">nx</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">dx</span><span class="p">[</span><span class="n">direction</span><span class="p">]</span>
+        <span class="n">ny</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">dy</span><span class="p">[</span><span class="n">direction</span><span class="p">]</span>
+        <span class="c1"># if dx &lt; 0 or dy &lt;0 or dx &gt;= N or dy &gt;= M: # 한 칸 뒤가 벽으로 막혀있는 경우는 문제에서 취급하지 않음 </span>
+        <span class="k">if</span> <span class="n">graph</span><span class="p">[</span><span class="n">nx</span><span class="p">][</span><span class="n">ny</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">nx</span> 
+            <span class="n">y</span> <span class="o">=</span> <span class="n">ny</span> 
+        <span class="k">else</span><span class="p">:</span> <span class="c1"># 만약 바다나 이미 간 곳이라 못 가면 멈춤 </span>
+            <span class="k">break</span> 
+        <span class="n">turn_time</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># 다시 turn_time 초기화 </span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
+
+</pre></div>
+</div>
 </div>
 </section>
 </section>
