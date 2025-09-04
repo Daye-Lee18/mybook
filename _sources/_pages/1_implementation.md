@@ -304,13 +304,11 @@ print(cnt)
 **풀이**<br>
 ```python
 
-f = open('/Users/dayelee/Documents/GitHub/mybook/_pages/Input.txt', 'rb')
-
-N, M = map(int, f.readline().strip().split()) # N, M을 공백으로 구분하여 입력받기 
-x, y, direction = map(int, f.readline().strip().split())
+N, M = map(int, input().split()) # N, M을 공백으로 구분하여 입력받기 
+x, y, direction = map(int, input().split())
 graph = []
 for n in range(N):
-    graph.append(list(map(int, f.readline().strip().split())))
+    graph.append(list(map(int, input().split())))
 # print(graph)
 
 # 현재 좌표 방문 처리 
