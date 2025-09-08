@@ -190,6 +190,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">실습</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Lecture 1-2. 구현 실습</a></li>
+
 </ul>
 
     </div>
@@ -315,7 +316,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -331,6 +334,23 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> 내용 </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Lecture 1-2. 구현 실습</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">3번 문제 해석</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#keys-to-the-solution">Keys to the Solution</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">5번 문제 해석</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">정답 코드</a></li>
+</ul>
+
+            </nav>
         </div>
     </div>
 </div>
@@ -352,7 +372,101 @@ document.write(`
 <li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/mint-choco-milk/description">6번: 코드트리 민트초코 우유</a></p></li>
 <li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/medusa-and-warriors/description">7번: 코드트리 메두사와 전사들</a></p></li>
 </ul>
-<p>문제 정답은 아래 코랩 파일을 확인하세요.</p>
+<section id="id1">
+<h2>3번 문제 해석<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p><img alt="3-1" src="../_images/11.png" /></p>
+<p>In the beginning, the golem may extend up to <code class="docutils literal notranslate"><span class="pre">3</span> <span class="pre">cells</span></code> above the forest. To handle this, we add 3 buffer rows at the top of the grid. These buffer rows are not part of the forest but provide enough room for the golem to move and settle safely.</p>
+<p><img alt="3-2" src="../_images/21.png" /></p>
+<p>When the golem moves one step down, we must check 3 positions below the center: directly underneath, and one cell to the left and right. If all 3 are empty, the golem can move downward without collision.</p>
+<p><img alt="3-3" src="../_images/31.png" /></p>
+<p>Now let’s look at rotation to the left. For the golem to rotate, <code class="docutils literal notranslate"><span class="pre">five</span> <span class="pre">specific</span> <span class="pre">cells</span></code> must be empty. Interestingly, the rules allow rotation even if the upper-right or lower-right cells are occupied. We number the directions North, East, South, and West as 0, 1, 2, and 3. Using this, left rotation is simply (d + 3) mod 4, and right rotation is (d + 1) mod 4.</p>
+<p><img alt="3-4" src="../_images/4.png" /></p>
+<p>Rotation to the right works symmetrically. Again, five surrounding cells must be empty to allow the move. The concept is the same as left rotation, but we apply the clockwise formula.</p>
+<p><img alt="3-5" src="../_images/5.png" /></p>
+<p>When the golem finally stops, all four arms must be inside the forest area, which is from row 3 down to H–1. To manage state, we store each golem’s position and exit direction in units[gid]. We also record which exit belongs to which golem in exit_map. This way, exit_map tells us the gid, and units gives us the exact center and direction.</p>
+<p><img alt="3-6" src="../_images/6.png" /></p>
+<p>We maintain two separate grids: <code class="docutils literal notranslate"><span class="pre">golem_arr</span></code> and <code class="docutils literal notranslate"><span class="pre">exit_map</span></code>. The <code class="docutils literal notranslate"><span class="pre">golem</span> <span class="pre">array</span></code> records body occupancy and is used for <code class="docutils literal notranslate"><span class="pre">collision</span> <span class="pre">checks</span></code>. The <code class="docutils literal notranslate"><span class="pre">exit</span> <span class="pre">map</span></code> records <code class="docutils literal notranslate"><span class="pre">only</span> <span class="pre">exits</span></code>, which lets us trace connectivity between golems using <code class="docutils literal notranslate"><span class="pre">BFS</span></code>. This separation is crucial because body cells and exit cells need to be treated differently.</p>
+<p><img alt="3-7" src="../_images/7.png" /></p>
+<p>Finally, let’s look at how we propagate the maximum reachable row.</p>
+<ul class="simple">
+<li><p>Step one: if <code class="docutils literal notranslate"><span class="pre">the</span> <span class="pre">current</span> <span class="pre">golem’s</span> <span class="pre">exit</span></code> touches a neighbor’s body, we inherit its <code class="docutils literal notranslate"><span class="pre">max_row</span></code> as the <code class="docutils literal notranslate"><span class="pre">seed</span></code> value.</p></li>
+<li><p>Step two: using BFS, we spread values along exit-to-exit connections across the whole component.</p></li>
+</ul>
+<p>This two-step design ensures accuracy — newly placed golems immediately get the correct value. It also improves efficiency, since we avoid repeated updates by maximizing early and propagating just once.</p>
+<section id="keys-to-the-solution">
+<h3>Keys to the Solution<a class="headerlink" href="#keys-to-the-solution" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>The key idea is simulation + connectivity propagation.</p></li>
+<li><p>Forest size: R × C, with K golems.</p></li>
+<li><p>Each golem has a cross (+) shape: the center plus 1 cell in each of the four directions (total of <code class="docutils literal notranslate"><span class="pre">5</span> <span class="pre">cells</span></code>). Its exit is the cell adjacent to the center in the facing direction.</p></li>
+<li><p>A golem falls from above and attempts to move in the following order:</p>
+<ul>
+<li><p>Straight down</p></li>
+<li><p>Down-left (rotate exit to the left)</p></li>
+<li><p>Down-right (rotate exit to the right)</p></li>
+<li><p>If all three moves fail, it stops.</p></li>
+</ul>
+</li>
+<li><p>To simplify the simulation, the board is <code class="docutils literal notranslate"><span class="pre">extended</span> <span class="pre">with</span> <span class="pre">3</span> <span class="pre">extra</span> <span class="pre">rows</span></code> at the top (so the grid size is (R+3)xC)</p></li>
+<li><p>After <code class="docutils literal notranslate"><span class="pre">settling</span></code>, if any of the 4 arms of the golem lie <code class="docutils literal notranslate"><span class="pre">outside</span> <span class="pre">the</span> <span class="pre">original</span> <span class="pre">forest</span></code> (rows indexed 3 to R+2), the entire forest is <code class="docutils literal notranslate"><span class="pre">reset</span></code> (all cleared) and that golem is <code class="docutils literal notranslate"><span class="pre">ignored</span></code>.</p></li>
+<li><p>In other words, after placement, the body of the golem (the four arms of the cross) must be fully contained within the forest.</p></li>
+<li><p>Once a golem is placed, <code class="docutils literal notranslate"><span class="pre">compute</span> <span class="pre">the</span> <span class="pre">maximum</span> <span class="pre">reachable</span> <span class="pre">row</span></code> (in the original forest, indices 0 to R−1) within the connected component that includes this golem and all others connected via exits. Add this value to the final sum.</p></li>
+</ul>
+</section>
+</section>
+<section id="id2">
+<h2>5번 문제 해석<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p>문제 정리</p>
+<ol class="arabic simple">
+<li><p>NxN 정사각형 배양 용기, 좌측 하단 (0,0), 우측 상단 (N, N)</p></li>
+<li><p>총 Q번 실험동안, 실험 결과 기록</p>
+<ul class="simple">
+<li><p>2-1. insert_and_get_result() 미생물 투입 후, 배양</p>
+<ul>
+<li><p>(r1, c1) ~ (r2, c2) 직사각형 미생물 투입, 영역내에는 새로 투입된 미생물만 남음.</p></li>
+<li><p>기존에 있던 미생물이 먹힌 경우, 영역이 두 개 이상으로 나뉘면 기존 미생물은 모두 사라짐.  -&gt; 항상 미생물은 하나의 그룹으로만 이루어지게 만듦.</p></li>
+</ul>
+</li>
+<li><p>2-2. 배양 용기 이동: move_microbe()</p>
+<ul>
+<li><p>기존 용기와 동일한 새로운 배양 용기로 이동. 기존 배양 용기에 미생물이 한 마디도 남지 않을 때까지</p>
+<ul>
+<li><p>가장 차지한 영역 ((r1, c1) ~ (r2, c2))이 넓은 무리 하나 선택 -&gt; 2개 이상이면 먼저 투입된 미생물 선택 (용기에는 미생물을 넣은 시간 정보 필요 -&gt; idx가 작은 것 선택)</p></li>
+<li><p>선택된 미생물의 영역 ((r1, c1) ~ (r2, c2))은</p>
+<ul>
+<li><p>배양 용기의 범위를 벗어나지 않으며</p></li>
+<li><p>다른 미생물의 영역과 겹치지 않아야하고,</p></li>
+<li><p>위의 조건에서 최대한 x좌표가 작은 위치로 미생물을 옮기는데,</p>
+<ul>
+<li><p>그 위치가 2개 이상이면 최대한 y좌표가 작은 위치로 오도록 옮김</p></li>
+</ul>
+</li>
+<li><p>위의 조건이 없다면, 옮기지 못하고 사라짐</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>2-3. record()</p>
+<ul>
+<li><p>미생물 무리 중 상하좌우로 닿아있는 인접한 무리 확인</p></li>
+<li><p>맞닿은 면이 둘 이상이더라도 micro_id같으면 한 번만 확인</p></li>
+<li><p>인접한 무리가 있으면</p>
+<ul>
+<li><p>확인하는 두 무리가 A,B라면 (미생물 A영역의 넓이) x (미생물 B영역의 넓이) 성과</p></li>
+<li><p>확인한 모든 쌍의 성과 기록</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="id3">
+<h1>정답 코드<a class="headerlink" href="#id3" title="Link to this heading">#</a></h1>
 <p><a class="reference external" href="https://colab.research.google.com/github/Daye-Lee18/mybook/blob/main/assets/ipynb/1_implementationPS.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
 </section>
 
@@ -401,6 +515,30 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> 내용
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Lecture 1-2. 구현 실습</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">3번 문제 해석</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#keys-to-the-solution">Keys to the Solution</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">5번 문제 해석</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">정답 코드</a></li>
+</ul>
+
+  </nav></div>
+
+</div></div>
               
             
           </div>
