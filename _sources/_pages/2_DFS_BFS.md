@@ -12,7 +12,7 @@ kernelspec:
   name: python3
 ---
 
-# Lecture 1-2. DFS/BFS 
+# Lecture 2-1. DFS/BFS 
 
 그래프를 탐색하기 위한 대표적인 두 가지 알고리즘인 `DFS (Depth First Search)`와 `BFS (Breadth First Search)`에 대해서 학습한다. `탐색 (Search)`이란 많은 양의 데이터 중에서 원하는 데이터를 찾는 과정을 말한다. 이 개념을 위해서 사전적으로 `자료 구조 (Data structure)` `Stack`, `Queue`, `Recursive function`를 간단히 정리하고자 한다. 
 
@@ -532,7 +532,7 @@ DFS와 마찬가지로 인접한 노드가 여러 개인 경우 숫자가 작은
 :::
 ```
 
-실제로 구현함에 있어 deque 라이버르리를 사용하며, 탐색을 수행함에 있어 O(N)의 시간이 소요되지만, 일반적인 경우 실제 수행시간은 DFS보다 좋다. 
+실제로 구현함에 있어 deque 라이브러리를 사용하며, 탐색을 수행함에 있어 O(N)의 시간이 소요되지만, 일반적인 경우 실제 수행시간은 DFS보다 좋다. 
 
 ```{code-block} python
 ---
