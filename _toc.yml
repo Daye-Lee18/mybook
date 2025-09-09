@@ -9,7 +9,7 @@ parts:
   chapters:
   - file: _pages/0_tips
   - file: _pages/1_implementation
-#   - file: _pages/markdown
+  - file: _pages/2_DFS_BFS
 #   - file: _pages/notebooks
 #   - file: _pages/markdown-notebooks
 #   - file: _pages/design
