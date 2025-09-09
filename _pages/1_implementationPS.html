@@ -386,9 +386,10 @@ document.write(`
 <li><p>정착 성공 시 배치: 정지 위치에 중심+팔 4칸을 기록하고, 출구 방향도 함께 저장한다(다음 단계 탐색에 필요).</p></li>
 </ol>
 </li>
-<li><p>spirites 탐색 (explore)</p>
+<li><p>spirits 탐색 (explore)</p>
 <ol class="arabic simple">
-<li><p>골렘의 출구와 가까운 골렘을 통해 seed max값을 초기화 한 후 8가지 가능한 방향으로 근접한 골렘이 있는지 확인하면서 최대 position을 결정 (BFS사용)</p></li>
+<li><p>골렘의 출구와 가까운 골렘을 통해 seed max값을 초기화 -&gt; 8가지 가능한 방향으로 같은 component의 값들에 큰 값 -&gt; 작은 값으로 value propagation(BFS사용)</p></li>
+<li><p>관련하여 <a class="reference external" href="https://colab.research.google.com/github/Daye-Lee18/mybook/blob/main/assets/ipynb/propagation_demo.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a> 시드의 최대값 초기화가 중요한 이유 확인</p></li>
 </ol>
 </li>
 <li><p>solve(): 위의 함수들을 사용하여, input을 받고 결과 출력하는 함수</p>
@@ -428,6 +429,23 @@ document.write(`
 <li><p>Step two: using BFS, we spread values along exit-to-exit connections across the whole component.</p></li>
 </ul>
 <p>This two-step design ensures accuracy — newly placed golems immediately get the correct value. It also improves efficiency, since we avoid repeated updates by maximizing early and propagating just once.</p>
+<p><img alt="3-8" src="../_images/81.png" /></p>
+<ol class="arabic simple">
+<li><p>best 계산 단계 (시드 확정)</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">start_id</span></code> 의 출구 주변을 보면서, 이미 숲에 있던 이웃 골렘들이 가지고 있던 <code class="docutils literal notranslate"><span class="pre">max_row</span></code>값 참고</p></li>
+<li><p>방금 들어온 골렘이 가질 수 있는 가장 큰 시작값 (best)를 정함.</p></li>
+</ol>
+</li>
+<li><p>전파 단계 (BFS)</p>
+<ol class="arabic simple">
+<li><p>이제 <code class="docutils literal notranslate"><span class="pre">start_id</span></code>가 속한 component전체에 대해, max_row가 작은 이웃 노드들을 best 값으로 끌어올림.</p></li>
+<li><p>이 과정을 통해 같은 컴포넌트 안의 모든 골렘이 최대값을 공유</p></li>
+<li><p>이렇게 해 두면, 나중에 컴포넌트 안에서 어느 골렘을 시작점으로 잡아도 같은 답을 얻을 수 있습니다.</p></li>
+<li><p>다음 골렘을 위해 준비 완료</p></li>
+</ol>
+</li>
+</ol>
 <section id="keys-to-the-solution">
 <h3>Keys to the Solution<a class="headerlink" href="#keys-to-the-solution" title="Link to this heading">#</a></h3>
 <ul class="simple">

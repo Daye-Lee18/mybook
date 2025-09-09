@@ -113,6 +113,7 @@ caption: "종료 조건 없는 재귀 함수 간단 예시"
 ---
 def recursive_function():
     print('재귀 함수를 호출합니다')
+    recursive_function() 
 
 recursive_function() 
 ```
