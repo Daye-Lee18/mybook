@@ -10,7 +10,7 @@ parts:
   - file: _pages/theory/0_tips
   - file: _pages/theory/1_implementation
   - file: _pages/theory/2_DFS_BFS
-#   - file: _pages/notebooks
+  - file: _pages/theory/3_sort
 #   - file: _pages/markdown-notebooks
 #   - file: _pages/design
 # #   - file: chapter1_python
