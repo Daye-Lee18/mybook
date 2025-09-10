@@ -12,7 +12,7 @@ kernelspec:
   name: python3
 ---
 
-# Lecture 1-2. DFS/BFS 
+# Lecture 2-1. DFS/BFS 
 
 그래프를 탐색하기 위한 대표적인 두 가지 알고리즘인 `DFS (Depth First Search)`와 `BFS (Breadth First Search)`에 대해서 학습한다. `탐색 (Search)`이란 많은 양의 데이터 중에서 원하는 데이터를 찾는 과정을 말한다. 이 개념을 위해서 사전적으로 `자료 구조 (Data structure)` `Stack`, `Queue`, `Recursive function`를 간단히 정리하고자 한다. 
 
@@ -33,12 +33,12 @@ kernelspec:
 
 :::{grid-item}
 :columns: 6
-![DFS 예시](../assets/img/DFS_BFS/1.png)
+![DFS 예시](../../assets/img/DFS_BFS/1.png)
 :::
 
 :::{grid-item}
 :columns: 6
-![BFS 예시](../assets/img/DFS_BFS/2.png)
+![BFS 예시](../../assets/img/DFS_BFS/2.png)
 :::
 ```
 
@@ -70,12 +70,12 @@ print(stack[::-1]) # 최상단 원소부터 출력 [1, 3, 2, 5]
 
 :::{grid-item}
 :columns: 6
-![DFS 예시](../assets/img/DFS_BFS/3.png)
+![DFS 예시](../../assets/img/DFS_BFS/3.png)
 :::
 
 :::{grid-item}
 :columns: 6
-![BFS 예시](../assets/img/DFS_BFS/4.png)
+![BFS 예시](../../assets/img/DFS_BFS/4.png)
 :::
 ```
 
@@ -113,6 +113,7 @@ caption: "종료 조건 없는 재귀 함수 간단 예시"
 ---
 def recursive_function():
     print('재귀 함수를 호출합니다')
+    recursive_function() 
 
 recursive_function() 
 ```
@@ -205,12 +206,12 @@ print('재귀적으로 구현:', factorial_recursive(5)) # 재귀적으로 구�
 
 :::{grid-item}
 :columns: 6
-![그래프 예시](../assets/img/DFS_BFS/5.png)
+![그래프 예시](../../assets/img/DFS_BFS/5.png)
 ::: 
 
 :::{grid-item}
 :columns: 6
-![Adjacent Matrix & Adjacent List](../assets/img/DFS_BFS/6.png)
+![Adjacent Matrix & Adjacent List](../../assets/img/DFS_BFS/6.png)
 :::
 ```
 
@@ -308,26 +309,12 @@ Step 2의 과정을 더 이상 수행할 수 없을 때까지 반복한다.
 
 :::{grid-item}
 :columns: 6
-![7](../assets/img/DFS_BFS/7.png)
+![7](../../assets/img/DFS_BFS/7.png)
 :::
 
 :::{grid-item}
 :columns: 6
-![8](../assets/img/DFS_BFS/8.png)
-:::
-```
-
-```{grid} 2
-:gutter: 2
-
-:::{grid-item}
-:columns: 6
-![9](../assets/img/DFS_BFS/9.png)
-:::
-
-:::{grid-item}
-:columns: 6
-![10](../assets/img/DFS_BFS/10.png)
+![8](../../assets/img/DFS_BFS/8.png)
 :::
 ```
 
@@ -336,26 +323,12 @@ Step 2의 과정을 더 이상 수행할 수 없을 때까지 반복한다.
 
 :::{grid-item}
 :columns: 6
-![11](../assets/img/DFS_BFS/11.png)
+![9](../../assets/img/DFS_BFS/9.png)
 :::
 
 :::{grid-item}
 :columns: 6
-![12](../assets/img/DFS_BFS/12.png)
-:::
-```
-
-```{grid} 2
-:gutter: 2
-
-:::{grid-item}
-:columns: 6
-![13](../assets/img/DFS_BFS/13.png)
-:::
-
-:::{grid-item}
-:columns: 6
-![14](../assets/img/DFS_BFS/14.png)
+![10](../../assets/img/DFS_BFS/10.png)
 :::
 ```
 
@@ -364,39 +337,12 @@ Step 2의 과정을 더 이상 수행할 수 없을 때까지 반복한다.
 
 :::{grid-item}
 :columns: 6
-![15](../assets/img/DFS_BFS/15.png)
+![11](../../assets/img/DFS_BFS/11.png)
 :::
 
 :::{grid-item}
 :columns: 6
-![16](../assets/img/DFS_BFS/16.png)
-:::
-```
-
-```{grid} 2
-:gutter: 2
-
-:::{grid-item}
-:columns: 6
-![17](../assets/img/DFS_BFS/17.png)
-:::
-
-:::{grid-item}
-:columns: 6
-![18](../assets/img/DFS_BFS/18.png)
-:::
-```
-```{grid} 2
-:gutter: 2
-
-:::{grid-item}
-:columns: 6
-![19](../assets/img/DFS_BFS/19.png)
-:::
-
-:::{grid-item}
-:columns: 6
-![20](../assets/img/DFS_BFS/20.png)
+![12](../../assets/img/DFS_BFS/12.png)
 :::
 ```
 
@@ -405,12 +351,67 @@ Step 2의 과정을 더 이상 수행할 수 없을 때까지 반복한다.
 
 :::{grid-item}
 :columns: 6
-![21](../assets/img/DFS_BFS/21.png)
+![13](../../assets/img/DFS_BFS/13.png)
 :::
 
 :::{grid-item}
 :columns: 6
-![22](../assets/img/DFS_BFS/22.png)
+![14](../../assets/img/DFS_BFS/14.png)
+:::
+```
+
+```{grid} 2
+:gutter: 2
+
+:::{grid-item}
+:columns: 6
+![15](../../assets/img/DFS_BFS/15.png)
+:::
+
+:::{grid-item}
+:columns: 6
+![16](../../assets/img/DFS_BFS/16.png)
+:::
+```
+
+```{grid} 2
+:gutter: 2
+
+:::{grid-item}
+:columns: 6
+![17](../../assets/img/DFS_BFS/17.png)
+:::
+
+:::{grid-item}
+:columns: 6
+![18](../../assets/img/DFS_BFS/18.png)
+:::
+```
+```{grid} 2
+:gutter: 2
+
+:::{grid-item}
+:columns: 6
+![19](../../assets/img/DFS_BFS/19.png)
+:::
+
+:::{grid-item}
+:columns: 6
+![20](../../assets/img/DFS_BFS/20.png)
+:::
+```
+
+```{grid} 2
+:gutter: 2
+
+:::{grid-item}
+:columns: 6
+![21](../../assets/img/DFS_BFS/21.png)
+:::
+
+:::{grid-item}
+:columns: 6
+![22](../../assets/img/DFS_BFS/22.png)
 :::
 ```
 
@@ -481,12 +482,12 @@ DFS와 마찬가지로 인접한 노드가 여러 개인 경우 숫자가 작은
 
 :::{grid-item}
 :columns: 6
-![23](../assets/img/DFS_BFS/23.png)
+![23](../../assets/img/DFS_BFS/23.png)
 :::
 
 :::{grid-item}
 :columns: 6
-![24](../assets/img/DFS_BFS/24.png)
+![24](../../assets/img/DFS_BFS/24.png)
 :::
 ```
 
@@ -495,12 +496,12 @@ DFS와 마찬가지로 인접한 노드가 여러 개인 경우 숫자가 작은
 
 :::{grid-item}
 :columns: 6
-![25](../assets/img/DFS_BFS/25.png)
+![25](../../assets/img/DFS_BFS/25.png)
 :::
 
 :::{grid-item}
 :columns: 6
-![26](../assets/img/DFS_BFS/26.png)
+![26](../../assets/img/DFS_BFS/26.png)
 :::
 ```
 
@@ -509,12 +510,12 @@ DFS와 마찬가지로 인접한 노드가 여러 개인 경우 숫자가 작은
 
 :::{grid-item}
 :columns: 6
-![27](../assets/img/DFS_BFS/27.png)
+![27](../../assets/img/DFS_BFS/27.png)
 :::
 
 :::{grid-item}
 :columns: 6
-![28](../assets/img/DFS_BFS/28.png)
+![28](../../assets/img/DFS_BFS/28.png)
 :::
 ```
 
@@ -523,7 +524,7 @@ DFS와 마찬가지로 인접한 노드가 여러 개인 경우 숫자가 작은
 
 :::{grid-item}
 :columns: 6
-![27](../assets/img/DFS_BFS/29.png)
+![27](../../assets/img/DFS_BFS/29.png)
 :::
 
 :::{grid-item}
@@ -532,7 +533,7 @@ DFS와 마찬가지로 인접한 노드가 여러 개인 경우 숫자가 작은
 :::
 ```
 
-실제로 구현함에 있어 deque 라이버르리를 사용하며, 탐색을 수행함에 있어 O(N)의 시간이 소요되지만, 일반적인 경우 실제 수행시간은 DFS보다 좋다. 
+실제로 구현함에 있어 deque 라이브러리를 사용하며, 탐색을 수행함에 있어 O(N)의 시간이 소요되지만, 일반적인 경우 실제 수행시간은 DFS보다 좋다. 
 
 ```{code-block} python
 ---
@@ -579,7 +580,7 @@ bfs(graph, 1, visited)
 
 DFS(Depth-First Search)와 BFS(Breadth-First Search)는 전형적인 그래프(graph) 그림 말고도 1차원 배열(one-dimensional array)이나 2차원 배열(two-dimensional array)에 대입하여 풀 수 있다. 각 `좌표(coordinate)`를 `상하좌우 (up, down, left, right)`로 이동할 수 있다면 그래프(graph) 형태로 바꿔서 생각할 수 있다. 코딩 테스트(coding test)에서 탐색 문제(search problem)를 보면 그래프(graph) 형태로 표현한 다음 풀이법을 고민하도록 하자.
 
-```{image} ../assets/img/DFS_BFS/30.png
+```{image} ../../assets/img/DFS_BFS/30.png
 :alt: 예시 이미지
 :class: bg-primary mb-1
 :width: 400px
@@ -605,7 +606,7 @@ N X M 크기의 얼음 틀이 있다. 구멍이 뚫려 있는 부분은 0, 칸�
 
 다음의 4x5 얼음 틀 예시에서는 아이스크림이 총 3개 생성된다. 
 
-```{image} ../assets/img/DFS_BFS/31.png
+```{image} ../../assets/img/DFS_BFS/31.png
 :alt: 예시 이미지
 :class: bg-primary mb-1
 :width: 400px
@@ -641,11 +642,15 @@ N X M 크기의 얼음 틀이 있다. 구멍이 뚫려 있는 부분은 0, 칸�
 11011111111111<br>
 11011111111100<br>
 11000000011111<br>
+01111111111111<br>
+00000000011111<br>
 01111111111000<br>
 00011111111000<br>
+00000001111000<br>
 11111111110011<br>
 11100011111111<br>
 11100011111111<br>
+
 
 <br>**출력 예시**<br>
 8
@@ -657,6 +662,7 @@ DFS로 해결할 수 있다. 얼음을 얼릴 수 있는 공간이 상, 하, 좌
 
 **풀이**<br>
 ```{code-block} python
+# input()으로 받은 '111011'은 문자열이기 때문에, split()을 하면 ['1','1','0', ..] 인 list로 변환된다. 
 n, m = map(int, input().split())
 
 graph = [] 
@@ -692,6 +698,203 @@ for i in range(n):
 print(result)
 ```
 
+```{toggle}
+아래처럼 BFS를 사용하여 풀 수도 있다. 
+```python
+from collections import deque 
+
+N, M = map(int, input().split())
+graph = []
+for n in range(N):
+    graph.append(list(map(int, input())))
+
+visited = [[False] * M for _ in range(N)]
+
+# print(graph)
+def in_range(y, x):
+    global N, M
+    return 0 <= y < N and 0<=x<M 
+
+def propagate_to_component(y, x):
+    global visited, graph 
+    DY = [-1, 1, 0, 0]
+    DX = [ 0, 0, -1, 1]
+    q = deque([(y, x)])
+    while q: 
+        y, x = q.popleft()
+
+        for t in range(4):
+            ny = y + DY[t]; nx = x + DX[t]
+
+            if in_range(ny, nx) and not visited[ny][nx] and graph[ny][nx] == 0:
+                visited[ny][nx] = True 
+                q.append((ny, nx))
+
+cnt = 0 
+for y in range(N):
+    for x in range(M):
+        # graph 에 0이면 아이스크림 
+        if graph[y][x] == 0 and not visited[y][x]:
+            cnt += 1 
+            visited[y][x] = True 
+            propagate_to_component(y, x)
+
+print(cnt)
+```
+
 ### 감시 피하기 
 
-### 블록 이동하기 
+- 난이도 중 | 시간 제한 2초 | 메모리 제한 256 MB 
+
+[백준 18428번: 감시 피하기](https://www.acmicpc.net/problem/18428)
+
+```{toggle}
+**문제 해석** 
+- 이 문제는 장애물을 정확히 3개 설치하는 모든 경우를 확인하여, 매 경우마다 모든 학생을 감시로부터 피하도록 할 수 있는지의 여부를 출력해야한다. 그렇다면 장애물을 정확히 3개 설치하는 모든 경우의 수는 얼마나 될지 생각해보자. 
+- 복도의 크기는 NxN이며, N은 최대 6이다. 따라서 장애물을 정확히 3개 설치하는 모든 조합의 수는 최악의 경우 ${36}C{3}$이 될 것이다. 이는 10,000 이하의 수이므로 모든 조합을 고려하여 완전 탐색을 수행해도 시간 초과없이 문제를 해결할 수 있다. 
+- 따라서 모든 조합을 찾기 위해서 DFS 혹은 BFS를 이용해 모든 조합을 반환하는 함수를 작성하거나, 파이썬의 조합 라이브러리를 이용할 수 있다. 
+- 정확히 3개의 장애물이 설치된 모든 조합마다 선생님들의 위치 좌표를 하나씩 확인하고 각각 선생님의 위치에서 상, 하, 좌, 우를 확인하며 학생이 한 명이라도 감지되는지를 확인해야하며, 이는 별도의 watch() 메서드를 구현하면 된다. 
+
+**풀이** <br>
+- 빈 칸 후보에서 3개를 고르는 조합을 직접 생성
+- 매 조합마다 장애물 설치 → 감시(watch) 검사 → 되돌리기
+
+```python
+import sys
+input = sys.stdin.readline
+
+# 입력 예시 가정
+# N
+# N줄의 복도: 'S' 학생, 'T' 선생님, 'X' 빈칸
+N = int(input().strip())
+board = [input().split() for _ in range(N)]
+
+empties = []
+teachers = []
+for r in range(N):
+    for c in range(N):
+        if board[r][c] == 'X':
+            empties.append((r, c))
+        elif board[r][c] == 'T':
+            teachers.append((r, c))
+
+drdc = [(-1,0),(1,0),(0,-1),(0,1)]  # 상, 하, 좌, 우
+
+def seen_student_from(r, c):
+    # 선생 T 한 명 기준으로 4방향 직선 감시
+    for dr, dc in drdc:
+        nr, nc = r, c
+        while True:
+            nr += dr; nc += dc
+            if not (0 <= nr < N and 0 <= nc < N):
+                break
+            if board[nr][nc] == 'O':   # 장애물
+                break
+            if board[nr][nc] == 'S':   # 학생 보이면 실패
+                return True
+    return False
+
+def safe_all():
+    # 모든 선생에 대해 학생이 보이는지 검사
+    for tr, tc in teachers:
+        if seen_student_from(tr, tc):
+            return False
+    return True
+
+answer = False
+
+def dfs(start_idx, picked):
+    global answer
+    if answer:      # 이미 성공한 경우 더 돌 필요 없음
+        return
+    if picked == 3: # 3개 설치했으면 검사
+        if safe_all():
+            answer = True
+        return
+
+    # 조합 생성: 시작 인덱스부터 고르기
+    for i in range(start_idx, len(empties)):
+        r, c = empties[i]
+        board[r][c] = 'O'        # 설치
+        dfs(i+1, picked+1)
+        board[r][c] = 'X'        # 되돌리기 (백트래킹)
+        if answer:
+            return
+
+dfs(0, 0)
+print("YES" if answer else "NO")
+```
+
+```{toggle}
+- 혹은 3중 for loop으로 empties 길이가 M일 때, i < j < k 세 칸을 고르는 방식을 사용할 수 있다. 
+  
+```python 
+import sys
+input = sys.stdin.readline
+
+# 입력 예시 가정
+# N
+# N줄의 복도: 'S' 학생, 'T' 선생님, 'X' 빈칸
+N = int(input().strip())
+board = [input().split() for _ in range(N)]
+
+empties = []
+teachers = []
+for r in range(N):
+    for c in range(N):
+        if board[r][c] == 'X':
+            empties.append((r, c))
+        elif board[r][c] == 'T':
+            teachers.append((r, c))
+
+drdc = [(-1,0),(1,0),(0,-1),(0,1)]  # 상, 하, 좌, 우
+
+def seen_student_from(r, c):
+    # 선생 T 한 명 기준으로 4방향 직선 감시
+    for dr, dc in drdc:
+        nr, nc = r, c
+        while True:
+            nr += dr; nc += dc
+            if not (0 <= nr < N and 0 <= nc < N):
+                break
+            if board[nr][nc] == 'O':   # 장애물
+                break
+            if board[nr][nc] == 'S':   # 학생 보이면 실패
+                return True
+    return False
+
+def safe_all():
+    # 모든 선생에 대해 학생이 보이는지 검사
+    for tr, tc in teachers:
+        if seen_student_from(tr, tc):
+            return False
+    return True
+
+answer = False
+
+M = len(empties)
+answer = False
+
+for i in range(M):
+    r1, c1 = empties[i]
+    board[r1][c1] = 'O'
+    for j in range(i+1, M):
+        r2, c2 = empties[j]
+        board[r2][c2] = 'O'
+        for k in range(j+1, M):
+            r3, c3 = empties[k]
+            board[r3][c3] = 'O'
+
+            # 3중 for loop 이후 확인 
+            if safe_all():
+                answer = True
+            board[r3][c3] = 'X'
+            if answer: break
+        board[r2][c2] = 'X'
+        if answer: break
+    board[r1][c1] = 'X'
+    if answer: break
+
+print("YES" if answer else "NO")
+
+```

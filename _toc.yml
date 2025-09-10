@@ -7,9 +7,9 @@ root: intro
 parts:
 - caption: 이론
   chapters:
-  - file: _pages/0_tips
-  - file: _pages/1_implementation
-  - file: _pages/2_DFS_BFS
+  - file: _pages/theory/0_tips
+  - file: _pages/theory/1_implementation
+  - file: _pages/theory/2_DFS_BFS
 #   - file: _pages/notebooks
 #   - file: _pages/markdown-notebooks
 #   - file: _pages/design
@@ -24,8 +24,8 @@ parts:
 
 - caption: 실습
   chapters:
-  - file: _pages/1_implementationPS
-#   - file: numpy_intro
+  - file: _pages/practice/1_implementationPS
+  - file: _pages/practice/2_DFS_BFSPS
 #   - file: pandas1
 #   - file: pandas2
 #   - file: viz

@@ -59,7 +59,7 @@ kernelspec:
 
 여행가 A는 NxN 크기의 정사각형 공간 위에 서 있다. 이 공간은 1x1 크기의 정사각형으로 나누어져 있다. 가장 왼쪽 위 좌표는 `(1,1)`이며, 가장 오른쪽 아래 좌표는 `(N,N)`에 해당한다. 여행가 A는 `상, 하, 좌, 우` 방향으로 이동할 수 있으며, 시작 좌표는 항상 `(1,1)`이다. 우리 앞에는 여행가 A가 이동할 계획이 적힌 계획서 (아래 그림)가 놓여 있다. 
 
-```{image} ../assets/img/implementation/1.png
+```{image} ../../assets/img/implementation/1.png
 :alt: 예시 이미지
 :class: bg-primary mb-1
 :width: 400px
@@ -75,7 +75,7 @@ kernelspec:
 
 이때 여행가 A가 N x N 크기의 정사각형 공간을 벗어나는 움직임은 무시된다. 예를 들어 (1, 1)의 위치에서 L혹은 U를 만나면 무시된다. 다음은 N=5인 지도와 계획서이다. 
 
-```{image} ../assets/img/implementation/2.png
+```{image} ../../assets/img/implementation/2.png
 :alt: 예시 이미지
 :class: bg-primary mb-1
 :width: 400px
@@ -195,7 +195,7 @@ print(count)
 2. 수직으로 두 칸 이동한 뒤에 수평으로 한 칸 이동하기 
 
 
-```{image} ../assets/img/implementation/3.png
+```{image} ../../assets/img/implementation/3.png
 :alt: 예시 이미지
 :class: bg-primary mb-1
 :width: 400px
