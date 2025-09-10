@@ -33,12 +33,12 @@ kernelspec:
 
 :::{grid-item}
 :columns: 6
-![DFS 예시](../assets/img/DFS_BFS/1.png)
+![DFS 예시](../../assets/img/DFS_BFS/1.png)
 :::
 
 :::{grid-item}
 :columns: 6
-![BFS 예시](../assets/img/DFS_BFS/2.png)
+![BFS 예시](../../assets/img/DFS_BFS/2.png)
 :::
 ```
 
@@ -70,12 +70,12 @@ print(stack[::-1]) # 최상단 원소부터 출력 [1, 3, 2, 5]
 
 :::{grid-item}
 :columns: 6
-![DFS 예시](../assets/img/DFS_BFS/3.png)
+![DFS 예시](../../assets/img/DFS_BFS/3.png)
 :::
 
 :::{grid-item}
 :columns: 6
-![BFS 예시](../assets/img/DFS_BFS/4.png)
+![BFS 예시](../../assets/img/DFS_BFS/4.png)
 :::
 ```
 
@@ -206,12 +206,12 @@ print('재귀적으로 구현:', factorial_recursive(5)) # 재귀적으로 구�
 
 :::{grid-item}
 :columns: 6
-![그래프 예시](../assets/img/DFS_BFS/5.png)
+![그래프 예시](../../assets/img/DFS_BFS/5.png)
 ::: 
 
 :::{grid-item}
 :columns: 6
-![Adjacent Matrix & Adjacent List](../assets/img/DFS_BFS/6.png)
+![Adjacent Matrix & Adjacent List](../../assets/img/DFS_BFS/6.png)
 :::
 ```
 
@@ -309,26 +309,12 @@ Step 2의 과정을 더 이상 수행할 수 없을 때까지 반복한다.
 
 :::{grid-item}
 :columns: 6
-![7](../assets/img/DFS_BFS/7.png)
+![7](../../assets/img/DFS_BFS/7.png)
 :::
 
 :::{grid-item}
 :columns: 6
-![8](../assets/img/DFS_BFS/8.png)
-:::
-```
-
-```{grid} 2
-:gutter: 2
-
-:::{grid-item}
-:columns: 6
-![9](../assets/img/DFS_BFS/9.png)
-:::
-
-:::{grid-item}
-:columns: 6
-![10](../assets/img/DFS_BFS/10.png)
+![8](../../assets/img/DFS_BFS/8.png)
 :::
 ```
 
@@ -337,26 +323,12 @@ Step 2의 과정을 더 이상 수행할 수 없을 때까지 반복한다.
 
 :::{grid-item}
 :columns: 6
-![11](../assets/img/DFS_BFS/11.png)
+![9](../../assets/img/DFS_BFS/9.png)
 :::
 
 :::{grid-item}
 :columns: 6
-![12](../assets/img/DFS_BFS/12.png)
-:::
-```
-
-```{grid} 2
-:gutter: 2
-
-:::{grid-item}
-:columns: 6
-![13](../assets/img/DFS_BFS/13.png)
-:::
-
-:::{grid-item}
-:columns: 6
-![14](../assets/img/DFS_BFS/14.png)
+![10](../../assets/img/DFS_BFS/10.png)
 :::
 ```
 
@@ -365,39 +337,12 @@ Step 2의 과정을 더 이상 수행할 수 없을 때까지 반복한다.
 
 :::{grid-item}
 :columns: 6
-![15](../assets/img/DFS_BFS/15.png)
+![11](../../assets/img/DFS_BFS/11.png)
 :::
 
 :::{grid-item}
 :columns: 6
-![16](../assets/img/DFS_BFS/16.png)
-:::
-```
-
-```{grid} 2
-:gutter: 2
-
-:::{grid-item}
-:columns: 6
-![17](../assets/img/DFS_BFS/17.png)
-:::
-
-:::{grid-item}
-:columns: 6
-![18](../assets/img/DFS_BFS/18.png)
-:::
-```
-```{grid} 2
-:gutter: 2
-
-:::{grid-item}
-:columns: 6
-![19](../assets/img/DFS_BFS/19.png)
-:::
-
-:::{grid-item}
-:columns: 6
-![20](../assets/img/DFS_BFS/20.png)
+![12](../../assets/img/DFS_BFS/12.png)
 :::
 ```
 
@@ -406,12 +351,67 @@ Step 2의 과정을 더 이상 수행할 수 없을 때까지 반복한다.
 
 :::{grid-item}
 :columns: 6
-![21](../assets/img/DFS_BFS/21.png)
+![13](../../assets/img/DFS_BFS/13.png)
 :::
 
 :::{grid-item}
 :columns: 6
-![22](../assets/img/DFS_BFS/22.png)
+![14](../../assets/img/DFS_BFS/14.png)
+:::
+```
+
+```{grid} 2
+:gutter: 2
+
+:::{grid-item}
+:columns: 6
+![15](../../assets/img/DFS_BFS/15.png)
+:::
+
+:::{grid-item}
+:columns: 6
+![16](../../assets/img/DFS_BFS/16.png)
+:::
+```
+
+```{grid} 2
+:gutter: 2
+
+:::{grid-item}
+:columns: 6
+![17](../../assets/img/DFS_BFS/17.png)
+:::
+
+:::{grid-item}
+:columns: 6
+![18](../../assets/img/DFS_BFS/18.png)
+:::
+```
+```{grid} 2
+:gutter: 2
+
+:::{grid-item}
+:columns: 6
+![19](../../assets/img/DFS_BFS/19.png)
+:::
+
+:::{grid-item}
+:columns: 6
+![20](../../assets/img/DFS_BFS/20.png)
+:::
+```
+
+```{grid} 2
+:gutter: 2
+
+:::{grid-item}
+:columns: 6
+![21](../../assets/img/DFS_BFS/21.png)
+:::
+
+:::{grid-item}
+:columns: 6
+![22](../../assets/img/DFS_BFS/22.png)
 :::
 ```
 
@@ -482,26 +482,12 @@ DFS와 마찬가지로 인접한 노드가 여러 개인 경우 숫자가 작은
 
 :::{grid-item}
 :columns: 6
-![23](../assets/img/DFS_BFS/23.png)
+![23](../../assets/img/DFS_BFS/23.png)
 :::
 
 :::{grid-item}
 :columns: 6
-![24](../assets/img/DFS_BFS/24.png)
-:::
-```
-
-```{grid} 2
-:gutter: 2
-
-:::{grid-item}
-:columns: 6
-![25](../assets/img/DFS_BFS/25.png)
-:::
-
-:::{grid-item}
-:columns: 6
-![26](../assets/img/DFS_BFS/26.png)
+![24](../../assets/img/DFS_BFS/24.png)
 :::
 ```
 
@@ -510,12 +496,12 @@ DFS와 마찬가지로 인접한 노드가 여러 개인 경우 숫자가 작은
 
 :::{grid-item}
 :columns: 6
-![27](../assets/img/DFS_BFS/27.png)
+![25](../../assets/img/DFS_BFS/25.png)
 :::
 
 :::{grid-item}
 :columns: 6
-![28](../assets/img/DFS_BFS/28.png)
+![26](../../assets/img/DFS_BFS/26.png)
 :::
 ```
 
@@ -524,7 +510,21 @@ DFS와 마찬가지로 인접한 노드가 여러 개인 경우 숫자가 작은
 
 :::{grid-item}
 :columns: 6
-![27](../assets/img/DFS_BFS/29.png)
+![27](../../assets/img/DFS_BFS/27.png)
+:::
+
+:::{grid-item}
+:columns: 6
+![28](../../assets/img/DFS_BFS/28.png)
+:::
+```
+
+```{grid} 2
+:gutter: 2
+
+:::{grid-item}
+:columns: 6
+![27](../../assets/img/DFS_BFS/29.png)
 :::
 
 :::{grid-item}
@@ -580,7 +580,7 @@ bfs(graph, 1, visited)
 
 DFS(Depth-First Search)와 BFS(Breadth-First Search)는 전형적인 그래프(graph) 그림 말고도 1차원 배열(one-dimensional array)이나 2차원 배열(two-dimensional array)에 대입하여 풀 수 있다. 각 `좌표(coordinate)`를 `상하좌우 (up, down, left, right)`로 이동할 수 있다면 그래프(graph) 형태로 바꿔서 생각할 수 있다. 코딩 테스트(coding test)에서 탐색 문제(search problem)를 보면 그래프(graph) 형태로 표현한 다음 풀이법을 고민하도록 하자.
 
-```{image} ../assets/img/DFS_BFS/30.png
+```{image} ../../assets/img/DFS_BFS/30.png
 :alt: 예시 이미지
 :class: bg-primary mb-1
 :width: 400px
@@ -606,7 +606,7 @@ N X M 크기의 얼음 틀이 있다. 구멍이 뚫려 있는 부분은 0, 칸�
 
 다음의 4x5 얼음 틀 예시에서는 아이스크림이 총 3개 생성된다. 
 
-```{image} ../assets/img/DFS_BFS/31.png
+```{image} ../../assets/img/DFS_BFS/31.png
 :alt: 예시 이미지
 :class: bg-primary mb-1
 :width: 400px
@@ -642,11 +642,15 @@ N X M 크기의 얼음 틀이 있다. 구멍이 뚫려 있는 부분은 0, 칸�
 11011111111111<br>
 11011111111100<br>
 11000000011111<br>
+01111111111111<br>
+00000000011111<br>
 01111111111000<br>
 00011111111000<br>
+00000001111000<br>
 11111111110011<br>
 11100011111111<br>
 11100011111111<br>
+
 
 <br>**출력 예시**<br>
 8
@@ -658,6 +662,7 @@ DFS로 해결할 수 있다. 얼음을 얼릴 수 있는 공간이 상, 하, 좌
 
 **풀이**<br>
 ```{code-block} python
+# input()으로 받은 '111011'은 문자열이기 때문에, split()을 하면 ['1','1','0', ..] 인 list로 변환된다. 
 n, m = map(int, input().split())
 
 graph = [] 
@@ -691,6 +696,50 @@ for i in range(n):
             result += 1 
 
 print(result)
+```
+
+```{toggle}
+아래처럼 BFS를 사용하여 풀 수도 있다. 
+```python
+from collections import deque 
+
+N, M = map(int, input().split())
+graph = []
+for n in range(N):
+    graph.append(list(map(int, input())))
+
+visited = [[False] * M for _ in range(N)]
+
+# print(graph)
+def in_range(y, x):
+    global N, M
+    return 0 <= y < N and 0<=x<M 
+
+def propagate_to_component(y, x):
+    global visited, graph 
+    DY = [-1, 1, 0, 0]
+    DX = [ 0, 0, -1, 1]
+    q = deque([(y, x)])
+    while q: 
+        y, x = q.popleft()
+
+        for t in range(4):
+            ny = y + DY[t]; nx = x + DX[t]
+
+            if in_range(ny, nx) and not visited[ny][nx] and graph[ny][nx] == 0:
+                visited[ny][nx] = True 
+                q.append((ny, nx))
+
+cnt = 0 
+for y in range(N):
+    for x in range(M):
+        # graph 에 0이면 아이스크림 
+        if graph[y][x] == 0 and not visited[y][x]:
+            cnt += 1 
+            visited[y][x] = True 
+            propagate_to_component(y, x)
+
+print(cnt)
 ```
 
 ### 감시 피하기 
