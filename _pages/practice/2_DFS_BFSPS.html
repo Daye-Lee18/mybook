@@ -59,6 +59,8 @@
     <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_pages/practice/2_DFS_BFSPS';</script>
     <script src="https://unpkg.com/jupyterquiz@1.1.8/dist/jupyterquiz.min.js"></script>
     <link rel="icon" href="../../_static/favicon.png"/>
@@ -247,7 +249,7 @@
       
       
       
-      <li><a href="../../_sources/_pages/practice/2_DFS_BFSPS.ipynb" target="_blank"
+      <li><a href="../../_sources/_pages/practice/2_DFS_BFSPS.md" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="소스 파일 다운로드"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -257,7 +259,7 @@
 <span class="btn__icon-container">
   <i class="fas fa-file"></i>
   </span>
-<span class="btn__text-container">.ipynb</span>
+<span class="btn__text-container">.md</span>
 </a>
 </li>
       
@@ -318,7 +320,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -334,6 +338,15 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> 내용 </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1번 문제 풀이 아이디어</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">2번 문제 풀이 아이디어</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -347,16 +360,150 @@ document.write(`
 <h1>Lecture 2-2. DFS/BFS 실습<a class="headerlink" href="#lecture-2-2-dfs-bfs" title="Link to this heading">#</a></h1>
 <p>예시 문제 링크</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/lessons/60063">1번: 프로그래머스</a></p></li>
-<li></li>
+<li><p><a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/lessons/60063">1번: 프로그래머스 블록 이동하기</a></p></li>
+<li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/ancient-ruin-exploration/description">2번: 코드트리 고대 문명 유적 탐사</a></p></li>
 </ul>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># </span>
+<section id="id1">
+<h2>1번 문제 풀이 아이디어<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<a class="bg-primary mb-1 reference internal image-reference" href="../../_images/110.png"><img alt="예시 이미지" class="bg-primary mb-1 align-center" src="../../_images/110.png" style="width: 400px;" />
+</a>
+<p>When we run BFS, each robot state is represented as the positions of its two blocks and the current time. But we need consistency: which block should be stored first? To avoid duplicates, we always order the two coordinates so that the smaller one comes first. This normalization guarantees that the same robot configuration is stored uniquely in the queue.</p>
+<a class="bg-primary mb-1 reference internal image-reference" href="../../_images/210.png"><img alt="예시 이미지" class="bg-primary mb-1 align-center" src="../../_images/210.png" style="width: 400px;" />
+</a>
+<p>If the robot is lying horizontally, we can rotate it around either the left block or the right block. Each rotation can go both upward and downward, converting the robot into a vertical orientation. So, in total, we get four possible rotations in this situation.</p>
+<a class="bg-primary mb-1 reference internal image-reference" href="../../_images/210.png"><img alt="예시 이미지" class="bg-primary mb-1 align-center" src="../../_images/210.png" style="width: 400px;" />
+</a>
+<p>During rotation, we must check not only the pivot block but also the adjacent cells that the robot sweeps through.</p>
+<ul class="simple">
+<li><p>If the pivot is the right block, the non-pivot’s upper and lower cells must be empty.</p></li>
+<li><p>If the pivot is the left block, again the non-pivot’s upper and lower cells must also be empty.
+These checks prevent collisions during rotation.</p></li>
+</ul>
+<a class="bg-primary mb-1 reference internal image-reference" href="../../_images/33.png"><img alt="예시 이미지" class="bg-primary mb-1 align-center" src="../../_images/33.png" style="width: 400px;" />
+</a>
+<p>After rotation, the final state is defined by the pivot block plus the new block either above or below it.
+For example, rotating upward results in the pivot plus the cell above it.
+Rotating downward results in the pivot plus the cell below it.
+This ensures that we represent the robot’s new vertical position consistently.</p>
+<a class="bg-primary mb-1 reference internal image-reference" href="../../_images/42.png"><img alt="예시 이미지" class="bg-primary mb-1 align-center" src="../../_images/42.png" style="width: 400px;" />
+</a>
+<p>After rotation, the final state is defined by the pivot block plus the new block either above or below it. For example, rotating upward results in the pivot plus the cell above it.
+Rotating downward results in the pivot plus the cell below it.
+This ensures that we represent the robot’s new vertical position consistently.</p>
+<a class="bg-primary mb-1 reference internal image-reference" href="../../_images/52.png"><img alt="예시 이미지" class="bg-primary mb-1 align-center" src="../../_images/52.png" style="width: 400px;" />
+</a>
+<p>When the robot is vertical, the situation is symmetric.
+The pivot can be either the top block or the bottom block.
+Each pivot allows a rotation to the left or to the right, changing the robot’s orientation from vertical to horizontal.</p>
+<a class="bg-primary mb-1 reference internal image-reference" href="../../_images/62.png"><img alt="예시 이미지" class="bg-primary mb-1 align-center" src="../../_images/62.png" style="width: 400px;" />
+</a>
+<p>As in the horizontal case, rotation requires collision checks.
+If the pivot is the bottom block and we rotate left, the non-pivot’s left cell must be empty.
+If we rotate right, the non-pivot’s right cell must be empty.
+Similarly, when the pivot is the top block, we check the left and right cells of the non-pivot during rotation.
+These rules guarantee that rotations happen without intersecting obstacles.</p>
+<a class="bg-primary mb-1 reference internal image-reference" href="../../_images/72.png"><img alt="예시 이미지" class="bg-primary mb-1 align-center" src="../../_images/72.png" style="width: 400px;" />
+</a>
+<p>After a vertical rotation, the final state is also described by the pivot plus one adjacent cell.
+Rotating left results in the pivot plus its left neighbor.
+Rotating right results in the pivot plus its right neighbor.
+This completes the transition from vertical to horizontal while preserving a consistent representation.</p>
+<p>By exploring the state space, we obtain a complexity of <span class="math notranslate nohighlight">\(O(N^2)\)</span>.
+The grid size is <span class="math notranslate nohighlight">\(N \times N\)</span>, and the robot can place one of its ends on any cell. This gives <span class="math notranslate nohighlight">\(O(N^2)\)</span> possibilities. Since the robot can exist in two orientations—horizontal and vertical—each cell has two possible states. Therefore, the total number of states is approximately <span class="math notranslate nohighlight">\(O(2 \times N^2)\)</span>, which simplifies to <span class="math notranslate nohighlight">\(O(N^2)\)</span>.</p>
+<p>In addition, the number of possible actions from each state is constant: 8 moves in total (4 parallel moves in the four directions, plus 4 rotations — 2 pivots × 2 rotation directions). Thus, each state expands in <span class="math notranslate nohighlight">\(O(1)\)</span>.</p>
+<p>Consequently, the overall time complexity is <span class="math notranslate nohighlight">\(O(N^2)\)</span>, and the space complexity is also <span class="math notranslate nohighlight">\(O(N^2)\)</span>.</p>
+<div class="toggle docutils container">
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-number">예시 12 </span><span class="caption-text">Solution</span><a class="headerlink" href="#id3" title="Link to this code">#</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">제한사항 </span>
+<span class="sd">5 &lt;= N &lt;= 100 </span>
+<span class="sd">BFS -&gt; O(NxN), 각 칸에 대해 2가지 방향, 각 상태에서 상수개 액션 </span>
+<span class="sd"># 장애물이 있으면 왼쪽/위쪽으로 돌아가야하므로 4방향 모두 탐색해야함. </span>
+<span class="sd"># 회전도 양방향 회전 전부 고려해야함. </span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span> 
+
+<span class="k">def</span><span class="w"> </span><span class="nf">solution</span><span class="p">(</span><span class="n">board</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">board</span><span class="p">)</span>
+    <span class="c1"># 1) 패딩으로 경계 간단히</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">2</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">B</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">board</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">B</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">2</span><span class="p">))</span>
+
+    <span class="c1"># 시작 상태: (1,1)-(1,2)  (패딩 기준 좌표)</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">neighbors</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">):</span>
+        <span class="p">(</span><span class="n">y1</span><span class="p">,</span><span class="n">x1</span><span class="p">),(</span><span class="n">y2</span><span class="p">,</span><span class="n">x2</span><span class="p">)</span> <span class="o">=</span> <span class="n">p1</span><span class="p">,</span> <span class="n">p2</span>
+        <span class="n">cand</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># 2) 4방향 평이동</span>
+        <span class="n">dirs</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),(</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">dy</span><span class="p">,</span><span class="n">dx</span> <span class="ow">in</span> <span class="n">dirs</span><span class="p">:</span>
+            <span class="n">ny1</span><span class="p">,</span><span class="n">nx1</span> <span class="o">=</span> <span class="n">y1</span><span class="o">+</span><span class="n">dy</span><span class="p">,</span> <span class="n">x1</span><span class="o">+</span><span class="n">dx</span>
+            <span class="n">ny2</span><span class="p">,</span><span class="n">nx2</span> <span class="o">=</span> <span class="n">y2</span><span class="o">+</span><span class="n">dy</span><span class="p">,</span> <span class="n">x2</span><span class="o">+</span><span class="n">dx</span>
+            <span class="k">if</span> <span class="n">B</span><span class="p">[</span><span class="n">ny1</span><span class="p">][</span><span class="n">nx1</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">B</span><span class="p">[</span><span class="n">ny2</span><span class="p">][</span><span class="n">nx2</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">cand</span><span class="o">.</span><span class="n">append</span><span class="p">(((</span><span class="n">ny1</span><span class="p">,</span><span class="n">nx1</span><span class="p">),(</span><span class="n">ny2</span><span class="p">,</span><span class="n">nx2</span><span class="p">)))</span>
+
+        <span class="c1"># 3) 회전 (가로/세로 각각 양방향)</span>
+        <span class="k">if</span> <span class="n">y1</span> <span class="o">==</span> <span class="n">y2</span><span class="p">:</span>  <span class="c1"># 가로</span>
+            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]:</span>  <span class="c1"># 위/아래로 회전</span>
+                <span class="k">if</span> <span class="n">B</span><span class="p">[</span><span class="n">y1</span><span class="o">+</span><span class="n">d</span><span class="p">][</span><span class="n">x1</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">B</span><span class="p">[</span><span class="n">y2</span><span class="o">+</span><span class="n">d</span><span class="p">][</span><span class="n">x2</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                    <span class="c1"># 왼쪽 블록 기준 회전</span>
+                    <span class="n">cand</span><span class="o">.</span><span class="n">append</span><span class="p">(((</span><span class="n">y1</span><span class="p">,</span> <span class="n">x1</span><span class="p">),</span> <span class="p">(</span><span class="n">y1</span><span class="o">+</span><span class="n">d</span><span class="p">,</span> <span class="n">x1</span><span class="p">)))</span>
+                    <span class="c1"># 오른쪽 블록 기준 회전</span>
+                    <span class="n">cand</span><span class="o">.</span><span class="n">append</span><span class="p">(((</span><span class="n">y2</span><span class="p">,</span> <span class="n">x2</span><span class="p">),</span> <span class="p">(</span><span class="n">y2</span><span class="o">+</span><span class="n">d</span><span class="p">,</span> <span class="n">x2</span><span class="p">)))</span>
+        <span class="k">elif</span> <span class="n">x1</span> <span class="o">==</span> <span class="n">x2</span><span class="p">:</span>  <span class="c1"># 세로</span>
+            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]:</span>  <span class="c1"># 좌/우로 회전</span>
+                <span class="k">if</span> <span class="n">B</span><span class="p">[</span><span class="n">y1</span><span class="p">][</span><span class="n">x1</span><span class="o">+</span><span class="n">d</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">B</span><span class="p">[</span><span class="n">y2</span><span class="p">][</span><span class="n">x2</span><span class="o">+</span><span class="n">d</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                    <span class="c1"># 위쪽 블록 기준 회전</span>
+                    <span class="n">cand</span><span class="o">.</span><span class="n">append</span><span class="p">(((</span><span class="n">y1</span><span class="p">,</span> <span class="n">x1</span><span class="p">),</span> <span class="p">(</span><span class="n">y1</span><span class="p">,</span> <span class="n">x1</span><span class="o">+</span><span class="n">d</span><span class="p">)))</span>
+                    <span class="c1"># 아래쪽 블록 기준 회전</span>
+                    <span class="n">cand</span><span class="o">.</span><span class="n">append</span><span class="p">(((</span><span class="n">y2</span><span class="p">,</span> <span class="n">x2</span><span class="p">),</span> <span class="p">(</span><span class="n">y2</span><span class="p">,</span> <span class="n">x2</span><span class="o">+</span><span class="n">d</span><span class="p">)))</span>
+
+        <span class="c1"># 상태 정규화 (작은 좌표가 앞)</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="ow">in</span> <span class="n">cand</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">a</span> <span class="o">&lt;=</span> <span class="n">b</span><span class="p">:</span>
+                <span class="n">norm</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">norm</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">b</span><span class="p">,</span><span class="n">a</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">norm</span>
+
+    <span class="c1"># 4) BFS</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">start</span><span class="p">))</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">start</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="n">visited</span> <span class="o">=</span> <span class="p">{</span><span class="n">start</span><span class="p">}</span>
+
+    <span class="n">goal</span> <span class="o">=</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>  <span class="c1"># 패딩 전 기준의 (N-1,N-1)는 패딩 좌표로 (n,n)</span>
+
+    <span class="k">while</span> <span class="n">q</span><span class="p">:</span>
+        <span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">),</span> <span class="n">t</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">p1</span> <span class="o">==</span> <span class="n">goal</span> <span class="ow">or</span> <span class="n">p2</span> <span class="o">==</span> <span class="n">goal</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">t</span>
+        <span class="k">for</span> <span class="n">nxt</span> <span class="ow">in</span> <span class="n">neighbors</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">nxt</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">visited</span><span class="p">:</span>
+                <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nxt</span><span class="p">)</span>
+                <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">nxt</span><span class="p">,</span> <span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>  <span class="c1"># 도달 불가</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">board</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span> <span class="c1"># 7</span>
+    <span class="c1"># board = [[0, 0], [0, 0]] # 1</span>
+    <span class="c1"># board = [[0, 0,0], [0, 0,0], [0, 0,0]] # 3</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">solution</span><span class="p">(</span><span class="n">board</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 </div>
+</section>
+<section id="id2">
+<h2>2번 문제 풀이 아이디어<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -404,6 +551,22 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> 내용
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1번 문제 풀이 아이디어</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">2번 문제 풀이 아이디어</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>
