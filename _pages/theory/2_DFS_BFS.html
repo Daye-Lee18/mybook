@@ -194,7 +194,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">실습</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../practice/1_implementationPS.html">Lecture 1-2. 구현 실습</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../practice/2_DFS_BFSPS.html">DFS/BFS 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/2_DFS_BFSPS.html">Lecture 2-2. DFS/BFS 실습</a></li>
 </ul>
 
     </div>
@@ -361,7 +361,6 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">예제</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">음료수 얼려 먹기</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">감시 피하기</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">블록 이동하기</a></li>
 </ul>
 </li>
 </ul>
@@ -400,8 +399,8 @@ document.write(`
 </div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id6">
-<div class="code-block-caption"><span class="caption-number">예시 1 </span><span class="caption-text">stack 구현 예시</span><a class="headerlink" href="#id6" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-number">예시 1 </span><span class="caption-text">stack 구현 예시</span><a class="headerlink" href="#id5" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">stack</span> <span class="o">=</span> <span class="p">[]</span> 
 <span class="c1"># 삽입 (5) - 삽입 (2) - 삽입 (3) - 삽입 (7) - 삭제 () - 삽입 (1) - 삽입 (4) - 삭제 ()</span>
 
@@ -433,8 +432,8 @@ document.write(`
 </div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id7">
-<div class="code-block-caption"><span class="caption-number">예시 2 </span><span class="caption-text">queue 구현 예시</span><a class="headerlink" href="#id7" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-number">예시 2 </span><span class="caption-text">queue 구현 예시</span><a class="headerlink" href="#id6" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span> 
 
 <span class="c1"># Queue 구현을 위해 deque 라이브러리 사용 </span>
@@ -460,8 +459,8 @@ document.write(`
 <section id="recursive-function">
 <h3>Recursive Function<a class="headerlink" href="#recursive-function" title="Link to this heading">#</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">재귀</span> <span class="pre">함수</span> <span class="pre">(Recursive</span> <span class="pre">Function)</span></code>란 자기 자신을 다시 호출하는 함수를 의미한다. 다음은 재귀 함수의 예시를 살펴보자.</p>
-<div class="literal-block-wrapper docutils container" id="id8">
-<div class="code-block-caption"><span class="caption-number">예시 3 </span><span class="caption-text">종료 조건 없는 재귀 함수 간단 예시</span><a class="headerlink" href="#id8" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-number">예시 3 </span><span class="caption-text">종료 조건 없는 재귀 함수 간단 예시</span><a class="headerlink" href="#id7" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">recursive_function</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;재귀 함수를 호출합니다&#39;</span><span class="p">)</span>
     <span class="n">recursive_function</span><span class="p">()</span> 
@@ -471,8 +470,8 @@ document.write(`
 </div>
 </div>
 <p>이 코드를 실행하면 ‘재귀 함수를 호출합니다’라는 문자열을 무한히 출력한다. 어느 정도 출력 후 다음과 같은 오류 메시지가 출력된다.</p>
-<div class="literal-block-wrapper docutils container" id="id9">
-<div class="code-block-caption"><span class="caption-number">예시 4 </span><span class="caption-text">오류 메시지</span><a class="headerlink" href="#id9" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-number">예시 4 </span><span class="caption-text">오류 메시지</span><a class="headerlink" href="#id8" title="Link to this code">#</a></div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>RecursionError: maximum recursion depth exceeded while pickling an object
 </pre></div>
 </div>
@@ -481,8 +480,8 @@ document.write(`
 <section id="id1">
 <h4>재귀 함수의 종료 조건<a class="headerlink" href="#id1" title="Link to this heading">#</a></h4>
 <p>무한 호출을 막기위해 재귀 함수에서는 종료 조건을 항상 명시해야한다.</p>
-<div class="literal-block-wrapper docutils container" id="id10">
-<div class="code-block-caption"><span class="caption-number">예시 5 </span><span class="caption-text">재귀 함수 종료 예제</span><a class="headerlink" href="#id10" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-number">예시 5 </span><span class="caption-text">재귀 함수 종료 예제</span><a class="headerlink" href="#id9" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">recursive_function</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
     <span class="c1"># 100번째 출력했을 때 종료되도록 종료 조건 명시 </span>
     <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">100</span><span class="p">:</span>
@@ -496,8 +495,8 @@ document.write(`
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id11">
-<div class="code-block-caption"><span class="caption-number">예시 6 </span><span class="caption-text">출력 예시</span><a class="headerlink" href="#id11" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-number">예시 6 </span><span class="caption-text">출력 예시</span><a class="headerlink" href="#id10" title="Link to this code">#</a></div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>1 번째 재귀 함수에서 2 번째 재귀 함수를 호출합니다.
 2 번째 재귀 함수에서 3 번째 재귀 함수를 호출합니다.
 ...
@@ -512,8 +511,8 @@ document.write(`
 </div>
 <p>컴퓨터 내부에서 <code class="docutils literal notranslate"><span class="pre">재귀</span> <span class="pre">함수의</span> <span class="pre">수행</span></code>은 <code class="docutils literal notranslate"><span class="pre">스택</span> <span class="pre">자료구조</span> <span class="pre">(Stack)</span></code>를 이용한다. 함수를 계속 호출했을 때 가장 마지막에 호출한 함수가 먼저 수행을 끝내야 그 앞의 함수 호출이 종료되기 때문이다. 즉, 재귀 함수는 내부적으로 스택 자료구조와 동일하다는 것만 기억하자. 따라서 스택 자료 구조를 활용해야하는 상당수 알고리즘은 재귀 함수를 이용해서 간편하게 구현될 수 있다. DFS가 가장 대표적인 알고리즘이다.</p>
 <p><code class="docutils literal notranslate"><span class="pre">팩토리얼</span> <span class="pre">(Factorial)</span></code> 문제를 재귀 함수를 이용해서 풀 수 있다.</p>
-<div class="literal-block-wrapper docutils container" id="id12">
-<div class="code-block-caption"><span class="caption-number">예시 7 </span><span class="caption-text">2가지 방식으로 구현한 팩토리얼 예제</span><a class="headerlink" href="#id12" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id11">
+<div class="code-block-caption"><span class="caption-number">예시 7 </span><span class="caption-text">2가지 방식으로 구현한 팩토리얼 예제</span><a class="headerlink" href="#id11" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 반복적으로 구현한 n! </span>
 <span class="k">def</span><span class="w"> </span><span class="nf">factorial_iterative</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
     <span class="n">result</span> <span class="o">=</span> <span class="mi">1</span> 
@@ -558,8 +557,8 @@ document.write(`
 <li><p>인접 리스트 (Adjacent List): 리스트로 그래프의 연결 관계를 표현</p></li>
 </ol>
 <p>우선 <code class="docutils literal notranslate"><span class="pre">인접</span> <span class="pre">행렬</span> <span class="pre">(Adjacent</span> <span class="pre">Matrix)</span></code> 방식은 파이썬에서는 <code class="docutils literal notranslate"><span class="pre">2차원</span> <span class="pre">리스트</span></code>로 구현할 수 있다. 연결이 되어 있지 않은 노드끼리는 <code class="docutils literal notranslate"><span class="pre">무한</span> <span class="pre">(Infinity)</span></code> 의 비용이라고 작성한다. 실제 코드에서는 논리적으로 정답이 될 수 없는 큰 값 중에서 999999999 등의 값으로 <code class="docutils literal notranslate"><span class="pre">초기화</span> <span class="pre">(Initialization)</span></code>하는 경우가 많다.</p>
-<div class="literal-block-wrapper docutils container" id="id13">
-<div class="code-block-caption"><span class="caption-number">예시 8 </span><span class="caption-text">인접 행렬 방식 예제</span><a class="headerlink" href="#id13" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id12">
+<div class="code-block-caption"><span class="caption-number">예시 8 </span><span class="caption-text">인접 행렬 방식 예제</span><a class="headerlink" href="#id12" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">INF</span> <span class="o">=</span> <span class="mi">9999999999</span> <span class="c1"># 무한의 비용 선언 </span>
 
 <span class="n">graph</span> <span class="o">=</span> <span class="p">[</span>
@@ -575,8 +574,8 @@ document.write(`
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">인접</span> <span class="pre">리스트</span> <span class="pre">(Adjacent</span> <span class="pre">List)</span></code> 방식은 모든 노드에 연결된 노드에 대한 정보를 차례대로 연결하여 저장한다. 인접 리스트는 <code class="docutils literal notranslate"><span class="pre">연결</span> <span class="pre">리스트</span> <span class="pre">(Linked</span> <span class="pre">List)</span></code>라는 자료구조를 이용해 구현하고, C++/Java 와 같은 언어에서는 연결 리스트 기능을 위한 표준 라이브러리를 제공한다. 파이썬에서는 리스트 자료형을 사용해 단순히 2차원 리스트를 이용하면 된다.</p>
-<div class="literal-block-wrapper docutils container" id="id14">
-<div class="code-block-caption"><span class="caption-number">예시 9 </span><span class="caption-text">인접 리스트 방식 예제</span><a class="headerlink" href="#id14" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id13">
+<div class="code-block-caption"><span class="caption-number">예시 9 </span><span class="caption-text">인접 리스트 방식 예제</span><a class="headerlink" href="#id13" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 행(Row)이 3개인 2차원 리스트로 인접 리스트 표현 </span>
 <span class="n">graph</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
 
@@ -713,8 +712,8 @@ document.write(`
 </div>
 </div>
 <p>실제로 탐색을 수행할 때 데이터의 개수가 N개 인 경우 O(N)의 시간이 소요된다. 위의 과정을 파이썬 소스코드로 옮기면 다음과 같다.</p>
-<div class="literal-block-wrapper docutils container" id="id15">
-<div class="code-block-caption"><span class="caption-number">예시 10 </span><span class="caption-text">DFS 예제</span><a class="headerlink" href="#id15" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id14">
+<div class="code-block-caption"><span class="caption-number">예시 10 </span><span class="caption-text">DFS 예제</span><a class="headerlink" href="#id14" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">dfs</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">visited</span><span class="p">):</span>
     <span class="c1"># 현재 노드 방문 처리 </span>
     <span class="n">visited</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span> 
@@ -810,8 +809,8 @@ document.write(`
 </div>
 </div>
 <p>실제로 구현함에 있어 deque 라이브러리를 사용하며, 탐색을 수행함에 있어 O(N)의 시간이 소요되지만, 일반적인 경우 실제 수행시간은 DFS보다 좋다.</p>
-<div class="literal-block-wrapper docutils container" id="id16">
-<div class="code-block-caption"><span class="caption-number">예시 11 </span><span class="caption-text">BFS예제</span><a class="headerlink" href="#id16" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id15">
+<div class="code-block-caption"><span class="caption-number">예시 11 </span><span class="caption-text">BFS예제</span><a class="headerlink" href="#id15" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span> 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">bfs</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">visited</span><span class="p">):</span>
@@ -1163,9 +1162,6 @@ DFS로 해결할 수 있다. 얼음을 얼릴 수 있는 공간이 상, 하, 좌
 </div>
 </div>
 </section>
-<section id="id5">
-<h3>블록 이동하기<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
-</section>
 </section>
 </section>
 
@@ -1251,7 +1247,6 @@ DFS로 해결할 수 있다. 얼음을 얼릴 수 있는 공간이 상, 하, 좌
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">예제</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">음료수 얼려 먹기</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">감시 피하기</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">블록 이동하기</a></li>
 </ul>
 </li>
 </ul>

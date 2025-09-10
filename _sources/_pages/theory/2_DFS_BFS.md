@@ -898,5 +898,3 @@ for i in range(M):
 print("YES" if answer else "NO")
 
 ```
-
-### 블록 이동하기 
