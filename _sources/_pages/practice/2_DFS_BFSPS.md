@@ -83,6 +83,18 @@ This ensures that we represent the robot’s new vertical position consistently.
 :align: center
 ```
 
+```{code-block} python
+# [Left pivot rotation ↑]
+#   Pivot       → (y1, x1)
+#   After move  → {(y1, x1), (y1-1, x1)}
+#   Must check  → (y2-1, x2)
+
+# [Right pivot rotation ↑]
+#   Pivot       → (y2, x2)
+#   After move  → {(y2-1, x2), (y2, x2)}
+#   Must check  → (y1-1, x1)
+```
+
 When the robot is vertical, the situation is symmetric.
 The pivot can be either the top block or the bottom block.
 Each pivot allows a rotation to the left or to the right, changing the robot’s orientation from vertical to horizontal.

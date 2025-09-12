@@ -392,6 +392,17 @@ Rotating downward results in the pivot plus the cell below it.
 This ensures that we represent the robot’s new vertical position consistently.</p>
 <a class="bg-primary mb-1 reference internal image-reference" href="../../_images/52.png"><img alt="예시 이미지" class="bg-primary mb-1 align-center" src="../../_images/52.png" style="width: 400px;" />
 </a>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># [Left pivot rotation ↑]</span>
+<span class="c1">#   Pivot       → (y1, x1)</span>
+<span class="c1">#   After move  → {(y1, x1), (y1-1, x1)}</span>
+<span class="c1">#   Must check  → (y2-1, x2)</span>
+
+<span class="c1"># [Right pivot rotation ↑]</span>
+<span class="c1">#   Pivot       → (y2, x2)</span>
+<span class="c1">#   After move  → {(y2-1, x2), (y2, x2)}</span>
+<span class="c1">#   Must check  → (y1-1, x1)</span>
+</pre></div>
+</div>
 <p>When the robot is vertical, the situation is symmetric.
 The pivot can be either the top block or the bottom block.
 Each pivot allows a rotation to the left or to the right, changing the robot’s orientation from vertical to horizontal.</p>
