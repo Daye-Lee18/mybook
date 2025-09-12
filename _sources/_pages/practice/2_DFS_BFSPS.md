@@ -71,6 +71,18 @@ This ensures that we represent the robot’s new vertical position consistently.
 :align: center
 ```
 
+```{code-block} python
+# [Left pivot rotation ↑]
+#   Pivot       → (y1, x1)
+#   After move  → {(y1, x1), (y1-1, x1)}
+#   Must check  → (y2-1, x2)
+
+# [Right pivot rotation ↑]
+#   Pivot       → (y2, x2)
+#   After move  → {(y2-1, x2), (y2, x2)}
+#   Must check  → (y1-1, x1)
+```
+
 After rotation, the final state is defined by the pivot block plus the new block either above or below it. For example, rotating upward results in the pivot plus the cell above it.
 Rotating downward results in the pivot plus the cell below it.
 This ensures that we represent the robot’s new vertical position consistently.
@@ -83,17 +95,6 @@ This ensures that we represent the robot’s new vertical position consistently.
 :align: center
 ```
 
-```{code-block} python
-# [Left pivot rotation ↑]
-#   Pivot       → (y1, x1)
-#   After move  → {(y1, x1), (y1-1, x1)}
-#   Must check  → (y2-1, x2)
-
-# [Right pivot rotation ↑]
-#   Pivot       → (y2, x2)
-#   After move  → {(y2-1, x2), (y2, x2)}
-#   Must check  → (y1-1, x1)
-```
 
 When the robot is vertical, the situation is symmetric.
 The pivot can be either the top block or the bottom block.
