@@ -29,6 +29,10 @@ kernelspec:
 :align: center
 ```
 
+물체가 차지하는 셀이 1개가 아닌 두개 이기때문에 아래 2가지를 고려해야한다. 
+- **Visited**: 물체 (Robot)이 차지하는 셀이 한 개 초과 즉, 이경우에는 board에 표시하면 memory가 초과되기 때문에 visited={} set으로 방문 여부를 체크해주면 좋다. 
+- **Normalization**: 상태 정규화(순서 고정)도 존재해야한다. 즉, (y,x,t,v)와 (t,v,y,x)는 같은 로봇 상태인데, visited가 다르게 취급해 중복 상태 폭증하며 시간도 초과된다. 매번 (a,b) 두 좌표를 정렬해서 (small,big)로 저장하거나, frozenset({pos1,pos2})로 관리해야 한다. 즉, 정규화를 통해 (P1, P2) 중 작은 것이 앞에 오도록하여 같은 위치에 있는 로봇의 상태 체크를 잘 할 수 있게 된다. 
+
 ```{image} ../../assets/img/DFS_BFSPS/1.png
 :alt: 예시 이미지
 :class: bg-primary mb-1
@@ -141,6 +145,8 @@ In addition, the number of possible actions from each state is constant: 8 moves
 
 Consequently, the overall time complexity is $O(N^2)$, and the space complexity is also $O(N^2)$.
 
+
+
 ```{toggle}
 ```{code-block} python
 ---
@@ -204,7 +210,7 @@ def solution(board):
     # 3) BFS 시작
     start = ((0, 0), (0, 1))  # 시작 상태
     q = deque([(start, 0)])
-    visited = {start}
+    visited = {start} # visited도 graph위에 체크하는 것이 아닌, Set으로 관리하여 메모리 효율적으로 관리 
 
     goal = (n - 1, n - 1)
 
