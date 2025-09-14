@@ -20,6 +20,15 @@ kernelspec:
 
 ## 1번 문제 풀이 아이디어 
 
+아래처럼 길이 나있는 경우가 있을 수 있으므로, 직선으로 움직이는 경우 상하좌우, 회전도 robot의 pivot block 기준으로 가로로 위치한 경우에는 위아래 혹은 세로로 위치한 경우에는 상하로 회전할 수 있도록 해야한다. 
+
+```{image} ../../assets/img/DFS_BFSPS/0.png
+:alt: 예시 이미지
+:class: bg-primary mb-1
+:width: 400px
+:align: center
+```
+
 ```{image} ../../assets/img/DFS_BFSPS/1.png
 :alt: 예시 이미지
 :class: bg-primary mb-1

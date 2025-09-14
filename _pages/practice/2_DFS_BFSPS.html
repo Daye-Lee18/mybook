@@ -365,6 +365,9 @@ document.write(`
 </ul>
 <section id="id1">
 <h2>1번 문제 풀이 아이디어<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>아래처럼 길이 나있는 경우가 있을 수 있으므로, 직선으로 움직이는 경우 상하좌우, 회전도 robot의 pivot block 기준으로 가로로 위치한 경우에는 위아래 혹은 세로로 위치한 경우에는 상하로 회전할 수 있도록 해야한다.</p>
+<a class="bg-primary mb-1 reference internal image-reference" href="../../_images/0.png"><img alt="예시 이미지" class="bg-primary mb-1 align-center" src="../../_images/0.png" style="width: 400px;" />
+</a>
 <a class="bg-primary mb-1 reference internal image-reference" href="../../_images/110.png"><img alt="예시 이미지" class="bg-primary mb-1 align-center" src="../../_images/110.png" style="width: 400px;" />
 </a>
 <p>When we run BFS, each robot state is represented as the positions of its two blocks and the current time. But we need consistency: which block should be stored first? To avoid duplicates, we always order the two coordinates so that the smaller one comes first. This normalization guarantees that the same robot configuration is stored uniquely in the queue.</p>
