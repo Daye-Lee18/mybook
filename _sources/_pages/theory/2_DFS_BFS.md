@@ -896,5 +896,4 @@ for i in range(M):
     if answer: break
 
 print("YES" if answer else "NO")
-
 ```

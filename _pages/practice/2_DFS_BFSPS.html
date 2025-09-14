@@ -189,7 +189,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../theory/0_tips.html">문제 풀이 순서 팁 (Tips)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../theory/1_implementation.html">Lecture 1-1. 구현</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../theory/2_DFS_BFS.html">Lecture 2-1. DFS/BFS</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../theory/3_sort.html">Lecture 3-1. 정렬</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/3_backtracking.html">Lecture 3-1. Backtracking</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">실습</span></p>
 <ul class="current nav bd-sidenav">
@@ -425,7 +425,7 @@ The grid size is <span class="math notranslate nohighlight">\(N \times N\)</span
 <p>Consequently, the overall time complexity is <span class="math notranslate nohighlight">\(O(N^2)\)</span>, and the space complexity is also <span class="math notranslate nohighlight">\(O(N^2)\)</span>.</p>
 <div class="toggle docutils container">
 <div class="literal-block-wrapper docutils container" id="id3">
-<div class="code-block-caption"><span class="caption-number">예시 12 </span><span class="caption-text">Solution</span><a class="headerlink" href="#id3" title="Link to this code">#</a></div>
+<div class="code-block-caption"><span class="caption-number">예시 20 </span><span class="caption-text">Solution</span><a class="headerlink" href="#id3" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">제한사항 </span>
 <span class="sd">5 &lt;= N &lt;= 100 </span>
@@ -523,6 +523,32 @@ The grid size is <span class="math notranslate nohighlight">\(N \times N\)</span
 </section>
 <section id="id2">
 <h2>2번 문제 풀이 아이디어<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 5x5중에서 3x3격자 선택 및 회전 CW: 90도, 180도, 270도 </span>
+<span class="c1"># 향상 회전 : 중심좌표를 기준으로 90도 회전 </span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">### 탐사 진행: 회전 목표 </span>
+<span class="sd">1)유물 1차 회득 가치 최대화</span>
+<span class="sd">2) 1)의 방법이 여러개이면, 회전한 각도 중 가장 작은 각도 선택</span>
+<span class="sd">3) 2)의 방법도 여러가지이면 (회전 중심좌표가 다를 수 있음), 회전 중심 좌표의 열이 가장 작은 구간 선택 </span>
+<span class="sd">4) 열이 같다면 행이 가장 작은 구간 선택 </span>
+
+<span class="sd">### 유물 1차 획득 </span>
+<span class="sd">- 유물의 가치: 5x5행렬에서 모인 조각의 개수 -&gt; &quot;3개 이상&quot;부터 획득 가능  </span>
+<span class="sd">- 유물이 사라짐. </span>
+<span class="sd">- 새로들어오는 유물은 유적의 벽면에 써 있는 숫자대로 진행 (row up, column up순으로 채워짐)</span>
+<span class="sd">- 사용된 숫자다음부터 다음에 사용할 수 있음 </span>
+
+<span class="sd">#### 유물 연쇄 획득 </span>
+<span class="sd">- 새로운 유물 조각이 생겨난 이후에도 유물이 있으면 조각을 획득하고 없앤후 다시 채움.</span>
+<span class="sd">- 다만 더 이상 조각이 3개 이상 연결되지 않아 유무이 될 수 없으면 멈춤 </span>
+
+<span class="sd">#### 탐사 반복 </span>
+<span class="sd">- 탐사 진행 -&gt; 유물 1차 획득 -&gt; 유믈 연쇄 획득 과정까지 1턴이며 총 K번 턴을 돌림. </span>
+<span class="sd">- 1번의 turn에서 K번 이전에 어떠한 방법을 사용해서라도 유물을 획득할 수 없다면, 모든 탐사는 그 즉시 종료됨. </span>
+<span class="sd">이 경우 얻을 수 있는 유물이 존재하지 않으므로, 종료되는 턴에 아무 값도 출력하지 않음. </span>
+<span class="sd">&#39;&#39;&#39;</span>
+</pre></div>
+</div>
 </section>
 </section>
 

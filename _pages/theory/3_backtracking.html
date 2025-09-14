@@ -1,0 +1,891 @@
+
+<!DOCTYPE html>
+
+
+<html lang="ko" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Lecture 3-1. Backtracking &#8212; 말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=9c59b310" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=ae323b5b"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script src="../../_static/translations.js?v=e33e7ba0"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_pages/theory/3_backtracking';</script>
+    <script src="https://unpkg.com/jupyterquiz@1.1.8/dist/jupyterquiz.min.js"></script>
+    <link rel="icon" href="../../_static/favicon.png"/>
+    <link rel="index" title="색인" href="../../genindex.html" />
+    <link rel="search" title="검색" href="../../search.html" />
+    <link rel="next" title="Lecture 1-2. 구현 실습" href="../practice/1_implementationPS.html" />
+    <link rel="prev" title="Lecture 2-1. DFS/BFS" href="2_DFS_BFS.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="ko"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/mylogo.png" class="logo__image only-light" alt="말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업 - Home"/>
+    <script>document.write(`<img src="../../_static/mylogo.png" class="logo__image only-dark" alt="말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업 - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="검색" aria-label="검색" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">검색</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../intro.html">
+                    Welcome to 말레이시아 5급 IT 수업
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">이론</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="0_tips.html">문제 풀이 순서 팁 (Tips)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1_implementation.html">Lecture 1-1. 구현</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_DFS_BFS.html">Lecture 2-1. DFS/BFS</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Lecture 3-1. Backtracking</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">실습</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../practice/1_implementationPS.html">Lecture 1-2. 구현 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/2_DFS_BFSPS.html">Lecture 2-2. DFS/BFS 실습</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="이 페이지 다운로드">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/_pages/theory/3_backtracking.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="소스 파일 다운로드"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="PDF로 인쇄"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="전체 화면으로보기"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="검색" aria-label="검색" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Lecture 3-1. Backtracking</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> 내용 </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#combination">Combination (조합)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#combination-without-repetition">Combination without repetition (중복 불허)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#combination-with-repetition">Combination with repetition (중복 허용)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multiset">Multiset (중복 원소가 있는 집합)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subset-powerset">Subset (Powerset)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#substring-subarray">Substring &amp; Subarray</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subsequences">Subsequences</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#permutation">Permutation (순열)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">정리</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">연습 문제</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#subset-ii-multiset">Subset II - Multiset (중복 입력 처리)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#permutations">Permutations 관련 문제</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Combination 관련 문제</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Permutations 관련 문제</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Combination 관련 문제</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="lecture-3-1-backtracking">
+<h1>Lecture 3-1. Backtracking<a class="headerlink" href="#lecture-3-1-backtracking" title="Link to this heading">#</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">백트레킹</span> <span class="pre">(backtracking)</span></code>이란, <code class="docutils literal notranslate"><span class="pre">가능한</span> <span class="pre">해</span> <span class="pre">(candidate)</span></code>를 하나씩 선택하면서 탐색하다가, 조건에 맞지 않으면 즉시 되돌아가서 다른 후보를 탐색하는 기법이다. Brute-force와 다른 점이라면, brute-force는 가능한 모든 경우를 끝까지 다 확인하지만, backtracking은 “조건에 맞지 않는 경우”를 발견하면 <code class="docutils literal notranslate"><span class="pre">가지치기</span> <span class="pre">(pruning)</span></code>으로 탐색의 양을 줄이는 것에 있다. 즉,<code class="docutils literal notranslate"><span class="pre">DFS</span> <span class="pre">(깊이</span> <span class="pre">우선</span> <span class="pre">탐색)</span></code> 구조와 비슷하며, 주로 스택(Stack) 구조와 재귀 호출로 구현될 수 있다. Backtracking의 목표는 모든 가능한 해를 생성하거나, 특정 조건을 만족하는 해를 찾는 것이다. Backtracking의 기본원리는 “선택(Choose) -&gt; 탐색 (Explore) -&gt; 되돌리기 (Unchoose/Backtack)” 이다.</p>
+<div class="admonition-backtracking admonition">
+<p class="admonition-title">Backtracking 기본 원리</p>
+<p>Step 1. <strong>선택 (Choose)</strong>: 현재 단계에서 하나의 후보를 path에 추가
+Step 2. <strong>탐색 (Explore)</strong>: 재귀 호출로 다음 단계 진행
+Step 3. <strong>되돌리기 (Unchoose / Backtrack)</strong>: path에서 방금 선택한 후보를 제거 (pop)</p>
+</div>
+<p>예를 들어, backtracking은 아래 코드의 기본 구조를 따른다고 생각할 수 있다.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">backtracking</span><span class="p">(</span><span class="n">start</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)):</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>          <span class="c1"># 후보 선택 (Choose): start 현재 index 후보 선택</span>
+        <span class="n">backtracking</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>          <span class="c1"># 다음 단계 탐색 (Explore): 다음에 탐색할 index 삽입</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>                   <span class="c1"># 상태 복원 (Unchoose): 되돌리기가 없으면 중복된 해가 생기거나 상태가 꼬이게 된다. </span>
+</pre></div>
+</div>
+<p>pop이나 되돌리기를 해야 해의 <strong>중복 방지</strong>와 <strong>정확한 상태 복원</strong>이 가능하다. 아래 그림을 잘 숙지해두면 해당 코드를 이용해 다양한 문제에 적용하여 풀 수 있을 것이다.</p>
+<a class="bg-primary mb-1 reference internal image-reference" href="../../_images/112.png"><img alt="backtracking diagram" class="bg-primary mb-1 align-center" src="../../_images/112.png" style="width: 400px;" />
+</a>
+<section id="combination">
+<h2>Combination (조합)<a class="headerlink" href="#combination" title="Link to this heading">#</a></h2>
+<p>조합(Combination)은 <strong>원소의 순서는 고려하지 않고</strong>, <strong>뽑을 개수(<code class="docutils literal notranslate"><span class="pre">depth</span> <span class="pre">=</span> <span class="pre">k</span></code>)가 정해진 경우</strong>에 사용하는 Backtracking 패턴이다.<br />
+즉, 순서가 달라도 같은 결과로 취급되며, 따라서 <strong>중복을 어떻게 처리하느냐</strong>에 따라 코드가 달라진다.</p>
+<hr class="docutils" />
+<section id="combination-without-repetition">
+<h3>Combination without repetition (중복 불허)<a class="headerlink" href="#combination-without-repetition" title="Link to this heading">#</a></h3>
+<p>예를 들어, 카드 <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">2,</span> <span class="pre">3]</span></code>에서 2개를 뽑는 경우를 생각해보자.</p>
+<p>조합은 순서를 고려하지 않기 때문에, <code class="docutils literal notranslate"><span class="pre">for</span></code> 반복문에서 <strong>현재 인덱스보다 작은 인덱스는 다시 방문하지 않는다.</strong></p>
+<ul class="simple">
+<li><p>작은 인덱스에서 이미 동일한 결과가 만들어졌기 때문이다.</p></li>
+<li><p>예: index=1일 때 <code class="docutils literal notranslate"><span class="pre">[array[0],</span> <span class="pre">array[1]]</span> <span class="pre">=</span> <span class="pre">[1,</span> <span class="pre">2]</span></code> 가 이미 생성되었으므로, <code class="docutils literal notranslate"><span class="pre">[2,</span> <span class="pre">1]</span></code>은 다시 만들 필요가 없다.</p></li>
+</ul>
+<a class="bg-primary mb-1 reference internal image-reference" href="../../_images/212.png"><img alt="combination without repetition" class="bg-primary mb-1 align-center" src="../../_images/212.png" style="width: 400px;" />
+</a>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-number">예시 12 </span><span class="caption-text">combination without repetition</span><a class="headerlink" href="#id6" title="Link to this code">#</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Combination (순서 무관, 중복 불허, 길이 k)</span>
+<span class="n">array</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="n">k</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">path</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">combination</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">depth</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">depth</span> <span class="o">==</span> <span class="n">k</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)):</span>   
+        <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>                   <span class="c1"># 선택 (Choose)</span>
+        <span class="n">combination</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>           <span class="c1"># 다음 원소 탐색 (Explore)</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>                              <span class="c1"># 상태 복원 (Unchoose)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Combination result of </span><span class="si">{</span><span class="n">array</span><span class="si">}</span><span class="s2"> with k=</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+<span class="n">combination</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-number">예시 13 </span><span class="caption-text">The result of combination without repetition</span><a class="headerlink" href="#id7" title="Link to this code">#</a></div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Combination without repetition result of [1, 2, 3] with k=2:
+[1, 2]
+[1, 3]
+[2, 3]
+</pre></div>
+</div>
+</div>
+</section>
+<section id="combination-with-repetition">
+<h3>Combination with repetition (중복 허용)<a class="headerlink" href="#combination-with-repetition" title="Link to this heading">#</a></h3>
+<p>만약 같은 원소를 여러 번 선택할 수 있다면, combination(i + 1, depth + 1) 대신 combination(i, depth + 1)을 호출하면 된다.</p>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-number">예시 14 </span><span class="caption-text">The result of combination with repetition</span><a class="headerlink" href="#id8" title="Link to this code">#</a></div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Combination result of [1, 2, 3] with k=2:
+[1, 1]
+[1, 2]
+[1, 3]
+[2, 2]
+[2, 3]
+[3, 3]
+</pre></div>
+</div>
+</div>
+<p>저번 시간에 배웠듯이, 조합 역시 DFS 기반으로 재귀 호출을 반복하며, 내부적으로는 stack 구조로 동작한다. 아래 그림처럼 함수가 호출될 때 스택에 쌓이고, 종료되면 스택에서 빠져나오면서 상태가 되돌려진다.</p>
+<a class="bg-primary mb-1 reference internal image-reference" href="../../_images/34.png"><img alt="stack for DFS" class="bg-primary mb-1 align-center" src="../../_images/34.png" style="width: 400px;" />
+</a>
+</section>
+</section>
+<section id="multiset">
+<h2>Multiset (중복 원소가 있는 집합)<a class="headerlink" href="#multiset" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Multiset</span></code>이란 <strong>입력에 중복된 값이 포함</strong>될 수 있지만, <strong>출력되는 부분집합은 서로 다른 경우만 허용</strong>한다.</p>
+<p>예를 들어, 입력이 <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">1,</span> <span class="pre">2]</span></code>일 때:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">1]</span></code> 은 유효하다 (동일한 두 원소를 선택한 경우).</p></li>
+<li><p>하지만 <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">1]</span></code> 과 <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">1]</span></code> 처럼 같은 형태의 결과를 중복해서 출력해서는 안 된다.</p></li>
+</ul>
+<p>즉, <strong>입력 원소의 중복은 허용</strong>되지만, <strong>출력 결과의 중복은 제거</strong>해야 한다.</p>
+<p>핵심 아이디어는,</p>
+<ul class="simple">
+<li><p>배열을 정렬한다. (동일한 값들이 연속되도록)</p></li>
+<li><p>**같은 depth(같은 for loop 레벨)**에서 동일한 값을 반복 선택하지 않는다.</p>
+<ul>
+<li><p>첫 번째 원소는 반드시 허용해야 새로운 subset이 생기지만,</p></li>
+<li><p>이후 같은 depth에서 같은 값을 또 고르면 이전과 동일한 결과가 생긴다.</p></li>
+</ul>
+</li>
+<li><p>이를 위해 조건문 <code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">i</span> <span class="pre">&gt;</span> <span class="pre">start</span> <span class="pre">and</span> <span class="pre">arr[i]</span> <span class="pre">==</span> <span class="pre">arr[i-1]:</span> <span class="pre">continue</span></code> 를 사용한다.</p></li>
+</ul>
+<p>이 방식은 LeetCode의 <a class="reference external" href="https://leetcode.com/problems/subsets-ii/description/">Subset II</a> 문제와 동일하다.</p>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-number">예시 15 </span><span class="caption-text">Multiset 구현</span><a class="headerlink" href="#id9" title="Link to this code">#</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">multiset</span><span class="p">(</span><span class="n">start</span><span class="p">):</span>
+    <span class="n">arr</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="n">res</span><span class="p">,</span> <span class="n">path</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">multiset_helper</span><span class="p">(</span><span class="n">start</span><span class="p">):</span>
+        
+        <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="p">[:])</span>
+        <span class="k">for</span> <span class="n">n_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)):</span>
+<span class="w">            </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">            이 경우는 path를 계속 이어가기 위해 반드시 한 번은 선택해줘야 해요. 즉, 같은 값이 있어도 그 중 첫 번째 등장은 허용해야 새로운 subset이 생겨요. 그래서 조건에 i &gt; start가 붙은 거예요. (첫 번째 원소는 쓰고, 이후 중복만 건너뛰기)</span>
+<span class="sd">            arr가 increasing order로 되어있으므로, 다음 depth에서 이 전 Index가 가리키는 값과 같은 값을 넣으면 [1] == [1] 이렇게 같아지므로, 피해야한다.</span>
+<span class="sd">            &#39;&#39;&#39;</span>
+            <span class="k">if</span> <span class="n">n_idx</span> <span class="o">&gt;</span> <span class="n">start</span> <span class="ow">and</span> <span class="n">arr</span><span class="p">[</span><span class="n">n_idx</span><span class="p">]</span> <span class="o">==</span> <span class="n">arr</span><span class="p">[</span><span class="n">n_idx</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="k">continue</span> 
+            
+            <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="n">n_idx</span><span class="p">])</span>
+            <span class="c1"># print(f&quot;Call at depth {n_idx}&quot;)</span>
+            <span class="n">multiset_helper</span><span class="p">(</span><span class="n">n_idx</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+            <span class="c1"># print(f&quot;End at depth {n_idx}&quot;)</span>
+            <span class="n">path</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+    
+    <span class="n">multiset_helper</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+        
+
+<span class="n">multiset</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-number">예시 16 </span><span class="caption-text">Multiset 결과</span><a class="headerlink" href="#id10" title="Link to this code">#</a></div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[[], [1], [1, 1], [1, 1, 2], [1, 2], [2]]
+</pre></div>
+</div>
+</div>
+</section>
+<section id="subset-powerset">
+<h2>Subset (Powerset)<a class="headerlink" href="#subset-powerset" title="Link to this heading">#</a></h2>
+<p><strong>Subset</strong> 문제는 <strong>집합의 모든 부분집합</strong>을 구하는 것이다.<br />
+집합(Set)에는 원래 <strong>중복 원소가 없으며</strong>, 이때 만들어진 모든 부분집합의 집합을 <strong>Powerset</strong>이라고 부른다.ㅜPowerset은 각 원소를 <strong>“선택한다 / 선택하지 않는다”</strong> 두 가지 경우로 나누어 탐색하면 쉽게 구할 수 있다.  즉, 원소 하나마다 분기(branch)가 생기므로, 전체 경우의 수는 <span class="math notranslate nohighlight">\(2^n\)</span>개가 된다.</p>
+<hr class="docutils" />
+<div class="literal-block-wrapper docutils container" id="id11">
+<div class="code-block-caption"><span class="caption-number">예시 17 </span><span class="caption-text">Powerset</span><a class="headerlink" href="#id11" title="Link to this code">#</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ========= 1) Subset (powerset) — 인덱스 기준(중복 값이 있으면 같은 값 모양이 중복 출력될 수 있음)</span>
+<span class="n">array</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="n">path</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">powerset</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">):</span> <span class="c1"># 모든 원소를 다 확인한 경우</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="c1"># 1) 현재 원소 선택하지 않음</span>
+    <span class="n">powerset</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># 2) 현재 원소 선택함</span>
+    <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="n">powerset</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">path</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span> <span class="c1"># 상태 복원</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Subset (by index) Result of </span><span class="si">{</span><span class="n">array</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+<span class="n">powerset</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Subset (by index) Result of [1, 1, 3]:
+[]
+[3]
+[1]
+[1, 3]
+[1]
+[1, 3]
+[1, 1]
+[1, 1, 3]
+</pre></div>
+</div>
+<p>주의할 점은 입력이 집합(Set)처럼 중복 없는 경우라면, 출력되는 모든 부분집합이 서로 다르다. 하지만 위 예시처럼 [1, 1, 3] 같이 중복 원소가 있으면, 같은 형태의 부분집합이 여러 번 출력될 수 있다. (예: [1] 과 [1]) 이런 경우 중복 제거를 추가적으로 해야 하는데, 그것이 바로 Multiset (Subset II) 문제로 이어진다.</p>
+</section>
+<section id="substring-subarray">
+<h2>Substring &amp; Subarray<a class="headerlink" href="#substring-subarray" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Substring</strong>: 문자열에서 <strong>연속된 부분 문자열</strong></p></li>
+<li><p><strong>Subarray</strong>: 배열(리스트)에서 <strong>연속된 부분 배열</strong></p></li>
+</ul>
+<p>공통적으로 둘 다 <strong>순서</strong>가 유관하며 반드시 **contiguous (연속적)**이어야 한다. 차이점으로는 substring은 문자열에서, subarray는 숫자 배열에서 사용한다는 점만 다르고 개념적으로는 동일하다. 이 문제는 dfs나 backtracking이 필요하지 않고, <strong>2중 for loop</strong>으로 구현이 가능하다.</p>
+<ul class="simple">
+<li><p>바깥 루프: 시작 인덱트 (start pointer)</p></li>
+<li><p>안쪽 루프: 길이나 끝 인덱스 (end pointer)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- Substring: 문자열의 연속 부분문자열 전부</span>
+<span class="n">my_str</span> <span class="o">=</span> <span class="s2">&quot;abc&quot;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">all_substrings</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span> <span class="c1"># 시작 인덱스</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">s</span><span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>  <span class="c1"># 끝 인덱스 (exclusive), [i, j)</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">my_str</span><span class="p">[</span><span class="n">s</span><span class="p">:</span><span class="n">t</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">res</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;All substrings of &#39;</span><span class="si">{</span><span class="n">my_str</span><span class="si">}</span><span class="s2">&#39;:&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">sub</span> <span class="ow">in</span> <span class="n">all_substrings</span><span class="p">(</span><span class="n">my_str</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">sub</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>All substrings of &#39;abc&#39;:
+a
+ab
+abc
+b
+bc
+c
+</pre></div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id12">
+<div class="code-block-caption"><span class="caption-number">예시 18 </span><span class="caption-text">모든 Subarray 구하기</span><a class="headerlink" href="#id12" title="Link to this code">#</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">all_subarrays</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>               <span class="c1"># 시작 인덱스</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>    <span class="c1"># 끝 인덱스 (exclusive)</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">j</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">res</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;All subarrays of </span><span class="si">{</span><span class="n">arr</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">sub</span> <span class="ow">in</span> <span class="n">all_subarrays</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">sub</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>All subarrays of [1, 2, 3]:
+[1]
+[1, 2]
+[1, 2, 3]
+[2]
+[2, 3]
+[3]
+</pre></div>
+</div>
+</section>
+<section id="subsequences">
+<h2>Subsequences<a class="headerlink" href="#subsequences" title="Link to this heading">#</a></h2>
+<p>subsequences (부분 수열)로  기존 배열(또는 문자열)에서 <strong>순서는 유지</strong>해야 하지만,<br />
+**연속적(contiguous)**일 필요는 없다.</p>
+<ul class="simple">
+<li><p>문자열 <code class="docutils literal notranslate"><span class="pre">&quot;abc&quot;</span></code>의 subsequences:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;a&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;b&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;c&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;ab&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;ac&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;bc&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;abc&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code> (공집합 포함)</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;ac&quot;</span></code>는 subsequence지만 substring이 아님 (연속이 아니기 때문).</p></li>
+</ul>
+<p>백트래킹 (DFS)를 이용해 각 원소를 <strong>선택하거나 건너뛰는 방식</strong>으로 탐색한다. 따라서 경우의 수는  <span class="math notranslate nohighlight">\(2^n\)</span>개이다. 공집합 포함 여부는 상황에 따라 조절할 수 있다. 사실 코드 구현을 보면 Combination과 흡사하며 다만, combination은 목표 depth가 정해져있지만, subsequences는 start부터 쭉 진행하면서, 가능한 모든 길이 (0~n)의 path를 출력한다.</p>
+<div class="literal-block-wrapper docutils container" id="id13">
+<div class="code-block-caption"><span class="caption-number">예시 19 </span><span class="caption-text">모든 Subsequence 구하기</span><a class="headerlink" href="#id13" title="Link to this code">#</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">array</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="n">path</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">subsequences</span><span class="p">(</span><span class="n">start</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>  <span class="c1"># 공집합 포함 (필요 없으면 if start&gt;0일 때만 출력 등으로 조절)</span>
+    <span class="k">for</span> <span class="n">nxt</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)):</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">nxt</span><span class="p">])</span> <span class="c1"># 원소 선택</span>
+        <span class="n">subsequences</span><span class="p">(</span><span class="n">nxt</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># 다음 인덱스로 진행 ✅ 인덱스 증가가 포인트</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span> <span class="c1"># 선택 취소 (백트래킹)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Subsequences Result of </span><span class="si">{</span><span class="n">array</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+<span class="n">subsequences</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Subsequences Result of [1, 2, 3]:
+[]
+[1]
+[1, 2]
+[1, 2, 3]
+[1, 3]
+[2]
+[2, 3]
+[3]
+</pre></div>
+</div>
+</section>
+<section id="permutation">
+<h2>Permutation (순열)<a class="headerlink" href="#permutation" title="Link to this heading">#</a></h2>
+<p>Permutation은 <span class="math notranslate nohighlight">\({n}P{k}\)</span>로, n개의 원소 중 k개를 선택하여 순서를 고려하는 경우의 수를 말한다. 따라서 Combination처럼 depth = k라는 목표 깊이가 존재하지만, 순서를 중요시하므로 (1,2)와 (2,1)은 다른 결과로 인식된다.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 길이 k, 중복 불허 → 방문 체크 필요</span>
+<span class="n">array</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="n">k</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">path</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">used</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">permutation_no_repeat</span><span class="p">(</span><span class="n">depth</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">depth</span> <span class="o">==</span> <span class="n">k</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">used</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>                 <span class="c1"># 이미 쓴 원소는 건너뜀</span>
+            <span class="k">continue</span>
+        <span class="n">used</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>              <span class="c1"># 사용 처리</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>       <span class="c1"># 후보 선택 (Choose)</span>
+        <span class="n">permutation_no_repeat</span><span class="p">(</span><span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># 다음 단계 탐색 (Explore)</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>                  <span class="c1"># 상태 복원 (Unchoose)</span>
+        <span class="n">used</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>             <span class="c1"># 다시 미사용 처리</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Permutation (no repetition) of </span><span class="si">{</span><span class="n">array</span><span class="si">}</span><span class="s2"> with k=</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+<span class="n">permutation_no_repeat</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 길이 k, 중복 허용 → product와 동일</span>
+<span class="n">array</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="n">k</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">path</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">k_tuples_with_repetition</span><span class="p">(</span><span class="n">depth</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">depth</span> <span class="o">==</span> <span class="n">k</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">array</span><span class="p">:</span>                 <span class="c1"># 모든 원소를 다시 선택 가능</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>              <span class="c1"># 후보 선택 (Choose)</span>
+        <span class="n">k_tuples_with_repetition</span><span class="p">(</span><span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># 다음 단계 탐색 (Explore)</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>                  <span class="c1"># 상태 복원 (Unchoose)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;k-tuples with repetition (a.k.a. product) of </span><span class="si">{</span><span class="n">array</span><span class="si">}</span><span class="s2"> with k=</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+<span class="n">k_tuples_with_repetition</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id1">
+<h2>정리<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<div class="admonition-summary admonition">
+<p class="admonition-title">Summary</p>
+<ul class="simple">
+<li><p>조합 (Combination)은 순서 무관 + 길이 k 제한이라는 특징을 가지며 중복 불허는 combination(i+1, depth+1), 중복 허용의 경우 combination(i, depth+1)로 하면된다.</p></li>
+<li><p>Multiset은 중복 입력을 다루는 subset문제로, 정렬 + 같은 depth에서 중복 skip 규칙으로 문제를 해결한다.</p></li>
+<li><p>Powerset은 모든 부분집합을 구하는 문제로 경우의 수는 <span class="math notranslate nohighlight">\(2^n\)</span>, “각 원소를 선택 or 선택하지 않음”의 이분법으로 구현</p></li>
+<li><p>Substring/Subarray는 연속된 부분만 허용된다. 개수는 항상 <span class="math notranslate nohighlight">\(n(n+1)/2\)</span>개 이며, 이중 For loop으로 쉽게 구현할 수 있다.</p></li>
+<li><p>Subsequence: 순서를 지켜야하며, 연속적일 필요는 없다. Combination구조에 depth가 정해져 있지 않은 코드와 같다.</p></li>
+<li><p>Permutation은 모든 인덱스에서 처음 0 인덱스부터 다시 관찰하도록 DFS를 이용해 구현한다.</p></li>
+</ul>
+</div>
+</section>
+<section id="id2">
+<h2>연습 문제<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<section id="subset-ii-multiset">
+<h3>Subset II - Multiset (중복 입력 처리)<a class="headerlink" href="#subset-ii-multiset" title="Link to this heading">#</a></h3>
+<p>문제 - <a class="reference external" href="https://leetcode.com/problems/subsets-ii/description/">leetcode 90번 문제</a></p>
+</section>
+<section id="permutations">
+<h3>Permutations 관련 문제<a class="headerlink" href="#permutations" title="Link to this heading">#</a></h3>
+<p>문제 - <a class="reference external" href="https://leetcode.com/problems/permutations/description/">leetcode 46번</a></p>
+</section>
+<section id="id3">
+<h3>Combination 관련 문제<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>문제 - <a class="reference external" href="https://www.acmicpc.net/problem/1759">백준 1759 암호 만들기</a></p>
+</section>
+<section id="id4">
+<h3>Permutations 관련 문제<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>문제 - <a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/lessons/42839">프로그래머스 42839 소수찾기</a></p>
+</section>
+<section id="id5">
+<h3>Combination 관련 문제<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<p>문제 - <a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/lessons/84512">프로그래머스 84512 모음 사전</a></p>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./_pages/theory"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="2_DFS_BFS.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">이전</p>
+        <p class="prev-next-title">Lecture 2-1. DFS/BFS</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../practice/1_implementationPS.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">다음</p>
+        <p class="prev-next-title">Lecture 1-2. 구현 실습</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> 내용
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#combination">Combination (조합)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#combination-without-repetition">Combination without repetition (중복 불허)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#combination-with-repetition">Combination with repetition (중복 허용)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multiset">Multiset (중복 원소가 있는 집합)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subset-powerset">Subset (Powerset)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#substring-subarray">Substring &amp; Subarray</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subsequences">Subsequences</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#permutation">Permutation (순열)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">정리</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">연습 문제</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#subset-ii-multiset">Subset II - Multiset (중복 입력 처리)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#permutations">Permutations 관련 문제</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Combination 관련 문제</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Permutations 관련 문제</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Combination 관련 문제</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+으로 Daye Lee
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
