@@ -11,24 +11,11 @@ parts:
   - file: _pages/theory/1_implementation
   - file: _pages/theory/2_DFS_BFS
   - file: _pages/theory/3_backtracking
-  # - file: _pages/theory/4_sort
-#   - file: _pages/markdown-notebooks
-#   - file: _pages/design
-# #   - file: chapter1_python
-#   - file: chapter2_basics
-#   - file: chapter3_io
-#   - file: chapter4_condition
-#   - file: chapter5_loop
-#   - file: chapter6_list
-#   - file: chapter7_dict_tuple_set
-#   - file: chapter8_function
+
 
 - caption: 실습
   chapters:
   - file: _pages/practice/1_implementationPS
   - file: _pages/practice/2_DFS_BFSPS
-#   - file: pandas1
-#   - file: pandas2
-#   - file: viz
-#   - file: capstone
-#   - file: next_steps
+  - file: _pages/practice/3_backtrackingPS
+
