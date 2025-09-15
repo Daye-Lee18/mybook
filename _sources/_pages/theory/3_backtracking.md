@@ -14,24 +14,33 @@ kernelspec:
 
 # Lecture 3-1. Backtracking 
 
-`백트레킹 (backtracking)`이란, `가능한 해 (candidate)`를 하나씩 선택하면서 탐색하다가, 조건에 맞지 않으면 즉시 되돌아가서 다른 후보를 탐색하는 기법이다. Brute-force와 다른 점이라면, brute-force는 가능한 모든 경우를 끝까지 다 확인하지만, backtracking은 "조건에 맞지 않는 경우"를 발견하면 `가지치기 (pruning)`으로 탐색의 양을 줄이는 것에 있다. 즉,`DFS (깊이 우선 탐색)` 구조와 비슷하며, 주로 스택(Stack) 구조와 재귀 호출로 구현될 수 있다. Backtracking의 목표는 모든 가능한 해를 생성하거나, 특정 조건을 만족하는 해를 찾는 것이다. Backtracking의 기본원리는 "선택(Choose) -> 탐색 (Explore) -> 되돌리기 (Unchoose/Backtack)" 이다. 
+**Backtracking** is a technique where we explore possible candidates step by step, and whenever a candidate does not satisfy the condition, we immediately backtrack and try another option.  
+Unlike brute-force, which explores *all* possibilities until the end, backtracking **prunes** the search tree as soon as it finds an invalid state, thus reducing the search space.  
 
-```{admonition} Backtracking 기본 원리 
+It is similar to **DFS (Depth-First Search)** and can be implemented using recursion and stack structures.  
+The goal of backtracking is either to generate all possible solutions or to find a solution that meets certain conditions.  
+The basic principle of backtracking is:  
+
+**Choose → Explore → Unchoose (Backtrack)**
+
+````{admonition} Principle of Backtracking
 :class: tip
-Step 1. **선택 (Choose)**: 현재 단계에서 하나의 후보를 path에 추가 
-Step 2. **탐색 (Explore)**: 재귀 호출로 다음 단계 진행 
-Step 3. **되돌리기 (Unchoose / Backtrack)**: path에서 방금 선택한 후보를 제거 (pop) 
-```
-예를 들어, backtracking은 아래 코드의 기본 구조를 따른다고 생각할 수 있다. 
+Step 1. **Choose**: At the current stage, add a candidate to the path  
+Step 2. **Explore**: Proceed to the next step with a recursive call  
+Step 3. **Unchoose / Backtrack**: Remove the last chosen candidate from the path (pop)  
+````
 
-```{code-block} python 
+For example, backtracking usually follows the structure below:
+
+````{code-block} python 
 def backtracking(start):
     for i in range(start, len(arr)):
-        path.append(arr[i])          # 후보 선택 (Choose): start 현재 index 후보 선택
-        backtracking(i + 1)          # 다음 단계 탐색 (Explore): 다음에 탐색할 index 삽입
-        path.pop()                   # 상태 복원 (Unchoose): 되돌리기가 없으면 중복된 해가 생기거나 상태가 꼬이게 된다. 
-```
-pop이나 되돌리기를 해야 해의 **중복 방지**와 **정확한 상태 복원**이 가능하다. 아래 그림을 잘 숙지해두면 해당 코드를 이용해 다양한 문제에 적용하여 풀 수 있을 것이다. 
+        path.append(arr[i])          # Choose: select current index
+        backtracking(i + 1)          # Explore: recurse to the next index
+        path.pop()                   # Unchoose: restore the state
+````
+
+Without `pop` (unchoose), it is impossible to prevent duplicate solutions or correctly restore the state.
 
 ```{image} ../../assets/img/backtracking/1.png 
 :alt: backtracking diagram
@@ -42,18 +51,15 @@ pop이나 되돌리기를 해야 해의 **중복 방지**와 **정확한 상태 
 
 ## Combination (조합)
 
-조합(Combination)은 **원소의 순서는 고려하지 않고**, **뽑을 개수(`depth = k`)가 정해진 경우**에 사용하는 Backtracking 패턴이다.  
-즉, 순서가 달라도 같은 결과로 취급되며, 따라서 **중복을 어떻게 처리하느냐**에 따라 코드가 달라진다.  
-
----
+Combination means selecting a fixed number of elements (`depth = k`) without considering order.
+The key idea: different orders of the same elements are considered the same, and we must handle duplicates carefully.
 
 ### Combination without repetition (중복 불허)
 
-예를 들어, 카드 `[1, 2, 3]`에서 2개를 뽑는 경우를 생각해보자.  
+Example: choosing 2 cards out of `[1, 2, 3]`.
 
-조합은 순서를 고려하지 않기 때문에, `for` 반복문에서 **현재 인덱스보다 작은 인덱스는 다시 방문하지 않는다.**  
-- 작은 인덱스에서 이미 동일한 결과가 만들어졌기 때문이다.  
-- 예: index=1일 때 `[array[0], array[1]] = [1, 2]` 가 이미 생성되었으므로, `[2, 1]`은 다시 만들 필요가 없다.  
+Since order does not matter, `indices smaller than the current index` are not revisited (to avoid duplicates).
+For instance, when index=1, `[1, 2]` is already generated, so `[2, 1]` should not be repeated.
 
 ```{image} ../../assets/img/backtracking/2.png
 :alt: combination without repetition
@@ -97,7 +103,7 @@ Combination without repetition result of [1, 2, 3] with k=2:
 
 ### Combination with repetition (중복 허용)
 
-만약 같은 원소를 여러 번 선택할 수 있다면, combination(i + 1, depth + 1) 대신 combination(i, depth + 1)을 호출하면 된다.
+If repetition is allowed, call `combination(i, depth+1)` instead of combination(i+1, depth+1).
 
 ```{code-block} text
 ---
@@ -123,26 +129,21 @@ Combination result of [1, 2, 3] with k=2:
 
 ## Multiset (중복 원소가 있는 집합)
 
-`Multiset`이란 **입력에 중복된 값이 포함**될 수 있지만, **출력되는 부분집합은 서로 다른 경우만 허용**한다. 
+A `multiset` allows duplicates in the input but ensures no duplicate outputs.
 
-예를 들어, 입력이 `[1, 1, 2]`일 때:  
-- `[1, 1]` 은 유효하다 (동일한 두 원소를 선택한 경우).  
-- 하지만 `[1, 1]` 과 `[1, 1]` 처럼 같은 형태의 결과를 중복해서 출력해서는 안 된다.  
+Example: for `[1, 1, 2]`, `[1, 1]` is valid, but we should not output `[1, 1]` twice.
 
 즉, **입력 원소의 중복은 허용**되지만, **출력 결과의 중복은 제거**해야 한다.  
 
-핵심 아이디어는, 
-- 배열을 정렬한다. (동일한 값들이 연속되도록)  
-- **같은 depth(같은 for loop 레벨)**에서 동일한 값을 반복 선택하지 않는다.  
-  - 첫 번째 원소는 반드시 허용해야 새로운 subset이 생기지만,  
-  - 이후 같은 depth에서 같은 값을 또 고르면 이전과 동일한 결과가 생긴다.  
-- 이를 위해 조건문 `if i > start and arr[i] == arr[i-1]: continue` 를 사용한다.  
+Key ideas:
+- Sort the array so duplicates are adjacent
+- Skip the same value within the same depth level (using if `i > start and arr[i] == arr[i-1]: continue`)
 
-이 방식은 LeetCode의 [Subset II](https://leetcode.com/problems/subsets-ii/description/) 문제와 동일하다.
+This is the same as [Subset II](https://leetcode.com/problems/subsets-ii/description/).
 
 ```{code-block} python
 ---
-caption: Multiset 구현
+caption: Multiset Implementation
 ---
 
 
@@ -186,8 +187,8 @@ caption: Multiset 결과
 
 ## Subset (Powerset)
 
-**Subset** 문제는 **집합의 모든 부분집합**을 구하는 것이다.  
-집합(Set)에는 원래 **중복 원소가 없으며**, 이때 만들어진 모든 부분집합의 집합을 **Powerset**이라고 부른다.ㅜPowerset은 각 원소를 **“선택한다 / 선택하지 않는다”** 두 가지 경우로 나누어 탐색하면 쉽게 구할 수 있다.  즉, 원소 하나마다 분기(branch)가 생기므로, 전체 경우의 수는 $2^n$개가 된다.  
+Subset means finding`all subsets of a set`.
+The collection of all subsets is called the Powerset, with $2^n$ subsets. A set originally has no duplicate elements, and the collection of all its subsets is called the powerset. The powerset can be easily generated by considering two cases for each element: “choose” or “do not choose.” In other words, each element creates a branch, resulting in a total of $2^n$ possible subsets.
 
 ---
 ```{code-block} python
@@ -228,17 +229,17 @@ Subset (by index) Result of [1, 1, 3]:
 [1, 1, 3]
 ```
 
-주의할 점은 입력이 집합(Set)처럼 중복 없는 경우라면, 출력되는 모든 부분집합이 서로 다르다. 하지만 위 예시처럼 [1, 1, 3] 같이 중복 원소가 있으면, 같은 형태의 부분집합이 여러 번 출력될 수 있다. (예: [1] 과 [1]) 이런 경우 중복 제거를 추가적으로 해야 하는데, 그것이 바로 Multiset (Subset II) 문제로 이어진다.
+One important point is that if the input is a set (i.e., contains no duplicates), then all generated subsets will be unique. However, if the input contains duplicate elements, such as [1, 1, 3], the same subset form can appear multiple times (e.g., [1] and [1]). In such cases, duplicate removal must be handled explicitly, which leads to the Multiset (Subset II) problem.
 
 ## Substring & Subarray 
 
-- **Substring**: 문자열에서 **연속된 부분 문자열**  
-- **Subarray**: 배열(리스트)에서 **연속된 부분 배열**  
+- **Substring**: a contiguous part of a string
+- **Subarray**: a contiguous part of an array (list)
 
-공통적으로 둘 다 **순서**가 유관하며 반드시 **contiguous (연속적)**이어야 한다. 차이점으로는 substring은 문자열에서, subarray는 숫자 배열에서 사용한다는 점만 다르고 개념적으로는 동일하다. 이 문제는 dfs나 backtracking이 필요하지 않고, **2중 for loop**으로 구현이 가능하다. 
+In both cases, order matters, and they must be contiguous. The only difference is that substrings come from strings, while subarrays come from numerical arrays; conceptually, they are the same. These problems do not require DFS or backtracking and can be implemented using two nested for-loops.
 
-- 바깥 루프: 시작 인덱트 (start pointer)
-- 안쪽 루프: 길이나 끝 인덱스 (end pointer)
+- Outer loop: starting index (start pointer)
+- Inner loop: length or ending index (end pointer)
 
 ```{code-block} python
 # --- Substring: 문자열의 연속 부분문자열 전부
@@ -300,14 +301,13 @@ All subarrays of [1, 2, 3]:
 
 ## Subsequences 
 
-subsequences (부분 수열)로  기존 배열(또는 문자열)에서 **순서는 유지**해야 하지만,  
-  **연속적(contiguous)**일 필요는 없다.
+A subsequence is formed from an existing array (or string) where the order of elements must be preserved, but they do **not need to be contiguous**.
   
-- 문자열 `"abc"`의 subsequences:  
-  - `"a"`, `"b"`, `"c"`, `"ab"`, `"ac"`, `"bc"`, `"abc"`, `""` (공집합 포함)  
-- `"ac"`는 subsequence지만 substring이 아님 (연속이 아니기 때문).  
+- Subsequences of the string "abc":
+    - "a", "b", "c", "ab", "ac", "bc", "abc", "" (including the empty set)
+    - "ac" is a subsequence but not a substring (because it is not contiguous).
 
-백트래킹 (DFS)를 이용해 각 원소를 **선택하거나 건너뛰는 방식**으로 탐색한다. 따라서 경우의 수는  $2^n$개이다. 공집합 포함 여부는 상황에 따라 조절할 수 있다. 사실 코드 구현을 보면 Combination과 흡사하며 다만, combination은 목표 depth가 정해져있지만, subsequences는 start부터 쭉 진행하면서, 가능한 모든 길이 (0~n)의 path를 출력한다. 
+Backtracking (DFS) is used to explore subsequences by choosing or skipping each element. Therefore, the total number of subsequences is $2^n$. Whether to include the empty set can be adjusted depending on the problem. In terms of implementation, subsequences are very similar to combinations; the difference is that combinations have a fixed target depth, whereas subsequences proceed from the starting index and output all possible paths of lengths from 0 to n.
 
 ```{code-block} python
 ---
@@ -342,7 +342,7 @@ Subsequences Result of [1, 2, 3]:
 
 ## Permutation (순열)
 
-Permutation은 ${n}P{k}$로, n개의 원소 중 k개를 선택하여 순서를 고려하는 경우의 수를 말한다. 따라서 Combination처럼 depth = k라는 목표 깊이가 존재하지만, 순서를 중요시하므로 (1,2)와 (2,1)은 다른 결과로 인식된다.
+A permutation, denoted as ${n}P{k}$, refers to the number of ways to choose $k$ elements from $n$ elements while considering order. Similar to combinations, it has a target depth of $k$, but since order matters, $(1, 2)$ and $(2, 1)$ are recognized as different results.
 
 ```{code-block} python 
 # 길이 k, 중복 불허 → 방문 체크 필요
@@ -391,12 +391,14 @@ k_tuples_with_repetition(0)
 ## 정리 
 ```{admonition} Summary 
 :class: important 
-- 조합 (Combination)은 순서 무관 + 길이 k 제한이라는 특징을 가지며 중복 불허는 combination(i+1, depth+1), 중복 허용의 경우 combination(i, depth+1)로 하면된다. 
-- Multiset은 중복 입력을 다루는 subset문제로, 정렬 + 같은 depth에서 중복 skip 규칙으로 문제를 해결한다. 
-- Powerset은 모든 부분집합을 구하는 문제로 경우의 수는 $2^n$, "각 원소를 선택 or 선택하지 않음"의 이분법으로 구현
-- Substring/Subarray는 연속된 부분만 허용된다. 개수는 항상 $n(n+1)/2$개 이며, 이중 For loop으로 쉽게 구현할 수 있다. 
-- Subsequence: 순서를 지켜야하며, 연속적일 필요는 없다. Combination구조에 depth가 정해져 있지 않은 코드와 같다. 
-- Permutation은 모든 인덱스에서 처음 0 인덱스부터 다시 관찰하도록 DFS를 이용해 구현한다. 
+- **Combination**: order does not matter, with a fixed length $k$.  
+  - Without repetition: `combination(i+1, depth+1)`  
+  - With repetition: `combination(i, depth+1)`  
+- **Multiset**: a subset problem with duplicate inputs, solved by sorting + skipping duplicates at the same depth.  
+- **Powerset**: finding all subsets, with $2^n$ total, implemented by the binary choice of “select or not select” for each element.  
+- **Substring/Subarray**: only contiguous parts are allowed. The number of such cases is always $n(n+1)/2$, and they can be generated easily with a double for-loop.  
+- **Subsequence**: order must be preserved, but contiguity is not required. Implementation is similar to combination, except that the depth is not fixed.  
+- **Permutation**: generated with DFS by exploring all indices starting again from index 0 at each depth.  
 ```
 ## 연습 문제 
 
