@@ -18,71 +18,49 @@ kernelspec:
 - [1번: 프로그래머스 블록 이동하기](https://school.programmers.co.kr/learn/courses/30/lessons/60063)
 - [2번: 코드트리 고대 문명 유적 탐사](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/ancient-ruin-exploration/description)
 
-## 1번 문제 풀이 아이디어 
+## 1번: 블록 이동하기  
+
+````{admonition} 갈 수 있는 방향 설정 
+:class: dropdown 
 
 아래처럼 길이 나있는 경우가 있을 수 있으므로, 직선으로 움직이는 경우 상하좌우, 회전도 robot의 pivot block 기준으로 가로로 위치한 경우에는 위아래 혹은 세로로 위치한 경우에는 상하로 회전할 수 있도록 해야한다. 
 
-```{image} ../../assets/img/DFS_BFSPS/0.png
-:alt: 예시 이미지
-:class: bg-primary mb-1
-:width: 400px
-:align: center
-```
+![](../../assets/img/DFS_BFSPS/0.png)
+````
+
+````{admonition} 물체가 2개의 셀 이상 차지하는 경우, 효율적 visited 정보 저장 및 normalization
+:class: dropdown
 
 물체가 차지하는 셀이 1개가 아닌 두개 이기때문에 아래 2가지를 고려해야한다. 
 - **Visited**: 물체 (Robot)이 차지하는 셀이 한 개 초과 즉, 이경우에는 board에 표시하면 memory가 초과되기 때문에 visited={} set으로 방문 여부를 체크해주면 좋다. 
 - **Normalization**: 상태 정규화(순서 고정)도 존재해야한다. 즉, (y,x,t,v)와 (t,v,y,x)는 같은 로봇 상태인데, visited가 다르게 취급해 중복 상태 폭증하며 시간도 초과된다. 매번 (a,b) 두 좌표를 정렬해서 (small,big)로 저장하거나, frozenset({pos1,pos2})로 관리해야 한다. 즉, 정규화를 통해 (P1, P2) 중 작은 것이 앞에 오도록하여 같은 위치에 있는 로봇의 상태 체크를 잘 할 수 있게 된다. 
 
-```{image} ../../assets/img/DFS_BFSPS/1.png
-:alt: 예시 이미지
-:class: bg-primary mb-1
-:width: 400px
-:align: center
-```
+![](../../assets/img/DFS_BFSPS/1.png)
 
 When we run BFS, each robot state is represented as the positions of its two blocks and the current time. But we need consistency: which block should be stored first? To avoid duplicates, we always order the two coordinates so that the smaller one comes first. This normalization guarantees that the same robot configuration is stored uniquely in the queue.
+````
 
+````{admonition} 물체의 rotation 및 예상 결과 확인
+:class: dropdown
 
-
-```{image} ../../assets/img/DFS_BFSPS/2.png
-:alt: 예시 이미지
-:class: bg-primary mb-1
-:width: 400px
-:align: center
-```
 If the robot is lying horizontally, we can rotate it around either the left block or the right block. Each rotation can go both upward and downward, converting the robot into a vertical orientation. So, in total, we get four possible rotations in this situation.
 
+![](../../assets/img/DFS_BFSPS/2.png)
 
-```{image} ../../assets/img/DFS_BFSPS/2.png
-:alt: 예시 이미지
-:class: bg-primary mb-1
-:width: 400px
-:align: center
-```
 During rotation, we must check not only the pivot block but also the adjacent cells that the robot sweeps through.
 - If the pivot is the right block, the non-pivot’s upper and lower cells must be empty.
 - If the pivot is the left block, again the non-pivot’s upper and lower cells must also be empty.
 These checks prevent collisions during rotation.
 
 
-```{image} ../../assets/img/DFS_BFSPS/3.png
-:alt: 예시 이미지
-:class: bg-primary mb-1
-:width: 400px
-:align: center
-```
+![](../../assets/img/DFS_BFSPS/3.png)
 
 After rotation, the final state is defined by the pivot block plus the new block either above or below it.
 For example, rotating upward results in the pivot plus the cell above it.
 Rotating downward results in the pivot plus the cell below it.
 This ensures that we represent the robot’s new vertical position consistently.
 
-```{image} ../../assets/img/DFS_BFSPS/4.png
-:alt: 예시 이미지
-:class: bg-primary mb-1
-:width: 400px
-:align: center
-```
+![](../../assets/img/DFS_BFSPS/4.png)
 
 ```{code-block} python
 # [Left pivot rotation ↑]
@@ -101,24 +79,14 @@ Rotating downward results in the pivot plus the cell below it.
 This ensures that we represent the robot’s new vertical position consistently.
 
 
-```{image} ../../assets/img/DFS_BFSPS/5.png
-:alt: 예시 이미지
-:class: bg-primary mb-1
-:width: 400px
-:align: center
-```
+![](../../assets/img/DFS_BFSPS/5.png)
 
 
 When the robot is vertical, the situation is symmetric.
 The pivot can be either the top block or the bottom block.
 Each pivot allows a rotation to the left or to the right, changing the robot’s orientation from vertical to horizontal.
 
-```{image} ../../assets/img/DFS_BFSPS/6.png
-:alt: 예시 이미지
-:class: bg-primary mb-1
-:width: 400px
-:align: center
-```
+![](../../assets/img/DFS_BFSPS/6.png)
 
 As in the horizontal case, rotation requires collision checks.
 If the pivot is the bottom block and we rotate left, the non-pivot’s left cell must be empty.
@@ -126,25 +94,23 @@ If we rotate right, the non-pivot’s right cell must be empty.
 Similarly, when the pivot is the top block, we check the left and right cells of the non-pivot during rotation.
 These rules guarantee that rotations happen without intersecting obstacles.
 
-```{image} ../../assets/img/DFS_BFSPS/7.png
-:alt: 예시 이미지
-:class: bg-primary mb-1
-:width: 400px
-:align: center
-```
+![](../../assets/img/DFS_BFSPS/7.png)
 
 After a vertical rotation, the final state is also described by the pivot plus one adjacent cell.
 Rotating left results in the pivot plus its left neighbor.
 Rotating right results in the pivot plus its right neighbor.
 This completes the transition from vertical to horizontal while preserving a consistent representation.
+````
 
+````{admonition} Complexity
+:class: dropdown
 By exploring the state space, we obtain a complexity of $O(N^2)$.
 The grid size is $N \times N$, and the robot can place one of its ends on any cell. This gives $O(N^2)$ possibilities. Since the robot can exist in two orientations—horizontal and vertical—each cell has two possible states. Therefore, the total number of states is approximately $O(2 \times N^2)$, which simplifies to $O(N^2)$.
 
 In addition, the number of possible actions from each state is constant: 8 moves in total (4 parallel moves in the four directions, plus 4 rotations — 2 pivots × 2 rotation directions). Thus, each state expands in $O(1)$.
 
 Consequently, the overall time complexity is $O(N^2)$, and the space complexity is also $O(N^2)$.
-
+````
 
 
 ```{toggle}
@@ -245,7 +211,7 @@ if __name__ == '__main__':
 
 ```
 
-## 2번 문제 풀이 아이디어 
+## 2번: 고대 문명 유적 탐사 
 
 ```{admonition} 리스트의 복사
 :class: dropdown

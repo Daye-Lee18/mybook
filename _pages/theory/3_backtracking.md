@@ -17,7 +17,7 @@ kernelspec:
 `백트레킹 (backtracking)`이란, `가능한 해 (candidate)`를 하나씩 선택하면서 탐색하다가, 조건에 맞지 않으면 즉시 되돌아가서 다른 후보를 탐색하는 기법이다. Brute-force와 다른 점이라면, brute-force는 가능한 모든 경우를 끝까지 다 확인하지만, backtracking은 "조건에 맞지 않는 경우"를 발견하면 `가지치기 (pruning)`으로 탐색의 양을 줄이는 것에 있다. 즉,`DFS (깊이 우선 탐색)` 구조와 비슷하며, 주로 스택(Stack) 구조와 재귀 호출로 구현될 수 있다. Backtracking의 목표는 모든 가능한 해를 생성하거나, 특정 조건을 만족하는 해를 찾는 것이다. Backtracking의 기본원리는 "선택(Choose) -> 탐색 (Explore) -> 되돌리기 (Unchoose/Backtack)" 이다. 
 
 ```{admonition} Backtracking 기본 원리 
-:class :tip
+:class: tip
 Step 1. **선택 (Choose)**: 현재 단계에서 하나의 후보를 path에 추가 
 Step 2. **탐색 (Explore)**: 재귀 호출로 다음 단계 진행 
 Step 3. **되돌리기 (Unchoose / Backtrack)**: path에서 방금 선택한 후보를 제거 (pop) 
@@ -390,7 +390,7 @@ k_tuples_with_repetition(0)
 
 ## 정리 
 ```{admonition} Summary 
-:class :important 
+:class: important 
 - 조합 (Combination)은 순서 무관 + 길이 k 제한이라는 특징을 가지며 중복 불허는 combination(i+1, depth+1), 중복 허용의 경우 combination(i, depth+1)로 하면된다. 
 - Multiset은 중복 입력을 다루는 subset문제로, 정렬 + 같은 depth에서 중복 skip 규칙으로 문제를 해결한다. 
 - Powerset은 모든 부분집합을 구하는 문제로 경우의 수는 $2^n$, "각 원소를 선택 or 선택하지 않음"의 이분법으로 구현
