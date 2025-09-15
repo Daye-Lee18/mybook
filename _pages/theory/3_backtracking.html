@@ -377,7 +377,7 @@ document.write(`
   <section class="tex2jax_ignore mathjax_ignore" id="lecture-3-1-backtracking">
 <h1>Lecture 3-1. Backtracking<a class="headerlink" href="#lecture-3-1-backtracking" title="Link to this heading">#</a></h1>
 <p><code class="docutils literal notranslate"><span class="pre">백트레킹</span> <span class="pre">(backtracking)</span></code>이란, <code class="docutils literal notranslate"><span class="pre">가능한</span> <span class="pre">해</span> <span class="pre">(candidate)</span></code>를 하나씩 선택하면서 탐색하다가, 조건에 맞지 않으면 즉시 되돌아가서 다른 후보를 탐색하는 기법이다. Brute-force와 다른 점이라면, brute-force는 가능한 모든 경우를 끝까지 다 확인하지만, backtracking은 “조건에 맞지 않는 경우”를 발견하면 <code class="docutils literal notranslate"><span class="pre">가지치기</span> <span class="pre">(pruning)</span></code>으로 탐색의 양을 줄이는 것에 있다. 즉,<code class="docutils literal notranslate"><span class="pre">DFS</span> <span class="pre">(깊이</span> <span class="pre">우선</span> <span class="pre">탐색)</span></code> 구조와 비슷하며, 주로 스택(Stack) 구조와 재귀 호출로 구현될 수 있다. Backtracking의 목표는 모든 가능한 해를 생성하거나, 특정 조건을 만족하는 해를 찾는 것이다. Backtracking의 기본원리는 “선택(Choose) -&gt; 탐색 (Explore) -&gt; 되돌리기 (Unchoose/Backtack)” 이다.</p>
-<div class="admonition-backtracking admonition">
+<div class="tip admonition">
 <p class="admonition-title">Backtracking 기본 원리</p>
 <p>Step 1. <strong>선택 (Choose)</strong>: 현재 단계에서 하나의 후보를 path에 추가
 Step 2. <strong>탐색 (Explore)</strong>: 재귀 호출로 다음 단계 진행
@@ -721,7 +721,7 @@ c
 </section>
 <section id="id1">
 <h2>정리<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
-<div class="admonition-summary admonition">
+<div class="important admonition">
 <p class="admonition-title">Summary</p>
 <ul class="simple">
 <li><p>조합 (Combination)은 순서 무관 + 길이 k 제한이라는 특징을 가지며 중복 불허는 combination(i+1, depth+1), 중복 허용의 경우 combination(i, depth+1)로 하면된다.</p></li>

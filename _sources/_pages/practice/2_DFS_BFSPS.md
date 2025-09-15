@@ -211,7 +211,7 @@ if __name__ == '__main__':
 
 ```
 
-## 2번 문제 풀이 아이디어 
+## 2번: 고대 문명 유적 탐사 
 
 ```{admonition} 리스트의 복사
 :class: dropdown

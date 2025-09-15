@@ -248,7 +248,7 @@
       
       
       
-      <li><a href="../../_sources/_pages/practice/1_implementationPS.ipynb" target="_blank"
+      <li><a href="../../_sources/_pages/practice/1_implementationPS.md" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="소스 파일 다운로드"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -258,7 +258,7 @@
 <span class="btn__icon-container">
   <i class="fas fa-file"></i>
   </span>
-<span class="btn__text-container">.ipynb</span>
+<span class="btn__text-container">.md</span>
 </a>
 </li>
       
@@ -342,12 +342,8 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">3번 문제 해석</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#keys-to-the-solution">Keys to the Solution</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">5번 문제 해석</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">정답 코드</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">3번: 마법의 숲 탐색 문제 풀이</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">5번: 미생물 연구</a></li>
 </ul>
             </nav>
         </div>
@@ -372,8 +368,9 @@ document.write(`
 <li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/medusa-and-warriors/description">7번: 코드트리 메두사와 전사들</a></p></li>
 </ul>
 <section id="id1">
-<h2>3번 문제 해석<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
-<p>문제 정리</p>
+<h2>3번: 마법의 숲 탐색 문제 풀이<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<div class="dropdown admonition">
+<p class="admonition-title">문제 정리</p>
 <ol class="arabic">
 <li><p>격좌/좌표: RxC를 HXC로 변환 (O, R-1) -&gt; (0, H-1)까지</p></li>
 <li><p>move_golem(): 아래로 최대한 내려갈 수 있는 (move as far south as possible) 함수 구현</p>
@@ -413,18 +410,30 @@ document.write(`
 </ul>
 </li>
 </ol>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">graph의 확장</p>
 <p><img alt="3-1" src="../../_images/1.png" /></p>
 <p>In the beginning, the golem may extend up to <code class="docutils literal notranslate"><span class="pre">3</span> <span class="pre">cells</span></code> above the forest. To handle this, we add 3 buffer rows at the top of the grid. These buffer rows are not part of the forest but provide enough room for the golem to move and settle safely.</p>
-<p><img alt="3-2" src="../../_images/2.png" /></p>
-<p>When the golem moves one step down, we must check 3 positions below the center: directly underneath, and one cell to the left and right. If all 3 are empty, the golem can move downward without collision.</p>
-<p><img alt="3-3" src="../../_images/3.png" /></p>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">각 step 구현</p>
+<p>When the golem moves one step down, we must check 3 positions below the center: directly underneath, and one cell to the left and right. If all 3 are empty, the golem can move downward without collision.
+<img alt="3-2" src="../../_images/2.png" /></p>
 <p>Now let’s look at rotation to the left. For the golem to rotate, <code class="docutils literal notranslate"><span class="pre">five</span> <span class="pre">specific</span> <span class="pre">cells</span></code> must be empty. Interestingly, the rules allow rotation even if the upper-right or lower-right cells are occupied. We number the directions North, East, South, and West as 0, 1, 2, and 3. Using this, left rotation is simply (d + 3) mod 4, and right rotation is (d + 1) mod 4.</p>
-<p><img alt="3-4" src="../../_images/4.png" /></p>
-<p>Rotation to the right works symmetrically. Again, five surrounding cells must be empty to allow the move. The concept is the same as left rotation, but we apply the clockwise formula.</p>
-<p><img alt="3-5" src="../../_images/5.png" /></p>
-<p>When the golem finally stops, all four arms must be inside the forest area, which is from row 3 down to H–1. To manage state, we store each golem’s position and exit direction in units[gid]. We also record which exit belongs to which golem in exit_map. This way, exit_map tells us the gid, and units gives us the exact center and direction.</p>
-<p><img alt="3-6" src="../../_images/6.png" /></p>
+<p><img alt="3-3" src="../../_images/3.png" /></p>
+<p>Rotation to the right works symmetrically. Again, five surrounding cells must be empty to allow the move. The concept is the same as left rotation, but we apply the clockwise formula.
+<img alt="3-4" src="../../_images/4.png" /></p>
+<p>When the golem finally stops, all four arms must be inside the forest area, which is from row 3 down to H–1. To manage state, we store each golem’s position and exit direction in units[gid]. We also record which exit belongs to which golem in exit_map. This way, exit_map tells us the gid, and units gives us the exact center and direction.
+<img alt="3-5" src="../../_images/5.png" /></p>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">정보 저장</p>
 <p>We maintain two separate grids: <code class="docutils literal notranslate"><span class="pre">golem_arr</span></code> and <code class="docutils literal notranslate"><span class="pre">exit_map</span></code>. The <code class="docutils literal notranslate"><span class="pre">golem</span> <span class="pre">array</span></code> records body occupancy and is used for <code class="docutils literal notranslate"><span class="pre">collision</span> <span class="pre">checks</span></code>. The <code class="docutils literal notranslate"><span class="pre">exit</span> <span class="pre">map</span></code> records <code class="docutils literal notranslate"><span class="pre">only</span> <span class="pre">exits</span></code>, which lets us trace connectivity between golems using <code class="docutils literal notranslate"><span class="pre">BFS</span></code>. This separation is crucial because body cells and exit cells need to be treated differently.</p>
+<p><img alt="3-6" src="../../_images/6.png" /></p>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">최댓값 전파</p>
 <p><img alt="3-7" src="../../_images/7.png" /></p>
 <p>Finally, let’s look at how we propagate the maximum reachable row.</p>
 <ul class="simple">
@@ -449,30 +458,62 @@ document.write(`
 </ol>
 </li>
 </ol>
-<section id="keys-to-the-solution">
-<h3>Keys to the Solution<a class="headerlink" href="#keys-to-the-solution" title="Link to this heading">#</a></h3>
-<ul class="simple">
-<li><p>The key idea is simulation + connectivity propagation.</p></li>
-<li><p>Forest size: R × C, with K golems.</p></li>
-<li><p>Each golem has a cross (+) shape: the center plus 1 cell in each of the four directions (total of <code class="docutils literal notranslate"><span class="pre">5</span> <span class="pre">cells</span></code>). Its exit is the cell adjacent to the center in the facing direction.</p></li>
-<li><p>A golem falls from above and attempts to move in the following order:</p>
-<ul>
-<li><p>Straight down</p></li>
-<li><p>Down-left (rotate exit to the left)</p></li>
-<li><p>Down-right (rotate exit to the right)</p></li>
-<li><p>If all three moves fail, it stops.</p></li>
-</ul>
-</li>
-<li><p>To simplify the simulation, the board is <code class="docutils literal notranslate"><span class="pre">extended</span> <span class="pre">with</span> <span class="pre">3</span> <span class="pre">extra</span> <span class="pre">rows</span></code> at the top (so the grid size is (R+3)xC)</p></li>
-<li><p>After <code class="docutils literal notranslate"><span class="pre">settling</span></code>, if any of the 4 arms of the golem lie <code class="docutils literal notranslate"><span class="pre">outside</span> <span class="pre">the</span> <span class="pre">original</span> <span class="pre">forest</span></code> (rows indexed 3 to R+2), the entire forest is <code class="docutils literal notranslate"><span class="pre">reset</span></code> (all cleared) and that golem is <code class="docutils literal notranslate"><span class="pre">ignored</span></code>.</p></li>
-<li><p>In other words, after placement, the body of the golem (the four arms of the cross) must be fully contained within the forest.</p></li>
-<li><p>Once a golem is placed, <code class="docutils literal notranslate"><span class="pre">compute</span> <span class="pre">the</span> <span class="pre">maximum</span> <span class="pre">reachable</span> <span class="pre">row</span></code> (in the original forest, indices 0 to R−1) within the connected component that includes this golem and all others connected via exits. Add this value to the final sum.</p></li>
-</ul>
+</div>
+<div class="toggle docutils container">
+<p>import sys</p>
+<h1 class="rubric" id="id2">—– 입력 —–</h1>
+<p>board = [list(map(int, sys.stdin.readline().split())) for _ in range(5)]
+calls = []
+for _ in range(5):
+calls += list(map(int, sys.stdin.readline().split()))  # 총 25개</p>
+<h1 class="rubric" id="r-c">숫자 -&gt; (r, c) 좌표 매핑</h1>
+<p>pos = {}
+for r in range(5):
+for c in range(5):
+pos[board[r][c]] = (r, c)</p>
+<h1 class="rubric" id="id3">행/열/대각 카운터와 완료 체크</h1>
+<p>row = [0]*5
+col = [0]*5
+diag = [0, 0]  # [메인 대각(r==c), 반대각(r+c==4)]
+line_done = 0</p>
+<h1 class="rubric" id="id4">같은 줄을 중복 카운트하지 않게 완료 여부 기록</h1>
+<p>row_done = [False]*5
+col_done = [False]*5
+diag_done = [False, False]</p>
+<p>for i, num in enumerate(calls, start=1):  # i = 호출 횟수(1~25)
+r, c = pos[num]</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>row[r] += 1
+col[c] += 1
+if r == c:
+    diag[0] += 1
+if r + c == 4:
+    diag[1] += 1
+
+# 이번 호출로 막 완성된 줄만 카운트 추가
+if row[r] == 5 and not row_done[r]:
+    line_done += 1
+    row_done[r] = True
+if col[c] == 5 and not col_done[c]:
+    line_done += 1
+    col_done[c] = True
+if r == c and diag[0] == 5 and not diag_done[0]:
+    line_done += 1
+    diag_done[0] = True
+if r + c == 4 and diag[1] == 5 and not diag_done[1]:
+    line_done += 1
+    diag_done[1] = True
+
+if line_done &gt;= 3:
+    print(i)
+    break
+</pre></div>
+</div>
+</div>
 </section>
-</section>
-<section id="id2">
-<h2>5번 문제 해석<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<p>문제 정리</p>
+<section id="id5">
+<h2>5번: 미생물 연구<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<div class="dropdown admonition">
+<p class="admonition-title">문제 정리</p>
 <ol class="arabic simple" start="0">
 <li><p>preliminaries: 좌상단이 시작점인지, 좌하단이 시작점인지 좌표 변환 <a class="reference external" href="https://colab.research.google.com/github/Daye-Lee18/mybook/blob/main/assets/ipynb/grid_coords_rotations_cheatsheet.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p></li>
 <li><p>NxN 정사각형 배양 용기, 좌측 하단 (0,0), 우측 상단 (N, N)</p></li>
@@ -520,10 +561,193 @@ document.write(`
 </ul>
 </li>
 </ol>
-</section>
-<section id="id3">
-<h2>정답 코드<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
-<p><a class="reference external" href="https://colab.research.google.com/github/Daye-Lee18/mybook/blob/main/assets/ipynb/1_implementationPS.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
+</div>
+<div class="toggle docutils container">
+<p>import sys
+from collections import deque, defaultdict</p>
+<p>input = sys.stdin.readline</p>
+<h1 class="rubric" id="id6">방향: 상하좌우 (행, 열)</h1>
+<p>DR = (-1, 1, 0, 0)
+DC = (0, 0, -1, 1)</p>
+<p>def in_range(n, r, c):
+return 0 &lt;= r &lt; n and 0 &lt;= c &lt; n</p>
+<p>def bfs_component(grid, n, sr, sc, visited):
+“””grid[sr][sc]의 id로 연결된 컴포넌트 크기와
+인접한 다른 id 집합을 반환”””
+idv = grid[sr][sc]
+q = deque([(sr, sc)])
+visited[sr][sc] = True
+size = 1
+adj = set()</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>while q:
+    r, c = q.popleft()
+    for d in range(4):
+        nr, nc = r + DR[d], c + DC[d]
+        if not in_range(n, nr, nc):
+            continue
+        nid = grid[nr][nc]
+        if nid == idv and not visited[nr][nc]:
+            visited[nr][nc] = True
+            q.append((nr, nc))
+            size += 1
+        elif nid != idv:
+            adj.add(nid)  # 0 포함해도 뒤에서 걸러냄
+return idv, size, adj
+</pre></div>
+</div>
+<p>def get_all_shapes(grid, n):
+“””현재 용기의 모든 무리(id&gt;0)에 대해
+각 id의 셀 좌표 리스트와 면적을 구한다.”””
+visited = [[False]*n for _ in range(n)]
+id_to_cells = defaultdict(list)
+id_to_size = defaultdict(int)</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>for r in range(n):
+    for c in range(n):
+        if grid[r][c] &gt; 0 and not visited[r][c]:
+            idv, size, _ = bfs_component(grid, n, r, c, visited)
+            # 다시 한 번 같은 컴포넌트를 순회해 좌표들 수집
+            # (방금 BFS에서 좌표를 저장해도 되지만, 범위가 작아 재탐색해도 충분)
+            q = deque([(r, c)])
+            visited2 = set([(r, c)])
+            id_to_cells[idv].append((r, c))
+            cnt = 1
+            while q:
+                rr, cc = q.popleft()
+                for d in range(4):
+                    nr, nc = rr + DR[d], cc + DC[d]
+                    if in_range(n, nr, nc) and (nr, nc) not in visited2 and grid[nr][nc] == idv:
+                        visited2.add((nr, nc))
+                        id_to_cells[idv].append((nr, nc))
+                        q.append((nr, nc))
+                        cnt += 1
+            id_to_size[idv] = cnt  # size와 동일
+return id_to_cells, id_to_size
+</pre></div>
+</div>
+<p>def normalize_shape(cells):
+“””셀 좌표들을 (최소 r, 최소 c)을 (0,0)으로 옮긴 정규화 모양과
+모양의 최대 r, 최대 c(경계)를 반환”””
+min_r = min(r for r, _ in cells)
+min_c = min(c for _, c in cells)
+shape = [(r - min_r, c - min_c) for r, c in cells]
+max_r = max(r for r, _ in shape)
+max_c = max(c for _, c in shape)
+return shape, max_r, max_c</p>
+<p>def can_place(new_grid, n, shape, base_r, base_c):
+for dr, dc in shape:
+r, c = base_r + dr, base_c + dc
+if not in_range(n, r, c) or new_grid[r][c] != 0:
+return False
+return True</p>
+<p>def place(new_grid, shape, base_r, base_c, idv):
+for dr, dc in shape:
+new_grid[base_r + dr][base_c + dc] = idv</p>
+<p>def insert_and_split(n, grid, rect_r1, rect_c1, rect_r2, rect_c2, new_id):
+“””직사각형을 new_id로 덮어쓰고,
+그로 인해 분리된 기존 무리는 소멸시킨다.”””
+affected = set()
+# 기존 덮어쓰기(잡아먹힘)
+for r in range(rect_r1, rect_r2):
+for c in range(rect_c1, rect_c2):
+if grid[r][c] &gt; 0:
+affected.add(grid[r][c])
+grid[r][c] = new_id</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># 분리 여부 확인: 각 affected id에 대해 연결 성분 개수 count
+# 연결 성분이 2개 이상이면 해당 id 전부 소멸(0으로)
+if affected:
+    # 현재 grid에서 해당 id의 컴포넌트 수 세기
+    visited = [[False]*n for _ in range(n)]
+    comp_cnt = {aid: 0 for aid in affected}
+    for r in range(n):
+        for c in range(n):
+            if grid[r][c] in affected and not visited[r][c]:
+                idv, _, _ = bfs_component(grid, n, r, c, visited)
+                if idv in comp_cnt:
+                    comp_cnt[idv] += 1
+    # 소멸 처리
+    to_erase = {aid for aid, cnt in comp_cnt.items() if cnt &gt;= 2}
+    if to_erase:
+        for r in range(n):
+            for c in range(n):
+                if grid[r][c] in to_erase:
+                    grid[r][c] = 0
+</pre></div>
+</div>
+<p>def move_all(n, grid):
+“””규칙에 따라 새 배양 용기로 이동한 뒤의 격자를 반환”””
+id_to_cells, id_to_size = get_all_shapes(grid, n)</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># 이동 순서: (면적 내림차순, id 오름차순)
+order = sorted(id_to_size.items(), key=lambda x: (-x[1], x[0]))
+
+new_grid = [[0]*n for _ in range(n)]
+
+for idv, _sz in order:
+    cells = id_to_cells[idv]
+    shape, max_r, max_c = normalize_shape(cells)
+    placed = False
+
+    # x(열) 최소 → y(행) 최소 (즉, c를 먼저, r을 나중에 증가)
+    for c in range(0, n - max_c):
+        if placed:
+            break
+        for r in range(0, n - max_r):
+            if can_place(new_grid, n, shape, r, c):
+                place(new_grid, shape, r, c, idv)
+                placed = True
+                break
+    # 못 놓으면 소멸(=그냥 스킵)
+return new_grid
+</pre></div>
+</div>
+<p>def score(n, grid):
+“””최종 배치에서 인접한 서로 다른 무리 쌍의 면적 곱 합산”””
+# 모든 id의 면적 계산
+area = defaultdict(int)
+for r in range(n):
+for c in range(n):
+if grid[r][c] &gt; 0:
+area[grid[r][c]] += 1</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># 인접 쌍(우/하만 보면 중복 제거 가능)
+pairs = set()
+for r in range(n):
+    for c in range(n):
+        a = grid[r][c]
+        if a == 0:
+            continue
+        # 오른쪽
+        if c+1 &lt; n:
+            b = grid[r][c+1]
+            if b != 0 and b != a:
+                u, v = (a, b) if a &lt; b else (b, a)
+                pairs.add((u, v))
+        # 아래
+        if r+1 &lt; n:
+            b = grid[r+1][c]
+            if b != 0 and b != a:
+                u, v = (a, b) if a &lt; b else (b, a)
+                pairs.add((u, v))
+
+total = 0
+for a, b in pairs:
+    total += area[a] * area[b]
+return total
+</pre></div>
+</div>
+<p>def main():
+N, Q = map(int, input().split())
+grid = [[0]*N for _ in range(N)]
+# 실험은 id = 1..Q
+for new_id in range(1, Q+1):
+r1, c1, r2, c2 = map(int, input().split())
+# 1) 투입 + 분리 소멸 처리
+insert_and_split(N, grid, r1, c1, r2, c2, new_id)
+# 2) 이동
+grid = move_all(N, grid)
+# 3) 결과 출력
+print(score(N, grid))</p>
+<p>if <strong>name</strong> == “<strong>main</strong>”:
+main()</p>
+</div>
 </section>
 </section>
 
@@ -591,12 +815,8 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">3번 문제 해석</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#keys-to-the-solution">Keys to the Solution</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">5번 문제 해석</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">정답 코드</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">3번: 마법의 숲 탐색 문제 풀이</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">5번: 미생물 연구</a></li>
 </ul>
   </nav></div>
 
