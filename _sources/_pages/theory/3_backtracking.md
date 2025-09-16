@@ -548,5 +548,73 @@ if __name__ == '__main__':
 ### Permutations 관련 문제
 문제 - [프로그래머스 42839 소수찾기](https://school.programmers.co.kr/learn/courses/30/lessons/42839)
 
+````{toggle}
+```{code-block} python 
+
+
+# k없음, no contiguous, 중복 x -> permutation with no depth 
+def find_all_possible_numbers(start, numbers, path, visited):
+    if start > N:
+        return 
+    
+    all_candidates.append(''.join(path[:]))
+    for idx in range(N):
+        if not visited[idx]:
+            path.append(numbers[idx])
+            visited[idx] = True 
+            find_all_possible_numbers(idx+1, numbers, path, visited)
+            path.pop()
+            visited[idx] = False 
+
+def is_primary_num(num): 
+    if num == 0 or num == 1:
+        return False 
+    
+    # print(num)
+    for div in range(2, num):
+        if num % div == 0:
+            return False 
+    # print(num)
+    return True 
+
+
+def solution(numbers):
+    global N, all_candidates 
+
+    N = len(numbers)
+    all_candidates = []
+    answer = 0
+    visited = [False] * N
+    find_all_possible_numbers(0, numbers, [], visited)
+    # print(all_candidates)
+
+    # set  ex) '01' == '1'
+    all_candidates.remove('')
+    # print(all_candidates)
+    all_candidates = list(set(map(int, all_candidates)))
+    # print(all_candidates)
+
+    # iterate all numbers 
+    for num in all_candidates:
+        if is_primary_num(num):
+            answer += 1 
+    return answer
+
+if __name__ == '__main__':
+    # arr = "071"
+    # arr = "123"
+    arr = "17"
+    # arr = "011"
+    answer = solution(arr)
+    print(answer)
+```
+````
+
 ### Combination 관련 문제
 문제 - [프로그래머스 84512 모음 사전](https://school.programmers.co.kr/learn/courses/30/lessons/84512)
+
+````{toggle}
+```{code-block} python
+
+```
+````

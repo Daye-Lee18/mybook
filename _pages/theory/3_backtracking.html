@@ -196,6 +196,7 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../practice/1_implementationPS.html">Lecture 1-2. 구현 실습</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../practice/2_DFS_BFSPS.html">Lecture 2-2. DFS/BFS 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/3_backtrackingPS.html">Lecture 3-2. Backtracking 실습</a></li>
 </ul>
 
     </div>
@@ -876,10 +877,75 @@ c
 <section id="id5">
 <h3>Permutations 관련 문제<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
 <p>문제 - <a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/lessons/42839">프로그래머스 42839 소수찾기</a></p>
+<div class="toggle docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="c1"># k없음, no contiguous, 중복 x -&gt; permutation with no depth </span>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_all_possible_numbers</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">numbers</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">visited</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">start</span> <span class="o">&gt;</span> <span class="n">N</span><span class="p">:</span>
+        <span class="k">return</span> 
+    
+    <span class="n">all_candidates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">[:]))</span>
+    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">visited</span><span class="p">[</span><span class="n">idx</span><span class="p">]:</span>
+            <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">numbers</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+            <span class="n">visited</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span> 
+            <span class="n">find_all_possible_numbers</span><span class="p">(</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">numbers</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">visited</span><span class="p">)</span>
+            <span class="n">path</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+            <span class="n">visited</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span> 
+
+<span class="k">def</span><span class="w"> </span><span class="nf">is_primary_num</span><span class="p">(</span><span class="n">num</span><span class="p">):</span> 
+    <span class="k">if</span> <span class="n">num</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">num</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span> 
+    
+    <span class="c1"># print(num)</span>
+    <span class="k">for</span> <span class="n">div</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">num</span> <span class="o">%</span> <span class="n">div</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span> 
+    <span class="c1"># print(num)</span>
+    <span class="k">return</span> <span class="kc">True</span> 
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">solution</span><span class="p">(</span><span class="n">numbers</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">N</span><span class="p">,</span> <span class="n">all_candidates</span> 
+
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">numbers</span><span class="p">)</span>
+    <span class="n">all_candidates</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">answer</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">visited</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span>
+    <span class="n">find_all_possible_numbers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">numbers</span><span class="p">,</span> <span class="p">[],</span> <span class="n">visited</span><span class="p">)</span>
+    <span class="c1"># print(all_candidates)</span>
+
+    <span class="c1"># set  ex) &#39;01&#39; == &#39;1&#39;</span>
+    <span class="n">all_candidates</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="c1"># print(all_candidates)</span>
+    <span class="n">all_candidates</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">all_candidates</span><span class="p">)))</span>
+    <span class="c1"># print(all_candidates)</span>
+
+    <span class="c1"># iterate all numbers </span>
+    <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="n">all_candidates</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">is_primary_num</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+            <span class="n">answer</span> <span class="o">+=</span> <span class="mi">1</span> 
+    <span class="k">return</span> <span class="n">answer</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># arr = &quot;071&quot;</span>
+    <span class="c1"># arr = &quot;123&quot;</span>
+    <span class="n">arr</span> <span class="o">=</span> <span class="s2">&quot;17&quot;</span>
+    <span class="c1"># arr = &quot;011&quot;</span>
+    <span class="n">answer</span> <span class="o">=</span> <span class="n">solution</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">answer</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 </section>
 <section id="id6">
 <h3>Combination 관련 문제<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
 <p>문제 - <a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/lessons/84512">프로그래머스 84512 모음 사전</a></p>
+<div class="toggle docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
 </section>
 </section>
 </section>
