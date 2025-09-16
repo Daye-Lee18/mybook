@@ -942,7 +942,40 @@ c
 <h3>Combination 관련 문제<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
 <p>문제 - <a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/lessons/84512">프로그래머스 84512 모음 사전</a></p>
 <div class="toggle docutils container">
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+
+<span class="k">global</span> <span class="n">words_dict</span><span class="p">,</span> <span class="n">total</span><span class="p">,</span> <span class="n">chars</span>
+<span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">chars</span> <span class="o">=</span> <span class="s2">&quot;AEIOU&quot;</span>
+<span class="n">words_dict</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+<span class="c1"># words= &quot;AEIOU&quot;, k 1~5개 글자, 중복 허용, 순서 무관 &#39;A&#39;앞에 &#39;E&#39;가 와도 됨-&gt; k가 없는 combination (subsequences)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_words_dict</span><span class="p">(</span><span class="n">start</span><span class="p">,</span>  <span class="n">lev</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">total</span> 
+    <span class="k">if</span> <span class="n">lev</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="k">return</span> 
+    
+    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chars</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+        <span class="n">total</span> <span class="o">+=</span> <span class="mi">1</span> 
+        <span class="n">words_dict</span><span class="p">[</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">)]</span> <span class="o">=</span> <span class="n">total</span>
+        <span class="c1"># print(&#39;&#39;.join(path), total)</span>
+        <span class="n">create_words_dict</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">lev</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span><span class="c1"># 중복 허용, idx+1가 아닌 idx넣기</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">solution</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>
+    
+    <span class="n">answer</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">create_words_dict</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[])</span>
+    <span class="n">answer</span> <span class="o">=</span> <span class="n">words_dict</span><span class="p">[</span><span class="n">word</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">answer</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c1"># print(solution(&#39;EIO&#39;))</span>
+    <span class="c1"># print(solution(&#39;AAAE&#39;))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">solution</span><span class="p">(</span><span class="s1">&#39;I&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
