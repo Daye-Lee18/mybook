@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Lecture 3-2. Backtracking 실습 &#8212; 말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업</title>
+    <title>Lecture 4-1. Dynamic Programming &#8212; 말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업</title>
   
   
   
@@ -59,12 +59,13 @@
     <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '_pages/practice/3_backtrackingPS';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_pages/theory/4_DP';</script>
     <script src="https://unpkg.com/jupyterquiz@1.1.8/dist/jupyterquiz.min.js"></script>
     <link rel="icon" href="../../_static/favicon.png"/>
     <link rel="index" title="색인" href="../../genindex.html" />
     <link rel="search" title="검색" href="../../search.html" />
-    <link rel="prev" title="Lecture 2-2. DFS/BFS 실습" href="2_DFS_BFSPS.html" />
+    <link rel="next" title="Lecture 1-2. 구현 실습" href="../practice/1_implementationPS.html" />
+    <link rel="prev" title="Lecture 3-1. Backtracking" href="3_backtracking.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ko"/>
   </head>
@@ -183,18 +184,18 @@
             </li>
         </ul>
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">이론</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../theory/0_tips.html">문제 풀이 순서 팁 (Tips)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../theory/1_implementation.html">Lecture 1-1. 구현</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../theory/2_DFS_BFS.html">Lecture 2-1. DFS/BFS</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../theory/3_backtracking.html">Lecture 3-1. Backtracking</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../theory/4_DP.html">Lecture 4-1. Dynamic Programming</a></li>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="0_tips.html">문제 풀이 순서 팁 (Tips)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1_implementation.html">Lecture 1-1. 구현</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_DFS_BFS.html">Lecture 2-1. DFS/BFS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_backtracking.html">Lecture 3-1. Backtracking</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Lecture 4-1. Dynamic Programming</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">실습</span></p>
-<ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="1_implementationPS.html">Lecture 1-2. 구현 실습</a></li>
-<li class="toctree-l1"><a class="reference internal" href="2_DFS_BFSPS.html">Lecture 2-2. DFS/BFS 실습</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Lecture 3-2. Backtracking 실습</a></li>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../practice/1_implementationPS.html">Lecture 1-2. 구현 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/2_DFS_BFSPS.html">Lecture 2-2. DFS/BFS 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/3_backtrackingPS.html">Lecture 3-2. Backtracking 실습</a></li>
 </ul>
 
     </div>
@@ -249,7 +250,7 @@
       
       
       
-      <li><a href="../../_sources/_pages/practice/3_backtrackingPS.md" target="_blank"
+      <li><a href="../../_sources/_pages/theory/4_DP.md" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="소스 파일 다운로드"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -320,7 +321,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -331,11 +334,19 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Lecture 3-2. Backtracking 실습</h1>
+    <h1>Lecture 4-1. Dynamic Programming</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> 내용 </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dp">DP 문제 예시</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -345,14 +356,12 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="lecture-3-2-backtracking">
-<h1>Lecture 3-2. Backtracking 실습<a class="headerlink" href="#lecture-3-2-backtracking" title="Link to this heading">#</a></h1>
-<p>예시 문제 링크</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/odd-chess2/description">1번: 술래잡기 체스</a></p></li>
-<li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/woodstick-fraud/description">2번: 윷놀이 사기단</a></p></li>
-<li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/vaccine-for-virus/description">3번: 바이러스 백신</a></p></li>
-</ul>
+  <section class="tex2jax_ignore mathjax_ignore" id="lecture-4-1-dynamic-programming">
+<h1>Lecture 4-1. Dynamic Programming<a class="headerlink" href="#lecture-4-1-dynamic-programming" title="Link to this heading">#</a></h1>
+<p>컴퓨터는 연산 속도에 한계가 있고, 메모리 공간을 사용할 수 있는 데이터의 개수도 한정적이다. 따라서, 연산 속도와 메모리 공간을 최대한 효율적으로 활용하는 알고리즘을 작성해야한다. 다만, <strong>어떤 문제는 메모리 공간을 약간 더 사용하면 연산 속도를 비약적으로 증가</strong>시킬 수 있는 방법이 있다. 대표적으로 이번 장에서 다루는 다이나믹 프로그래밍 (Dynamic Programming, 동적 계획법)기법이다.</p>
+<section id="dp">
+<h2>DP 문제 예시<a class="headerlink" href="#dp" title="Link to this heading">#</a></h2>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -368,7 +377,7 @@ document.write(`
         },
         kernelOptions: {
             name: "python3",
-            path: "./_pages/practice"
+            path: "./_pages/theory"
         },
         predefinedOutput: true
     }
@@ -386,13 +395,22 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="2_DFS_BFSPS.html"
+       href="3_backtracking.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">이전</p>
-        <p class="prev-next-title">Lecture 2-2. DFS/BFS 실습</p>
+        <p class="prev-next-title">Lecture 3-1. Backtracking</p>
       </div>
+    </a>
+    <a class="right-next"
+       href="../practice/1_implementationPS.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">다음</p>
+        <p class="prev-next-title">Lecture 1-2. 구현 실습</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
     </a>
 </div>
                 </footer>
@@ -400,6 +418,21 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> 내용
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dp">DP 문제 예시</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>
