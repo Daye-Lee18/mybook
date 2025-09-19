@@ -346,6 +346,7 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1번: 마법의 숲 탐색 문제 풀이</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">3번: 미생물 연구</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">4번: 민트초코 우유</a></li>
 </ul>
             </nav>
         </div>
@@ -460,185 +461,170 @@ document.write(`
 </ol>
 </div>
 <div class="toggle docutils container">
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span> 
 
-<span class="c1"># 0=북, 1= 동, 2=남, 3=서</span>
-<span class="n">DY</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-<span class="n">DX</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-<span class="c1"># 아래 직하/좌하/우하 이동시, 비어있어야하는 상대 좌표 집합</span>
-<span class="c1"># 중심 기준 상대 좌표들이 모두 비어있어야 해당 ㅣㅇ동 가능</span>
-<span class="c1"># 아래로: 중심 아래 2칸, 좌/우 아래 1칸</span>
-<span class="n">TY</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">];</span> <span class="n">TX</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-<span class="c1"># 좌하: 왼쪽으로 틀며 내려갈 때 필요한 빈칸 (모서리 간섭 방지)</span>
-<span class="n">LY</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">];</span> <span class="n">LX</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="c1"># 우하 : 오른쪽으로 틀며 내려갈 때 필요한 빈칸 (모서리 간섭 방지)</span>
-<span class="n">RY</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">];</span> <span class="n">RX</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
-
-<span class="c1"># 출구 접속을 전파할 때, 한 골렘 중심 추변에서 &quot;출구 셀&quot;을 탐색할 8방 이웃</span>
-<span class="n">EY</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-<span class="n">EX</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-
+<span class="c1"># f= open(&#39;/Users/dayelee/Documents/GitHub/mybook/Input.txt&#39;, &#39;r&#39;)</span>
 <span class="n">R</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">K</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
-<span class="n">H</span> <span class="o">=</span> <span class="n">R</span> <span class="o">+</span> <span class="mi">3</span> <span class="c1"># 시뮬은 R위에 3행 더해서 (R+3)xC보드 사용</span>
+<span class="n">H</span> <span class="o">=</span> <span class="n">R</span> <span class="o">+</span> <span class="mi">3</span> 
+<span class="n">graph</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">H</span><span class="p">)]</span>
+<span class="n">id_to_center_dir</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
-<span class="c1"># arr: 골렘 몸 (심자 5칸)의 골렘 ID 기록 (0=빈칸)</span>
-<span class="c1"># exit_map = 출구 칸에 골렘 id 기록 (0=없음)</span>
-<span class="n">arr</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">C</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">H</span><span class="p">)]</span>
-<span class="n">exit_map</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">C</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">H</span><span class="p">)]</span> <span class="c1"># 해당 출구가 &quot;어느 골렘(Gid)의 출구인지 알아야함.&quot;</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">숲의 바깥방향에서 시작해 골렘의 중아이 c열이 되도록 하는 위치에서 내려옴. </span>
+<span class="sd">1) 남쪽 2) 서쪽 rotation + 아래 한 칸 3) 동쪽 rotation + 아래 한칸 </span>
+<span class="sd">---&gt; 가장 남쪽 도달 후에는 정령은 골렘 내에서 상하좌우 인접칸으로 이동 가능 </span>
+<span class="sd">---&gt; 최종에서 골렘의 몸 일부가 여전히 숲을 벗어난 상태라면 모든 골렘 삭제 및 새롭게 숲  탐색 -&gt; 이 경우 최종 위치를 답에 포함시키지 않음. </span>
+<span class="sd">---&gt; 골렘의 출구가 다른 골렘과 인접하다면 해당 출구를 통해 다른 골렘으로 이동 가능 </span>
+<span class="sd">----&gt; 정령이 도달하게 되는 최종 위치 누적 </span>
+<span class="sd">정령은 어떤 방향에서든 골렘에 탑승 가능, 내릴 때에는 정해진 출구를 통해서만 내릴 수 있음. </span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="c1"># 북, 동, 남 ,서 </span>
+<span class="n">AY</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">];</span> <span class="n">AX</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
-<span class="c1"># 각 골렘 정보와 결과 합</span>
-<span class="n">units</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">K</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># units[id] = (y, x,dir) 저장용으로 &quot;각 골렘의 중심 좌표와 출구 방향&quot;을 O(1)로 꺼내기 위한 인덱스 테이블 (최적화 탐색)</span>
-<span class="n">max_row</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">K</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># 각 골렘 컴포넌트의 &quot;도달 가능한 최대 행&quot; (원래 숲 기준 0 ~ R-1)</span>
-<span class="n">answer</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">DY</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">];</span> <span class="n">DX</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">LY</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">];</span> <span class="n">LX</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">RY</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">];</span> <span class="n">RX</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+<span class="n">max_values</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">K</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">in_range</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;골렘이 움직일 수 있는 구간&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="mi">0</span><span class="o">&lt;=</span> <span class="n">y</span><span class="o">&lt;</span> <span class="n">H</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="o">&lt;</span><span class="n">C</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="o">&lt;=</span><span class="n">y</span> <span class="o">&lt;</span><span class="n">H</span> <span class="ow">and</span> <span class="mi">0</span><span class="o">&lt;=</span><span class="n">x</span> <span class="o">&lt;</span> <span class="n">C</span> 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">in_forest</span><span class="p">(</span><span class="n">y</span> <span class="p">,</span><span class="n">x</span><span class="p">):</span>
-    <span class="c1"># 원래 숲 범위: 행 3...H-1 (R+2)</span>
-    <span class="k">return</span> <span class="mi">3</span> <span class="o">&lt;=</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">H</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="o">&lt;</span><span class="n">C</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">in_forest</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mi">3</span> <span class="o">&lt;=</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">H</span> <span class="ow">and</span> <span class="mi">0</span><span class="o">&lt;=</span><span class="n">x</span> <span class="o">&lt;</span> <span class="n">C</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">can_move</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">yofs</span><span class="p">,</span> <span class="n">xofs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    직하, 좌하, 우하 중 골렘이 갈 수 있음을 확인</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">dy</span><span class="p">,</span> <span class="n">dx</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">yofs</span><span class="p">,</span> <span class="n">xofs</span><span class="p">):</span>
-        <span class="n">ny</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">dy</span>
-        <span class="n">nx</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">dx</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">in_range</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span> <span class="ow">or</span> <span class="n">arr</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">can_move</span><span class="p">(</span><span class="n">cur_y</span><span class="p">,</span> <span class="n">cur_x</span><span class="p">,</span> <span class="n">DIR_Y</span><span class="p">,</span> <span class="n">DIR_X</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">dt_y</span><span class="p">,</span> <span class="n">dt_x</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">DIR_Y</span><span class="p">,</span> <span class="n">DIR_X</span><span class="p">):</span>
+        <span class="n">ny</span> <span class="o">=</span> <span class="n">cur_y</span> <span class="o">+</span> <span class="n">dt_y</span> 
+        <span class="n">nx</span> <span class="o">=</span> <span class="n">cur_x</span> <span class="o">+</span> <span class="n">dt_x</span> 
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">in_range</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span> <span class="ow">or</span> <span class="n">graph</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
+    
+    <span class="k">return</span> <span class="kc">True</span> 
 
-    <span class="k">return</span> <span class="kc">True</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">drop_and_settle</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
-    <span class="c1"># x, y,d에서 아래/좌하/우하를 우선순위대로 반복 시도</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">place</span><span class="p">(</span><span class="n">center_y</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="nb">dir</span><span class="p">):</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">center_y</span><span class="p">;</span> <span class="n">x</span> <span class="o">=</span> <span class="n">center_x</span>
+    
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">can_move</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">TY</span><span class="p">,</span> <span class="n">TX</span><span class="p">):</span>
-            <span class="n">y</span> <span class="o">+=</span> <span class="mi">1</span> <span class="c1"># 아래</span>
-            <span class="k">continue</span>
-        <span class="k">if</span> <span class="n">can_move</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">LY</span><span class="p">,</span> <span class="n">LX</span><span class="p">):</span>
-            <span class="n">d</span> <span class="o">=</span> <span class="p">(</span><span class="n">d</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span> <span class="o">%</span> <span class="mi">4</span> <span class="c1"># 좌하: 출구 좌회전</span>
-            <span class="n">y</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">x</span> <span class="o">-=</span> <span class="mi">1</span>
-            <span class="k">continue</span>
-        <span class="k">if</span> <span class="n">can_move</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">RY</span><span class="p">,</span> <span class="n">RX</span><span class="p">):</span>
-            <span class="n">d</span> <span class="o">=</span> <span class="p">(</span><span class="n">d</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">4</span> <span class="c1"># 우하: 출구 우회전</span>
-            <span class="n">y</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">x</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">continue</span>
-        <span class="k">break</span>
-    <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">d</span>
+        <span class="k">if</span> <span class="n">can_move</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">DY</span><span class="p">,</span> <span class="n">DX</span><span class="p">):</span> <span class="c1"># 아래 </span>
+            <span class="n">y</span> <span class="o">+=</span> <span class="mi">1</span> 
+            <span class="k">continue</span> 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">place_or_reset</span><span class="p">(</span><span class="n">id_</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
-    <span class="c1"># 십자 네 팔이 원래 숲 범위를 벗어나면 전체 초기화 후 False return</span>
-    <span class="k">for</span> <span class="n">dir4</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
-        <span class="c1"># arm_y, arm_x</span>
-        <span class="n">ay</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">DY</span><span class="p">[</span><span class="n">dir4</span><span class="p">],</span> <span class="n">x</span> <span class="o">+</span> <span class="n">DX</span><span class="p">[</span><span class="n">dir4</span><span class="p">]</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">in_forest</span><span class="p">(</span><span class="n">ay</span><span class="p">,</span> <span class="n">ax</span><span class="p">):</span>
-            <span class="c1"># 전체 리셋</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">H</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">C</span><span class="p">):</span>
-                    <span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-                    <span class="n">exit_map</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">can_move</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">LY</span><span class="p">,</span> <span class="n">LX</span><span class="p">):</span> <span class="c1"># 왼쪽 아래 </span>
+            <span class="n">y</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">x</span> <span class="o">-=</span> <span class="mi">1</span> 
+            <span class="nb">dir</span> <span class="o">=</span> <span class="p">(</span><span class="nb">dir</span> <span class="o">+</span><span class="mi">3</span><span class="p">)</span><span class="o">%</span><span class="mi">4</span>
+            <span class="k">continue</span> 
+         
+        <span class="k">if</span> <span class="n">can_move</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">RY</span><span class="p">,</span> <span class="n">RX</span><span class="p">):</span> <span class="c1"># 오른쪽 아래 </span>
+            <span class="n">y</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">x</span> <span class="o">+=</span> <span class="mi">1</span> 
+            <span class="nb">dir</span> <span class="o">=</span> <span class="p">(</span><span class="nb">dir</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="mi">4</span>
+            <span class="k">continue</span> 
 
-    <span class="c1"># 십자 네 팔이 원래 숲 범위 안에 있는 경우 True return</span>
-    <span class="c1"># 출구 표시</span>
-    <span class="n">ey</span><span class="p">,</span> <span class="n">ex</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">DY</span><span class="p">[</span><span class="n">d</span><span class="p">],</span> <span class="n">x</span> <span class="o">+</span> <span class="n">DX</span><span class="p">[</span><span class="n">d</span><span class="p">]</span>
-    <span class="n">exit_map</span><span class="p">[</span><span class="n">ey</span><span class="p">][</span><span class="n">ex</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_</span>
+        <span class="c1"># 위의 3가지 경우로 못가는 경우 멈춤 </span>
+        <span class="k">break</span> 
 
-    <span class="c1"># 몸통 (십자) 표시</span>
-    <span class="n">arr</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_</span>
-    <span class="k">for</span> <span class="n">dir4</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
-        <span class="n">ay</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">DY</span><span class="p">[</span><span class="n">dir4</span><span class="p">],</span> <span class="n">x</span> <span class="o">+</span> <span class="n">DX</span><span class="p">[</span><span class="n">dir4</span><span class="p">]</span>
-        <span class="n">arr</span><span class="p">[</span><span class="n">ay</span><span class="p">][</span><span class="n">ax</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_</span>
-
-    <span class="n">units</span><span class="p">[</span><span class="n">id_</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
-    <span class="k">return</span> <span class="kc">True</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">compute_component_maxrow</span><span class="p">(</span><span class="n">start_id</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    현재 골렘 기준으로 최대행 계산 및 출구-접속 가능한 골렘들에 대해</span>
-<span class="sd">    도달 가능한 최대 행 (원래 숲 좌표계) 값을 전파 (BFS)하며 갱신</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># 기본: 중심의 &#39;숲 내&#39; 행 인덱스 = x-3</span>
-    <span class="n">sy</span><span class="p">,</span> <span class="n">sx</span><span class="p">,</span> <span class="n">sd</span> <span class="o">=</span> <span class="n">units</span><span class="p">[</span><span class="n">start_id</span><span class="p">]</span>
-    <span class="c1"># max_row: “사람이 실제로 밟을 수 있는 빈 칸 중 가장 아래(=가장 큰 y)”를 저장</span>
-    <span class="c1"># base = sy - 1 # 골렘의 중심 기준으로 도달 가능한 최대 행을 저장</span>
+    <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="nb">dir</span>
 
 
-    <span class="c1"># 먼저, 현재 골렘의 출구 주변 4방에 인접한 &#39;몸&#39;이 있으면 그 골렘으로부터 더 큰 최대값을 물려받음</span>
-    <span class="n">best</span> <span class="o">=</span> <span class="n">sy</span> <span class="o">-</span> <span class="mi">1</span> <span class="c1"># 중심 칸은 본인이 점유해서 사람이 설 수 없기 때문. 가장 아래쪽의 빈 칸이 중심 바로 위(sy-1)이므로, 거기서부터 최대행을 잡아 전파(BFS)합니다.</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    이후 출구 접속으로 다른 골렘과 이어지면, 이 base와 이웃 골렘들의 max_row를 비교해가며 더 큰 값으로 갱신하죠.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># 출구 </span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    1단계: 초기 시드값 설정 </span>
-<span class="sd">    여기서는 현재 골렘의 출구 칸(ey,ex) 주변 4방(상하좌우) 에 다른 골렘의 몸(arr&gt;0) 이 닿아 있으면, 그 이웃 골렘이 이미 가지고 있던 max_row[nid]를 초기값(best) 로 상속받습니다.</span>
-<span class="sd">    이유: 막 방금 놓인 골렘이 이미 배치되어 있던 컴포넌트와 바로 출구-몸 접촉으로 연결되면, 그 컴포넌트의 “가장 아래까지 갈 수 있는 값”을 즉시 물려받아야 해요. 이걸 하지 않으면, 큐를 돌리면서 여러 번의 라운드를 거쳐야 반영되거나, 더 복잡한 재방문 로직이 필요해집니다.</span>
-<span class="sd">    즉, 이 단계는 현재 골렘의 시작값을 최대한 크게 만들어서 이후 전파를 한 번에 끝내려는 “초기화(시드) 단계”예요.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ey</span><span class="p">,</span> <span class="n">ex</span> <span class="o">=</span> <span class="n">sy</span> <span class="o">+</span> <span class="n">DY</span><span class="p">[</span><span class="n">sd</span><span class="p">],</span> <span class="n">sx</span> <span class="o">+</span> <span class="n">DX</span><span class="p">[</span><span class="n">sd</span><span class="p">]</span>
 
+<span class="k">def</span><span class="w"> </span><span class="nf">reset_or_settle</span><span class="p">(</span><span class="n">cy</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="nb">dir</span><span class="p">,</span> <span class="n">spirit_id</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">id_to_center_dir</span>
+    <span class="c1"># reset </span>
     <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
-        <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">ey</span> <span class="o">+</span> <span class="n">DY</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">ex</span> <span class="o">+</span> <span class="n">DX</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">in_range</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span> <span class="ow">and</span> <span class="n">arr</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">arr</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="o">!=</span> <span class="n">start_id</span><span class="p">:</span>
-            <span class="n">nid</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span>
-            <span class="n">best</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">best</span><span class="p">,</span> <span class="n">max_row</span><span class="p">[</span><span class="n">nid</span><span class="p">])</span>
+        <span class="n">ny</span> <span class="o">=</span> <span class="n">cy</span> <span class="o">+</span> <span class="n">AY</span><span class="p">[</span><span class="n">t</span><span class="p">];</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">cx</span> <span class="o">+</span> <span class="n">AX</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">in_forest</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">):</span>
+            <span class="c1"># reset :graph and id_to_center_dir</span>
+            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">H</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">C</span><span class="p">):</span>
+                    <span class="n">graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span> 
 
-    <span class="c1"># 시작 골렘의 현재 best 기록</span>
-    <span class="k">if</span> <span class="n">best</span> <span class="o">&gt;</span> <span class="n">max_row</span><span class="p">[</span><span class="n">start_id</span><span class="p">]:</span>
-        <span class="n">max_row</span><span class="p">[</span><span class="n">start_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">best</span>
+            <span class="n">id_to_center_dir</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="k">return</span> <span class="kc">False</span> 
+    <span class="k">else</span><span class="p">:</span> <span class="c1"># settle </span>
+        <span class="n">graph</span><span class="p">[</span><span class="n">cy</span><span class="p">][</span><span class="n">cx</span><span class="p">]</span> <span class="o">=</span> <span class="n">spirit_id</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+            <span class="n">ay</span> <span class="o">=</span> <span class="n">cy</span> <span class="o">+</span> <span class="n">AY</span><span class="p">[</span><span class="n">t</span><span class="p">];</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">cx</span> <span class="o">+</span> <span class="n">AX</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+            <span class="n">graph</span><span class="p">[</span><span class="n">ay</span><span class="p">][</span><span class="n">ax</span><span class="p">]</span> <span class="o">=</span> <span class="n">spirit_id</span>
 
-    <span class="c1"># 이제 출구가 &#39;맞닿아 있는&#39; 골렘들로 최대 행을 전파 (출구 맵 기준 8방)</span>
-    <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">([</span><span class="n">start_id</span><span class="p">])</span>
-    <span class="n">seen</span> <span class="o">=</span> <span class="p">{</span><span class="n">start_id</span><span class="p">}</span> <span class="c1"># set</span>
+        <span class="c1"># id_to_center_dict update </span>
+        <span class="n">id_to_center_dir</span><span class="p">[</span><span class="n">spirit_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cy</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="nb">dir</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span> 
+    
+<span class="k">def</span><span class="w"> </span><span class="nf">exit_cell</span><span class="p">(</span><span class="n">id_</span><span class="p">):</span>
+    <span class="n">cy</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cd</span> <span class="o">=</span> <span class="n">id_to_center_dir</span><span class="p">[</span><span class="n">id_</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">cy</span> <span class="o">+</span> <span class="n">AY</span><span class="p">[</span><span class="n">cd</span><span class="p">],</span> <span class="n">cx</span> <span class="o">+</span> <span class="n">AX</span><span class="p">[</span><span class="n">cd</span><span class="p">]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate</span><span class="p">(</span><span class="nb">id</span><span class="p">):</span>
+    <span class="c1"># 현재 위치 Max값 구하기 </span>
+    <span class="n">cy</span> <span class="o">=</span> <span class="n">id_to_center_dir</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">cx</span> <span class="o">=</span> <span class="n">id_to_center_dir</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">c_dir</span> <span class="o">=</span> <span class="n">id_to_center_dir</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="c1"># exit </span>
+    <span class="n">ey</span> <span class="o">=</span> <span class="n">cy</span> <span class="o">+</span> <span class="n">AY</span><span class="p">[</span><span class="n">c_dir</span><span class="p">]</span> 
+    <span class="n">ex</span> <span class="o">=</span> <span class="n">cx</span> <span class="o">+</span> <span class="n">AX</span><span class="p">[</span><span class="n">c_dir</span><span class="p">]</span>
+    
+    <span class="n">best</span> <span class="o">=</span> <span class="n">cy</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="mi">2</span> <span class="c1"># 현재 위치에서 골렘 아래 팔로 내려가는 것 - 2(원래 map에서의 column값)이 가장 큰 값 </span>
+    <span class="c1"># 현재 골렘의 출구와 연결되어 있는 골렘들의 max값으로 update </span>
+    <span class="c1"># 이미 다른 골렘들은 연결되어 있는 골렘들이 가진 max값으로 update되어 있기 때문에 출구에서 4 방향을 보는 것만으로 충분함. </span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+        <span class="n">ny</span> <span class="o">=</span> <span class="n">ey</span> <span class="o">+</span> <span class="n">AY</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+        <span class="n">nx</span> <span class="o">=</span> <span class="n">ex</span> <span class="o">+</span> <span class="n">AX</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">in_forest</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span> <span class="ow">and</span> <span class="n">graph</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">graph</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">id</span><span class="p">:</span>
+            <span class="n">best</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">best</span><span class="p">,</span> <span class="n">max_values</span><span class="p">[</span><span class="n">graph</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]])</span>
+
+    <span class="c1"># 현재 H 행이므로 H = R + 3 인데, 첫 행을 1부터 시작하므로 -3 + 1 해서 -2 </span>
+    <span class="n">max_values</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">best</span>
+
+    <span class="c1"># propagate </span>
+    <span class="c1"># 현재 골렘 옆에 있는 골렘 값들도 max 값으로 update해주기</span>
+    <span class="c1"># 8방향에서 내 쪽으로 들어올 수 있기 때문에, &quot;옆에 출구가 있는 것들에 한해&quot; 업데이트 해주기?! </span>
+    <span class="c1"># 연결되어 있지 않은 골렘들이 현재 id에 내려온 골렘때문에 연결될 수 있으므로 propagation </span>
+    <span class="n">Neighbor_Y</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="n">Neighbor_X</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">([(</span><span class="n">cy</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="nb">id</span><span class="p">)])</span> <span class="c1"># center y, x값을 넣어야함. </span>
+    <span class="n">visited</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
     <span class="k">while</span> <span class="n">q</span><span class="p">:</span>
-        <span class="n">gid</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
-        <span class="n">gy</span><span class="p">,</span> <span class="n">gx</span><span class="p">,</span> <span class="n">gd</span> <span class="o">=</span> <span class="n">units</span><span class="p">[</span><span class="n">gid</span><span class="p">]</span>
+        <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">cur_id</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
 
-        <span class="c1"># 중심 8방의 출구 칸들을 보며, 출구가 있는 다른 골렘을 찾는다.</span>
-        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
-             <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">gy</span> <span class="o">+</span> <span class="n">EY</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">gx</span> <span class="o">+</span> <span class="n">EX</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
-             <span class="k">if</span> <span class="n">in_range</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span> <span class="ow">and</span> <span class="n">exit_map</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-                 <span class="c1"># next id</span>
-                 <span class="n">nid</span> <span class="o">=</span> <span class="n">exit_map</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span>
-                 <span class="k">if</span> <span class="n">nid</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>
-                     <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nid</span><span class="p">)</span>
-                     <span class="c1"># 더 큰 최대행을 전파</span>
-                     <span class="k">if</span> <span class="n">max_row</span><span class="p">[</span><span class="n">gid</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">max_row</span><span class="p">[</span><span class="n">nid</span><span class="p">]:</span>
-                        <span class="n">max_row</span><span class="p">[</span><span class="n">nid</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_row</span><span class="p">[</span><span class="n">gid</span><span class="p">]</span>
-<span class="w">                        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">                        이 BFS전파는 큰 값 -&gt; 작은 값의 전파 규칙으로 설정됨. </span>
-<span class="sd">                        초기: A=5, B=10, edge: A—B</span>
-<span class="sd">                        큐 시작: A</span>
-
-<span class="sd">                        A(5) 방문 → B(10)은 더 크다 → 전파 안 함</span>
-<span class="sd">                        큐: [B]  # B는 이미 seen 처리됨</span>
-
-<span class="sd">                        B(10) 방문 → A(5)보다 크다 → A=10으로 업데이트</span>
-<span class="sd">                        &#39;&#39;&#39;</span>
-                     <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nid</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
+            <span class="n">ny</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">Neighbor_Y</span><span class="p">[</span><span class="n">t</span><span class="p">];</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">Neighbor_X</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> 
+            <span class="k">if</span> <span class="n">in_forest</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span> <span class="ow">and</span> <span class="n">graph</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">graph</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="o">!=</span> <span class="n">cur_id</span><span class="p">:</span>
+                <span class="c1"># 현재 위치가 다른 골렘의 출구인 경우만, propgate </span>
+                <span class="k">if</span> <span class="n">exit_cell</span><span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">])</span> <span class="o">==</span> <span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">):</span>
+                    <span class="n">n_id</span> <span class="o">=</span> <span class="n">graph</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">n_id</span> <span class="ow">in</span> <span class="n">visited</span><span class="p">:</span>
+                        <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">n_id</span><span class="p">)</span>
+                        <span class="c1"># update </span>
+                        <span class="n">max_values</span><span class="p">[</span><span class="n">n_id</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_values</span><span class="p">[</span><span class="n">n_id</span><span class="p">],</span> <span class="n">best</span><span class="p">)</span>
+                        <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">id_to_center_dir</span><span class="p">[</span><span class="n">n_id</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">id_to_center_dir</span><span class="p">[</span><span class="n">n_id</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">n_id</span><span class="p">))</span> <span class="c1"># center 값 update </span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">():</span>
-    <span class="k">global</span> <span class="n">answer</span>
-    <span class="k">for</span> <span class="n">gid</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">K</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">spirit_id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">K</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        
         <span class="n">c</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
-        <span class="c1"># 시작 지점: (1, c-1)에서 낙하 시작 (보드 상단 여유행 고려)</span>
-        <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">dir_</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">c</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">d</span>
-        <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">dir_</span> <span class="o">=</span> <span class="n">drop_and_settle</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">dir_</span><span class="p">)</span>
+        <span class="c1"># print(f&quot;from {c-1} column&quot;)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span> <span class="n">x</span> <span class="o">=</span> <span class="n">c</span> <span class="o">-</span><span class="mi">1</span> 
+        <span class="c1"># place, # 현재 골렘안의 정령이 최대로 갈 수 있는 위치 구하기 </span>
+        <span class="n">cur_y</span><span class="p">,</span> <span class="n">cur_x</span><span class="p">,</span> <span class="n">cur_dir</span> <span class="o">=</span> <span class="n">place</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
 
-        <span class="c1"># 놓을 수 없으면 전체 보드 초기화되고, 이 골렘은 스킵</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">place_or_reset</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">dir_</span><span class="p">):</span>
-            <span class="k">continue</span>
+        <span class="c1"># forest밖이면 reset, 아니면 graph및 id_to_center_dirs에 표시 </span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">reset_or_settle</span><span class="p">(</span><span class="n">cur_y</span><span class="p">,</span> <span class="n">cur_x</span><span class="p">,</span> <span class="n">cur_dir</span><span class="p">,</span> <span class="n">spirit_id</span><span class="p">):</span>
+            <span class="c1"># print(f&quot;max y of {spirit_id}: ignore&quot;)</span>
+            <span class="c1"># for row in graph:</span>
+            <span class="c1">#     print(row[:])</span>
+            <span class="k">continue</span> 
 
-        <span class="c1"># 이 골렘 기준으로 최대행 계산 및 출구 접속 전파</span>
-        <span class="n">compute_component_maxrow</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
-        <span class="n">answer</span> <span class="o">+=</span> <span class="n">max_row</span><span class="p">[</span><span class="n">gid</span><span class="p">]</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="n">answer</span><span class="p">)</span>
+        <span class="n">calculate</span><span class="p">(</span><span class="n">spirit_id</span><span class="p">)</span>
+        <span class="c1"># print(f&quot;max y of {spirit_id}: {max_values[spirit_id]}&quot;)</span>
+        <span class="c1"># for row in graph:</span>
+        <span class="c1">#     print(row[:])</span>
+        <span class="n">total</span> <span class="o">+=</span> <span class="n">max_values</span><span class="p">[</span><span class="n">spirit_id</span><span class="p">]</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="n">total</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">solve</span><span class="p">()</span>
@@ -1266,6 +1252,9 @@ document.write(`
 2 4 6 7<br></p>
 </div>
 </section>
+<section id="id3">
+<h2>4번: 민트초코 우유<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -1334,6 +1323,7 @@ document.write(`
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1번: 마법의 숲 탐색 문제 풀이</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">3번: 미생물 연구</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">4번: 민트초코 우유</a></li>
 </ul>
   </nav></div>
 
