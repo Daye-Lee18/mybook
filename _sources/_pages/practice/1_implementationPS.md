@@ -303,6 +303,24 @@ if __name__ == "__main__":
             - 확인하는 두 무리가 A,B라면 (미생물 A영역의 넓이) x (미생물 B영역의 넓이) 성과 
             - 확인한 모든 쌍의 성과 기록 
 ```
+
+````{admonition} debugging시 CCW 90도 rotation 적용
+:class: dropdown 
+
+```{code-block} python
+def print_rotated_CCW_90(my_map):
+    # new_map = [[0] * N for _ in range(N)]
+    for y in range(N):
+        for x in range(N):
+            # new_map[y][x] = my_map[N-x-1][y]
+            print(my_map[x][N-y-1], end=' ')
+        print()
+
+print_rotated_CCW_90(graph)
+    
+```
+````
+
 ````{admonition} 원점위치에 따른 좌표 변환 
 :class: dropdown 
 
@@ -318,201 +336,24 @@ https://colab.research.google.com/github/Daye-Lee18/mybook/blob/main/assets/ipyn
 - **뒤집기**: 상하=**row만 뒤집기**, 좌우=**col만 뒤집기**  
 ````
 
-````{toggle}
+````{admonition} sort
+:class: dropdown 
+주의해야할 것은, `lowest`와 `rear`을 비교하는 것! 
 ```{code-block} python
-import sys
-from collections import deque, defaultdict
-
-input = sys.stdin.readline
-
-# 방향: 상하좌우 (행, 열)
-DR = (-1, 1, 0, 0)
-DC = (0, 0, -1, 1)
-
-def in_range(n, r, c):
-    return 0 <= r < n and 0 <= c < n
-
-def bfs_component(grid, n, sr, sc, visited):
-    """grid[sr][sc]의 id로 연결된 컴포넌트 크기와
-       인접한 다른 id 집합을 반환"""
-    idv = grid[sr][sc]
-    q = deque([(sr, sc)])
-    visited[sr][sc] = True
-    size = 1
-    adj = set()
-
-    while q:
-        r, c = q.popleft()
-        for d in range(4):
-            nr, nc = r + DR[d], c + DC[d]
-            if not in_range(n, nr, nc):
-                continue
-            nid = grid[nr][nc]
-            if nid == idv and not visited[nr][nc]:
-                visited[nr][nc] = True
-                q.append((nr, nc))
-                size += 1
-            elif nid != idv:
-                adj.add(nid)  # 0 포함해도 뒤에서 걸러냄
-    return idv, size, adj
-
-def get_all_shapes(grid, n):
-    """현재 용기의 모든 무리(id>0)에 대해
-       각 id의 셀 좌표 리스트와 면적을 구한다."""
-    visited = [[False]*n for _ in range(n)]
-    id_to_cells = defaultdict(list)
-    id_to_size = defaultdict(int)
-
-    for r in range(n):
-        for c in range(n):
-            if grid[r][c] > 0 and not visited[r][c]:
-                idv, size, _ = bfs_component(grid, n, r, c, visited)
-                # 다시 한 번 같은 컴포넌트를 순회해 좌표들 수집
-                # (방금 BFS에서 좌표를 저장해도 되지만, 범위가 작아 재탐색해도 충분)
-                q = deque([(r, c)])
-                visited2 = set([(r, c)])
-                id_to_cells[idv].append((r, c))
-                cnt = 1
-                while q:
-                    rr, cc = q.popleft()
-                    for d in range(4):
-                        nr, nc = rr + DR[d], cc + DC[d]
-                        if in_range(n, nr, nc) and (nr, nc) not in visited2 and grid[nr][nc] == idv:
-                            visited2.add((nr, nc))
-                            id_to_cells[idv].append((nr, nc))
-                            q.append((nr, nc))
-                            cnt += 1
-                id_to_size[idv] = cnt  # size와 동일
-    return id_to_cells, id_to_size
-
-def normalize_shape(cells):
-    """셀 좌표들을 (최소 r, 최소 c)을 (0,0)으로 옮긴 정규화 모양과
-       모양의 최대 r, 최대 c(경계)를 반환"""
-    min_r = min(r for r, _ in cells)
-    min_c = min(c for _, c in cells)
-    shape = [(r - min_r, c - min_c) for r, c in cells]
-    max_r = max(r for r, _ in shape)
-    max_c = max(c for _, c in shape)
-    return shape, max_r, max_c
-
-def can_place(new_grid, n, shape, base_r, base_c):
-    for dr, dc in shape:
-        r, c = base_r + dr, base_c + dc
-        if not in_range(n, r, c) or new_grid[r][c] != 0:
-            return False
-    return True
-
-def place(new_grid, shape, base_r, base_c, idv):
-    for dr, dc in shape:
-        new_grid[base_r + dr][base_c + dc] = idv
-
-def insert_and_split(n, grid, rect_r1, rect_c1, rect_r2, rect_c2, new_id):
-    """직사각형을 new_id로 덮어쓰고,
-       그로 인해 분리된 기존 무리는 소멸시킨다."""
-    affected = set()
-    # 기존 덮어쓰기(잡아먹힘)
-    for r in range(rect_r1, rect_r2):
-        for c in range(rect_c1, rect_c2):
-            if grid[r][c] > 0:
-                affected.add(grid[r][c])
-            grid[r][c] = new_id
-
-    # 분리 여부 확인: 각 affected id에 대해 연결 성분 개수 count
-    # 연결 성분이 2개 이상이면 해당 id 전부 소멸(0으로)
-    if affected:
-        # 현재 grid에서 해당 id의 컴포넌트 수 세기
-        visited = [[False]*n for _ in range(n)]
-        comp_cnt = {aid: 0 for aid in affected}
-        for r in range(n):
-            for c in range(n):
-                if grid[r][c] in affected and not visited[r][c]:
-                    idv, _, _ = bfs_component(grid, n, r, c, visited)
-                    if idv in comp_cnt:
-                        comp_cnt[idv] += 1
-        # 소멸 처리
-        to_erase = {aid for aid, cnt in comp_cnt.items() if cnt >= 2}
-        if to_erase:
-            for r in range(n):
-                for c in range(n):
-                    if grid[r][c] in to_erase:
-                        grid[r][c] = 0
-
-def move_all(n, grid):
-    """규칙에 따라 새 배양 용기로 이동한 뒤의 격자를 반환"""
-    id_to_cells, id_to_size = get_all_shapes(grid, n)
-
-    # 이동 순서: (면적 내림차순, id 오름차순)
-    order = sorted(id_to_size.items(), key=lambda x: (-x[1], x[0]))
-
-    new_grid = [[0]*n for _ in range(n)]
-
-    for idv, _sz in order:
-        cells = id_to_cells[idv]
-        shape, max_r, max_c = normalize_shape(cells)
-        placed = False
-
-        # x(열) 최소 → y(행) 최소 (즉, c를 먼저, r을 나중에 증가)
-        for c in range(0, n - max_c):
-            if placed:
-                break
-            for r in range(0, n - max_r):
-                if can_place(new_grid, n, shape, r, c):
-                    place(new_grid, shape, r, c, idv)
-                    placed = True
-                    break
-        # 못 놓으면 소멸(=그냥 스킵)
-    return new_grid
-
-def score(n, grid):
-    """최종 배치에서 인접한 서로 다른 무리 쌍의 면적 곱 합산"""
-    # 모든 id의 면적 계산
-    area = defaultdict(int)
-    for r in range(n):
-        for c in range(n):
-            if grid[r][c] > 0:
-                area[grid[r][c]] += 1
-
-    # 인접 쌍(우/하만 보면 중복 제거 가능)
-    pairs = set()
-    for r in range(n):
-        for c in range(n):
-            a = grid[r][c]
-            if a == 0:
-                continue
-            # 오른쪽
-            if c+1 < n:
-                b = grid[r][c+1]
-                if b != 0 and b != a:
-                    u, v = (a, b) if a < b else (b, a)
-                    pairs.add((u, v))
-            # 아래
-            if r+1 < n:
-                b = grid[r+1][c]
-                if b != 0 and b != a:
-                    u, v = (a, b) if a < b else (b, a)
-                    pairs.add((u, v))
-
-    total = 0
-    for a, b in pairs:
-        total += area[a] * area[b]
-    return total
-
-def main():
-    N, Q = map(int, input().split())
-    grid = [[0]*N for _ in range(N)]
-    # 실험은 id = 1..Q
-    for new_id in range(1, Q+1):
-        r1, c1, r2, c2 = map(int, input().split())
-        # 1) 투입 + 분리 소멸 처리
-        insert_and_split(N, grid, r1, c1, r2, c2, new_id)
-        # 2) 이동
-        grid = move_all(N, grid)
-        # 3) 결과 출력
-        print(score(N, grid))
-
-if __name__ == "__main__":
-    main()
-
+# sort id_to_locs_list in descending order of the area and id 
+list_len = len(id_to_locs_list)
+for f in range(list_len):
+    lowest = f 
+    for r in range(f+1, list_len):
+        if not compare(len(id_to_locs_list[lowest][1]), len(id_to_locs_list[r][1]), id_to_locs_list[lowest][0], id_to_locs_list[r][0]):
+            lowest = r 
+            
+    
+    # SWAP 
+    if lowest != f:
+        temp = id_to_locs_list[f]
+        id_to_locs_list[f] = id_to_locs_list[lowest]
+        id_to_locs_list[lowest] = temp 
 ```
 ````
 
@@ -814,4 +655,227 @@ def is_adjacent(id1, id2, locs1, locs2):
 if __name__ == '__main__':
     solve()
 ```
+````
+
+````{admonition} 내 문제 풀이 2
+:class: dropdown
+debugging시 graph를 CCW 90로 돌려서 풀고, 실제 문제 구현할때는 (c, r)로 구현하여 푼 문제. 
+0,0은 좌상단이므로, 미생물을 옮길때는 outer loop이 y, inter loop이 x가 온다. 
+
+```{code-block} python 
+from collections import deque
+
+# f = open("/Users/dayelee/Documents/GitHub/mybook/Input.txt", 'r')
+
+N, Q = map(int, input().split())
+graph = [[0]*N for _ in range(N)]
+DY = [-1, 1, 0, 0]; DX = [0, 0, -1, 1]
+
+def print_rotated_CCW_90(my_map):
+    # new_map = [[0] * N for _ in range(N)]
+    for y in range(N):
+        for x in range(N):
+            # new_map[y][x] = my_map[N-x-1][y]
+            print(my_map[x][N-y-1], end=' ')
+        print()
+    
+
+def in_range(y, x):
+    return 0<=y < N and 0<=x<N 
+
+def find_count_and_locs(id):
+
+    count = 0 
+    visited = set()
+
+    for y in range(N):
+        for x in range(N):
+            if (y, x) not in visited and graph[y][x] == id:
+                q = deque([(y, x)])
+                visited.add((y, x))
+                
+                while q:
+                    cur_y, cur_x = q.popleft()
+
+                    for t in range(4):
+                        ny = cur_y + DY[t] ; nx = cur_x + DX[t]
+
+                        if in_range(ny, nx) and (not (ny,nx) in visited) and graph[ny][nx] == id:
+                            visited.add((ny, nx))
+
+                            q.append((ny, nx))
+                
+                count += 1 
+
+    # visited sort in ascending order 
+    visited = list(visited)
+    visited.sort()
+
+    return count, visited
+
+def place_new_microbe(r1, c1, r2, c2, m_id):
+    removed_id = set()
+    # inclusive ~ exclusive 
+    for y in range(r1, r2):
+        for x in range(c1, c2): 
+            if graph[y][x] != 0 and graph[y][x] != m_id:
+                removed_id.add(graph[y][x])
+            graph[y][x] = m_id
+
+    # check current id_to_cells 
+
+    # for removed microbe, check if they are separated into 2 groups 
+    for id in removed_id:
+        count, locs = find_count_and_locs(id)
+        if count >= 2: 
+            for loc in locs:
+                graph[loc[0]][loc[1]] = 0 
+
+def move(cur_id):
+
+    # STEP1: order priorities: 1. 가장 큰 영역 차지 2. id가 작은 것 
+    # 이전부터 현재까지 id에 대해 id_to_dict variable 생성 
+    id_to_locs_list = []
+    for id in range(1, cur_id+1):
+        count, locs = find_count_and_locs(id)
+        if count > 0:
+            id_to_locs_list.append((id, locs))
+
+    # sort id_to_locs_list in descending order of the area and id 
+    list_len = len(id_to_locs_list)
+    for f in range(list_len):
+        lowest = f 
+        for r in range(f+1, list_len):
+            if not compare(len(id_to_locs_list[lowest][1]), len(id_to_locs_list[r][1]), id_to_locs_list[lowest][0], id_to_locs_list[r][0]):
+                lowest = r 
+                
+        
+        # SWAP 
+        if lowest != f:
+            temp = id_to_locs_list[f]
+            id_to_locs_list[f] = id_to_locs_list[lowest]
+            id_to_locs_list[lowest] = temp 
+
+    # 옮길 때는 1. 기존 배양 형태를 벗어나지 않고, 2. 다른 미생물 영역과 겹치지 않도록 3. x좌표가 작은 위치 -> y좌표가 작은 위치
+    # 옮길 수 없으면 새 용기에 옮겨지지 않고 사라짐. 
+    new_graph = [[0]*N for _ in range(N)]
+    return_id_and_locs = []
+    for idx in range(list_len):
+        # if idx == 3:
+        #     print('3')
+        cur_id = id_to_locs_list[idx][0]
+        cur_locs = id_to_locs_list[idx][1]
+        # 새 origin 찾기 : x좌표가 작은 위치 -> y좌표가 작은 위치이므로 b좌표가 Outer loop
+        # 현재 y와 x가 바뀌어 있는 상태라, 반대로 적음 
+        for a in range(N):
+            for b in range(N):
+                flag = True 
+                new_origin_y = a; new_origin_x = b 
+                # locs의 맨처음 (y, x)위치가 (0, 0) origin에 가장 가까울 것 : locs는 ascending order로 이미 sort되어 있음 
+                diff_y = cur_locs[0][0] - new_origin_y
+                diff_x = cur_locs[0][1] - new_origin_x
+                for cur_y, cur_x in cur_locs:
+                    if (not in_range(cur_y - diff_y, cur_x - diff_x)) or (new_graph[cur_y - diff_y][cur_x - diff_x] != 0):
+                        flag = False 
+                        break
+
+                if flag: # ok to move 
+                    return_id_and_locs.append((cur_id, []))
+                    for cur_y, cur_x in cur_locs:
+                        new_graph[cur_y - diff_y][cur_x-diff_x] = cur_id
+                        # return_id_and_area에 넣기 
+                        # cur_locs이 아니라, 변경된 위치를 넣어줘야함. 
+                        return_id_and_locs[-1][1].append((cur_y - diff_y,cur_x-diff_x ))
+                    # return_id_and_locs.append((cur_id, cur_locs))
+                    # move가 끝나면 다음 idx로 넘어가야함. 
+                    break 
+            if flag:
+                break
+
+
+    # original graph update 
+    for idx, row in enumerate(new_graph):
+        graph[idx] = row[:]
+
+    return return_id_and_locs
+
+
+def compare(len1, len2, id1, id2):
+    if len1 != len2:
+        return len1 > len2 
+    return id1 < id2 
+
+def connected(locs1, id2):
+    for l1 in locs1:
+        # for l2 in locs2:
+        for t in range(4):
+            ny = l1[0] + DY[t]; nx = l1[1] + DX[t]
+            if in_range(ny, nx) and graph[ny][nx] == id2:
+                return True 
+
+    return False 
+
+     
+def calculate(id_to_locs):
+    if len(id_to_locs) <= 1:
+        return 0 
+    
+    id_len = len(id_to_locs)
+    total = 0 
+    # 인접한 것 끼리만 계산 
+    for f in range(id_len):
+        for r in range(f+1, id_len):
+            # 인접하면 
+            if connected(id_to_locs[f][1], id_to_locs[r][0]):
+                total += len(id_to_locs[f][1]) * len(id_to_locs[r][1]) 
+
+    return total
+    
+
+def solve():
+    for microbe_id in range(1, Q+1):
+        r1, c1, r2, c2 = map(int, input().split())
+
+        # place new microbe 
+        place_new_microbe(r1, c1, r2, c2, microbe_id)
+    
+        # print(f"Cur graph after putting ({r1, c1})~ ({r2, c2})")
+        # print_rotated_CCW_90(graph)
+
+        # move them 
+        id_to_locs = move(microbe_id)
+        # print(f"After Move:")
+        # print_rotated_CCW_90(graph)
+
+        # calculate points 
+        print(calculate(id_to_locs))
+
+
+if __name__ == '__main__':
+    solve()
+```
+````
+
+````{admonition} test case 
+:class: dropdown
+1. 
+8 4 <br>
+2 2 5 6<br>
+2 3 5 8<br>
+2 0 5 3<br>
+1 1 6 6<br>
+
+2.
+3 3<br>
+0 0 3 2 <br>
+1 0 3 3<br>
+2 2 3 3<br>
+
+3. 
+8 5<br>
+0 0 2 5<br>
+1 1 5 6<br>
+1 0 3 6<br>
+7 7 8 8<br>
+2 4 6 7<br>
 ````
