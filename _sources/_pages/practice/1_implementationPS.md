@@ -33,13 +33,17 @@ https://colab.research.google.com/github/Daye-Lee18/mybook/blob/main/assets/ipyn
        - 한 번의 시도마다 열 c(1…C), 출구 방향 d(0:북, 1:동, 2:남, 3:서) 가 주어진다. 골렘은 십자(+) 모양(중심+상하좌우) 으로 5칸을 차지하며, 출구는 중심에서 d 방향으로 인접한 1칸이다. 
 ```
 
+
 ```{admonition} graph의 확장 
 :class: dropdown
 ![3-1](../../assets/img/implementationPS/3/1.png)
 
 In the beginning, the golem may extend up to `3 cells` above the forest. To handle this, we add 3 buffer rows at the top of the grid. These buffer rows are not part of the forest but provide enough room for the golem to move and settle safely. 
 ```
-
+````{admonition} max value of each id 
+graph를 확장했으므로 (H= R + 3), best는 현재 골렘의 center_y, center_x보다 한 칸 아래인 것 ((cy +1, cx)이 맞으나, 
+확장된 그래프 전의 index를 사용해야하므로 (cy + 1 -3, cx)이다. 하지만, 1열을 0이 아닌 1로 표시하므로 (cy + 1 -3 +1, cx)로 결국 (cy -1, cx)가 된다. 
+````
 ```{admonition} 각 step 구현 
 :class: dropdown
 
@@ -69,6 +73,9 @@ We maintain two separate grids: `golem_arr` and `exit_map`. The `golem array` re
 
 ```{admonition} 최댓값 전파  
 :class: dropdown
+
+현재 골렘의 최댓값을 전파하려면, "다른 골렘의 '출구'"와 맞닿아있어야함. 따라서, 현재 골렘 8방에 다른 골렘의 출구가 있는지 출구 일때에만 전파를 해주는 것을 명심! 
+
 ![3-7](../../assets/img/implementationPS/3/7.png)
 
 Finally, let’s look at how we propagate the maximum reachable row. 
