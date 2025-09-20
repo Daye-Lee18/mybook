@@ -11,6 +11,7 @@ parts:
   - file: _pages/theory/1_implementation
   - file: _pages/theory/2_DFS_BFS
   - file: _pages/theory/3_backtracking
+  - file: _pages/theory/4_DP
 
 
 - caption: 실습
@@ -18,4 +19,5 @@ parts:
   - file: _pages/practice/1_implementationPS
   - file: _pages/practice/2_DFS_BFSPS
   - file: _pages/practice/3_backtrackingPS
+  - file: _pages/practice/4_DPPS
 

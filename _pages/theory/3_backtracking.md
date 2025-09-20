@@ -54,6 +54,24 @@ Without `pop` (unchoose), it is impossible to prevent duplicate solutions or cor
 Combination means selecting a fixed number of elements (`depth = k`) without considering order.
 The key idea: different orders of the same elements are considered the same, and we must handle duplicates carefully.
 
+```{admonition} Tip!
+:class: tip
+We explore a decision tree where each level adds one element to the current path until the path length reaches `k`. Because order does not matter, we avoid revisiting earlier indices.
+```
+
+Key terms 
+## Key terms  
+
+| Term     | Meaning                                      | In the tree                 | Example (nums = [1,2,3,4], k = 2)          |
+|----------|----------------------------------------------|-----------------------------|--------------------------------------------|
+| `Depth`  | How many elements we have chosen so far (target: k) | Vertical (levels)           | depth 0 → 1 → 2 (stop at k=2)              |
+| `Branch` | How many options we can choose at this point (remaining candidates) | Horizontal (fan-out at a node) | from index start, options are start..n-1   |
+
+- Depth grows as we choose elements (vertical).
+- Branch is the number of available choices at the current level (horizontal).
+
+Because combinations ignore order, we move start forward so we never pick the same index twice in one path.
+
 ### Combination without repetition (중복 불허)
 
 Example: choosing 2 cards out of `[1, 2, 3]`.
