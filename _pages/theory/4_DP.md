@@ -153,3 +153,41 @@ print(d[n])
 ````
 
 ## 예시 문제 
+
+### 1D DP 
+
+#### Climbing Stairs 
+문제 - [Leetcode 70](https://leetcode.com/problems/climbing-stairs/?envType=study-plan-v2&envId=top-interview-150)
+
+#### House Robber 
+문제 - [Leetcode 198](https://leetcode.com/problems/house-robber/description/?envType=study-plan-v2&envId=top-interview-150)
+
+#### Word Break
+문제 - [Leetcode 139](https://leetcode.com/problems/word-break/description/?envType=study-plan-v2&envId=top-interview-150)
+
+#### Coin Change 
+문제 - [Leetcode 322](https://leetcode.com/problems/coin-change/description/?envType=study-plan-v2&envId=top-interview-150)
+
+#### Longest Increasing Subsequences 
+문제 - [Leetcode 300](https://leetcode.com/problems/longest-increasing-subsequence/?envType=study-plan-v2&envId=top-interview-150)
+
+### Multidimensional DP 
+
+#### Triangle 
+문제 - [Leetcode 120](https://leetcode.com/problems/triangle/description/?envType=study-plan-v2&envId=top-interview-150)
+
+#### Minimum Path Sum
+문제 - [Leetcode 64](https://leetcode.com/problems/minimum-path-sum/description/?envType=study-plan-v2&envId=top-interview-150)
+
+#### Unique Path II
+문제 - [Leetcode 63](https://leetcode.com/problems/unique-paths-ii?envType=study-plan-v2&envId=top-interview-150)
+
+#### Longest Palindromic Substring 
+문제 - [Leetcode 5](https://leetcode.com/problems/longest-palindromic-substring/description/?envType=study-plan-v2&envId=top-interview-150)
+
+#### Interleaving String 
+문제 - [Leetcode 97](https://leetcode.com/problems/interleaving-string/description/?envType=study-plan-v2&envId=top-interview-150)
+
+#### Edit Distance 
+문제 - [Leetcode 72](https://leetcode.com/problems/edit-distance/description/?envType=study-plan-v2&envId=top-interview-150)
+
