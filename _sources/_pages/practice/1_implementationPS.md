@@ -40,7 +40,8 @@ https://colab.research.google.com/github/Daye-Lee18/mybook/blob/main/assets/ipyn
 
 In the beginning, the golem may extend up to `3 cells` above the forest. To handle this, we add 3 buffer rows at the top of the grid. These buffer rows are not part of the forest but provide enough room for the golem to move and settle safely. 
 ```
-````{admonition} max value of each id 
+````{admonition} max value of each id
+:class: dropdown
 graph를 확장했으므로 (H= R + 3), best는 현재 골렘의 center_y, center_x보다 한 칸 아래인 것 ((cy +1, cx)이 맞으나, 
 확장된 그래프 전의 index를 사용해야하므로 (cy + 1 -3, cx)이다. 하지만, 1열을 0이 아닌 1로 표시하므로 (cy + 1 -3 +1, cx)로 결국 (cy -1, cx)가 된다. 
 ````
