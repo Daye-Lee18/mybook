@@ -101,8 +101,8 @@ print(fibo(99))
 
 ```{admonition} DP 개념 정리 
 :class: note 
-1.큰 문제를 작은 문제로 나눔: 문제를 세분화해서 풀기 
-1. 중복되는 작은 문제는 "한 번만" 계산: 계산이 반복되면 결과를 저장 (메모이제이션/테이블화)해서 재사용 
+1. 큰 문제를 작은 문제로 나눔: 문제를 세분화해서 풀기 
+2. 중복되는 작은 문제는 "한 번만" 계산: 계산이 반복되면 결과를 저장 (메모이제이션/테이블화)해서 재사용 
 
 즉, "중복되는 부분 문제 (overlapping subproblems)"를 효율적으로 처리하는 방식
 ```
@@ -159,12 +159,148 @@ print(d[n])
 #### Climbing Stairs 
 문제 - [Leetcode 70](https://leetcode.com/problems/climbing-stairs/?envType=study-plan-v2&envId=top-interview-150)
 
+````{toggle}
+
+Bottom-up 방식으로 쉽게 풀 수 있다. 현재 선택지는 +1, +2칸이므로 f(n)을 계산하는 경우 n-1 칸에서 한 칸 오른 것 즉, f(n-1)과 n-2칸 에서 +2칸 오른 것 f(n-2)를 더한 것과 동일하다. 
+
+```{code-block} python
+class Solution:
+    def climbStairs(self, n: int) -> int:
+        '''
+        1 = 1
+
+        N=2 
+        1 + 1 
+        2 
+
+        N = 3 
+        1 + 1 + 1 
+        1 + 2 
+        2 + 1 
+        
+        N = 4 
+        1 + 1 + 1 + 1 
+        1 + 2 + 1 
+        2 + 1 + 1 
+        1 + 1 + 2 
+        2 + 2 
+
+        즉, f(N) = f(N-1) + f(N-2)
+        f(N-1)에서는 1만 더하면 되고 f(N-2)는 2를 더하면 됨. 
+        '''
+        dp = [0] * (n+1)
+        if n <=2:
+            return n
+        dp[1] = 1
+        dp[2] = 2
+        for i in range(3, n+1):
+            dp[i] = dp[i-1] + dp[i-2]
+
+        return dp[n]
+
+if __name__ == '__main__':
+    s = Solution()
+    print(s.climbStairs(3))
+```
+````
 #### House Robber 
 문제 - [Leetcode 198](https://leetcode.com/problems/house-robber/description/?envType=study-plan-v2&envId=top-interview-150)
+
+````{toggle}
+```{code-block} python 
+from typing import List 
+
+class Solution:
+    def rob(self, nums: List[int]) -> int:
+        n = len(nums)
+
+        if n == 1:
+            return nums[0]
+        
+        dp = [0] * n
+
+        
+        dp[0] = nums[0]
+        dp[1] = max(nums[0], nums[1]) # 해당 index까지 최고 dp 값 저장 
+        max_val = dp[1]
+        for idx in range(2, n):
+            dp[idx] = max(dp[idx-2] + nums[idx], dp[idx-1]) # 해당 index까지 최고 dp 값 저장 
+            max_val = max(max_val, dp[idx])
+
+        return max_val
+        
+        
+if __name__ == '__main__':
+    # nums = [10, 1 , 2 , 3] # 13 
+    # nums = [10, 1 , 2 , 3, 12] # 24 
+    # nums = [1, 2, 3, 1] # 4
+    # nums = [2, 7, 9, 3, 1] # 12
+    nums = [1, 3, 1, 3, 100] # 103
+
+    s = Solution()
+    print(s.rob(nums))
+
+```
+````
 
 #### Word Break
 문제 - [Leetcode 139](https://leetcode.com/problems/word-break/description/?envType=study-plan-v2&envId=top-interview-150)
 
+````{toggle} 
+---
+caption: Bottom-Up 
+---
+아이디어: 
+- `dp[i] = s[:i]` 가 사전 단어들로 정확히 분해 가능하면 True.
+- 시작 dp[0] = True (빈 문자열은 분해 가능)
+- 각 i에 대해, 어떤 j < i가 있어 dp[j] == True 이고 s[j:i] 가 단어면 dp[i] = True.
+
+효율 팁
+- 단어들을 set으로 만들어 O(1) 조회.
+- 단어 길이의 최대값 L = max(len(w) for w in wordDict)를 구해 j를 i-L .. i-1로만 확인(큰 가지치기).
+```{code-block} python 
+
+from typing import List 
+
+class Solution:
+
+    def wordBreak(self, s: str, wordDict: list[str]) -> bool:
+        word_set = set(wordDict)
+        max_len = max(map(len, word_set)) if word_set else 0
+        n = len(s)
+        dp = [False] * (n + 1)
+        dp[0] = True
+
+        for i in range(1, n + 1):
+            # i에서 최대 max_len만큼만 거슬러 올라가 보기
+            start = max(0, i - max_len)
+            for j in range(i - 1, start - 1, -1):
+                if dp[j] and s[j:i] in word_set:
+                    dp[i] = True
+                    break
+        return dp[n]
+
+            
+        
+if __name__ == '__main__':
+    # s = "abc"; wordDict=["a", "b", "c"]
+    # s = "leetcode"; wordDict = ["leet", "code"]
+    # s = "applepenapple"; wordDict = ["apple", "pen"]
+    # s = "catsandog"; wordDict = ["cats", "dog", "sand", "and", "cat"]
+    s = "catsand"; wordDict = ["cats", "dog", "sand"]
+
+    sol = Solution()
+    print(sol.wordBreak(s, wordDict))
+
+```
+````
+
+````{toggle}
+---
+caption: Top-down 
+---
+
+````
 #### Coin Change 
 문제 - [Leetcode 322](https://leetcode.com/problems/coin-change/description/?envType=study-plan-v2&envId=top-interview-150)
 
