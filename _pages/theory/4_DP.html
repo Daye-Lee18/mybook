@@ -362,6 +362,7 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#word-break">Word Break</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#coin-change">Coin Change</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#longest-increasing-subsequences">Longest Increasing Subsequences</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#is-subsequence">Is Subsequence</a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multidimensional-dp">2. Multidimensional DP</a><ul class="nav section-nav flex-column">
@@ -756,7 +757,7 @@ document.write(`
 </div>
 <div class="toggle docutils container">
 <div class="literal-block-wrapper docutils container" id="id7">
-<div class="code-block-caption"><span class="caption-number">예시 23 </span><span class="caption-text">시간 복잡도 O(NlogN)으로 푸는 전형적인 LIS 알고리즘은 “patience sorting (꼭대기 배열 tails 유지) + 이분 탐색”이다. 즉, tails[k] = “길이가 k+1인 증가 부분수열 중 마지막 값의 최소값” 을 저장한다. 배열을 왼 -&gt; 오 순서로 보며, 매 원소에 대해 <code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">=</span> <span class="pre">lower_bound(tails,</span> <span class="pre">x)</span></code> (즉, tails에서 x이상이 처음 나오는 위치)를 찾고 i == len(tails)면 tails뒤에 x를 붙이고, 아니면 tails[i] = x로 더 작은 끝값으로 갱신한다. 이렇게 하면 tails의 길이가 곧 LIS의 길이가 됨. 만약 비내림 (= 증가 허용, non-decreasing)인 경우에는 <code class="docutils literal notranslate"><span class="pre">bisect_right</span></code>을 사용하여 같은 값은 다음 길이로 넘겨 중복을 허용한다.</span><a class="headerlink" href="#id7" title="Link to this code">#</a></div>
+<div class="code-block-caption"><span class="caption-number">예시 23 </span><span class="caption-text">시간 복잡도 O(NlogN)으로 푸는 전형적인 LIS 알고리즘은 “patience sorting (꼭대기 배열 tails 유지) + 이분 탐색”이다. 즉, <code class="docutils literal notranslate"><span class="pre">tails[k]</span></code> = “길이가 k+1인 증가 부분수열 중 마지막 값의 최소값” 을 저장한다. 배열을 왼 -&gt; 오 순서로 보며, 매 원소에 대해 <code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">=</span> <span class="pre">lower_bound(tails,</span> <span class="pre">x)</span></code> (즉, tails에서 x이상이 처음 나오는 위치)를 찾고 i == len(tails)면 tails뒤에 x를 붙이고, 아니면 tails[i] = x로 더 작은 끝값으로 갱신한다. 이렇게 하면 tails의 길이가 곧 LIS의 길이가 됨. 만약 비내림 (= 증가 허용, non-decreasing)인 경우에는 <code class="docutils literal notranslate"><span class="pre">bisect_right</span></code>을 사용하여 같은 값은 다음 길이로 넘겨 중복을 허용한다.</span><a class="headerlink" href="#id7" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">bisect</span>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
@@ -789,7 +790,38 @@ document.write(`
 <ul class="simple">
 <li><p><strong>Boundary definition with <code class="docutils literal notranslate"><span class="pre">while</span> <span class="pre">l</span> <span class="pre">&lt;</span> <span class="pre">r</span></code> (Step 1)</strong></p>
 <ul>
-<li><p>Always maintain the interval [l, r) (left-inclusive, right-exclusive)</p></li>
+<li><p>Always maintain the interval [l, r) (left-inclusive, right-exclusive)</p>
+<ul>
+<li><p>ex. arr = [7], x = 7</p>
+<ul>
+<li><p>the final value of l = 0</p></li>
+<li><p>the interval [l, r) changes as follows: [0, 1) -&gt; [0, 0) return 0</p></li>
+</ul>
+</li>
+<li><p>ex. arr = [1, 7, 8], x = 7</p>
+<ul>
+<li><p>the final value of l = 1</p></li>
+<li><p>the interval [l, r) changes as follows: [0, 3) -&gt; [0, 1) -&gt; [1, 1) return 1</p></li>
+</ul>
+</li>
+<li><p>ex. arr = [1, 2, 5, 8], x = 5</p>
+<ul>
+<li><p>the final value of l = 2</p></li>
+<li><ul>
+<li><p>the interval [l, r) changes as follows: [0, 4) -&gt; [0, 2) -&gt; [2, 2) return 2</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>ex. arr = [1, 2, 2, 2, 3, 4], x = 2</p>
+<ul>
+<li><p>the final value of l = 1</p></li>
+<li><p>the interval [l, r) changes as follows: [0, 6) -&gt; [0, 3) -&gt; [0, 2)  -&gt; [0, 1) -&gt; [1, 1) return l=1</p></li>
+<li><p>if the midpoint number is equal to the target x, it should excluded from the possible interval where the target x can be inserted</p></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><p><code class="docutils literal notranslate"><span class="pre">l</span></code> is always a candidate position, and <code class="docutils literal notranslate"><span class="pre">r</span></code> is always the boundary (one step beyond the last possible position).</p></li>
 <li><p>The search terminates when <code class="docutils literal notranslate"><span class="pre">l</span> <span class="pre">==</span> <span class="pre">r</span></code> → no interval left to search.</p>
 <ul>
@@ -872,6 +904,68 @@ document.write(`
     <span class="k">return</span> <span class="n">lis_len</span><span class="p">,</span> <span class="n">seq</span>
 </pre></div>
 </div>
+</div>
+</div>
+</section>
+<section id="is-subsequence">
+<h4>Is Subsequence<a class="headerlink" href="#is-subsequence" title="Link to this heading">#</a></h4>
+<p>문제 - <a class="reference external" href="https://leetcode.com/problems/is-subsequence/description/?envType=problem-list-v2&amp;amp;envId=dynamic-programming">Leetcode 392</a></p>
+<div class="dropdown admonition">
+<p class="admonition-title">Time complexity and Algorithm Implementation</p>
+<ul class="simple">
+<li><p>Constraints:</p>
+<ul>
+<li><p>0 &lt;= s.length &lt;= 100</p></li>
+<li><p>0 &lt;= t.length &lt;= <span class="math notranslate nohighlight">\(10^4\)</span></p></li>
+<li><p>s and t consist only of lowercase English letters</p></li>
+</ul>
+</li>
+</ul>
+<p>Based on constraints stated above,
+Follow up: Suppose there are lots of incoming s, say <span class="math notranslate nohighlight">\(s_{1}, s_{2}, s{3}, ..., s_{k}\)</span> where k &gt;= <span class="math notranslate nohighlight">\(10^9\)</span>, and you want to check one by one to see if t has its subsequence. In this scenario, how would you change your code?</p>
+<ul class="simple">
+<li><p>Single query: Use tow pointers. Time <code class="docutils literal notranslate"><span class="pre">O(|s|</span> <span class="pre">+</span> <span class="pre">|t|)</span></code>, space O(1)</p></li>
+<li><p>Follow-up (many s): Preprocess <code class="docutils literal notranslate"><span class="pre">t</span></code></p>
+<ul>
+<li><p>Positions + binary search: preprocess <code class="docutils literal notranslate"><span class="pre">O(|t|)</span></code>, per query <code class="docutils literal notranslate"><span class="pre">O(|s|log|t|)</span></code></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">single query solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">isSubsequence</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">t</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="ow">and</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">ch</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">i</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">Follow-up (many s) solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">bisect</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">preprocess_positions</span><span class="p">(</span><span class="n">t</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">pos</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ch</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+        <span class="n">pos</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pos</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">isSubsequence_many</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="n">pos</span> <span class="o">=</span> <span class="n">preprocess_positions</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    
+    <span class="n">cur</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+        <span class="n">lst</span> <span class="o">=</span> <span class="n">pos</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ch</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_left</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span> <span class="n">cur</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">lst</span><span class="p">):</span> 
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">cur</span> <span class="o">=</span> <span class="n">lst</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+    <span class="k">return</span> <span class="kc">True</span>
+</pre></div>
 </div>
 </div>
 </section>
@@ -985,6 +1079,7 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#word-break">Word Break</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#coin-change">Coin Change</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#longest-increasing-subsequences">Longest Increasing Subsequences</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#is-subsequence">Is Subsequence</a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multidimensional-dp">2. Multidimensional DP</a><ul class="nav section-nav flex-column">

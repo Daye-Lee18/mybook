@@ -203,6 +203,7 @@ if __name__ == '__main__':
     print(s.climbStairs(3))
 ```
 ````
+
 #### House Robber 
 문제 - [Leetcode 198](https://leetcode.com/problems/house-robber/description/?envType=study-plan-v2&envId=top-interview-150)
 
@@ -395,7 +396,7 @@ print(b)  # [1, 2, 4, 4, 4, 8]
 
 ```{code-block} python
 ---
-caption: 시간 복잡도 O(NlogN)으로 푸는 전형적인 LIS 알고리즘은 "patience sorting (꼭대기 배열 tails 유지) + 이분 탐색"이다. 즉, tails[k] = "길이가 k+1인 증가 부분수열 중 마지막 값의 최소값" 을 저장한다. 배열을 왼 -> 오 순서로 보며, 매 원소에 대해 `i = lower_bound(tails, x)` (즉, tails에서 x이상이 처음 나오는 위치)를 찾고 i == len(tails)면 tails뒤에 x를 붙이고, 아니면 tails[i] = x로 더 작은 끝값으로 갱신한다. 이렇게 하면 tails의 길이가 곧 LIS의 길이가 됨. 만약 비내림 (= 증가 허용, non-decreasing)인 경우에는 `bisect_right`을 사용하여 같은 값은 다음 길이로 넘겨 중복을 허용한다. 
+caption: 시간 복잡도 O(NlogN)으로 푸는 전형적인 LIS 알고리즘은 "patience sorting (꼭대기 배열 tails 유지) + 이분 탐색"이다. 즉, `tails[k]` = "길이가 k+1인 증가 부분수열 중 마지막 값의 최소값" 을 저장한다. 배열을 왼 -> 오 순서로 보며, 매 원소에 대해 `i = lower_bound(tails, x)` (즉, tails에서 x이상이 처음 나오는 위치)를 찾고 i == len(tails)면 tails뒤에 x를 붙이고, 아니면 tails[i] = x로 더 작은 끝값으로 갱신한다. 이렇게 하면 tails의 길이가 곧 LIS의 길이가 됨. 만약 비내림 (= 증가 허용, non-decreasing)인 경우에는 `bisect_right`을 사용하여 같은 값은 다음 길이로 넘겨 중복을 허용한다. 
 ---
 import bisect
 
@@ -429,6 +430,19 @@ if __name__ == "__main__":
 
 - **Boundary definition with `while l < r` (Step 1)**  
     - Always maintain the interval [l, r) (left-inclusive, right-exclusive)  
+        - ex. arr = [7], x = 7
+            - the final value of l = 0
+            - the interval [l, r) changes as follows: [0, 1) -> [0, 0) return 0
+        - ex. arr = [1, 7, 8], x = 7
+            - the final value of l = 1 
+            - the interval [l, r) changes as follows: [0, 3) -> [0, 1) -> [1, 1) return 1 
+        - ex. arr = [1, 2, 5, 8], x = 5 
+            - the final value of l = 2 
+            - - the interval [l, r) changes as follows: [0, 4) -> [0, 2) -> [2, 2) return 2
+        - ex. arr = [1, 2, 2, 2, 3, 4], x = 2 
+            - the final value of l = 1 
+            - the interval [l, r) changes as follows: [0, 6) -> [0, 3) -> [0, 2)  -> [0, 1) -> [1, 1) return l=1
+            - if the midpoint number is equal to the target x, it should excluded from the possible interval where the target x can be inserted 
     - `l` is always a candidate position, and `r` is always the boundary (one step beyond the last possible position).  
     - The search terminates when `l == r` → no interval left to search.  
         - `l` = "the minimum candidate position to insert"  
@@ -501,6 +515,68 @@ def lis_with_path(nums):
         k = prev_idx[k]
     seq.reverse()
     return lis_len, seq
+```
+````
+
+#### Is Subsequence 
+
+문제 - [Leetcode 392](https://leetcode.com/problems/is-subsequence/description/?envType=problem-list-v2&envId=dynamic-programming)
+
+````{admonition} Time complexity and Algorithm Implementation
+:class: dropdown 
+
+- Constraints:
+    - 0 <= s.length <= 100
+    - 0 <= t.length <= $10^4$
+    - s and t consist only of lowercase English letters 
+
+Based on constraints stated above, 
+Follow up: Suppose there are lots of incoming s, say $s_{1}, s_{2}, s{3}, ..., s_{k}$ where k >= $10^9$, and you want to check one by one to see if t has its subsequence. In this scenario, how would you change your code? 
+
+- Single query: Use tow pointers. Time `O(|s| + |t|)`, space O(1) 
+- Follow-up (many s): Preprocess `t`
+    - Positions + binary search: preprocess `O(|t|)`, per query `O(|s|log|t|)`
+````
+
+````{admonition} single query solution
+:class: dropdown 
+
+```{code-block} python 
+def isSubsequence(s: str, t: str) -> bool:
+    i = 0
+    for ch in t:
+        if i < len(s) and s[i] == ch:
+            i += 1
+    return i == len(s)
+
+```
+````
+
+````{admonition} Follow-up (many s) solution
+:class: dropdown 
+
+```{code-block} python 
+import bisect
+from collections import defaultdict
+
+def preprocess_positions(t: str):
+    pos = defaultdict(list)
+    for i, ch in enumerate(t):
+        pos[ch].append(i)
+    return pos
+
+def isSubsequence_many(s: str, t:str) -> bool:
+    pos = preprocess_positions(t)
+    
+    cur = -1
+    for ch in s:
+        lst = pos.get(ch, [])
+        j = bisect.bisect_left(lst, cur + 1)
+        if j == len(lst): 
+            return False
+        cur = lst[j]
+    return True
+
 ```
 ````
 ### 2. Multidimensional DP 
