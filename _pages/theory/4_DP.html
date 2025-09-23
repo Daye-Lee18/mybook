@@ -66,7 +66,7 @@
     <link rel="icon" href="../../_static/favicon.png"/>
     <link rel="index" title="색인" href="../../genindex.html" />
     <link rel="search" title="검색" href="../../search.html" />
-    <link rel="next" title="Lecture 3-1. 정렬" href="5_sort.html" />
+    <link rel="next" title="Lecture 5-1. 정렬" href="5_sort.html" />
     <link rel="prev" title="Lecture 3-1. Backtracking" href="3_backtracking.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ko"/>
@@ -192,7 +192,7 @@
 <li class="toctree-l1"><a class="reference internal" href="2_DFS_BFS.html">Lecture 2-1. DFS/BFS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="3_backtracking.html">Lecture 3-1. Backtracking</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Lecture 4-1. Dynamic Programming</a></li>
-<li class="toctree-l1"><a class="reference internal" href="5_sort.html">Lecture 3-1. 정렬</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_sort.html">Lecture 5-1. 정렬</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">실습</span></p>
 <ul class="nav bd-sidenav">
@@ -1185,7 +1185,7 @@ document.write(`
 <div class="dropdown admonition">
 <p class="admonition-title">solution O(<span class="math notranslate nohighlight">\(N^2\)</span>)</p>
 <div class="literal-block-wrapper docutils container" id="id11">
-<div class="code-block-caption"><span class="caption-number">예시 27 </span><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">len[i]</span></code>: length of the LIS ending at i, <code class="docutils literal notranslate"><span class="pre">cnt[i]</span></code>:</span><a class="headerlink" href="#id11" title="Link to this code">#</a></div>
+<div class="code-block-caption"><span class="caption-number">예시 27 </span><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">len[i]</span></code>: length of the LIS ending at i, <code class="docutils literal notranslate"><span class="pre">cnt[i]</span></code>: the number of LIS of that length that end at i</span><a class="headerlink" href="#id11" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span> 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
@@ -1284,6 +1284,56 @@ Follow up: Suppose there are lots of incoming s, say <span class="math notransla
 <section id="russian-doll-envelope">
 <h4>Russian Doll Envelope<a class="headerlink" href="#russian-doll-envelope" title="Link to this heading">#</a></h4>
 <p>문제 - <a class="reference external" href="https://leetcode.com/problems/russian-doll-envelopes/description/">Leetcode 354</a></p>
+<div class="dropdown admonition">
+<p class="admonition-title">O(<span class="math notranslate nohighlight">\(N^2\)</span>) solution: Time limit error</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">compare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w1</span><span class="p">,</span> <span class="n">h1</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">h2</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">w1</span> <span class="o">&lt;</span> <span class="n">w2</span> <span class="ow">and</span> <span class="n">h1</span> <span class="o">&lt;</span> <span class="n">h2</span> <span class="c1"># 같을 때도 다 False </span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">maxEnvelopes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">envelopes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="n">envelopes</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span> 
+        <span class="c1"># print(envelopes)</span>
+
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">envelopes</span><span class="p">)</span>
+        <span class="n">dp</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">n</span>
+        <span class="n">max_val</span> <span class="o">=</span> <span class="n">dp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">prev</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">idx</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">w1</span><span class="p">,</span> <span class="n">h1</span> <span class="o">=</span> <span class="n">envelopes</span><span class="p">[</span><span class="n">prev</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">envelopes</span><span class="p">[</span><span class="n">prev</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">cur_w</span><span class="p">,</span> <span class="n">cur_h</span> <span class="o">=</span> <span class="n">envelopes</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">envelopes</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">w1</span><span class="p">,</span> <span class="n">h1</span><span class="p">,</span> <span class="n">cur_w</span><span class="p">,</span> <span class="n">cur_h</span><span class="p">):</span>
+                    <span class="n">dp</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="n">prev</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dp</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+            <span class="n">max_val</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">max_val</span><span class="p">)</span>
+        <span class="c1"># print(dp)</span>
+        <span class="k">return</span> <span class="n">max_val</span>
+</pre></div>
+</div>
+</div>
+<div class="admonition-o-nlogn-solution admonition">
+<p class="admonition-title">O(nlogn) solution</p>
+<div class="literal-block-wrapper docutils container" id="id12">
+<div class="code-block-caption"><span class="caption-number">예시 28 </span><span class="caption-text">정렬할 때, <code class="docutils literal notranslate"><span class="pre">width</span></code>는 오름차순, <code class="docutils literal notranslate"><span class="pre">height</span></code>는 내림차순 (동일한 width끼리는 겹치지 않도록)-&gt; 이렇게 하면 같은 width끼리 height가 증가로 잡히는 일을 막아서, 나중에 heigh만 보고 LIS를 구해도 “width 증가” 조건이 자동으로 보장됨. height 배열만 뽑아 LIS를 하면 LIS는 이진 탐색으로 tails 배열을 유지하여 O(NlogN)에 가능</span><a class="headerlink" href="#id12" title="Link to this code">#</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bisect</span><span class="w"> </span><span class="kn">import</span> <span class="n">bisect_left</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">maxEnvelopes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">envelopes</span><span class="p">):</span>
+        <span class="c1"># 1) 정렬: w 오름차순, w 같으면 h 내림차순</span>
+        <span class="n">envelopes</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="c1"># 2) height만 뽑아서 LIS (strictly increasing)</span>
+        <span class="n">tails</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">envelopes</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">bisect_left</span><span class="p">(</span><span class="n">tails</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>  <span class="c1"># h가 들어갈 위치</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">tails</span><span class="p">):</span>
+                <span class="n">tails</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tails</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">h</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">tails</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
 </section>
 <section id="triangle">
 <h4>Triangle<a class="headerlink" href="#triangle" title="Link to this heading">#</a></h4>
@@ -1357,7 +1407,7 @@ Follow up: Suppose there are lots of incoming s, say <span class="math notransla
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">다음</p>
-        <p class="prev-next-title">Lecture 3-1. 정렬</p>
+        <p class="prev-next-title">Lecture 5-1. 정렬</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

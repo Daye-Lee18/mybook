@@ -728,7 +728,7 @@ def lis_with_path(nums):
 
 ```{code-block} python 
 ---
-caption: `len[i]`: length of the LIS ending at i, `cnt[i]`: # of LIS of that length that end at i
+caption: `len[i]`: length of the LIS ending at i, `cnt[i]`: the number of LIS of that length that end at i
 ---
 from collections import defaultdict 
 
@@ -822,6 +822,58 @@ class Solution:
 
 #### Russian Doll Envelope 
 문제 - [Leetcode 354](https://leetcode.com/problems/russian-doll-envelopes/description/)
+
+````{admonition} O($N^2$) solution: Time limit error 
+:class: dropdown 
+
+```{code-block} python 
+class Solution:
+
+    def compare(self, w1, h1, w2, h2):
+        return w1 < w2 and h1 < h2 # 같을 때도 다 False 
+
+    def maxEnvelopes(self, envelopes: List[List[int]]) -> int:
+        envelopes.sort() 
+        # print(envelopes)
+
+        n = len(envelopes)
+        dp = [1]*n
+        max_val = dp[0]
+
+        for idx in range(n):
+            for prev in range(idx-1, -1, -1):
+                w1, h1 = envelopes[prev][0], envelopes[prev][1]
+                cur_w, cur_h = envelopes[idx][0], envelopes[idx][1]
+                if self.compare(w1, h1, cur_w, cur_h):
+                    dp[idx] = max(dp[prev] + 1, dp[idx])
+            max_val = max(dp[idx], max_val)
+        # print(dp)
+        return max_val
+```
+````
+
+````{admonition} O(nlogn) solution
+```{code-block} python
+---
+caption: 정렬할 때, `width`는 오름차순, `height`는 내림차순 (동일한 width끼리는 겹치지 않도록)-> 이렇게 하면 같은 width끼리 height가 증가로 잡히는 일을 막아서, 나중에 heigh만 보고 LIS를 구해도 "width 증가" 조건이 자동으로 보장됨. height 배열만 뽑아 LIS를 하면 LIS는 이진 탐색으로 tails 배열을 유지하여 O(NlogN)에 가능
+---
+from bisect import bisect_left
+
+class Solution:
+    def maxEnvelopes(self, envelopes):
+        # 1) 정렬: w 오름차순, w 같으면 h 내림차순
+        envelopes.sort(key=lambda x: (x[0], -x[1]))
+        # 2) height만 뽑아서 LIS (strictly increasing)
+        tails = []
+        for _, h in envelopes:
+            i = bisect_left(tails, h)  # h가 들어갈 위치
+            if i == len(tails):
+                tails.append(h)
+            else:
+                tails[i] = h
+        return len(tails)
+```
+````
 #### Triangle 
 문제 - [Leetcode 120](https://leetcode.com/problems/triangle/description/?envType=study-plan-v2&envId=top-interview-150)
 
