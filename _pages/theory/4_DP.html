@@ -355,6 +355,16 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bottom-up">Bottom-Up 방식</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dynamic-programming-table-dp-table">Dynamic Programming Table (DP Table)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sequence-array-dp">1. Sequence / Array DP</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#subsequence-string-dp">2. Subsequence/String DP</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#knapsack-family">3. Knapsack Family</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid-dp">4. Grid DP</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interval-dp">5. Interval DP</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tree-dp">Tree DP</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">예시 문제</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#d-dp">1. 1D DP</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#climbing-stairs">Climbing Stairs</a></li>
@@ -362,10 +372,12 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#word-break">Word Break</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#coin-change">Coin Change</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#longest-increasing-subsequences">Longest Increasing Subsequences</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#number-of-lis">Number of LIS</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#is-subsequence">Is Subsequence</a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multidimensional-dp">2. Multidimensional DP</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#russian-doll-envelope">Russian Doll Envelope</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#triangle">Triangle</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#minimum-path-sum">Minimum Path Sum</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#unique-path-ii">Unique Path II</a></li>
@@ -511,6 +523,221 @@ document.write(`
 </pre></div>
 </div>
 </div>
+</div>
+</section>
+</section>
+<section id="dynamic-programming-table-dp-table">
+<h2>Dynamic Programming Table (DP Table)<a class="headerlink" href="#dynamic-programming-table-dp-table" title="Link to this heading">#</a></h2>
+<p>What you choose to store in your DP table (list, dict, array, etc.) is the most important desing decision in solving a DP problem.</p>
+<p>DP is about <code class="docutils literal notranslate"><span class="pre">state</span> <span class="pre">representation</span></code>. DP works by breaking a big problem into smaller overlapping subproblems. To reuse solutions, you must define a <code class="docutils literal notranslate"><span class="pre">state</span></code> that fully describes a subproblem. That “state” is exactly what you store in the DP table.</p>
+<p>How can we decide <strong>what to store</strong>? You should ask yourself <strong>1. What subproblem do I need to solve repeatdly?</strong> and <strong>2. What result of that subproblem helps me build the next one?</strong>. The first question deinfes the state and the next question is the value you should store.</p>
+<p>Here is a handy “what to store” cheat-sheet for the most popular DP problems. each line tells you the state, what to store, and a one-line transition hint so you know why the storage works.</p>
+<section id="sequence-array-dp">
+<h3>1. Sequence / Array DP<a class="headerlink" href="#sequence-array-dp" title="Link to this heading">#</a></h3>
+<div class="dropdown admonition">
+<p class="admonition-title">sequence 1D DP</p>
+<ol class="arabic simple">
+<li><p>Fibonacci / Stair Climbing</p></li>
+</ol>
+<ul class="simple">
+<li><p>State: <code class="docutils literal notranslate"><span class="pre">n</span></code></p></li>
+<li><p>Store: number of ways/value at <code class="docutils literal notranslate"><span class="pre">n</span></code></p></li>
+<li><p>Transition: <code class="docutils literal notranslate"><span class="pre">dp[n]</span> <span class="pre">=</span> <span class="pre">dp[n-1]</span> <span class="pre">+</span> <span class="pre">dp[n-2]</span></code></p></li>
+<li><p>Reference: LC 70 (Climbing Stairs), LC 509 (Fibonacci Number)</p></li>
+</ul>
+<ol class="arabic simple" start="2">
+<li><p>Maximum Subarray (Kadane)</p></li>
+</ol>
+<ul class="simple">
+<li><p>State: end index <code class="docutils literal notranslate"><span class="pre">i</span></code></p></li>
+<li><p>Store: best sum of subarray ending at <code class="docutils literal notranslate"><span class="pre">i</span></code></p></li>
+<li><p>Transition: <code class="docutils literal notranslate"><span class="pre">dp[i]</span> <span class="pre">=</span> <span class="pre">max(a[i],</span> <span class="pre">dp[i-1]</span> <span class="pre">+</span> <span class="pre">a[i])</span></code></p></li>
+<li><p>Reference: LC 53 (Maximum Subarray)</p></li>
+</ul>
+<ol class="arabic simple" start="3">
+<li><p>House Robber</p></li>
+</ol>
+<ul class="simple">
+<li><p>State: first <code class="docutils literal notranslate"><span class="pre">i</span></code> houses</p></li>
+<li><p>Store: max money using up to <code class="docutils literal notranslate"><span class="pre">i</span></code></p></li>
+<li><p>Transition: <code class="docutils literal notranslate"><span class="pre">dp[i]</span> <span class="pre">=</span> <span class="pre">max(dp[i-1],</span> <span class="pre">dp[i-2]</span> <span class="pre">+</span> <span class="pre">val[i])</span></code></p></li>
+<li><p>Reference: LC 198 (House Robber), LC 213 (House Robber II)</p></li>
+</ul>
+<ol class="arabic simple" start="4">
+<li><p>Longest Increasing Subsequence (LIS)</p></li>
+</ol>
+<ul class="simple">
+<li><p>State: end index <code class="docutils literal notranslate"><span class="pre">i</span></code></p></li>
+<li><p>Store: LIS length ending at <code class="docutils literal notranslate"><span class="pre">i</span></code></p></li>
+<li><p>Transition: <code class="docutils literal notranslate"><span class="pre">dp[i]</span> <span class="pre">=</span> <span class="pre">1</span> <span class="pre">+</span> <span class="pre">max(dp[j])</span> <span class="pre">for</span> <span class="pre">j&lt;i</span> <span class="pre">&amp;</span> <span class="pre">a[j]&lt;a[i]</span></code></p></li>
+<li><p>Reference: LC 300 (LIS), LC 354 (Russian Doll Envelopes)</p></li>
+</ul>
+<ol class="arabic simple" start="5">
+<li><p>Partition Equal Subset / Subset Sum</p></li>
+</ol>
+<ul class="simple">
+<li><p>State: capacity <code class="docutils literal notranslate"><span class="pre">s</span></code></p></li>
+<li><p>Store: reachable boolean at sum <code class="docutils literal notranslate"><span class="pre">s</span></code></p></li>
+<li><p>Transition: <code class="docutils literal notranslate"><span class="pre">dp[s]</span> <span class="pre">|=</span> <span class="pre">dp[s-w]</span></code></p></li>
+<li><p>Reference: LC 416 (Partition Equal Subset Sum), LC 494 (Target Sum)</p></li>
+</ul>
+</div>
+</section>
+<section id="subsequence-string-dp">
+<h3>2. Subsequence/String DP<a class="headerlink" href="#subsequence-string-dp" title="Link to this heading">#</a></h3>
+<div class="dropdown admonition">
+<p class="admonition-title">dp table</p>
+<ol class="arabic simple">
+<li><p>Longest Common Subsequence (LCS)</p></li>
+</ol>
+<ul class="simple">
+<li><p>State: <code class="docutils literal notranslate"><span class="pre">(i,</span> <span class="pre">j)</span></code></p></li>
+<li><p>Store: LCS length of <code class="docutils literal notranslate"><span class="pre">A[:i]</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">B[:j]</span></code></p></li>
+<li><p>Transition: if match: <code class="docutils literal notranslate"><span class="pre">1+dp[i-1][j-1]</span></code> else <code class="docutils literal notranslate"><span class="pre">max(dp[i-1][j],</span> <span class="pre">dp[i][j-1])</span></code></p></li>
+<li><p>Reference: LC 1143 (LCS)</p></li>
+</ul>
+<ol class="arabic simple" start="2">
+<li><p>Edit Distance (Levenshtein)</p></li>
+</ol>
+<ul class="simple">
+<li><p>State: <code class="docutils literal notranslate"><span class="pre">(i,</span> <span class="pre">j)</span></code></p></li>
+<li><p>Store: min edits to convert <code class="docutils literal notranslate"><span class="pre">A[:i]</span></code> → <code class="docutils literal notranslate"><span class="pre">B[:j]</span></code></p></li>
+<li><p>Transition: <code class="docutils literal notranslate"><span class="pre">min(replace,</span> <span class="pre">insert,</span> <span class="pre">delete)</span></code></p></li>
+<li><p>Reference: LC 72 (Edit Distance)</p></li>
+</ul>
+<ol class="arabic simple" start="3">
+<li><p>Longest Palindromic Subsequence (LPS)</p></li>
+</ol>
+<ul class="simple">
+<li><p>State: <code class="docutils literal notranslate"><span class="pre">(l,</span> <span class="pre">r)</span></code></p></li>
+<li><p>Store: LPS length in <code class="docutils literal notranslate"><span class="pre">s[l..r]</span></code></p></li>
+<li><p>Transition: if <code class="docutils literal notranslate"><span class="pre">s[l]==s[r]</span></code> → <code class="docutils literal notranslate"><span class="pre">2+dp[l+1][r-1]</span></code> else <code class="docutils literal notranslate"><span class="pre">max(dp[l+1][r],</span> <span class="pre">dp[l][r-1])</span></code></p></li>
+<li><p>Reference: LC 516 (Longest Palindromic Subsequence)</p></li>
+</ul>
+<ol class="arabic simple" start="4">
+<li><p>Longest Palindromic Substring</p></li>
+</ol>
+<ul class="simple">
+<li><p>State: <code class="docutils literal notranslate"><span class="pre">(l,</span> <span class="pre">r)</span></code></p></li>
+<li><p>Store: palindrome boolean or length</p></li>
+<li><p>Transition: <code class="docutils literal notranslate"><span class="pre">dp[l][r]</span> <span class="pre">=</span> <span class="pre">(s[l]==s[r]</span> <span class="pre">&amp;&amp;</span> <span class="pre">(r-l&lt;2</span> <span class="pre">||</span> <span class="pre">dp[l+1][r-1]))</span></code></p></li>
+<li><p>Reference: LC 5 (Longest Palindromic Substring)</p></li>
+</ul>
+<ol class="arabic simple" start="5">
+<li><p>Distinct Subsequences (count ways A→B)</p></li>
+</ol>
+<ul class="simple">
+<li><p>State: <code class="docutils literal notranslate"><span class="pre">(i,</span> <span class="pre">j)</span></code></p></li>
+<li><p>Store: #ways <code class="docutils literal notranslate"><span class="pre">A[:i]</span></code> forms <code class="docutils literal notranslate"><span class="pre">B[:j]</span></code></p></li>
+<li><p>Transition: <code class="docutils literal notranslate"><span class="pre">dp[i][j]</span> <span class="pre">=</span> <span class="pre">dp[i-1][j]</span> <span class="pre">+</span> <span class="pre">(A[i-1]==B[j-1]</span> <span class="pre">?</span> <span class="pre">dp[i-1][j-1]</span> <span class="pre">:</span> <span class="pre">0)</span></code></p></li>
+<li><p>Reference: LC 115 (Distinct Subsequences)</p></li>
+</ul>
+</div>
+</section>
+<section id="knapsack-family">
+<h3>3. Knapsack Family<a class="headerlink" href="#knapsack-family" title="Link to this heading">#</a></h3>
+<div class="dropdown admonition">
+<p class="admonition-title">DP table</p>
+<ol class="arabic simple">
+<li><p>0/1 Knapsack</p></li>
+</ol>
+<ul class="simple">
+<li><p>State: <code class="docutils literal notranslate"><span class="pre">(i,</span> <span class="pre">w)</span></code> or <code class="docutils literal notranslate"><span class="pre">w</span></code> in 1D</p></li>
+<li><p>Store: max value at capacity <code class="docutils literal notranslate"><span class="pre">w</span></code></p></li>
+<li><p>Transition: <code class="docutils literal notranslate"><span class="pre">dp[w]</span> <span class="pre">=</span> <span class="pre">max(dp[w],</span> <span class="pre">dp[w-weight]</span> <span class="pre">+</span> <span class="pre">value)</span></code></p></li>
+<li><p>Reference: LC 474 (Ones and Zeroes)</p></li>
+</ul>
+<ol class="arabic simple" start="2">
+<li><p>Unbounded Knapsack / Coin Change (min coins)</p></li>
+</ol>
+<ul class="simple">
+<li><p>State: capacity <code class="docutils literal notranslate"><span class="pre">w</span></code></p></li>
+<li><p>Store: min coins for <code class="docutils literal notranslate"><span class="pre">w</span></code></p></li>
+<li><p>Transition: <code class="docutils literal notranslate"><span class="pre">dp[w]</span> <span class="pre">=</span> <span class="pre">min(dp[w],</span> <span class="pre">dp[w-c]</span> <span class="pre">+</span> <span class="pre">1)</span></code></p></li>
+<li><p>Reference: LC 322 (Coin Change)</p></li>
+</ul>
+<ol class="arabic simple" start="3">
+<li><p>Coin Change (count ways)</p></li>
+</ol>
+<ul class="simple">
+<li><p>State: amount <code class="docutils literal notranslate"><span class="pre">a</span></code></p></li>
+<li><p>Store: #ways to make <code class="docutils literal notranslate"><span class="pre">a</span></code></p></li>
+<li><p>Transition: <code class="docutils literal notranslate"><span class="pre">dp[a]</span> <span class="pre">+=</span> <span class="pre">dp[a-c]</span></code></p></li>
+<li><p>Reference: LC 518 (Coin Change II)</p></li>
+</ul>
+</div>
+</section>
+<section id="grid-dp">
+<h3>4. Grid DP<a class="headerlink" href="#grid-dp" title="Link to this heading">#</a></h3>
+<div class="dropdown admonition">
+<p class="admonition-title">DP table for Grid DP</p>
+<ol class="arabic simple">
+<li><p>Unique Paths (with obstacles)</p></li>
+</ol>
+<ul class="simple">
+<li><p>State: <code class="docutils literal notranslate"><span class="pre">(i,</span> <span class="pre">j)</span></code></p></li>
+<li><p>Store: #ways to reach <code class="docutils literal notranslate"><span class="pre">(i,</span> <span class="pre">j)</span></code></p></li>
+<li><p>Transition: <code class="docutils literal notranslate"><span class="pre">dp[i][j]</span> <span class="pre">=</span> <span class="pre">(obstacle?0</span> <span class="pre">:</span> <span class="pre">dp[i-1][j]</span> <span class="pre">+</span> <span class="pre">dp[i][j-1])</span></code></p></li>
+<li><p>Reference: LC 62 (Unique Paths), LC 63 (Unique Paths II)</p></li>
+</ul>
+<ol class="arabic simple" start="2">
+<li><p>Minimum Path Sum</p></li>
+</ol>
+<ul class="simple">
+<li><p>State: <code class="docutils literal notranslate"><span class="pre">(i,</span> <span class="pre">j)</span></code></p></li>
+<li><p>Store: min cost to <code class="docutils literal notranslate"><span class="pre">(i,</span> <span class="pre">j)</span></code></p></li>
+<li><p>Transition: <code class="docutils literal notranslate"><span class="pre">dp[i][j]</span> <span class="pre">=</span> <span class="pre">grid[i][j]</span> <span class="pre">+</span> <span class="pre">min(dp[i-1][j],</span> <span class="pre">dp[i][j-1])</span></code></p></li>
+<li><p>Reference: LC 64 (Minimum Path Sum)</p></li>
+</ul>
+</div>
+</section>
+<section id="interval-dp">
+<h3>5. Interval DP<a class="headerlink" href="#interval-dp" title="Link to this heading">#</a></h3>
+<div class="dropdown admonition">
+<p class="admonition-title">DP table for Interval DP</p>
+<ol class="arabic simple">
+<li><p>Matrix Chain Multiplication</p></li>
+</ol>
+<ul class="simple">
+<li><p>State: <code class="docutils literal notranslate"><span class="pre">(l,</span> <span class="pre">r)</span></code></p></li>
+<li><p>Store: min scalar multiplications for <code class="docutils literal notranslate"><span class="pre">l..r</span></code></p></li>
+<li><p>Transition: split at <code class="docutils literal notranslate"><span class="pre">k</span></code></p></li>
+<li><p>Reference: LC 1547 (Minimum Cost to Cut a Stick)</p></li>
+</ul>
+<ol class="arabic simple" start="2">
+<li><p>Burst Balloons</p></li>
+</ol>
+<ul class="simple">
+<li><p>State: <code class="docutils literal notranslate"><span class="pre">(l,</span> <span class="pre">r)</span></code> open interval</p></li>
+<li><p>Store: max coins from <code class="docutils literal notranslate"><span class="pre">(l,</span> <span class="pre">r)</span></code></p></li>
+<li><p>Transition: pick last balloon <code class="docutils literal notranslate"><span class="pre">k</span></code></p></li>
+<li><p>Reference: LC 312 (Burst Balloons)</p></li>
+</ul>
+<ol class="arabic simple" start="3">
+<li><p>Palindrome Partitioning (min cuts)</p></li>
+</ol>
+<ul class="simple">
+<li><p>State: prefix <code class="docutils literal notranslate"><span class="pre">i</span></code></p></li>
+<li><p>Store: min cuts for <code class="docutils literal notranslate"><span class="pre">s[:i]</span></code></p></li>
+<li><p>Transition: <code class="docutils literal notranslate"><span class="pre">dp[i]</span> <span class="pre">=</span> <span class="pre">min(dp[j]+1)</span></code> for palindromic <code class="docutils literal notranslate"><span class="pre">s[j:i]</span></code></p></li>
+<li><p>Reference: LC 132 (Palindrome Partitioning II)</p></li>
+</ul>
+</div>
+</section>
+<section id="tree-dp">
+<h3>Tree DP<a class="headerlink" href="#tree-dp" title="Link to this heading">#</a></h3>
+</section>
+<section id="summary">
+<h3>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h3>
+<div class="important admonition">
+<p class="admonition-title">Summary for DP table</p>
+<p>Quick rules for “what to store”</p>
+<ol class="arabic simple">
+<li><p><strong>Smallest subproblem that lets you extend</strong>: e.g. LIS needs “best ending at i”, not “global max so far”.</p></li>
+<li><p><strong>Exactly the quantity needed by the recurrence</strong>: value, count, boolean, min/max, probability, etc.</p></li>
+<li><p><strong>Dimensions match dependencies</strong>: if you need two indices (like two strings), your state likely has two; if intervals matter, store by <code class="docutils literal notranslate"><span class="pre">(l,</span> <span class="pre">r)</span></code>; on trees, store per-node (optionally with a flag)</p></li>
+<li><p><strong>Space-optimize later</strong>: once the state is right, compress (1D knapsack, rolling rows in grides, etc.)</p></li>
+</ol>
 </div>
 </section>
 </section>
@@ -907,6 +1134,10 @@ document.write(`
 </div>
 </div>
 </section>
+<section id="number-of-lis">
+<h4>Number of LIS<a class="headerlink" href="#number-of-lis" title="Link to this heading">#</a></h4>
+<p>문제 - <a class="reference external" href="https://leetcode.com/problems/number-of-longest-increasing-subsequence/description/">Leetcode 673</a></p>
+</section>
 <section id="is-subsequence">
 <h4>Is Subsequence<a class="headerlink" href="#is-subsequence" title="Link to this heading">#</a></h4>
 <p>문제 - <a class="reference external" href="https://leetcode.com/problems/is-subsequence/description/?envType=problem-list-v2&amp;amp;envId=dynamic-programming">Leetcode 392</a></p>
@@ -972,6 +1203,10 @@ Follow up: Suppose there are lots of incoming s, say <span class="math notransla
 </section>
 <section id="multidimensional-dp">
 <h3>2. Multidimensional DP<a class="headerlink" href="#multidimensional-dp" title="Link to this heading">#</a></h3>
+<section id="russian-doll-envelope">
+<h4>Russian Doll Envelope<a class="headerlink" href="#russian-doll-envelope" title="Link to this heading">#</a></h4>
+<p>문제 - <a class="reference external" href="https://leetcode.com/problems/russian-doll-envelopes/description/">Leetcode 354</a></p>
+</section>
 <section id="triangle">
 <h4>Triangle<a class="headerlink" href="#triangle" title="Link to this heading">#</a></h4>
 <p>문제 - <a class="reference external" href="https://leetcode.com/problems/triangle/description/?envType=study-plan-v2&amp;amp;envId=top-interview-150">Leetcode 120</a></p>
@@ -1072,6 +1307,16 @@ Follow up: Suppose there are lots of incoming s, say <span class="math notransla
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bottom-up">Bottom-Up 방식</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dynamic-programming-table-dp-table">Dynamic Programming Table (DP Table)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sequence-array-dp">1. Sequence / Array DP</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#subsequence-string-dp">2. Subsequence/String DP</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#knapsack-family">3. Knapsack Family</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid-dp">4. Grid DP</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interval-dp">5. Interval DP</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tree-dp">Tree DP</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">예시 문제</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#d-dp">1. 1D DP</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#climbing-stairs">Climbing Stairs</a></li>
@@ -1079,10 +1324,12 @@ Follow up: Suppose there are lots of incoming s, say <span class="math notransla
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#word-break">Word Break</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#coin-change">Coin Change</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#longest-increasing-subsequences">Longest Increasing Subsequences</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#number-of-lis">Number of LIS</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#is-subsequence">Is Subsequence</a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multidimensional-dp">2. Multidimensional DP</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#russian-doll-envelope">Russian Doll Envelope</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#triangle">Triangle</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#minimum-path-sum">Minimum Path Sum</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#unique-path-ii">Unique Path II</a></li>

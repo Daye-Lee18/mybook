@@ -151,7 +151,187 @@ print(d[n])
 
 ```
 ````
+## Dynamic Programming Table (DP Table)
 
+What you choose to store in your DP table (list, dict, array, etc.) is the most important desing decision in solving a DP problem. 
+
+DP is about `state representation`. DP works by breaking a big problem into smaller overlapping subproblems. To reuse solutions, you must define a `state` that fully describes a subproblem. That "state" is exactly what you store in the DP table. 
+
+How can we decide **what to store**? You should ask yourself **1. What subproblem do I need to solve repeatdly?** and **2. What result of that subproblem helps me build the next one?**. The first question deinfes the state and the next question is the value you should store. 
+
+Here is a handy "what to store" cheat-sheet for the most popular DP problems. each line tells you the state, what to store, and a one-line transition hint so you know why the storage works. 
+
+### 1. Sequence / Array DP 
+
+````{admonition} sequence 1D DP
+:class: dropdown
+
+1. Fibonacci / Stair Climbing  
+- State: `n`  
+- Store: number of ways/value at `n`  
+- Transition: `dp[n] = dp[n-1] + dp[n-2]`  
+- Reference: LC 70 (Climbing Stairs), LC 509 (Fibonacci Number)
+
+2. Maximum Subarray (Kadane)  
+- State: end index `i`  
+- Store: best sum of subarray ending at `i`  
+- Transition: `dp[i] = max(a[i], dp[i-1] + a[i])`  
+- Reference: LC 53 (Maximum Subarray)
+
+3. House Robber  
+- State: first `i` houses  
+- Store: max money using up to `i`  
+- Transition: `dp[i] = max(dp[i-1], dp[i-2] + val[i])`  
+- Reference: LC 198 (House Robber), LC 213 (House Robber II)
+
+4. Longest Increasing Subsequence (LIS)  
+- State: end index `i`  
+- Store: LIS length ending at `i`  
+- Transition: `dp[i] = 1 + max(dp[j]) for j<i & a[j]<a[i]`  
+- Reference: LC 300 (LIS), LC 354 (Russian Doll Envelopes)
+
+5. Partition Equal Subset / Subset Sum  
+- State: capacity `s`  
+- Store: reachable boolean at sum `s`  
+- Transition: `dp[s] |= dp[s-w]`  
+- Reference: LC 416 (Partition Equal Subset Sum), LC 494 (Target Sum)
+
+````
+
+### 2. Subsequence/String DP
+
+````{admonition} dp table
+:class: dropdown
+
+1. Longest Common Subsequence (LCS)  
+- State: `(i, j)`  
+- Store: LCS length of `A[:i]` & `B[:j]`  
+- Transition: if match: `1+dp[i-1][j-1]` else `max(dp[i-1][j], dp[i][j-1])`  
+- Reference: LC 1143 (LCS)
+
+2. Edit Distance (Levenshtein)  
+- State: `(i, j)`  
+- Store: min edits to convert `A[:i]` → `B[:j]`  
+- Transition: `min(replace, insert, delete)`  
+- Reference: LC 72 (Edit Distance)
+
+3. Longest Palindromic Subsequence (LPS)  
+- State: `(l, r)`  
+- Store: LPS length in `s[l..r]`  
+- Transition: if `s[l]==s[r]` → `2+dp[l+1][r-1]` else `max(dp[l+1][r], dp[l][r-1])`  
+- Reference: LC 516 (Longest Palindromic Subsequence)
+
+4. Longest Palindromic Substring  
+- State: `(l, r)`  
+- Store: palindrome boolean or length  
+- Transition: `dp[l][r] = (s[l]==s[r] && (r-l<2 || dp[l+1][r-1]))`  
+- Reference: LC 5 (Longest Palindromic Substring)
+
+5. Distinct Subsequences (count ways A→B)  
+- State: `(i, j)`  
+- Store: #ways `A[:i]` forms `B[:j]`  
+- Transition: `dp[i][j] = dp[i-1][j] + (A[i-1]==B[j-1] ? dp[i-1][j-1] : 0)`  
+- Reference: LC 115 (Distinct Subsequences)
+
+````
+
+### 3. Knapsack Family 
+
+````{admonition} DP table
+:class: dropdown
+
+1. 0/1 Knapsack  
+- State: `(i, w)` or `w` in 1D  
+- Store: max value at capacity `w`  
+- Transition: `dp[w] = max(dp[w], dp[w-weight] + value)`  
+- Reference: LC 474 (Ones and Zeroes)
+
+2. Unbounded Knapsack / Coin Change (min coins)  
+- State: capacity `w`  
+- Store: min coins for `w`  
+- Transition: `dp[w] = min(dp[w], dp[w-c] + 1)`  
+- Reference: LC 322 (Coin Change)
+
+3. Coin Change (count ways)  
+- State: amount `a`  
+- Store: #ways to make `a`  
+- Transition: `dp[a] += dp[a-c]`  
+- Reference: LC 518 (Coin Change II)
+
+````
+### 4. Grid DP 
+
+````{admonition} DP table for Grid DP
+:class: dropdown 
+:class: dropdown
+
+1. Unique Paths (with obstacles)  
+- State: `(i, j)`  
+- Store: #ways to reach `(i, j)`  
+- Transition: `dp[i][j] = (obstacle?0 : dp[i-1][j] + dp[i][j-1])`  
+- Reference: LC 62 (Unique Paths), LC 63 (Unique Paths II)
+
+2. Minimum Path Sum  
+- State: `(i, j)`  
+- Store: min cost to `(i, j)`  
+- Transition: `dp[i][j] = grid[i][j] + min(dp[i-1][j], dp[i][j-1])`  
+- Reference: LC 64 (Minimum Path Sum)
+
+````
+
+### 5. Interval DP 
+
+````{admonition} DP table for Interval DP
+:class: dropdown
+
+1. Matrix Chain Multiplication  
+- State: `(l, r)`  
+- Store: min scalar multiplications for `l..r`  
+- Transition: split at `k`  
+- Reference: LC 1547 (Minimum Cost to Cut a Stick)
+
+2. Burst Balloons  
+- State: `(l, r)` open interval  
+- Store: max coins from `(l, r)`  
+- Transition: pick last balloon `k`  
+- Reference: LC 312 (Burst Balloons)
+
+3. Palindrome Partitioning (min cuts)  
+- State: prefix `i`  
+- Store: min cuts for `s[:i]`  
+- Transition: `dp[i] = min(dp[j]+1)` for palindromic `s[j:i]`  
+- Reference: LC 132 (Palindrome Partitioning II)
+
+````
+### Tree DP 
+
+````{admonition}
+:class: dropdown 
+
+:class: dropdown
+
+1. Tree Diameter  
+- State: node `u`  
+- Store: longest downward path from `u`  
+- Transition: combine two largest child depths  
+- Reference: LC 543 (Diameter of Binary Tree), LC 124 (Binary Tree Max Path Sum)
+
+2. Maximum Independent Set on Tree  
+- State: `(u, take)`  
+- Store: best sum if `u` is taken or skipped  
+- Transition: if take `u`, skip children; else best of children  
+- Reference: classic Tree DP (not direct LC, but similar to LC 337 House Robber III)
+````
+### Summary 
+````{admonition} Summary for DP table
+:class: important 
+
+Quick rules for "what to store"
+1. **Smallest subproblem that lets you extend**: e.g. LIS needs "best ending at i", not "global max so far".
+2. **Exactly the quantity needed by the recurrence**: value, count, boolean, min/max, probability, etc.
+3. **Dimensions match dependencies**: if you need two indices (like two strings), your state likely has two; if intervals matter, store by `(l, r)`; on trees, store per-node (optionally with a flag)
+4. **Space-optimize later**: once the state is right, compress (1D knapsack, rolling rows in grides, etc.)
+````
 ## 예시 문제 
 
 ### 1. 1D DP 
@@ -517,6 +697,8 @@ def lis_with_path(nums):
     return lis_len, seq
 ```
 ````
+#### Number of LIS 
+문제 - [Leetcode 673](https://leetcode.com/problems/number-of-longest-increasing-subsequence/description/)
 
 #### Is Subsequence 
 
@@ -581,6 +763,8 @@ def isSubsequence_many(s: str, t:str) -> bool:
 ````
 ### 2. Multidimensional DP 
 
+#### Russian Doll Envelope 
+문제 - [Leetcode 354](https://leetcode.com/problems/russian-doll-envelopes/description/)
 #### Triangle 
 문제 - [Leetcode 120](https://leetcode.com/problems/triangle/description/?envType=study-plan-v2&envId=top-interview-150)
 
