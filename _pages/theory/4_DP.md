@@ -303,7 +303,7 @@ Here is a handy "what to store" cheat-sheet for the most popular DP problems. ea
 - Reference: LC 132 (Palindrome Partitioning II)
 
 ````
-### Tree DP 
+### 6. Tree DP 
 
 ````{admonition} DP table for Tree 
 :class: dropdown
@@ -728,7 +728,7 @@ def lis_with_path(nums):
 
 ```{code-block} python 
 ---
-caption: `len[i]`: length of the LIS ending at i, `cnt[i]`: # of LIS of that length that end at i
+caption: `len[i]`: length of the LIS ending at i, `cnt[i]`: the number of LIS of that length that end at i
 ---
 from collections import defaultdict 
 
@@ -822,12 +822,131 @@ class Solution:
 
 #### Russian Doll Envelope 
 문제 - [Leetcode 354](https://leetcode.com/problems/russian-doll-envelopes/description/)
+
+````{admonition} O($N^2$) solution: Time limit error 
+:class: dropdown 
+
+```{code-block} python 
+class Solution:
+
+    def compare(self, w1, h1, w2, h2):
+        return w1 < w2 and h1 < h2 # 같을 때도 다 False 
+
+    def maxEnvelopes(self, envelopes: List[List[int]]) -> int:
+        envelopes.sort() 
+        # print(envelopes)
+
+        n = len(envelopes)
+        dp = [1]*n
+        max_val = dp[0]
+
+        for idx in range(n):
+            for prev in range(idx-1, -1, -1):
+                w1, h1 = envelopes[prev][0], envelopes[prev][1]
+                cur_w, cur_h = envelopes[idx][0], envelopes[idx][1]
+                if self.compare(w1, h1, cur_w, cur_h):
+                    dp[idx] = max(dp[prev] + 1, dp[idx])
+            max_val = max(dp[idx], max_val)
+        # print(dp)
+        return max_val
+```
+````
+
+````{admonition} O(nlogn) solution
+:class: dropdown 
+
+```{code-block} python
+---
+caption: 정렬할 때, `width`는 오름차순, `height`는 내림차순 (동일한 width끼리는 겹치지 않도록)-> 이렇게 하면 같은 width끼리 height가 증가로 잡히는 일을 막아서, 나중에 heigh만 보고 LIS를 구해도 "width 증가" 조건이 자동으로 보장됨. height 배열만 뽑아 LIS를 하면 LIS는 이진 탐색으로 tails 배열을 유지하여 O(NlogN)에 가능
+---
+from bisect import bisect_left
+
+class Solution:
+    def maxEnvelopes(self, envelopes):
+        # 1) 정렬: w 오름차순, w 같으면 h 내림차순
+        envelopes.sort(key=lambda x: (x[0], -x[1]))
+        # 2) height만 뽑아서 LIS (strictly increasing)
+        tails = []
+        for _, h in envelopes:
+            i = bisect_left(tails, h)  # h가 들어갈 위치
+            if i == len(tails):
+                tails.append(h)
+            else:
+                tails[i] = h
+        return len(tails)
+```
+````
 #### Triangle 
 문제 - [Leetcode 120](https://leetcode.com/problems/triangle/description/?envType=study-plan-v2&envId=top-interview-150)
 
+````{admonition} Memory Space O(N)
+:class: dropdown 
+
+```{code-block} python
+class Solution:
+    def minimumTotal(self, triangle: List[List[int]]) -> int:
+        num_rows = len(triangle)
+    
+        dp = [] # dp[row] = store the minimum path sum at row with 2D array 
+        for row in triangle:
+            dp.append([0]*(len(row)))
+
+        dp[0] = [triangle[0][0]]# base case 
+        # print(dp)
+        for row in range(1, num_rows):
+            for i in range(0, row+1):
+                # 오른쪽위만 있는 경우
+                if i-1 < 0:
+                    # print(type(row), type(i), type(dp), type(triangle))
+                    # print(row, i, dp, triangle)
+                    dp[row][i] = dp[row-1][i] + triangle[row][i]
+                # 왼쪽 위만 있는 경우 (row에는 index row까지만 숫자가 존재함.)
+                elif i > (row-1):
+                    dp[row][i] = dp[row-1][i-1] + triangle[row][i]
+                # 둘다 있는 경우 
+                else:
+                    dp[row][i] = min(dp[row-1][i-1], dp[row-1][i]) + triangle[row][i]
+
+        return min(val for val in dp[num_rows-1])
+
+```
+````
 #### Minimum Path Sum
 문제 - [Leetcode 64](https://leetcode.com/problems/minimum-path-sum/description/?envType=study-plan-v2&envId=top-interview-150)
 
+````{admonition} O(MxN) time complexity solution 
+:class: dropdown 
+
+```{code-block} python
+class Solution:
+    def minPathSum(self, grid: List[List[int]]) -> int:
+        m = len(grid)
+        n = len(grid[0])
+        dp = [[0]*n for _ in range(m)]
+
+        # directions 
+        DIRS = [(1, 0), (0, 1)]
+
+        # base case : edges 
+        # the lowest right dp[m-1][n-1]
+        dp[m-1][n-1] = grid[m-1][n-1]
+
+        # 1. bottom line 
+        for x in range(n-2, -1, -1):
+            dp[m-1][x] = dp[m-1][x+1] + grid[m-1][x]
+
+        for y in range(m-2, -1, -1):
+            dp[y][n-1] = dp[y+1][n-1] + grid[y][n-1]
+
+        # inside the dp grids 
+        for y in range(m-2, -1, -1):
+            for x in range(n-2, -1, -1):
+                dp[y][x] = min(dp[y+DIRS[0][0]][x+ DIRS[0][1]], dp[y+DIRS[1][0]][x + DIRS[1][1]]) + grid[y][x]
+
+
+        return dp[0][0]
+```
+````
 #### Unique Path II
 문제 - [Leetcode 63](https://leetcode.com/problems/unique-paths-ii?envType=study-plan-v2&envId=top-interview-150)
 
