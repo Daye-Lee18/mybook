@@ -726,6 +726,27 @@ document.write(`
 </section>
 <section id="tree-dp">
 <h3>Tree DP<a class="headerlink" href="#tree-dp" title="Link to this heading">#</a></h3>
+<div class="dropdown admonition">
+<p class="admonition-title">DP table for Tree</p>
+<ol class="arabic simple">
+<li><p>Tree Diameter</p></li>
+</ol>
+<ul class="simple">
+<li><p>State: node <code class="docutils literal notranslate"><span class="pre">u</span></code></p></li>
+<li><p>Store: longest downward path from <code class="docutils literal notranslate"><span class="pre">u</span></code></p></li>
+<li><p>Transition: combine two largest child depths</p></li>
+<li><p>Reference: LC 543 (Diameter of Binary Tree), LC 124 (Binary Tree Max Path Sum)</p></li>
+</ul>
+<ol class="arabic simple" start="2">
+<li><p>Maximum Independent Set on Tree</p></li>
+</ol>
+<ul class="simple">
+<li><p>State: <code class="docutils literal notranslate"><span class="pre">(u,</span> <span class="pre">take)</span></code></p></li>
+<li><p>Store: best sum if <code class="docutils literal notranslate"><span class="pre">u</span></code> is taken or skipped</p></li>
+<li><p>Transition: if take <code class="docutils literal notranslate"><span class="pre">u</span></code>, skip children; else best of children</p></li>
+<li><p>Reference: classic Tree DP (not direct LC, but similar to LC 337 House Robber III)</p></li>
+</ul>
+</div>
 </section>
 <section id="summary">
 <h3>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h3>
@@ -982,9 +1003,10 @@ document.write(`
 </pre></div>
 </div>
 </div>
-<div class="toggle docutils container">
+<div class="dropdown admonition">
+<p class="admonition-title">O(NlogN) solution</p>
 <div class="literal-block-wrapper docutils container" id="id7">
-<div class="code-block-caption"><span class="caption-number">예시 23 </span><span class="caption-text">시간 복잡도 O(NlogN)으로 푸는 전형적인 LIS 알고리즘은 “patience sorting (꼭대기 배열 tails 유지) + 이분 탐색”이다. 즉, <code class="docutils literal notranslate"><span class="pre">tails[k]</span></code> = “길이가 k+1인 증가 부분수열 중 마지막 값의 최소값” 을 저장한다. 배열을 왼 -&gt; 오 순서로 보며, 매 원소에 대해 <code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">=</span> <span class="pre">lower_bound(tails,</span> <span class="pre">x)</span></code> (즉, tails에서 x이상이 처음 나오는 위치)를 찾고 i == len(tails)면 tails뒤에 x를 붙이고, 아니면 tails[i] = x로 더 작은 끝값으로 갱신한다. 이렇게 하면 tails의 길이가 곧 LIS의 길이가 됨. 만약 비내림 (= 증가 허용, non-decreasing)인 경우에는 <code class="docutils literal notranslate"><span class="pre">bisect_right</span></code>을 사용하여 같은 값은 다음 길이로 넘겨 중복을 허용한다.</span><a class="headerlink" href="#id7" title="Link to this code">#</a></div>
+<div class="code-block-caption"><span class="caption-number">예시 23 </span><span class="caption-text">시간 복잡도 O(NlogN)으로 푸는 전형적인 LIS 알고리즘은 “patience sorting (꼭대기 배열 tails 유지) + 이분 탐색”이다. 즉, <code class="docutils literal notranslate"><span class="pre">tails[k]</span></code> = “길이가 k+1인 증가 부분수열 중 마지막 값의 최소값” 을 저장한다. 배열을 왼 -&gt; 오 순서로 보며, 매 원소에 대해 <code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">=</span> <span class="pre">lower_bound(tails,</span> <span class="pre">x)</span></code> (즉, tails에서 x이상이 처음 나오는 위치)를 찾고 i == len(tails)면 tails뒤에 x를 붙이고, 아니면 tails[i] = x로 더 작은 끝값으로 갱신한다. 이렇게 하면 tails의 길이가 곧 LIS의 길이가 됨. 만약 비내림 (= 증가 허용, non-decreasing)인 경우에는 <code class="docutils literal notranslate"><span class="pre">bisect_right</span></code>을 사용하여 같은 값은 다음 길이로 넘겨 중복을 허용한다. cf) So “patience sorting” is not about fully sorting the array — it’s about simulating the pile-building strategy from the patience card game, which indirectly reveals LIS length.</span><a class="headerlink" href="#id7" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">bisect</span>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>

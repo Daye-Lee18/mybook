@@ -305,9 +305,7 @@ Here is a handy "what to store" cheat-sheet for the most popular DP problems. ea
 ````
 ### Tree DP 
 
-````{admonition}
-:class: dropdown 
-
+````{admonition} DP table for Tree 
 :class: dropdown
 
 1. Tree Diameter  
@@ -572,11 +570,12 @@ print(b)  # [1, 2, 4, 4, 4, 8]
 ```
 ````
 
-````{toggle} 
+````{admonition} O(NlogN) solution 
+:class: dropdown 
 
 ```{code-block} python
 ---
-caption: 시간 복잡도 O(NlogN)으로 푸는 전형적인 LIS 알고리즘은 "patience sorting (꼭대기 배열 tails 유지) + 이분 탐색"이다. 즉, `tails[k]` = "길이가 k+1인 증가 부분수열 중 마지막 값의 최소값" 을 저장한다. 배열을 왼 -> 오 순서로 보며, 매 원소에 대해 `i = lower_bound(tails, x)` (즉, tails에서 x이상이 처음 나오는 위치)를 찾고 i == len(tails)면 tails뒤에 x를 붙이고, 아니면 tails[i] = x로 더 작은 끝값으로 갱신한다. 이렇게 하면 tails의 길이가 곧 LIS의 길이가 됨. 만약 비내림 (= 증가 허용, non-decreasing)인 경우에는 `bisect_right`을 사용하여 같은 값은 다음 길이로 넘겨 중복을 허용한다. 
+caption: 시간 복잡도 O(NlogN)으로 푸는 전형적인 LIS 알고리즘은 "patience sorting (꼭대기 배열 tails 유지) + 이분 탐색"이다. 즉, `tails[k]` = "길이가 k+1인 증가 부분수열 중 마지막 값의 최소값" 을 저장한다. 배열을 왼 -> 오 순서로 보며, 매 원소에 대해 `i = lower_bound(tails, x)` (즉, tails에서 x이상이 처음 나오는 위치)를 찾고 i == len(tails)면 tails뒤에 x를 붙이고, 아니면 tails[i] = x로 더 작은 끝값으로 갱신한다. 이렇게 하면 tails의 길이가 곧 LIS의 길이가 됨. 만약 비내림 (= 증가 허용, non-decreasing)인 경우에는 `bisect_right`을 사용하여 같은 값은 다음 길이로 넘겨 중복을 허용한다. cf) So “patience sorting” is not about fully sorting the array — it’s about simulating the pile-building strategy from the patience card game, which indirectly reveals LIS length.
 ---
 import bisect
 
