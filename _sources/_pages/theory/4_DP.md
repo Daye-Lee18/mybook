@@ -519,8 +519,32 @@ if __name__ == "__main__":
 #### Longest Increasing Subsequences 
 문제 - [Leetcode 300](https://leetcode.com/problems/longest-increasing-subsequence/?envType=study-plan-v2&envId=top-interview-150)
 
-````{toggle}
-##  bisect library, 위치 찾기 in LIS problem
+````{admonition} O($N^2$) solution 
+:class: dropdown 
+
+```{code-block} python
+---
+caption: state: dp[i] = length of LIS ending at index i. transition: dp[i] = 1 + max(dp[j]) for all j < i with nums[j] < nums[i]. answer: max(dp[i]) over all i.
+---
+class Solution:
+    def lengthOfLIS(self, nums: List[int]) -> int:
+        n = len(nums)
+        dp = [1] * n # every single char.length = 1 
+
+        max_val = dp[0]
+        for idx in range(1, n):
+            for k in range(idx-1, -1, -1):
+                if nums[k] < nums[idx]:
+                    dp[idx] = max(dp[k] + 1, dp[idx])
+            max_val = max(dp[idx], max_val)
+            
+        # print(dp)
+        return max_val
+```
+````
+
+````{admonition} bisect library, 위치 찾기 in LIS problem
+:class: dropdown
 
 `bisect`는 파이썬 표준 라이브러리로, 정렬된 리스트에서 이진 탐색을 통해 원소를 삽입하거나 위치를 찾을 때 사용합니다. 
 정렬은 미리 되어 있어야 하고, 삽입 위치를 계산해줄 뿐 자동으로 정렬을 유지하지는 않습니다. 
@@ -699,6 +723,38 @@ def lis_with_path(nums):
 #### Number of LIS 
 문제 - [Leetcode 673](https://leetcode.com/problems/number-of-longest-increasing-subsequence/description/)
 
+````{admonition} solution O($N^2$)
+:class: dropdown 
+
+```{code-block} python 
+---
+caption: `len[i]`: length of the LIS ending at i, `cnt[i]`: # of LIS of that length that end at i
+---
+from collections import defaultdict 
+
+class Solution:
+    def findNumberOfLIS(self, nums):
+        n = len(nums)
+        if n <= 1:
+            return n
+        length = [1]*n
+        count  = [1]*n
+
+        for i in range(n):
+            for j in range(i):
+                if nums[j] < nums[i]:
+                    if length[j] + 1 > length[i]:
+                        length[i] = length[j] + 1
+                        count[i]  = count[j]
+                    elif length[j] + 1 == length[i]:
+                        count[i] += count[j]
+
+        L = max(length)
+        return sum(c for l, c in zip(length, count) if l == L)
+
+```
+````
+
 #### Is Subsequence 
 
 문제 - [Leetcode 392](https://leetcode.com/problems/is-subsequence/description/?envType=problem-list-v2&envId=dynamic-programming)
@@ -723,13 +779,13 @@ Follow up: Suppose there are lots of incoming s, say $s_{1}, s_{2}, s{3}, ..., s
 :class: dropdown 
 
 ```{code-block} python 
-def isSubsequence(s: str, t: str) -> bool:
-    i = 0
-    for ch in t:
-        if i < len(s) and s[i] == ch:
-            i += 1
-    return i == len(s)
-
+class Solution:
+    def isSubsequence(self, s: str, t: str) -> bool: 
+        i = 0
+        for ch in t:
+            if i < len(s) and s[i] == ch:
+                i += 1
+        return i == len(s)
 ```
 ````
 
@@ -740,24 +796,26 @@ def isSubsequence(s: str, t: str) -> bool:
 import bisect
 from collections import defaultdict
 
-def preprocess_positions(t: str):
-    pos = defaultdict(list)
-    for i, ch in enumerate(t):
-        pos[ch].append(i)
-    return pos
 
-def isSubsequence_many(s: str, t:str) -> bool:
-    pos = preprocess_positions(t)
-    
-    cur = -1
-    for ch in s:
-        lst = pos.get(ch, [])
-        j = bisect.bisect_left(lst, cur + 1)
-        if j == len(lst): 
-            return False
-        cur = lst[j]
-    return True
+class Solution:
 
+    def preprocess_positions(self,t: str):
+        pos = defaultdict(list)
+        for i, ch in enumerate(t):
+            pos[ch].append(i)
+        return pos
+
+    def isSubsequence(self, s: str, t:str) -> bool:
+        pos = self.preprocess_positions(t)
+        
+        cur = -1
+        for ch in s:
+            lst = pos.get(ch, [])
+            j = bisect.bisect_left(lst, cur + 1)
+            if j == len(lst): 
+                return False
+            cur = lst[j]
+        return True
 ```
 ````
 ### 2. Multidimensional DP 
