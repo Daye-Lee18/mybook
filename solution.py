@@ -1,26 +1,29 @@
+from typing import List 
+# import bisect 
+
 class Solution:
-    def isSubsequence(self, s: str, t: str) -> bool:
-        DP = [0]*len(s) # index 저장 
-        new_start_idx = -1
+    def bisect_left(self, arr, x):
+        l, r = 0, len(arr)
 
-        for idx, char in enumerate(s):
-            # if new_start_idx == -1:
-            #     return False 
-            
-            cur_idx = t[new_start_idx+1:].find(char)
-    
-            if cur_idx == -1:
-                return False 
+        while l < r:
+            mid = (l+r)//2
 
-            DP[idx] = (new_start_idx + 1) + cur_idx # length of string to the previous char in the original  string + cur char index after previous char 
-            new_start_idx = DP[idx]
+            if x <= arr[mid]:
+                r = mid 
+            else:
+                l = mid + 1 
+
+        return l
+
+    def lengthOfLIS(self, nums: List[int]) -> int:
+        tails = [] # at index i, the smallest value that has 'i+1' length of a subsequence
+
+        for num in nums:
+            idx = self.bisect_left(tails, num)
+            if idx == len(tails):
+                tails.append(num)
+            else:
+                tails[idx] = num 
         
-        return True 
-    
-
-if __name__ == "__main__":
-    s = 'abc'; t = 'ahbgdc'
-    # s = 'a'; t = 'a'
-    # s = 'axc'; t = 'ahbgdc'
-    sol = Solution()
-    print(sol.isSubsequence(s, t))
+        return len(tails)
+        

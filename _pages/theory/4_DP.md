@@ -113,7 +113,7 @@ print(fibo(99))
 
 ## 메모이제이션 
 
-메모이제이션은 때에 따라서 다른 자료형, 예를 들어 사전 (Dict) 자료형을 이용할 수도 있다. 사전 자료형은 수열처럼 `연속적이지 않은 경우`에 유용한데, 예를 들어 $a_{n}$을 계산하고자 할 때 $a_{0} ~ a_{n-1}$모두가 아닌 일부의 작은 문제에 대한 해답만 필요한 경우가 존재할 수 있다. 이럴 때에는 사전 자료형을 사용하는게 더 효과적이다. 
+메모이제이션은 때에 따라서 다른 자료형, 예를 들어 사전 (Dict) 자료형을 이용할 수도 있다. 사전 자료형은 수열처럼 "연속적이지 않은 경우"에 유용한데, 예를 들어 $a_{n}$을 계산하고자 할 때 $a_{0} ~ a_{n-1}$모두가 아닌 일부의 작은 문제에 대한 해답만 필요한 경우가 존재할 수 있다. 이럴 때에는 사전 자료형을 사용하는게 더 효과적이다. 
 
 또한 가능하다면 재귀 함수를 이용하는 탑다운 방식보다는 보텀업 방식으로 구현하는 것을 권장한다. 시스템상 재귀 함수의 스택 크기가 한정되어 있을 수 있기 때문이다. 이 경우 sys 라이브러리에 포함되어 있는 `setrecursionlimit()` 함수를 호출하여 재귀 제한을 완화할 수 있다는 점만 기억하자. 
 
@@ -151,7 +151,185 @@ print(d[n])
 
 ```
 ````
+## Dynamic Programming Table (DP Table)
 
+What you choose to store in your DP table (list, dict, array, etc.) is the most important desing decision in solving a DP problem. 
+
+DP is about `state representation`. DP works by breaking a big problem into smaller overlapping subproblems. To reuse solutions, you must define a `state` that fully describes a subproblem. That "state" is exactly what you store in the DP table. 
+
+How can we decide **what to store**? You should ask yourself **1. What subproblem do I need to solve repeatdly?** and **2. What result of that subproblem helps me build the next one?**. The first question deinfes the state and the next question is the value you should store. 
+
+Here is a handy "what to store" cheat-sheet for the most popular DP problems. each line tells you the state, what to store, and a one-line transition hint so you know why the storage works. 
+
+### 1. Sequence / Array DP 
+
+````{admonition} sequence 1D DP
+:class: dropdown
+
+1. Fibonacci / Stair Climbing  
+- State: `n`  
+- Store: number of ways/value at `n`  
+- Transition: `dp[n] = dp[n-1] + dp[n-2]`  
+- Reference: LC 70 (Climbing Stairs), LC 509 (Fibonacci Number)
+
+2. Maximum Subarray (Kadane)  
+- State: end index `i`  
+- Store: best sum of subarray ending at `i`  
+- Transition: `dp[i] = max(a[i], dp[i-1] + a[i])`  
+- Reference: LC 53 (Maximum Subarray)
+
+3. House Robber  
+- State: first `i` houses  
+- Store: max money using up to `i`  
+- Transition: `dp[i] = max(dp[i-1], dp[i-2] + val[i])`  
+- Reference: LC 198 (House Robber), LC 213 (House Robber II)
+
+4. Longest Increasing Subsequence (LIS)  
+- State: end index `i`  
+- Store: LIS length ending at `i`  
+- Transition: `dp[i] = 1 + max(dp[j]) for j<i & a[j]<a[i]`  
+- Reference: LC 300 (LIS), LC 354 (Russian Doll Envelopes)
+
+5. Partition Equal Subset / Subset Sum  
+- State: capacity `s`  
+- Store: reachable boolean at sum `s`  
+- Transition: `dp[s] |= dp[s-w]`  
+- Reference: LC 416 (Partition Equal Subset Sum), LC 494 (Target Sum)
+
+````
+
+### 2. Subsequence/String DP
+
+````{admonition} dp table
+:class: dropdown
+
+1. Longest Common Subsequence (LCS)  
+- State: `(i, j)`  
+- Store: LCS length of `A[:i]` & `B[:j]`  
+- Transition: if match: `1+dp[i-1][j-1]` else `max(dp[i-1][j], dp[i][j-1])`  
+- Reference: LC 1143 (LCS)
+
+2. Edit Distance (Levenshtein)  
+- State: `(i, j)`  
+- Store: min edits to convert `A[:i]` → `B[:j]`  
+- Transition: `min(replace, insert, delete)`  
+- Reference: LC 72 (Edit Distance)
+
+3. Longest Palindromic Subsequence (LPS)  
+- State: `(l, r)`  
+- Store: LPS length in `s[l..r]`  
+- Transition: if `s[l]==s[r]` → `2+dp[l+1][r-1]` else `max(dp[l+1][r], dp[l][r-1])`  
+- Reference: LC 516 (Longest Palindromic Subsequence)
+
+4. Longest Palindromic Substring  
+- State: `(l, r)`  
+- Store: palindrome boolean or length  
+- Transition: `dp[l][r] = (s[l]==s[r] && (r-l<2 || dp[l+1][r-1]))`  
+- Reference: LC 5 (Longest Palindromic Substring)
+
+5. Distinct Subsequences (count ways A→B)  
+- State: `(i, j)`  
+- Store: #ways `A[:i]` forms `B[:j]`  
+- Transition: `dp[i][j] = dp[i-1][j] + (A[i-1]==B[j-1] ? dp[i-1][j-1] : 0)`  
+- Reference: LC 115 (Distinct Subsequences)
+
+````
+
+### 3. Knapsack Family 
+
+````{admonition} DP table
+:class: dropdown
+
+1. 0/1 Knapsack  
+- State: `(i, w)` or `w` in 1D  
+- Store: max value at capacity `w`  
+- Transition: `dp[w] = max(dp[w], dp[w-weight] + value)`  
+- Reference: LC 474 (Ones and Zeroes)
+
+2. Unbounded Knapsack / Coin Change (min coins)  
+- State: capacity `w`  
+- Store: min coins for `w`  
+- Transition: `dp[w] = min(dp[w], dp[w-c] + 1)`  
+- Reference: LC 322 (Coin Change)
+
+3. Coin Change (count ways)  
+- State: amount `a`  
+- Store: #ways to make `a`  
+- Transition: `dp[a] += dp[a-c]`  
+- Reference: LC 518 (Coin Change II)
+
+````
+### 4. Grid DP 
+
+````{admonition} DP table for Grid DP
+:class: dropdown 
+:class: dropdown
+
+1. Unique Paths (with obstacles)  
+- State: `(i, j)`  
+- Store: #ways to reach `(i, j)`  
+- Transition: `dp[i][j] = (obstacle?0 : dp[i-1][j] + dp[i][j-1])`  
+- Reference: LC 62 (Unique Paths), LC 63 (Unique Paths II)
+
+2. Minimum Path Sum  
+- State: `(i, j)`  
+- Store: min cost to `(i, j)`  
+- Transition: `dp[i][j] = grid[i][j] + min(dp[i-1][j], dp[i][j-1])`  
+- Reference: LC 64 (Minimum Path Sum)
+
+````
+
+### 5. Interval DP 
+
+````{admonition} DP table for Interval DP
+:class: dropdown
+
+1. Matrix Chain Multiplication  
+- State: `(l, r)`  
+- Store: min scalar multiplications for `l..r`  
+- Transition: split at `k`  
+- Reference: LC 1547 (Minimum Cost to Cut a Stick)
+
+2. Burst Balloons  
+- State: `(l, r)` open interval  
+- Store: max coins from `(l, r)`  
+- Transition: pick last balloon `k`  
+- Reference: LC 312 (Burst Balloons)
+
+3. Palindrome Partitioning (min cuts)  
+- State: prefix `i`  
+- Store: min cuts for `s[:i]`  
+- Transition: `dp[i] = min(dp[j]+1)` for palindromic `s[j:i]`  
+- Reference: LC 132 (Palindrome Partitioning II)
+
+````
+### Tree DP 
+
+````{admonition} DP table for Tree 
+:class: dropdown
+
+1. Tree Diameter  
+- State: node `u`  
+- Store: longest downward path from `u`  
+- Transition: combine two largest child depths  
+- Reference: LC 543 (Diameter of Binary Tree), LC 124 (Binary Tree Max Path Sum)
+
+2. Maximum Independent Set on Tree  
+- State: `(u, take)`  
+- Store: best sum if `u` is taken or skipped  
+- Transition: if take `u`, skip children; else best of children  
+- Reference: classic Tree DP (not direct LC, but similar to LC 337 House Robber III)
+````
+### Summary 
+````{admonition} Summary for DP table
+:class: important 
+
+Quick rules for "what to store"
+1. **Smallest subproblem that lets you extend**: e.g. LIS needs "best ending at i", not "global max so far".
+2. **Exactly the quantity needed by the recurrence**: value, count, boolean, min/max, probability, etc.
+3. **Dimensions match dependencies**: if you need two indices (like two strings), your state likely has two; if intervals matter, store by `(l, r)`; on trees, store per-node (optionally with a flag)
+4. **Space-optimize later**: once the state is right, compress (1D knapsack, rolling rows in grides, etc.)
+````
 ## 예시 문제 
 
 ### 1. 1D DP 
@@ -341,8 +519,32 @@ if __name__ == "__main__":
 #### Longest Increasing Subsequences 
 문제 - [Leetcode 300](https://leetcode.com/problems/longest-increasing-subsequence/?envType=study-plan-v2&envId=top-interview-150)
 
-````{toggle}
-##  bisect library, 위치 찾기 in LIS problem
+````{admonition} O($N^2$) solution 
+:class: dropdown 
+
+```{code-block} python
+---
+caption: state: dp[i] = length of LIS ending at index i. transition: dp[i] = 1 + max(dp[j]) for all j < i with nums[j] < nums[i]. answer: max(dp[i]) over all i.
+---
+class Solution:
+    def lengthOfLIS(self, nums: List[int]) -> int:
+        n = len(nums)
+        dp = [1] * n # every single char.length = 1 
+
+        max_val = dp[0]
+        for idx in range(1, n):
+            for k in range(idx-1, -1, -1):
+                if nums[k] < nums[idx]:
+                    dp[idx] = max(dp[k] + 1, dp[idx])
+            max_val = max(dp[idx], max_val)
+            
+        # print(dp)
+        return max_val
+```
+````
+
+````{admonition} bisect library, 위치 찾기 in LIS problem
+:class: dropdown
 
 `bisect`는 파이썬 표준 라이브러리로, 정렬된 리스트에서 이진 탐색을 통해 원소를 삽입하거나 위치를 찾을 때 사용합니다. 
 정렬은 미리 되어 있어야 하고, 삽입 위치를 계산해줄 뿐 자동으로 정렬을 유지하지는 않습니다. 
@@ -392,11 +594,12 @@ print(b)  # [1, 2, 4, 4, 4, 8]
 ```
 ````
 
-````{toggle} 
+````{admonition} O(NlogN) solution 
+:class: dropdown 
 
 ```{code-block} python
 ---
-caption: 시간 복잡도 O(NlogN)으로 푸는 전형적인 LIS 알고리즘은 "patience sorting (꼭대기 배열 tails 유지) + 이분 탐색"이다. 즉, `tails[k]` = "길이가 k+1인 증가 부분수열 중 마지막 값의 최소값" 을 저장한다. 배열을 왼 -> 오 순서로 보며, 매 원소에 대해 `i = lower_bound(tails, x)` (즉, tails에서 x이상이 처음 나오는 위치)를 찾고 i == len(tails)면 tails뒤에 x를 붙이고, 아니면 tails[i] = x로 더 작은 끝값으로 갱신한다. 이렇게 하면 tails의 길이가 곧 LIS의 길이가 됨. 만약 비내림 (= 증가 허용, non-decreasing)인 경우에는 `bisect_right`을 사용하여 같은 값은 다음 길이로 넘겨 중복을 허용한다. 
+caption: 시간 복잡도 O(NlogN)으로 푸는 전형적인 LIS 알고리즘은 "patience sorting (꼭대기 배열 tails 유지) + 이분 탐색"이다. 즉, `tails[k]` = "길이가 k+1인 증가 부분수열 중 마지막 값의 최소값" 을 저장한다. 배열을 왼 -> 오 순서로 보며, 매 원소에 대해 `i = lower_bound(tails, x)` (즉, tails에서 x이상이 처음 나오는 위치)를 찾고 i == len(tails)면 tails뒤에 x를 붙이고, 아니면 tails[i] = x로 더 작은 끝값으로 갱신한다. 이렇게 하면 tails의 길이가 곧 LIS의 길이가 됨. 만약 비내림 (= 증가 허용, non-decreasing)인 경우에는 `bisect_right`을 사용하여 같은 값은 다음 길이로 넘겨 중복을 허용한다. cf) So “patience sorting” is not about fully sorting the array — it’s about simulating the pile-building strategy from the patience card game, which indirectly reveals LIS length.
 ---
 import bisect
 
@@ -517,6 +720,40 @@ def lis_with_path(nums):
     return lis_len, seq
 ```
 ````
+#### Number of LIS 
+문제 - [Leetcode 673](https://leetcode.com/problems/number-of-longest-increasing-subsequence/description/)
+
+````{admonition} solution O($N^2$)
+:class: dropdown 
+
+```{code-block} python 
+---
+caption: `len[i]`: length of the LIS ending at i, `cnt[i]`: # of LIS of that length that end at i
+---
+from collections import defaultdict 
+
+class Solution:
+    def findNumberOfLIS(self, nums):
+        n = len(nums)
+        if n <= 1:
+            return n
+        length = [1]*n
+        count  = [1]*n
+
+        for i in range(n):
+            for j in range(i):
+                if nums[j] < nums[i]:
+                    if length[j] + 1 > length[i]:
+                        length[i] = length[j] + 1
+                        count[i]  = count[j]
+                    elif length[j] + 1 == length[i]:
+                        count[i] += count[j]
+
+        L = max(length)
+        return sum(c for l, c in zip(length, count) if l == L)
+
+```
+````
 
 #### Is Subsequence 
 
@@ -542,13 +779,13 @@ Follow up: Suppose there are lots of incoming s, say $s_{1}, s_{2}, s{3}, ..., s
 :class: dropdown 
 
 ```{code-block} python 
-def isSubsequence(s: str, t: str) -> bool:
-    i = 0
-    for ch in t:
-        if i < len(s) and s[i] == ch:
-            i += 1
-    return i == len(s)
-
+class Solution:
+    def isSubsequence(self, s: str, t: str) -> bool: 
+        i = 0
+        for ch in t:
+            if i < len(s) and s[i] == ch:
+                i += 1
+        return i == len(s)
 ```
 ````
 
@@ -559,28 +796,32 @@ def isSubsequence(s: str, t: str) -> bool:
 import bisect
 from collections import defaultdict
 
-def preprocess_positions(t: str):
-    pos = defaultdict(list)
-    for i, ch in enumerate(t):
-        pos[ch].append(i)
-    return pos
 
-def isSubsequence_many(s: str, t:str) -> bool:
-    pos = preprocess_positions(t)
-    
-    cur = -1
-    for ch in s:
-        lst = pos.get(ch, [])
-        j = bisect.bisect_left(lst, cur + 1)
-        if j == len(lst): 
-            return False
-        cur = lst[j]
-    return True
+class Solution:
 
+    def preprocess_positions(self,t: str):
+        pos = defaultdict(list)
+        for i, ch in enumerate(t):
+            pos[ch].append(i)
+        return pos
+
+    def isSubsequence(self, s: str, t:str) -> bool:
+        pos = self.preprocess_positions(t)
+        
+        cur = -1
+        for ch in s:
+            lst = pos.get(ch, [])
+            j = bisect.bisect_left(lst, cur + 1)
+            if j == len(lst): 
+                return False
+            cur = lst[j]
+        return True
 ```
 ````
 ### 2. Multidimensional DP 
 
+#### Russian Doll Envelope 
+문제 - [Leetcode 354](https://leetcode.com/problems/russian-doll-envelopes/description/)
 #### Triangle 
 문제 - [Leetcode 120](https://leetcode.com/problems/triangle/description/?envType=study-plan-v2&envId=top-interview-150)
 

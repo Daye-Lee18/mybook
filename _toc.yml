@@ -12,6 +12,7 @@ parts:
   - file: _pages/theory/2_DFS_BFS
   - file: _pages/theory/3_backtracking
   - file: _pages/theory/4_DP
+  - file: _pages/theory/5_sort
 
 
 - caption: 실습
