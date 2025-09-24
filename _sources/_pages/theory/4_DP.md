@@ -950,6 +950,58 @@ class Solution:
 #### Unique Path II
 문제 - [Leetcode 63](https://leetcode.com/problems/unique-paths-ii?envType=study-plan-v2&envId=top-interview-150)
 
+````{admonition} O(M*N) time, O(M*N) memory
+:class: dropdown 
+
+```{code-block} python 
+class Solution:
+    def uniquePathsWithObstacles(self, obstacleGrid: List[List[int]]) -> int:
+        M = len(obstacleGrid); N=len(obstacleGrid[0])
+
+        dp = [[0]*N for _ in range(M)]
+        # base case origin 
+        dp[0][0] = 1 if obstacleGrid[0][0] == 0 else 0 
+        # base case: the upper horizontal line 
+        for x in range(1, N):
+            dp[0][x] = dp[0][x-1] if obstacleGrid[0][x] == 0 else 0
+        # base case: the leftmost vertical line 
+        for y in range(1, M):
+            dp[y][0] = dp[y-1][0] if obstacleGrid[y][0] == 0 else 0
+
+        for y in range(1, M):
+            for x in range(1, N):
+                if obstacleGrid[y][x] == 0:
+                    from_up = 0; from_left = 0
+                    if y-1 >=0:
+                        from_up = dp[y-1][x] if obstacleGrid[y-1][x] == 0 else 0
+                    if x - 1 >=0:
+                        from_left = dp[y][x-1] if obstacleGrid[y][x-1] == 0 else 0
+                    dp[y][x] = from_up + from_left 
+                
+        
+        return dp[M-1][N-1]
+```
+````
+
+````{admonition} O(MxN) time, O(min(M, N)) 1D DP memory 
+:class: dropdown 
+
+```{code-block} python
+class Solution:
+    def uniquePathsWithObstacles(self, grid):
+        m, n = len(grid), len(grid[0])
+        dp = [0]*n
+        dp[0] = 0 if grid[0][0]==1 else 1
+        for i in range(m):
+            for j in range(n):
+                if grid[i][j]==1:
+                    dp[j] = 0
+                elif j>0:
+                    dp[j] += dp[j-1]
+        return dp[-1]
+```
+````
+
 #### Longest Palindromic Substring 
 문제 - [Leetcode 5](https://leetcode.com/problems/longest-palindromic-substring/description/?envType=study-plan-v2&envId=top-interview-150)
 
