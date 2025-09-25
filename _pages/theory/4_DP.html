@@ -66,7 +66,7 @@
     <link rel="icon" href="../../_static/favicon.png"/>
     <link rel="index" title="색인" href="../../genindex.html" />
     <link rel="search" title="검색" href="../../search.html" />
-    <link rel="next" title="Lecture 5-1. 정렬" href="5_sort.html" />
+    <link rel="next" title="Lecture 5-1. Shortest Path" href="5_shortest_path.html" />
     <link rel="prev" title="Lecture 3-1. Backtracking" href="3_backtracking.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ko"/>
@@ -192,7 +192,8 @@
 <li class="toctree-l1"><a class="reference internal" href="2_DFS_BFS.html">Lecture 2-1. DFS/BFS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="3_backtracking.html">Lecture 3-1. Backtracking</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Lecture 4-1. Dynamic Programming</a></li>
-<li class="toctree-l1"><a class="reference internal" href="5_sort.html">Lecture 5-1. 정렬</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_shortest_path.html">Lecture 5-1. Shortest Path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_sort.html">Lecture 6-1. 정렬</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">실습</span></p>
 <ul class="nav bd-sidenav">
@@ -1460,10 +1461,126 @@ Follow up: Suppose there are lots of incoming s, say <span class="math notransla
 <section id="longest-palindromic-substring">
 <h4>Longest Palindromic Substring<a class="headerlink" href="#longest-palindromic-substring" title="Link to this heading">#</a></h4>
 <p>문제 - <a class="reference external" href="https://leetcode.com/problems/longest-palindromic-substring/description/?envType=study-plan-v2&amp;amp;envId=top-interview-150">Leetcode 5</a></p>
+<div class="dropdown admonition">
+<p class="admonition-title">O(N*N) solution using substring source code</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Palindromic check takes time of O(N) </span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_palindrome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cur_s</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">cur_s</span> <span class="o">==</span> <span class="n">cur_s</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">longestPalindrome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="n">max_len</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span> <span class="c1"># exclusive </span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_palindrome</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">f</span><span class="p">:</span><span class="n">r</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span><span class="n">r</span><span class="o">-</span><span class="n">f</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_len</span><span class="p">:</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">f</span><span class="p">:</span><span class="n">r</span><span class="p">]</span>
+                    <span class="n">max_len</span> <span class="o">=</span> <span class="n">r</span><span class="o">-</span><span class="n">f</span> 
+
+        <span class="k">return</span> <span class="n">result</span> 
+</pre></div>
+</div>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">length of the string</p>
+<ol class="arabic simple">
+<li><p>s[f:r] = (inclusive~exclusive): r - l</p></li>
+<li><p>(inclusive ~ inclusive) - (l , r): r - l + 1</p></li>
+</ol>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">expand-around-center method O(<span class="math notranslate nohighlight">\(N^2\)</span>) time, O(1) memory</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Hint 1: How can we reuse a previously computed palindrome to compute a larger palindrome?</span>
+<span class="sd">    Hint 2:  If “aba” is a palindrome, is “xabax” a palindrome? Similarly is “xabay” a palindrome?</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">longestPalindrome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">max_len</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">mid</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+            <span class="n">previous_palindrome</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="c1"># 짝수  </span>
+            <span class="n">l</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">mid</span><span class="p">,</span> <span class="n">mid</span><span class="o">+</span><span class="mi">1</span>
+            <span class="k">while</span> <span class="n">l</span> <span class="o">&gt;=</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">r</span> <span class="o">&lt;</span><span class="n">N</span> <span class="ow">and</span> <span class="n">s</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">==</span> <span class="n">s</span><span class="p">[</span><span class="n">r</span><span class="p">]:</span>
+                <span class="n">l</span> <span class="o">-=</span> <span class="mi">1</span> 
+                <span class="n">r</span> <span class="o">+=</span> <span class="mi">1</span> 
+            <span class="k">if</span> <span class="p">(</span><span class="n">r</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="p">(</span><span class="n">l</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span><span class="mi">1</span> <span class="o">&gt;</span> <span class="n">max_len</span><span class="p">:</span>
+                <span class="n">max_len</span> <span class="o">=</span> <span class="p">(</span><span class="n">r</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="p">(</span><span class="n">l</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span><span class="mi">1</span> <span class="c1"># (inclusive ~ inclusive) -&gt; length = r- l + 1 </span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">l</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="n">r</span><span class="p">]</span>
+
+            <span class="c1"># 홀수 </span>
+            <span class="n">l</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">mid</span><span class="p">,</span> <span class="n">mid</span> 
+            <span class="k">while</span> <span class="n">l</span> <span class="o">&gt;=</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">r</span> <span class="o">&lt;</span><span class="n">N</span> <span class="ow">and</span> <span class="n">s</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">==</span> <span class="n">s</span><span class="p">[</span><span class="n">r</span><span class="p">]:</span>
+                <span class="n">l</span> <span class="o">-=</span> <span class="mi">1</span> 
+                <span class="n">r</span> <span class="o">+=</span> <span class="mi">1</span> 
+            <span class="k">if</span> <span class="p">(</span><span class="n">r</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="p">(</span><span class="n">l</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span><span class="mi">1</span>  <span class="o">&gt;</span> <span class="n">max_len</span><span class="p">:</span>
+                <span class="n">max_len</span> <span class="o">=</span> <span class="p">(</span><span class="n">r</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="p">(</span><span class="n">l</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span><span class="mi">1</span> <span class="c1"># (inclusive ~ inclusive) -&gt; length = r- l + 1 </span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">l</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="n">r</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">result</span> 
+        
+</pre></div>
+</div>
+</div>
 </section>
 <section id="interleaving-string">
 <h4>Interleaving String<a class="headerlink" href="#interleaving-string" title="Link to this heading">#</a></h4>
 <p>문제 - <a class="reference external" href="https://leetcode.com/problems/interleaving-string/description/?envType=study-plan-v2&amp;amp;envId=top-interview-150">Leetcode 97</a></p>
+<div class="dropdown admonition">
+<p class="admonition-title">2D table</p>
+<div class="literal-block-wrapper docutils container" id="id13">
+<div class="code-block-caption"><span class="caption-number">예시 29 </span><span class="caption-text">Define dp[i][j] = True iff s1[:i] and s2[:j] can interleave to form s3[:i+j]. dp[i][j] = (dp[i-1][j] and s1[i-1] == s3[i+j-1]) or (dp[i][j-1] and s2[j-1] == s3[i+j-1]). Base case: dp[0][0] = True, dp[i][0] = dp[i-1][0] and (s1[i-1] == s3[i-1]), dp[0][j] = dp[0][j-1] and (s2[j-1] == s3[j-1])</span><a class="headerlink" href="#id13" title="Link to this code">#</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">isInterleave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s1</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">s2</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">s3</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="n">m</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">s1</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">s2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">m</span> <span class="o">+</span> <span class="n">n</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">s3</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        
+        <span class="n">dp</span> <span class="o">=</span> <span class="p">[[</span><span class="kc">False</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+        <span class="n">dp</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">dp</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">dp</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">s1</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">s3</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">dp</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">dp</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">s2</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">s3</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">take1</span> <span class="o">=</span> <span class="n">dp</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="ow">and</span> <span class="n">s1</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">s3</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">take2</span> <span class="o">=</span> <span class="n">dp</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">s2</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">s3</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">dp</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">take1</span> <span class="ow">or</span> <span class="n">take2</span>
+        <span class="k">return</span> <span class="n">dp</span><span class="p">[</span><span class="n">m</span><span class="p">][</span><span class="n">n</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">1D table</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">isInterleave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s1</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">s2</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">s3</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="n">m</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">s1</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">s2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">m</span> <span class="o">+</span> <span class="n">n</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">s3</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">dp</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">dp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">dp</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">dp</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">s2</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">s3</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">dp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">dp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">s1</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">s3</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">from_s1</span> <span class="o">=</span> <span class="n">dp</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="ow">and</span> <span class="n">s1</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">s3</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>     <span class="c1"># dp[j] is “up”</span>
+                <span class="n">from_s2</span> <span class="o">=</span> <span class="n">dp</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">s2</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">s3</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>   <span class="c1"># dp[j-1] is “left”</span>
+                <span class="n">dp</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">from_s1</span> <span class="ow">or</span> <span class="n">from_s2</span>
+        <span class="k">return</span> <span class="n">dp</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
 </section>
 <section id="edit-distance">
 <h4>Edit Distance<a class="headerlink" href="#edit-distance" title="Link to this heading">#</a></h4>
@@ -1513,11 +1630,11 @@ Follow up: Suppose there are lots of incoming s, say <span class="math notransla
       </div>
     </a>
     <a class="right-next"
-       href="5_sort.html"
+       href="5_shortest_path.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">다음</p>
-        <p class="prev-next-title">Lecture 5-1. 정렬</p>
+        <p class="prev-next-title">Lecture 5-1. Shortest Path</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

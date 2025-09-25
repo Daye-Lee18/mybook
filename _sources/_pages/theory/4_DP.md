@@ -1005,8 +1005,137 @@ class Solution:
 #### Longest Palindromic Substring 
 문제 - [Leetcode 5](https://leetcode.com/problems/longest-palindromic-substring/description/?envType=study-plan-v2&envId=top-interview-150)
 
+
+````{admonition} O(N*N) solution using substring source code
+:class: dropdown 
+
+```{code-block} python 
+
+# Palindromic check takes time of O(N) 
+
+class Solution:
+    def is_palindrome(self, cur_s):
+        return cur_s == cur_s[::-1]
+
+    def longestPalindrome(self, s: str) -> str:
+        N = len(s)
+        max_len = 0
+        for r in range(N+1): # exclusive 
+            for f in range(r):
+                if self.is_palindrome(s[f:r]) and (r-f) > max_len:
+                    result = s[f:r]
+                    max_len = r-f 
+
+        return result 
+
+```
+````
+
+````{admonition} length of the string 
+:class: dropdown 
+
+1. s[f:r] = (inclusive~exclusive): r - l
+2. (inclusive ~ inclusive) - (l , r): r - l + 1 
+````
+
+````{admonition} expand-around-center method O($N^2$) time, O(1) memory 
+:class: dropdown 
+
+```{code-block} python 
+class Solution:
+    '''
+    Hint 1: How can we reuse a previously computed palindrome to compute a larger palindrome?
+    Hint 2:  If “aba” is a palindrome, is “xabax” a palindrome? Similarly is “xabay” a palindrome?
+    '''
+    def longestPalindrome(self, s: str) -> str:
+        N = len(s)
+
+        result = ""
+        max_len = 0
+        for mid in range(N):
+            previous_palindrome = True
+            # 짝수  
+            l, r = mid, mid+1
+            while l >=0 and r <N and s[l] == s[r]:
+                l -= 1 
+                r += 1 
+            if (r-1)-(l+1) +1 > max_len:
+                max_len = (r-1)-(l+1) +1 # (inclusive ~ inclusive) -> length = r- l + 1 
+                result = s[l+1:r]
+
+            # 홀수 
+            l, r = mid, mid 
+            while l >=0 and r <N and s[l] == s[r]:
+                l -= 1 
+                r += 1 
+            if (r-1)-(l+1) +1  > max_len:
+                max_len = (r-1)-(l+1) +1 # (inclusive ~ inclusive) -> length = r- l + 1 
+                result = s[l+1:r]
+
+        return result 
+        
+```
+````
+
 #### Interleaving String 
 문제 - [Leetcode 97](https://leetcode.com/problems/interleaving-string/description/?envType=study-plan-v2&envId=top-interview-150)
+
+````{admonition} 2D table 
+:class: dropdown 
+
+```{code-block} python 
+---
+caption: Define dp[i][j] = True iff s1[:i] and s2[:j] can interleave to form s3[:i+j]. dp[i][j] = (dp[i-1][j] and s1[i-1] == s3[i+j-1]) or (dp[i][j-1] and s2[j-1] == s3[i+j-1]). Base case: dp[0][0] = True, dp[i][0] = dp[i-1][0] and (s1[i-1] == s3[i-1]), dp[0][j] = dp[0][j-1] and (s2[j-1] == s3[j-1])
+---
+
+class Solution:
+    def isInterleave(self, s1: str, s2: str, s3: str) -> bool:
+        m, n = len(s1), len(s2)
+        if m + n != len(s3):
+            return False
+        
+        dp = [[False]*(n+1) for _ in range(m+1)]
+        dp[0][0] = True
+        
+        for i in range(1, m+1):
+            dp[i][0] = dp[i-1][0] and s1[i-1] == s3[i-1]
+        for j in range(1, n+1):
+            dp[0][j] = dp[0][j-1] and s2[j-1] == s3[j-1]
+        
+        for i in range(1, m+1):
+            for j in range(1, n+1):
+                take1 = dp[i-1][j] and s1[i-1] == s3[i+j-1]
+                take2 = dp[i][j-1] and s2[j-1] == s3[i+j-1]
+                dp[i][j] = take1 or take2
+        return dp[m][n]
+```
+````
+
+````{admonition} 1D table 
+:class: dropdown 
+
+```{code-block} python
+class Solution:
+    def isInterleave(self, s1: str, s2: str, s3: str) -> bool:
+        m, n = len(s1), len(s2)
+        if m + n != len(s3):
+            return False
+        dp = [False]*(n+1)
+        dp[0] = True
+        
+        for j in range(1, n+1):
+            dp[j] = dp[j-1] and s2[j-1] == s3[j-1]
+        
+        for i in range(1, m+1):
+            dp[0] = dp[0] and s1[i-1] == s3[i-1]
+            for j in range(1, n+1):
+                from_s1 = dp[j] and s1[i-1] == s3[i+j-1]     # dp[j] is “up”
+                from_s2 = dp[j-1] and s2[j-1] == s3[i+j-1]   # dp[j-1] is “left”
+                dp[j] = from_s1 or from_s2
+        return dp[n]
+
+```
+````
 
 #### Edit Distance 
 문제 - [Leetcode 72](https://leetcode.com/problems/edit-distance/description/?envType=study-plan-v2&envId=top-interview-150)
