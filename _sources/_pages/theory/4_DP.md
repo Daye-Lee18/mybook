@@ -855,9 +855,18 @@ class Solution:
 ````{admonition} O(nlogn) solution
 :class: dropdown 
 
+You're given envelopes as pairs `(width, height)`. One envelope can fit into another **only if both dimensions are strictly larger**: (w1 < w2) and (h1 < h2). If we sort the envelopes by width in ascending order, and for equal widths, height in descending order, after sorting, we can find the LIS by just comparing heights, which means the answer is the length of the strictly increasing LIS on the height array. 
+
+If two envelopes share the same width, they cannot nest regardless of height. Sorting those ties by descending height ensures **they cannot appear as an increasing pair in the LIS** (because a larger height comes before a smaller one), so LIS won't fasely count them.
+
+for example, 
+[(5,4), (6,4), (6,7), (6,5), (2,3), (7,6)]
+
+if we sort the width and height in ascending order and using bisect_left() function, [(2,3), (5,4), (6,4), (6,5), (6,7), (7,6)], In the longest LIS, (6,4) will be included in LIS as a consequences of using bisect_left(). 
+
 ```{code-block} python
 ---
-caption: 정렬할 때, `width`는 오름차순, `height`는 내림차순 (동일한 width끼리는 겹치지 않도록)-> 이렇게 하면 같은 width끼리 height가 증가로 잡히는 일을 막아서, 나중에 heigh만 보고 LIS를 구해도 "width 증가" 조건이 자동으로 보장됨. height 배열만 뽑아 LIS를 하면 LIS는 이진 탐색으로 tails 배열을 유지하여 O(NlogN)에 가능
+caption: 정렬할 때, `width`는 오름차순, `height`는 내림차순 (동일한 width끼리는 겹치지 않도록)-> 이렇게 하면 같은 width끼리 height가 증가로 잡히는 일을 막아서, 나중에 height만 보고 LIS를 구해도 "width 증가" 조건이 자동으로 보장됨. height 배열만 뽑아 LIS를 하면 LIS는 이진 탐색으로 tails 배열을 유지하여 O(NlogN)에 가능
 ---
 from bisect import bisect_left
 
@@ -1085,7 +1094,7 @@ class Solution:
 
 ```{code-block} python 
 ---
-caption: Define dp[i][j] = True iff s1[:i] and s2[:j] can interleave to form s3[:i+j]. dp[i][j] = (dp[i-1][j] and s1[i-1] == s3[i+j-1]) or (dp[i][j-1] and s2[j-1] == s3[i+j-1]). Base case: dp[0][0] = True, dp[i][0] = dp[i-1][0] and (s1[i-1] == s3[i-1]), dp[0][j] = dp[0][j-1] and (s2[j-1] == s3[j-1])
+caption: Define dp[i][j] = True if s1[:i] and s2[:j] can interleave to form s3[:i+j]. dp[i][j] = (dp[i-1][j] and s1[i-1] == s3[i+j-1]) or (dp[i][j-1] and s2[j-1] == s3[i+j-1]). Base case: dp[0][0] = True, dp[i][0] = dp[i-1][0] and (s1[i-1] == s3[i-1]), dp[0][j] = dp[0][j-1] and (s2[j-1] == s3[j-1])
 ---
 
 class Solution:
