@@ -855,9 +855,18 @@ class Solution:
 ````{admonition} O(nlogn) solution
 :class: dropdown 
 
+You're given envelopes as pairs `(width, height)`. One envelope can fit into another **only if both dimensions are strictly larger**: (w1 < w2) and (h1 < h2). If we sort the envelopes by width in ascending order, and for equal widths, height in descending order, after sorting, we can find the LIS by just comparing heights, which means the answer is the length of the strictly increasing LIS on the height array. 
+
+If two envelopes share the same width, they cannot nest regardless of height. Sorting those ties by descending height ensures **they cannot appear as an increasing pair in the LIS** (because a larger height comes before a smaller one), so LIS won't fasely count them.
+
+for example, 
+[(5,4), (6,4), (6,7), (6,5), (2,3), (7,6)]
+
+if we sort the width and height in ascending order and using bisect_left() function, [(2,3), (5,4), (6,4), (6,5), (6,7), (7,6)], In the longest LIS, (6,4) will be included in LIS as a consequences of using bisect_left(). 
+
 ```{code-block} python
 ---
-caption: 정렬할 때, `width`는 오름차순, `height`는 내림차순 (동일한 width끼리는 겹치지 않도록)-> 이렇게 하면 같은 width끼리 height가 증가로 잡히는 일을 막아서, 나중에 heigh만 보고 LIS를 구해도 "width 증가" 조건이 자동으로 보장됨. height 배열만 뽑아 LIS를 하면 LIS는 이진 탐색으로 tails 배열을 유지하여 O(NlogN)에 가능
+caption: 정렬할 때, `width`는 오름차순, `height`는 내림차순 (동일한 width끼리는 겹치지 않도록)-> 이렇게 하면 같은 width끼리 height가 증가로 잡히는 일을 막아서, 나중에 height만 보고 LIS를 구해도 "width 증가" 조건이 자동으로 보장됨. height 배열만 뽑아 LIS를 하면 LIS는 이진 탐색으로 tails 배열을 유지하여 O(NlogN)에 가능
 ---
 from bisect import bisect_left
 
@@ -950,11 +959,192 @@ class Solution:
 #### Unique Path II
 문제 - [Leetcode 63](https://leetcode.com/problems/unique-paths-ii?envType=study-plan-v2&envId=top-interview-150)
 
+````{admonition} O(M*N) time, O(M*N) memory
+:class: dropdown 
+
+```{code-block} python 
+class Solution:
+    def uniquePathsWithObstacles(self, obstacleGrid: List[List[int]]) -> int:
+        M = len(obstacleGrid); N=len(obstacleGrid[0])
+
+        dp = [[0]*N for _ in range(M)]
+        # base case origin 
+        dp[0][0] = 1 if obstacleGrid[0][0] == 0 else 0 
+        # base case: the upper horizontal line 
+        for x in range(1, N):
+            dp[0][x] = dp[0][x-1] if obstacleGrid[0][x] == 0 else 0
+        # base case: the leftmost vertical line 
+        for y in range(1, M):
+            dp[y][0] = dp[y-1][0] if obstacleGrid[y][0] == 0 else 0
+
+        for y in range(1, M):
+            for x in range(1, N):
+                if obstacleGrid[y][x] == 0:
+                    from_up = 0; from_left = 0
+                    if y-1 >=0:
+                        from_up = dp[y-1][x] if obstacleGrid[y-1][x] == 0 else 0
+                    if x - 1 >=0:
+                        from_left = dp[y][x-1] if obstacleGrid[y][x-1] == 0 else 0
+                    dp[y][x] = from_up + from_left 
+                
+        
+        return dp[M-1][N-1]
+```
+````
+
+````{admonition} O(MxN) time, O(min(M, N)) 1D DP memory 
+:class: dropdown 
+
+```{code-block} python
+class Solution:
+    def uniquePathsWithObstacles(self, grid):
+        m, n = len(grid), len(grid[0])
+        dp = [0]*n
+        dp[0] = 0 if grid[0][0]==1 else 1
+        for i in range(m):
+            for j in range(n):
+                if grid[i][j]==1:
+                    dp[j] = 0
+                elif j>0:
+                    dp[j] += dp[j-1]
+        return dp[-1]
+```
+````
+
 #### Longest Palindromic Substring 
 문제 - [Leetcode 5](https://leetcode.com/problems/longest-palindromic-substring/description/?envType=study-plan-v2&envId=top-interview-150)
 
+
+````{admonition} O(N*N) solution using substring source code
+:class: dropdown 
+
+```{code-block} python 
+
+# Palindromic check takes time of O(N) 
+
+class Solution:
+    def is_palindrome(self, cur_s):
+        return cur_s == cur_s[::-1]
+
+    def longestPalindrome(self, s: str) -> str:
+        N = len(s)
+        max_len = 0
+        for r in range(N+1): # exclusive 
+            for f in range(r):
+                if self.is_palindrome(s[f:r]) and (r-f) > max_len:
+                    result = s[f:r]
+                    max_len = r-f 
+
+        return result 
+
+```
+````
+
+````{admonition} length of the string 
+:class: dropdown 
+
+1. s[f:r] = (inclusive~exclusive): r - l
+2. (inclusive ~ inclusive) - (l , r): r - l + 1 
+````
+
+````{admonition} expand-around-center method O($N^2$) time, O(1) memory 
+:class: dropdown 
+
+```{code-block} python 
+class Solution:
+    '''
+    Hint 1: How can we reuse a previously computed palindrome to compute a larger palindrome?
+    Hint 2:  If “aba” is a palindrome, is “xabax” a palindrome? Similarly is “xabay” a palindrome?
+    '''
+    def longestPalindrome(self, s: str) -> str:
+        N = len(s)
+
+        result = ""
+        max_len = 0
+        for mid in range(N):
+            previous_palindrome = True
+            # 짝수  
+            l, r = mid, mid+1
+            while l >=0 and r <N and s[l] == s[r]:
+                l -= 1 
+                r += 1 
+            if (r-1)-(l+1) +1 > max_len:
+                max_len = (r-1)-(l+1) +1 # (inclusive ~ inclusive) -> length = r- l + 1 
+                result = s[l+1:r]
+
+            # 홀수 
+            l, r = mid, mid 
+            while l >=0 and r <N and s[l] == s[r]:
+                l -= 1 
+                r += 1 
+            if (r-1)-(l+1) +1  > max_len:
+                max_len = (r-1)-(l+1) +1 # (inclusive ~ inclusive) -> length = r- l + 1 
+                result = s[l+1:r]
+
+        return result 
+        
+```
+````
+
 #### Interleaving String 
 문제 - [Leetcode 97](https://leetcode.com/problems/interleaving-string/description/?envType=study-plan-v2&envId=top-interview-150)
+
+````{admonition} 2D table 
+:class: dropdown 
+
+```{code-block} python 
+---
+caption: Define dp[i][j] = True if s1[:i] and s2[:j] can interleave to form s3[:i+j]. dp[i][j] = (dp[i-1][j] and s1[i-1] == s3[i+j-1]) or (dp[i][j-1] and s2[j-1] == s3[i+j-1]). Base case: dp[0][0] = True, dp[i][0] = dp[i-1][0] and (s1[i-1] == s3[i-1]), dp[0][j] = dp[0][j-1] and (s2[j-1] == s3[j-1])
+---
+
+class Solution:
+    def isInterleave(self, s1: str, s2: str, s3: str) -> bool:
+        m, n = len(s1), len(s2)
+        if m + n != len(s3):
+            return False
+        
+        dp = [[False]*(n+1) for _ in range(m+1)]
+        dp[0][0] = True
+        
+        for i in range(1, m+1):
+            dp[i][0] = dp[i-1][0] and s1[i-1] == s3[i-1]
+        for j in range(1, n+1):
+            dp[0][j] = dp[0][j-1] and s2[j-1] == s3[j-1]
+        
+        for i in range(1, m+1):
+            for j in range(1, n+1):
+                take1 = dp[i-1][j] and s1[i-1] == s3[i+j-1]
+                take2 = dp[i][j-1] and s2[j-1] == s3[i+j-1]
+                dp[i][j] = take1 or take2
+        return dp[m][n]
+```
+````
+
+````{admonition} 1D table 
+:class: dropdown 
+
+```{code-block} python
+class Solution:
+    def isInterleave(self, s1: str, s2: str, s3: str) -> bool:
+        m, n = len(s1), len(s2)
+        if m + n != len(s3):
+            return False
+        dp = [False]*(n+1)
+        dp[0] = True
+        
+        for j in range(1, n+1):
+            dp[j] = dp[j-1] and s2[j-1] == s3[j-1]
+        
+        for i in range(1, m+1):
+            dp[0] = dp[0] and s1[i-1] == s3[i-1]
+            for j in range(1, n+1):
+                from_s1 = dp[j] and s1[i-1] == s3[i+j-1]     # dp[j] is “up”
+                from_s2 = dp[j-1] and s2[j-1] == s3[i+j-1]   # dp[j-1] is “left”
+                dp[j] = from_s1 or from_s2
+        return dp[n]
+
+```
+````
 
 #### Edit Distance 
 문제 - [Leetcode 72](https://leetcode.com/problems/edit-distance/description/?envType=study-plan-v2&envId=top-interview-150)

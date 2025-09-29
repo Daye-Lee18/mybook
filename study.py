@@ -1,40 +1,67 @@
-from collections import deque 
+import sys 
 
-N, T = map(int, input().split())
-beverages = [] # T, C, M, TC, TM, CM, TCM 종류 
-faiths = []
-for n in range(1, N+1):
-    beverages.append(list(input()))
+input = sys.stdin.readline 
+INF = int(1e9)
 
-for n in range(1, N+1):
-    faiths.append(map(int, input().split()))
+# n=노드 개수, m=간선 개수 
+n, m = map(int, input().split())
+start = int(input())
 
 
-DY = [-1, 1, 0, 0]
-DX = [0, 0, -1, 1]
+visited = [False] * (n+1)
+# 최단 거리 테이블 무한으로 초기화 
+distance = [INF] * (n+1)
 
-def in_the_morning():
-    for y in range(N):
-        for x in range(N):
-            faiths[y][x] += 1 
+# 그래프 입력 받기 
+graph = [[] for i in range(n+1)]
+for i in range(m):
+    # a에서 b노드로 가는 비용이 c 
+    a, b, c = map(int, input().split())
+    graph[a].append((b, c))
 
-def group(y, x):
-    if parents[(y, x)] == 0:
-        parents[(y, x)] = (y, x) # 자기자신이 부모 
-    
-    
-def in_the_lunch_time():
-    # 인접한 학생들과 신봉 음식이 "완전히" 같은 경우에만 "그룹" 형성 
-    
-    # 그룹 내 대표자 한 명 선정: 신앙심이 가장 큼 -> 행이 작음 -> 열이 작음 
 
-    # 대표자 제외 그룹원들은 각자 신앙심을 1씩 대표자에게 넘김 
+def get_smallest_node():
+    min_value = INF 
+    index = 0 # 가장 최단 거리가 짧은 노드 (인덱스)
+    for i in range(1, n+1):
+        if distance[i] < min_value and not visited[i]:
+            min_value = distance[i]
+            index = i 
+    return index 
 
-def solve():
-    # T일 동안, 하루는 아침, 점심, 저녁의 순서로 아래와 같은 과정 반복 
-    # 아침: 신앙심 + 1 
-    in_the_morning()
 
-    # 점심: 
-    in_the_lunch_time()
+def dijkstra(start):
+    # 시작 노드에 대해서 초기화 
+    distance[start]= 0
+    visited[start] = True 
+
+    for j in graph[start]:
+        distance[j[0]] = j[1] 
+
+
+    # 시작 노드를 제외한 n-1개의 노드에 대해 반복 
+    for i in range(n-1):
+        # 현재 최단 거리가 가장 짧은 노드를 꺼내서, 방문 처리 
+        now = get_smallest_node()
+        visited[now] = True 
+
+        # 현재 노드와 다른 연결된 노드 확인 
+        for j in graph[now]:
+            cost = distance[now] + j[1]
+            
+            # 현재 노드를 거쳐서 다른 노드로 이동하는 거리가 더 짧은 경우 
+            if cost < distance[j[0]]:
+                distance[j[0]] = cost 
+
+
+# 다이익스트라 알고리즘 수행 
+dijkstra(start)
+
+# 모든 노드로 가기 위한 최단 거리 출력 
+for i in range(1, n+1):
+    # 도달할 수 없는 경우 
+    if distance[i] == INF:
+        print('INFINITY')
+    else:
+        print(distance[i])
 
