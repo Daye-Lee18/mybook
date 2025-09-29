@@ -99,6 +99,23 @@ Dijkstra Algorithm는 다음과 같은 원리를 따른다.
 
 다익스트라 최단 경로 알고리즘에서는 '방문하지 않은 노드 중에서 가장 최단 거리가 짧은 노드를 선택'하는 과정을 반복하는데, 이렇게 선택된 노드는 '최단 거리'가 완전히 선택된 노드이므로, 더 이상 알고리즘을 반복해도 최단 거리가 줄어들지 않는다. 앞서 [Step 6]까지의 모든 경우를 확인해보면 실제로 한 번 선택된 노드는 최단 거리가 감소하지 않는다. 예를 들어, [step 2]에서는 4번 노드가 선택되어서 4번 노드를 거쳐서 이동할 수 있는 경로를 확인했다. 이후에 [step 3] ~ [step 6]이 진행되었지만, 4번 노드에 대한 최단 거리는 더 이상 감소하지 않았음을 확인할 수 있다. 다시 말해 다익스트라 알고리즘은 **한 단계당 하나의 노드에 대한 최단 거리를 확실히 찾는 것**으로 이해할 수 있다. 즉, 이미 방문한 노드는 이후에도 테이블 값이 바뀌지 않는다. 
 
+```{admonition} Dijkstra Summary
+:class: important 
+
+**개념**  
+- 하나의 시작 노드에서 출발하여, *아직 방문하지 않은 노드 중 최단 거리 추정값이 가장 작은 노드*를 선택해 거리 테이블을 갱신.  
+- 우선순위 큐(min-heap)에서 뽑힌 노드는 그 순간 최단 경로가 확정되며, 이후로는 갱신되지 않음.  
+
+**구현 절차**  
+1. 최단 거리 테이블을 `INF`로 초기화, 시작 노드는 0으로 설정.  
+2. `heapq`에 `(거리, 노드)`를 넣고, 가장 작은 거리 순으로 노드를 꺼냄.  
+3. 꺼낸 노드의 인접 노드를 확인 → 더 짧은 경로 발견 시 테이블 갱신 + 큐에 삽입.  
+4. 큐가 빌 때까지 2~3 반복.  
+
+**시간 복잡도**  
+- `O(E log V)` (간선 E, 노드 V)  
+
+```
 ## 간단한 다익스트라 알고리즘 구현 
 
 시간 복잡도: O($V^2$), V=노드의 개수 
@@ -106,7 +123,7 @@ Dijkstra Algorithm는 다음과 같은 원리를 따른다.
 
 다음 소스코드에서는 입력되는 데이터의 개수가 많다는 가정하에 파이썬 내장 함수인 input()을 더 빠르게 동작하는 sys.std.readlin()으로 치환하여 사용하는 방법을 적용했다. 또한 모든 리스트는 (노드의 개수 +1)의 크기로 할당하여, 노드의 번호를 인덱스로 하여 바로 리스트에 접근할 수 있도록 했다. 
 
-```{code-block}python
+```python
 import sys 
 
 input = sys.stdin.readline 
@@ -204,11 +221,11 @@ for i in range(1, n+1):
 
 ## 개선된 다익스트라 알고리즘 구현 
 
-개선된 다익스트라 알고리즘을 사용하면, 최악의 경우에도 시간 복잡도 O(ElogV)를 보장하여 해결할 수 있다. 간단한 다익스트라 알고리즘은 '최단 거리가 가장 짧은 노드'를 찾기 위해 매번 최단 거리 테이블을 선형적으로 탐색했다. 이 과정에서 O(V)의 시간이 걸리는데, 선형적인 방법이 아니라 더욱 빠르게 찾아 시간 복잡도를 줄인다. 즉, 힙(heap)이라는 자료구조를 사용하여 특정 노드까지의 최단 거리에 대한 정보를 빠르게 찾을 수 있다.heap을 사용하면 로그 시간이 걸린다. N=1,000,000일 때 $log_{2}_N$이 약 20인 것을 감안하면 속도가 획기적으로 빨라지는 것임을 이해할 수 있다. 
+개선된 다익스트라 알고리즘을 사용하면, 최악의 경우에도 시간 복잡도 O(ElogV)를 보장하여 해결할 수 있다. 간단한 다익스트라 알고리즘은 '최단 거리가 가장 짧은 노드'를 찾기 위해 매번 최단 거리 테이블을 선형적으로 탐색했다. 이 과정에서 O(V)의 시간이 걸리는데, 선형적인 방법이 아니라 더욱 빠르게 찾아 시간 복잡도를 줄인다. 즉, 힙(heap)이라는 자료구조를 사용하여 특정 노드까지의 최단 거리에 대한 정보를 빠르게 찾을 수 있다.heap을 사용하면 로그 시간이 걸린다. N=1,000,000일 때 $\log_{2} N$이 약 20인 것을 감안하면 속도가 획기적으로 빨라지는 것임을 이해할 수 있다. 
 
 ### 힙 (Heap) 자료 구조 
 
-힙 자료구조는 우선순위 큐(Priority Queue)를 구현하기 위하여 사용하는 자료구조 중 하나이다. 큐 자료 구조는 가장 먼저 삽입한 데이터를 가장 먼저 삭제한다. 우선순위 큐는 **우선순위가 가장 높은 데이터를 가장 먼저 삭제한다**는 점이 특징이다. 우선순위 큐는 데이터를 우선순위에 따라 처리하고 싶을 때 사용한다. 예르 들어, 여러 개의 물건 데이터를 자료 구조에 넣었다가 가치가 높은 물건 데이터부터 꺼내서 확인해야하는 경우를 가정해보자. 
+힙 자료구조는 우선순위 큐(Priority Queue)를 구현하기 위하여 사용하는 자료구조 중 하나이다. 큐 자료 구조는 가장 먼저 삽입한 데이터를 가장 먼저 삭제한다. 우선순위 큐는 **우선순위가 가장 높은 데이터를 가장 먼저 삭제한다**는 점이 특징이며 **우선순위 큐 구현에 최적화된 트리 기반 자료구조**이다. 우선순위 큐는 데이터를 우선순위에 따라 처리하고 싶을 때 사용한다. 예르 들어, 여러 개의 물건 데이터를 자료 구조에 넣었다가 가치가 높은 물건 데이터부터 꺼내서 확인해야하는 경우를 가정해보자. 
 
 |자료구조| 추출되는 데이터|
 |---|---|
@@ -219,3 +236,250 @@ for i in range(1, n+1):
 파이썬에서는 우선순위 큐가 필요할 때 `PriorityQueue` 혹은 `heapq`를 사용할 수 있는데, 이 두 라이브러리는 모두 우선순위 큐 기능을 지원한다. 다만, PriorityQueue보다는 heapq가 더 빠르게 동작하기 때문에 수행 시간이 제한된 상황에서는 heapq를 사용하는 것을 권장한다. 
 
 우선순위 값을 표현할 때는 일반적으로 정수형 자료형의 변수가 사용된다. 예를 들어 물건 정보가 있고, 이 물건 정보는 물건의 가치와 물건의 무게로만 구성된다고 가정해보자. 그러면 모든 물건 데이터를 (가치, 물건)으로 묶어서 우선순위 큐 자료구조에 넣을 수 있다. 이후에 우선순위 큐에서 물건을 꺼내게 되면, 항상 가치가 높은 물건이 먼저 나오게 된다. (우선순위 큐가 최대 힙 (max heap)으로 구현되어 있을 때 가정). 대부분의 프로그래밍 언어에서는 우선순위 큐 라이브러리의 데이터의 묶음을 넣으면, **첫 번째 원소**를 기준으로 우선순위를 설정한다. 따라서 데이터가 (가치, 물건)으로 구성된다면 '가치' 값이 우선순위 값이 되는 것이다. 이는 파이썬에서도 마찬가지이다. 
+
+또한 우선순위 큐를 구현할 때는 내부적으로 최소 힙 (Min Heap) 혹은 최대 힙 (Max Heap)을 이용한다. 최소 힙을 이용하는 경우 '값이 낮은 데이터가 먼저 삭제'되며 최대 힙을 이용하는 경우 '값이 큰 데이터가 먼저 삭제'된다. 파이썬 라이브러리에서는 기본적으로 `Min Heap`을 이용하는데, 다익스트라 최단 경로 알고리즘에서는 비용이 적은 노드를 우선 방문하므로 최소 힙 구조를 기반으로 하는 파이썬의 우선순위 큐 라이브러리를 그대로 사용하면 적합하다. 
+
+최소 힙을 최대 힙처럼 이용하려면 일부러 우순순위에 해당하는 값에 음수 부호(-)를 붙여서 넣었다가, 나중에 우선순위 큐에서 꺼낸 다음에 다시 음수 부호 (-)를 붙여서 원래의 값으로 돌리는 방식을 사용할 수 있다. 
+
+|우선순위 큐 구현 방식| 삽입 시간| 삭제 시간|
+|---|---|---|
+|리스트| O(1) | O(N)|
+|힙(Heap)| O(logN)| O(logN)|
+
+데이터의 개수가 N개 일 때, 힙 자료구조
+힙(Heap) 자료구조는, 
+- 완전 이진 트리(Complete Binary Tree) 형태를 가지는 자료구조.
+- 규칙: 부모 노드와 자식 노드 간에 우선순위 규칙이 있음.
+  - 최대 힙(Max Heap): 부모 ≥ 자식 (루트가 가장 큼).
+  - 최소 힙(Min Heap): 부모 ≤ 자식 (루트가 가장 작음).
+
+```{code-block} python
+import heapq
+
+# 빈 힙 생성
+pq = []
+
+# 삽입 (push)
+heapq.heappush(pq, 5)
+heapq.heappush(pq, 2)
+heapq.heappush(pq, 8)
+
+# 삭제 (pop, 가장 작은 값 반환)
+print(heapq.heappop(pq))  # 2
+```
+
+#### 힙 문법 
+```python
+
+"""힙에 원소를 합입할 때는 heapq.heappush() 메서드를 사용하고, 힙에서 원소를 꺼내고자 할 때는 heapq.heappop() 메서드를 이용한다. 힙 정렬 (heap sort)을 heapq로 구현하는 예제를 통해 heapqd의 사용방법을 알아보자. 
+"""
+import heapq 
+
+def heapsort(iterable):
+  h = []
+  result = []
+
+  # 모든 원소를 차례대로 힙에 삽입 
+  for value in iterable:
+    heapq.heappush(h, value)
+  # 힙에 삽입된 모든 원소를 차례대로 꺼내어 담기 
+  for _ in range(len(h)):
+    result.append(heapq.heappop(h))
+
+  result = heapsort([1, 3, 5, 7, 9, 2, 4, 6, 8, 0])
+  print(result)
+```
+
+#### 힙 구현
+
+````{admonition} 힙 구현 
+:class: dropdown 
+
+```{code-block} python
+---
+caption: python standard library에서 제공하는 heapq의 구현 방식을 참고하였다. 
+---
+
+def heappush(heap, item):
+    """Push item onto heap, maintaining the heap invariant."""
+    heap.append(item)
+    _siftdown(heap, 0, len(heap)-1)
+
+# 'heap' is a heap at all indices >= startpos, except possibly for pos.
+# pos is the index of a leaf with a possibly out-of-order value. 
+#  Restore the heap invariant.
+def _siftdown(heap, startpos, pos):
+    newitem = heap[pos]
+    # Follow the path to the root, moving parents down until finding a place
+    # newitem fits.
+    while pos > startpos:
+        parentpos = (pos - 1) >> 1
+        parent = heap[parentpos]
+        if newitem < parent:
+            heap[pos] = parent
+            pos = parentpos
+            continue
+        break
+    heap[pos] = newitem
+
+
+def heappop(heap):
+    """Pop the smallest item off the heap, maintaining the heap invariant."""
+    lastelt = heap.pop()    # raises appropriate IndexError if heap is empty
+    if heap:
+        returnitem = heap[0]
+        heap[0] = lastelt
+        _siftup(heap, 0)
+        return returnitem
+    return lastelt
+
+def _siftup(heap, pos):
+    endpos = len(heap)
+    startpos = pos
+    newitem = heap[pos]
+    # Bubble up the smaller child until hitting a leaf.
+    childpos = 2*pos + 1    # leftmost child position
+    while childpos < endpos:
+        # Set childpos to index of smaller child.
+        rightpos = childpos + 1
+        if rightpos < endpos and not heap[childpos] < heap[rightpos]:
+            childpos = rightpos
+        # Move the smaller child up.
+        heap[pos] = heap[childpos]
+        pos = childpos
+        childpos = 2*pos + 1
+    # The leaf at pos is empty now.  Put newitem there, and bubble it up
+    # to its final resting place (by sifting its parents down).
+    heap[pos] = newitem
+    _siftdown(heap, startpos, pos)
+
+
+
+if __name__ == "__main__":
+    heap = []
+    heappush(heap, (1, 2))
+    heappush(heap, (3, 1))
+    heappush(heap, (19, 1))
+    heappush(heap, (2, 1))
+
+    for i in range(len(heap)):
+        print(heappop(heap))
+
+```
+````
+
+
+### 우선순위 큐를 이용한 단계별 문제 풀이 
+
+**Step 1**
+
+1번 노드가 출발 노드인 경우를 가정했을 때, 앞의 과정과 다른 것은 우선순위 큐를 따로 만들어 1번 노드를 넣는 것이다. 파이썬에서는 간단히 튜플 (0, 1)을 우선순위 큐에 넣는다. 파이썬의 heapq 라이브러리는 원소로 튜플을 입력받으면 **튜플의 첫 번째 원소를 우선순위 큐로 구성**한다. 따라서 (거리, 노드 번호) 순서대로 튜플 데이터를 구성해 우선순위 큐에 넣으면 거리순으로 정렬된다. 
+
+다시 말하지만, 다익스트라는 **현재까지 발견된 최단 거리 후보들**을 계속 관리하는 알고리즘이다. 현재 방문하는 노드의 모든 인접 노드를 확인하고, **짧아진 경우에만** 전부 큐에 넣어야 합니다.
+
+![8](../../assets/img/shortest_path/8.png)
+
+**Step 2**
+우선순위 큐를 이용하고 있으므로 거리가 가장 짧은 노드를 선택하기 위해서는 우선순위 큐에서 그냥 노드를 꺼내면 된다. 따라서 우선순위 큐에서 노드를 꺼낸 뒤에 **해당 노드를 이미 처리한 적이 있다면** 무시하면 되고, 아직 처리하지 않은 노드에 대해서만 처리하면 된다. Step 1의 우선순위 큐에서 원소를 꺼내면 (0, 1)이 나오고, 1번 노드를 거쳐서 2번, 3번, 4번 노드로 가는 최소 비용을 계산한다. 각각 테이블 값을 갱신한 후, 더 짧은 경로를 찾은 노드 정보들은 다시 우선순위 큐에 넣는다. 
+![9](../../assets/img/shortest_path/9.png)
+
+**Step 3**
+다음으로 (1, 4)의 값을 갖는 원소가 우선순위 큐에서 추출되며, 아직 노드 4를 방문하지 않았고 현재 최단 거리가 가장 짧은 노드가 4이다. 따라서 노드 4를 기준으로 연결된 간선들을 확인한다. 4번 노드를 거쳐서 3번과 5번 노드로 가는 최소 비용은 차례대로 4와 2이다. 이는 기존의 리스트에 다겨있던 값들보다 작기 때문에, 리스트의 값을 갱신하고 우선순위 큐에 두 원소 (4, 3), (2, 5)를 추가로 넣어준다. 
+![10](../../assets/img/shortest_path/10.png)
+
+**Step 4**
+
+우선순위 큐에서 원소를 pop하면 노드 2가 꺼내진다. 2번 노드를 거쳐서 가는 경우 중 다음 노드에서 현재의 최단 거리를 더 짧게 갱신할 수 있는 방법은 없다. 따라서 우선순위 큐에 어떠한 원소도 들어가지 않고 다음과 같이 리스트가 갱신된다. 
+
+![11](../../assets/img/shortest_path/11.png)
+
+**Step 5**
+
+이번 단계에서는 노드 5에 대해 처리한다. 5번 노드를 거쳐서 3번과 6번 노드로 갈 수 있다. 현재 5번 노드까지 가는 최단 거리가 2이므로 5번 노드에서 3번 노드로 가는 거리인 1을 더한 3이 기존의 값인 4보다 작다. 따라서 새로운 값인 3으로 갱신한다. 또한 6번 노드로 가는 최단 거리 역시 마찬가지로 갱신된다. 그래서 이번에는 (3, 3)과 (4, 6)이 우선순위 큐에 들어간다. 우선순위 큐를 보면, 작을 때마다 원소를 넣어주는데, 같은 노드이지만 이전에 넣어서 (거리) 값이 더 큰 원소가 있음을 확인할 수 있다. 따라서, heappop()으로 원소를 빼준 후, 가장 최신으로 업데이트된 값보다 큰 경우에는 무시하고 넘어가주면 된다. 
+
+![12](../../assets/img/shortest_path/12.png)
+
+**Step 6**
+
+우선순위 큐에서 노드 3을 빼고, 3에서는 노드 2번과 6번으로 갈 수 있다. 최단 거리 테이블은 갱신되지 않으며 따라서 우선순위 큐에도 아무것도 넣어주지 않는다. 
+
+![13](../../assets/img/shortest_path/13.png)
+
+**Step 7**
+
+원소 (4, 3)을 꺼낸다. 다만, 3번 노드는 현재 최단 거리 테이블의 값보다 크므로 이 원소는 무시한다. 
+
+![14](../../assets/img/shortest_path/14.png)
+
+**Step 8**
+
+이어서 원소 (4, 6)이 꺼내진다.
+
+![15](../../assets/img/shortest_path/15.png)
+
+
+**Step 9**
+
+마지막으로 남은 원소를 꺼내지만, 아까와 마찬가지로 이미 처리된 노드이므로 무시한다. 
+
+![16](../../assets/img/shortest_path/16.png)
+
+### 개선된 dijkstra 구현 
+
+````{admonition} heapq를 이용한 dijkstra 구현 
+:class: dropdown 
+
+```{code-block} python
+import heapq 
+import sys 
+input = sys.stdin.readline 
+INF = int(1e9)
+
+# 노드의 개수, 간선의 개수를 입력받기 
+n, m = map(int, input().split())
+# 시작 노드 번호 입력 받기 
+start = int(input())
+ 
+# 각 노드에 연결되어 있는 노드에 대한 정보를 담는 리스트 만들기 
+graph = [[] for i in range(n+1)]
+# 최단 거리 테이블을 모두 무한으로 초기화 
+distance = [INF] * (n+1)
+
+# 모든 간선 정보 입력받기 
+for _ in range(m):
+    a, b, c= map(int, input().split())
+    # a번 노드에서 b번 노드로 가는 비용이 c 
+    graph[a].append((b, c))
+
+def dijkstra(start):
+    q = [] 
+
+    distance[start] = 0
+    heapq.heappush(q, (0, start))
+
+    while q:
+        cur_dis, node = heapq.heappop(q)
+
+        if cur_dis > distance[node]:
+            continue 
+
+        for weight, nxt_node in graph[node]:
+            if cur_dis + weight < distance[nxt_node]:
+                distance[nxt_node] = cur_dis + weight # 현재 node까지 온 비용 + nxt_node로 가는 비용 
+                heapq.heappush(q, (distance[nxt_node], nxt_node))
+
+# 다익스트라 알고리즘 수행 
+dijkstra(start)
+
+# 모든 노드로 가기 위한 최단 거리 출력 
+for i in range(1, n+1):
+    if distance[i] == INF:
+        print("INF")
+    else:
+        print(distance[i])
+
+```
+````
+
+## 플로이드 워셜 알고리즘 (Floyd-Warshall Algorithm)
+
