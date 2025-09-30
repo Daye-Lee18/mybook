@@ -606,10 +606,16 @@ document.write(`
 힙(Heap) 자료구조는,</p>
 <ul class="simple">
 <li><p>완전 이진 트리(Complete Binary Tree) 형태를 가지는 자료구조.</p></li>
-<li><p>규칙: 부모 노드와 자식 노드 간에 우선순위 규칙이 있음.</p>
+<li><p>규칙: 부모 노드와 자식 노드 간에 우선순위 규칙이 있음. (불변식)</p>
 <ul>
 <li><p>최대 힙(Max Heap): 부모 ≥ 자식 (루트가 가장 큼).</p></li>
 <li><p>최소 힙(Min Heap): 부모 ≤ 자식 (루트가 가장 작음).</p></li>
+</ul>
+</li>
+<li><p>기본 연산:</p>
+<ul>
+<li><p>삽입 (push): 새 원소를 추가한 후 위로 올려 정렬해야함.</p></li>
+<li><p>삭제 (pop): 루트 원소를 빼낸 후, 마자막 원소를 루트로 올려보내고 아래로 내려 정렬함.</p></li>
 </ul>
 </li>
 </ul>
@@ -652,6 +658,74 @@ document.write(`
 </section>
 <section id="id5">
 <h4>힙 구현<a class="headerlink" href="#id5" title="Link to this heading">#</a></h4>
+<div class="dropdown admonition">
+<p class="admonition-title">부모, 자식 인덱스</p>
+<p><img alt="17" src="../../_images/171.png" /></p>
+<ul class="simple">
+<li><p>parent = (pos - 1) // 2 # (pos-1) &gt;&gt; 1</p></li>
+<li><p>left = 2 * pos + 1</p></li>
+<li><p>right = 2*pos + 2</p></li>
+</ul>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">min heap visualization</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">_siftdown</span></code>: 힙 연산에서 “내려보내기 (sift down)” 과정을 나타냄.</p>
+<ul>
+<li><p>min heap: 힙의 불변식 (invariant)은 “부모 노드가 자식 노드보다 작다”의 경우</p></li>
+<li><p>새로운 원소를 힙에 삽입하면, 처음에는 마지막 (leaf) 자리에 들어가고, 그 원소가 부모보다 작은 경우에는 부모와 자리를 바꿈.</p>
+<ul>
+<li><p>부모 &gt; newitem -&gt; 부모를 아래로 내린다.</p></li>
+<li><p>pos &lt;- 부모 위치로 이동</p></li>
+<li><p>즉, 부모들을 한 단계씩 밑으로 “내려보내고” 마지막에 newitem을 넣는 구조이다.</p></li>
+</ul>
+</li>
+<li><p>루트에 도달하거나 부모 &lt;= newitem이면 멈춘다.</p></li>
+<li><p>현재 위치에 newitem을 둔다.</p></li>
+<li><p>ex) [1, 3, 19, 2] -&gt; 2 &lt; 3 이므로  3을 아래로 내림. -&gt; [1, 2, 19, 3]</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">_siftup</span></code>: 자식들을 따라 “위로 올려보내면서” 원소를 정리하는 과정</p>
+<ul>
+<li><p>루트를 pop할때 마지막 원소를 루트 자리로 옮기고, 이제 루트에서부터 힙 규칙이 깨질 수 있으므로 아래로 내려가면서 정렬한다.</p></li>
+<li><p>root에서 시작해서 자식을 따라 내려가면서 위치를 바꾸고, 마지막에 newitem을 넣은 후 위로 올려보내는 과정</p></li>
+<li><p>알고리즘</p>
+<ul>
+<li><p>root 자리에 new item을 둔다.</p></li>
+<li><p>자식 노드 중 더 작은 자식을 고른다.</p></li>
+<li><p>그 자식 &lt; newitem이면, 자식을 위로 올린다.</p>
+<ul>
+<li><p>pos &lt;- 자식 위치로 이동</p></li>
+</ul>
+</li>
+<li><p>자식 &gt;= newitem이거나 leaf에 도달하면 멈춘다.</p></li>
+<li><p>현재 위치에 newitem을 둔다.</p></li>
+</ul>
+</li>
+<li><p>예시</p>
+<ul>
+<li><p>step 1: pop root=1, last =3 -&gt; 루트에 3 대입 [3, 2, 19]</p></li>
+<li><p>step 3: 자식 중 작은 건 2. (2 &lt; 3) 자식 2를 위로 올림.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>click the <a class="reference external" href="https://www.cs.usfca.edu/~galles/visualization/Heap.html">link</a></p>
+<ul class="simple">
+<li><p>_siftdown 예시</p>
+<ul>
+<li><p>삽입: 5, 3, 8, 1, 6, 7, 2</p></li>
+</ul>
+</li>
+<li><p>_siftup 예시</p>
+<ul>
+<li><p>현재 힙 [1, 2, 7, 3, 6, 8, 5] -&gt; root 삭제</p></li>
+<li><p>buildHeap button -&gt; remove smallest</p></li>
+</ul>
+</li>
+</ul>
+</div>
 <div class="dropdown admonition">
 <p class="admonition-title">힙 구현</p>
 <div class="literal-block-wrapper docutils container" id="id7">

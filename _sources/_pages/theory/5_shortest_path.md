@@ -249,9 +249,12 @@ for i in range(1, n+1):
 데이터의 개수가 N개 일 때, 힙 자료구조
 힙(Heap) 자료구조는, 
 - 완전 이진 트리(Complete Binary Tree) 형태를 가지는 자료구조.
-- 규칙: 부모 노드와 자식 노드 간에 우선순위 규칙이 있음.
+- 규칙: 부모 노드와 자식 노드 간에 우선순위 규칙이 있음. (불변식)
   - 최대 힙(Max Heap): 부모 ≥ 자식 (루트가 가장 큼).
   - 최소 힙(Min Heap): 부모 ≤ 자식 (루트가 가장 작음).
+- 기본 연산:
+  - 삽입 (push): 새 원소를 추가한 후 위로 올려 정렬해야함. 
+  - 삭제 (pop): 루트 원소를 빼낸 후, 마자막 원소를 루트로 올려보내고 아래로 내려 정렬함. 
 
 ```{code-block} python
 import heapq
@@ -292,6 +295,51 @@ def heapsort(iterable):
 
 #### 힙 구현
 
+````{admonition} 부모, 자식 인덱스
+:class: dropdown 
+
+![17](../../assets/img/shortest_path/17.png)
+
+- parent = (pos - 1) // 2 # (pos-1) >> 1 
+- left = 2 * pos + 1
+- right = 2*pos + 2 
+````
+
+````{admonition} min heap visualization 
+:class: dropdown 
+
+- `_siftdown`: 힙 연산에서 "내려보내기 (sift down)" 과정을 나타냄. 
+    - min heap: 힙의 불변식 (invariant)은 "부모 노드가 자식 노드보다 작다"의 경우 
+    - 새로운 원소를 힙에 삽입하면, 처음에는 마지막 (leaf) 자리에 들어가고, 그 원소가 부모보다 작은 경우에는 부모와 자리를 바꿈. 
+        - 부모 > newitem -> 부모를 아래로 내린다. 
+        - pos <- 부모 위치로 이동 
+        - 즉, 부모들을 한 단계씩 밑으로 "내려보내고" 마지막에 newitem을 넣는 구조이다. 
+    - 루트에 도달하거나 부모 <= newitem이면 멈춘다. 
+    - 현재 위치에 newitem을 둔다. 
+    - ex) [1, 3, 19, 2] -> 2 < 3 이므로  3을 아래로 내림. -> [1, 2, 19, 3]
+- `_siftup`: 자식들을 따라 "위로 올려보내면서" 원소를 정리하는 과정 
+    - 루트를 pop할때 마지막 원소를 루트 자리로 옮기고, 이제 루트에서부터 힙 규칙이 깨질 수 있으므로 아래로 내려가면서 정렬한다. 
+    - root에서 시작해서 자식을 따라 내려가면서 위치를 바꾸고, 마지막에 newitem을 넣은 후 위로 올려보내는 과정 
+    - 알고리즘  
+        - root 자리에 new item을 둔다. 
+        - 자식 노드 중 더 작은 자식을 고른다. 
+        - 그 자식 < newitem이면, 자식을 위로 올린다.
+            - pos <- 자식 위치로 이동 
+        - 자식 >= newitem이거나 leaf에 도달하면 멈춘다. 
+        - 현재 위치에 newitem을 둔다.
+    - 예시 
+        - step 1: pop root=1, last =3 -> 루트에 3 대입 [3, 2, 19]
+        - step 3: 자식 중 작은 건 2. (2 < 3) 자식 2를 위로 올림. 
+
+click the [link](https://www.cs.usfca.edu/~galles/visualization/Heap.html)
+
+- _siftdown 예시 
+    - 삽입: 5, 3, 8, 1, 6, 7, 2
+- _siftup 예시
+    - 현재 힙 [1, 2, 7, 3, 6, 8, 5] -> root 삭제 
+    - buildHeap button -> remove smallest 
+
+````
 ````{admonition} 힙 구현 
 :class: dropdown 
 
