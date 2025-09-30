@@ -731,59 +731,59 @@ document.write(`
 <div class="literal-block-wrapper docutils container" id="id7">
 <div class="code-block-caption"><span class="caption-number">예시 30 </span><span class="caption-text">python standard library에서 제공하는 heapq의 구현 방식을 참고하였다.</span><a class="headerlink" href="#id7" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">heappush</span><span class="p">(</span><span class="n">heap</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Push item onto heap, maintaining the heap invariant.&quot;&quot;&quot;</span>
     <span class="n">heap</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-    <span class="n">_siftdown</span><span class="p">(</span><span class="n">heap</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">heap</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">_siftdown</span><span class="p">(</span><span class="n">heap</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">heap</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 
-<span class="c1"># &#39;heap&#39; is a heap at all indices &gt;= startpos, except possibly for pos.</span>
-<span class="c1"># pos is the index of a leaf with a possibly out-of-order value. </span>
-<span class="c1">#  Restore the heap invariant.</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">_siftdown</span><span class="p">(</span><span class="n">heap</span><span class="p">,</span> <span class="n">startpos</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
-    <span class="n">newitem</span> <span class="o">=</span> <span class="n">heap</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span>
-    <span class="c1"># Follow the path to the root, moving parents down until finding a place</span>
-    <span class="c1"># newitem fits.</span>
-    <span class="k">while</span> <span class="n">pos</span> <span class="o">&gt;</span> <span class="n">startpos</span><span class="p">:</span>
-        <span class="n">parentpos</span> <span class="o">=</span> <span class="p">(</span><span class="n">pos</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span>
-        <span class="n">parent</span> <span class="o">=</span> <span class="n">heap</span><span class="p">[</span><span class="n">parentpos</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">newitem</span> <span class="o">&lt;</span> <span class="n">parent</span><span class="p">:</span>
-            <span class="n">heap</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="n">parent</span>
-            <span class="n">pos</span> <span class="o">=</span> <span class="n">parentpos</span>
-            <span class="k">continue</span>
-        <span class="k">break</span>
-    <span class="n">heap</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="n">newitem</span>
-
+<span class="k">def</span><span class="w"> </span><span class="nf">_siftdown</span><span class="p">(</span><span class="n">heap</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+    <span class="n">newitem</span> <span class="o">=</span> <span class="n">heap</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="c1"># newitem 값 저장 </span>
+    <span class="k">while</span> <span class="n">pos</span> <span class="o">&gt;</span> <span class="n">root</span><span class="p">:</span>
+        <span class="n">parent_pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">pos</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span> 
+        <span class="k">if</span> <span class="n">heap</span><span class="p">[</span><span class="n">parent_pos</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">newitem</span><span class="p">:</span> <span class="c1"># 항상 newtiem과 부모를 비교해야함. </span>
+            <span class="n">heap</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="n">heap</span><span class="p">[</span><span class="n">parent_pos</span><span class="p">]</span> <span class="c1"># 부모를 한 칸 내려보냄 </span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="n">parent_pos</span>
+            <span class="k">continue</span> 
+        <span class="k">break</span> 
+    <span class="c1"># SWAP </span>
+    <span class="n">heap</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="n">newitem</span> 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">heappop</span><span class="p">(</span><span class="n">heap</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pop the smallest item off the heap, maintaining the heap invariant.&quot;&quot;&quot;</span>
-    <span class="n">lastelt</span> <span class="o">=</span> <span class="n">heap</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>    <span class="c1"># raises appropriate IndexError if heap is empty</span>
-    <span class="k">if</span> <span class="n">heap</span><span class="p">:</span>
+    <span class="c1"># 맨 &quot;마지막 원소&quot;를 제거: heap안의 원소가 하나라면 맨 처음 원소이고, 아니라면 root position에 갈 원소가 됨. </span>
+    <span class="n">removed_item</span> <span class="o">=</span> <span class="n">heap</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span> <span class="c1"># heap이 비어있으면 에러를 일으킴 </span>
+    <span class="k">if</span> <span class="n">heap</span><span class="p">:</span> <span class="c1"># pop 이후에도 heap안에 item이 있는 경우 </span>
         <span class="n">returnitem</span> <span class="o">=</span> <span class="n">heap</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">heap</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">lastelt</span>
+        <span class="n">heap</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">removed_item</span> 
         <span class="n">_siftup</span><span class="p">(</span><span class="n">heap</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">returnitem</span>
-    <span class="k">return</span> <span class="n">lastelt</span>
+        <span class="k">return</span> <span class="n">returnitem</span> 
+    <span class="k">return</span> <span class="n">removed_item</span> 
+
+<span class="k">def</span><span class="w"> </span><span class="nf">is_leaf</span><span class="p">(</span><span class="n">heap</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+    <span class="c1"># time complexity for len(list) = O(1), 내부에 길이를 따로 저장하고 있음.</span>
+    <span class="c1"># &quot;왼쪽 자식 인덱스가 배열 길이보다 크거나 같은 경우&quot;로 판정하면 충분 </span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">pos</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">heap</span><span class="p">)</span>
+  
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_siftup</span><span class="p">(</span><span class="n">heap</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
-    <span class="n">endpos</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">heap</span><span class="p">)</span>
-    <span class="n">startpos</span> <span class="o">=</span> <span class="n">pos</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">heap</span><span class="p">)</span>
     <span class="n">newitem</span> <span class="o">=</span> <span class="n">heap</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span>
-    <span class="c1"># Bubble up the smaller child until hitting a leaf.</span>
-    <span class="n">childpos</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">pos</span> <span class="o">+</span> <span class="mi">1</span>    <span class="c1"># leftmost child position</span>
-    <span class="k">while</span> <span class="n">childpos</span> <span class="o">&lt;</span> <span class="n">endpos</span><span class="p">:</span>
-        <span class="c1"># Set childpos to index of smaller child.</span>
-        <span class="n">rightpos</span> <span class="o">=</span> <span class="n">childpos</span> <span class="o">+</span> <span class="mi">1</span>
-        <span class="k">if</span> <span class="n">rightpos</span> <span class="o">&lt;</span> <span class="n">endpos</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">heap</span><span class="p">[</span><span class="n">childpos</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">heap</span><span class="p">[</span><span class="n">rightpos</span><span class="p">]:</span>
-            <span class="n">childpos</span> <span class="o">=</span> <span class="n">rightpos</span>
-        <span class="c1"># Move the smaller child up.</span>
-        <span class="n">heap</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="n">heap</span><span class="p">[</span><span class="n">childpos</span><span class="p">]</span>
-        <span class="n">pos</span> <span class="o">=</span> <span class="n">childpos</span>
-        <span class="n">childpos</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">pos</span> <span class="o">+</span> <span class="mi">1</span>
-    <span class="c1"># The leaf at pos is empty now.  Put newitem there, and bubble it up</span>
-    <span class="c1"># to its final resting place (by sifting its parents down).</span>
-    <span class="n">heap</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="n">newitem</span>
-    <span class="n">_siftdown</span><span class="p">(</span><span class="n">heap</span><span class="p">,</span> <span class="n">startpos</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+    <span class="n">child</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span> <span class="n">pos</span> <span class="o">+</span> <span class="mi">1</span> <span class="c1"># 왼쪽 자식 </span>
 
+    <span class="k">while</span> <span class="n">child</span> <span class="o">&lt;</span> <span class="n">end</span><span class="p">:</span> <span class="c1"># is_leaf()와 동일한 형식   </span>
+        <span class="n">right</span><span class="o">=</span> <span class="n">child</span> <span class="o">+</span> <span class="mi">1</span> 
+        <span class="c1"># 더 작은 자식을 child로 선택 </span>
+        <span class="k">if</span> <span class="n">right</span> <span class="o">&lt;</span> <span class="n">end</span> <span class="ow">and</span> <span class="n">heap</span><span class="p">[</span><span class="n">right</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">heap</span><span class="p">[</span><span class="n">child</span><span class="p">]:</span>
+            <span class="n">child</span> <span class="o">=</span> <span class="n">right</span> 
+        
+        <span class="c1"># child가 newitem보다 작으면 child를 끌어올리고, pos를 child로 이동 </span>
+        <span class="k">if</span> <span class="n">heap</span><span class="p">[</span><span class="n">child</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">newitem</span><span class="p">:</span>
+            <span class="n">heap</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="n">heap</span><span class="p">[</span><span class="n">child</span><span class="p">]</span> <span class="c1"># child를 siftup </span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="n">child</span> 
+            <span class="n">child</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pos</span> <span class="o">+</span> <span class="mi">1</span> 
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">break</span> <span class="c1"># newitem이 들어갈 자리이면 멈춤 </span>
 
+    
+    <span class="n">heap</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="n">newitem</span> 
+    <span class="n">_siftdown</span><span class="p">(</span><span class="n">heap</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">heap</span> <span class="o">=</span> <span class="p">[]</span>

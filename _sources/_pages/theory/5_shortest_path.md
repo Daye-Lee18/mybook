@@ -347,61 +347,60 @@ click the [link](https://www.cs.usfca.edu/~galles/visualization/Heap.html)
 ---
 caption: python standard library에서 제공하는 heapq의 구현 방식을 참고하였다. 
 ---
-
 def heappush(heap, item):
-    """Push item onto heap, maintaining the heap invariant."""
     heap.append(item)
-    _siftdown(heap, 0, len(heap)-1)
+    _siftdown(heap, 0, len(heap) - 1)
 
-# 'heap' is a heap at all indices >= startpos, except possibly for pos.
-# pos is the index of a leaf with a possibly out-of-order value. 
-#  Restore the heap invariant.
-def _siftdown(heap, startpos, pos):
-    newitem = heap[pos]
-    # Follow the path to the root, moving parents down until finding a place
-    # newitem fits.
-    while pos > startpos:
-        parentpos = (pos - 1) >> 1
-        parent = heap[parentpos]
-        if newitem < parent:
-            heap[pos] = parent
-            pos = parentpos
-            continue
-        break
-    heap[pos] = newitem
-
+def _siftdown(heap, root, pos):
+    newitem = heap[pos] # newitem 값 저장 
+    while pos > root:
+        parent_pos = (pos-1) >> 1 
+        if heap[parent_pos] > newitem: # 항상 newtiem과 부모를 비교해야함. 
+            heap[pos] = heap[parent_pos] # 부모를 한 칸 내려보냄 
+            pos = parent_pos
+            continue 
+        break 
+    # SWAP 
+    heap[pos] = newitem 
 
 def heappop(heap):
-    """Pop the smallest item off the heap, maintaining the heap invariant."""
-    lastelt = heap.pop()    # raises appropriate IndexError if heap is empty
-    if heap:
+    # 맨 "마지막 원소"를 제거: heap안의 원소가 하나라면 맨 처음 원소이고, 아니라면 root position에 갈 원소가 됨. 
+    removed_item = heap.pop() # heap이 비어있으면 에러를 일으킴 
+    if heap: # pop 이후에도 heap안에 item이 있는 경우 
         returnitem = heap[0]
-        heap[0] = lastelt
+        heap[0] = removed_item 
         _siftup(heap, 0)
-        return returnitem
-    return lastelt
+        return returnitem 
+    return removed_item 
+
+def is_leaf(heap, pos):
+    # time complexity for len(list) = O(1), 내부에 길이를 따로 저장하고 있음.
+    # "왼쪽 자식 인덱스가 배열 길이보다 크거나 같은 경우"로 판정하면 충분 
+    return (pos * 2) + 1 >= len(heap)
+  
 
 def _siftup(heap, pos):
-    endpos = len(heap)
-    startpos = pos
+    end = len(heap)
     newitem = heap[pos]
-    # Bubble up the smaller child until hitting a leaf.
-    childpos = 2*pos + 1    # leftmost child position
-    while childpos < endpos:
-        # Set childpos to index of smaller child.
-        rightpos = childpos + 1
-        if rightpos < endpos and not heap[childpos] < heap[rightpos]:
-            childpos = rightpos
-        # Move the smaller child up.
-        heap[pos] = heap[childpos]
-        pos = childpos
-        childpos = 2*pos + 1
-    # The leaf at pos is empty now.  Put newitem there, and bubble it up
-    # to its final resting place (by sifting its parents down).
-    heap[pos] = newitem
-    _siftdown(heap, startpos, pos)
+    child = 2* pos + 1 # 왼쪽 자식 
 
+    while child < end: # is_leaf()와 동일한 형식   
+        right= child + 1 
+        # 더 작은 자식을 child로 선택 
+        if right < end and heap[right] < heap[child]:
+            child = right 
+        
+        # child가 newitem보다 작으면 child를 끌어올리고, pos를 child로 이동 
+        if heap[child] < newitem:
+            heap[pos] = heap[child] # child를 siftup 
+            pos = child 
+            child = 2 * pos + 1 
+        else:
+            break # newitem이 들어갈 자리이면 멈춤 
 
+    
+    heap[pos] = newitem 
+    _siftdown(heap, 0, pos)
 
 if __name__ == "__main__":
     heap = []
