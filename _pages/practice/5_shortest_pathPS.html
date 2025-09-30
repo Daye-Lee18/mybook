@@ -2,13 +2,13 @@
 <!DOCTYPE html>
 
 
-<html lang="ko" data-content_root="./" >
+<html lang="ko" data-content_root="../../" >
 
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Welcome to 말레이시아 5급 IT 수업 &#8212; 말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업</title>
+    <title>Lecture 5-2. Shortest Path 실습 &#8212; 말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업</title>
   
   
   
@@ -18,55 +18,53 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
-    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
-    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=9c59b310" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=9c59b310" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
-  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="_static/documentation_options.js?v=ae323b5b"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
-    <script src="_static/copybutton.js?v=f281be69"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="../../_static/documentation_options.js?v=ae323b5b"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
-    <script src="_static/translations.js?v=e33e7ba0"></script>
+    <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script src="../../_static/translations.js?v=e33e7ba0"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
-    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'intro';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_pages/practice/5_shortest_pathPS';</script>
     <script src="https://unpkg.com/jupyterquiz@1.1.8/dist/jupyterquiz.min.js"></script>
-    <link rel="icon" href="_static/favicon.png"/>
-    <link rel="index" title="색인" href="genindex.html" />
-    <link rel="search" title="검색" href="search.html" />
-    <link rel="next" title="문제 풀이 순서 팁 (Tips)" href="_pages/theory/0_tips.html" />
+    <link rel="icon" href="../../_static/favicon.png"/>
+    <link rel="index" title="색인" href="../../genindex.html" />
+    <link rel="search" title="검색" href="../../search.html" />
+    <link rel="prev" title="Lecture 4-2. DP 실습" href="4_DPPS.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ko"/>
   </head>
@@ -98,7 +96,7 @@
     <div class="search-button__overlay"></div>
     <div class="search-button__search-container">
 <form class="bd-search d-flex align-items-center"
-      action="search.html"
+      action="../../search.html"
       method="get">
   <i class="fa-solid fa-magnifying-glass"></i>
   <input type="search"
@@ -129,8 +127,6 @@
       
       
       
-        
-      
       <div class="bd-sidebar-primary bd-sidebar">
         
 
@@ -149,7 +145,7 @@
     
   
 
-<a class="navbar-brand logo" href="#">
+<a class="navbar-brand logo" href="../../intro.html">
   
   
   
@@ -160,8 +156,8 @@
       
     
     
-    <img src="_static/mylogo.png" class="logo__image only-light" alt="말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업 - Home"/>
-    <script>document.write(`<img src="_static/mylogo.png" class="logo__image only-dark" alt="말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업 - Home"/>`);</script>
+    <img src="../../_static/mylogo.png" class="logo__image only-light" alt="말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업 - Home"/>
+    <script>document.write(`<img src="../../_static/mylogo.png" class="logo__image only-dark" alt="말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업 - Home"/>`);</script>
   
   
 </a></div>
@@ -180,29 +176,29 @@
     <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
-            <li class="toctree-l1 current active">
-                <a class="reference internal" href="#">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../intro.html">
                     Welcome to 말레이시아 5급 IT 수업
                 </a>
             </li>
         </ul>
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">이론</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="_pages/theory/0_tips.html">문제 풀이 순서 팁 (Tips)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="_pages/theory/1_implementation.html">Lecture 1-1. 구현</a></li>
-<li class="toctree-l1"><a class="reference internal" href="_pages/theory/2_DFS_BFS.html">Lecture 2-1. DFS/BFS</a></li>
-<li class="toctree-l1"><a class="reference internal" href="_pages/theory/3_backtracking.html">Lecture 3-1. Backtracking</a></li>
-<li class="toctree-l1"><a class="reference internal" href="_pages/theory/4_DP.html">Lecture 4-1. Dynamic Programming</a></li>
-<li class="toctree-l1"><a class="reference internal" href="_pages/theory/5_shortest_path.html">Lecture 5-1. Shortest Path</a></li>
-<li class="toctree-l1"><a class="reference internal" href="_pages/theory/6_sort.html">Lecture 6-1. 정렬</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/0_tips.html">문제 풀이 순서 팁 (Tips)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/1_implementation.html">Lecture 1-1. 구현</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/2_DFS_BFS.html">Lecture 2-1. DFS/BFS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/3_backtracking.html">Lecture 3-1. Backtracking</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/4_DP.html">Lecture 4-1. Dynamic Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/5_shortest_path.html">Lecture 5-1. Shortest Path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/6_sort.html">Lecture 6-1. 정렬</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">실습</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="_pages/practice/1_implementationPS.html">Lecture 1-2. 구현 실습</a></li>
-<li class="toctree-l1"><a class="reference internal" href="_pages/practice/2_DFS_BFSPS.html">Lecture 2-2. DFS/BFS 실습</a></li>
-<li class="toctree-l1"><a class="reference internal" href="_pages/practice/3_backtrackingPS.html">Lecture 3-2. Backtracking 실습</a></li>
-<li class="toctree-l1"><a class="reference internal" href="_pages/practice/4_DPPS.html">Lecture 4-2. DP 실습</a></li>
-<li class="toctree-l1"><a class="reference internal" href="_pages/practice/5_shortest_pathPS.html">Lecture 5-2. Shortest Path 실습</a></li>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="1_implementationPS.html">Lecture 1-2. 구현 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_DFS_BFSPS.html">Lecture 2-2. DFS/BFS 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_backtrackingPS.html">Lecture 3-2. Backtracking 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_DPPS.html">Lecture 4-2. DP 실습</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Lecture 5-2. Shortest Path 실습</a></li>
 </ul>
 
     </div>
@@ -257,7 +253,7 @@
       
       
       
-      <li><a href="_sources/intro.md" target="_blank"
+      <li><a href="../../_sources/_pages/practice/5_shortest_pathPS.md" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="소스 파일 다운로드"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -339,7 +335,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Welcome to 말레이시아 5급 IT 수업</h1>
+    <h1>Lecture 5-2. Shortest Path 실습</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -353,37 +349,15 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="welcome-to-5-it">
-<h1>Welcome to 말레이시아 5급 IT 수업<a class="headerlink" href="#welcome-to-5-it" title="Link to this heading">#</a></h1>
-<p>안녕하세요. 2025년 가을학기 말레이시아 5급 IT 프로그램 수업을 맡게 된 이다예 입니다.</p>
-<p>이번 수업의 학습 목표는 다음과 같습니다.</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="lecture-5-2-shortest-path">
+<h1>Lecture 5-2. Shortest Path 실습<a class="headerlink" href="#lecture-5-2-shortest-path" title="Link to this heading">#</a></h1>
+<p>예시 문제 링크</p>
 <ul class="simple">
-<li><p>파이썬을 이용한 다양한 알고리즘에 대해 학습한다.</p></li>
-<li><p>다양한 실습을 통해, 문제푸는 방법을 익히고 창의적인 아이디어를 도출할 수 있는 능력을 배양한다.</p></li>
+<li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/codetree-judger/description">코드 크리 채점기</a></p></li>
+<li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/codetree-tour/description">코드트리 투어</a></p></li>
+<li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/pirate-captain-coddy/description">해적 선장 코디</a></p></li>
+<li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/frog-journey/description">개구리의 여행</a></p></li>
 </ul>
-<p>해당 수업 자료는 나동빈의 ‘이것이 코딩 테스트다 with 파이썬’의 책 내용을 바탕으로 제작되었습니다.</p>
-<div class="toctree-wrapper compound">
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">이론</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="_pages/theory/0_tips.html">문제 풀이 순서 팁 (Tips)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="_pages/theory/1_implementation.html">Lecture 1-1. 구현</a></li>
-<li class="toctree-l1"><a class="reference internal" href="_pages/theory/2_DFS_BFS.html">Lecture 2-1. DFS/BFS</a></li>
-<li class="toctree-l1"><a class="reference internal" href="_pages/theory/3_backtracking.html">Lecture 3-1. Backtracking</a></li>
-<li class="toctree-l1"><a class="reference internal" href="_pages/theory/4_DP.html">Lecture 4-1. Dynamic Programming</a></li>
-<li class="toctree-l1"><a class="reference internal" href="_pages/theory/5_shortest_path.html">Lecture 5-1. Shortest Path</a></li>
-<li class="toctree-l1"><a class="reference internal" href="_pages/theory/6_sort.html">Lecture 6-1. 정렬</a></li>
-</ul>
-</div>
-<div class="toctree-wrapper compound">
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">실습</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="_pages/practice/1_implementationPS.html">Lecture 1-2. 구현 실습</a></li>
-<li class="toctree-l1"><a class="reference internal" href="_pages/practice/2_DFS_BFSPS.html">Lecture 2-2. DFS/BFS 실습</a></li>
-<li class="toctree-l1"><a class="reference internal" href="_pages/practice/3_backtrackingPS.html">Lecture 3-2. Backtracking 실습</a></li>
-<li class="toctree-l1"><a class="reference internal" href="_pages/practice/4_DPPS.html">Lecture 4-2. DP 실습</a></li>
-<li class="toctree-l1"><a class="reference internal" href="_pages/practice/5_shortest_pathPS.html">Lecture 5-2. Shortest Path 실습</a></li>
-</ul>
-</div>
 </section>
 
     <script type="text/x-thebe-config">
@@ -399,7 +373,7 @@ document.write(`
         },
         kernelOptions: {
             name: "python3",
-            path: "./."
+            path: "./_pages/practice"
         },
         predefinedOutput: true
     }
@@ -416,14 +390,14 @@ document.write(`
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
-    <a class="right-next"
-       href="_pages/theory/0_tips.html"
-       title="next page">
+    <a class="left-prev"
+       href="4_DPPS.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
-        <p class="prev-next-subtitle">다음</p>
-        <p class="prev-next-title">문제 풀이 순서 팁 (Tips)</p>
+        <p class="prev-next-subtitle">이전</p>
+        <p class="prev-next-title">Lecture 4-2. DP 실습</p>
       </div>
-      <i class="fa-solid fa-angle-right"></i>
     </a>
 </div>
                 </footer>
@@ -468,8 +442,8 @@ document.write(`
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>
