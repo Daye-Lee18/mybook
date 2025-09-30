@@ -249,9 +249,12 @@ for i in range(1, n+1):
 데이터의 개수가 N개 일 때, 힙 자료구조
 힙(Heap) 자료구조는, 
 - 완전 이진 트리(Complete Binary Tree) 형태를 가지는 자료구조.
-- 규칙: 부모 노드와 자식 노드 간에 우선순위 규칙이 있음.
+- 규칙: 부모 노드와 자식 노드 간에 우선순위 규칙이 있음. (불변식)
   - 최대 힙(Max Heap): 부모 ≥ 자식 (루트가 가장 큼).
   - 최소 힙(Min Heap): 부모 ≤ 자식 (루트가 가장 작음).
+- 기본 연산:
+  - 삽입 (push): 새 원소를 추가한 후 위로 올려 정렬해야함. 
+  - 삭제 (pop): 루트 원소를 빼낸 후, 마자막 원소를 루트로 올려보내고 아래로 내려 정렬함. 
 
 ```{code-block} python
 import heapq
@@ -292,6 +295,51 @@ def heapsort(iterable):
 
 #### 힙 구현
 
+````{admonition} 부모, 자식 인덱스
+:class: dropdown 
+
+![17](../../assets/img/shortest_path/17.png)
+
+- parent = (pos - 1) // 2 # (pos-1) >> 1 
+- left = 2 * pos + 1
+- right = 2*pos + 2 
+````
+
+````{admonition} min heap visualization 
+:class: dropdown 
+
+- `_siftdown`: 힙 연산에서 "내려보내기 (sift down)" 과정을 나타냄. 
+    - min heap: 힙의 불변식 (invariant)은 "부모 노드가 자식 노드보다 작다"의 경우 
+    - 새로운 원소를 힙에 삽입하면, 처음에는 마지막 (leaf) 자리에 들어가고, 그 원소가 부모보다 작은 경우에는 부모와 자리를 바꿈. 
+        - 부모 > newitem -> 부모를 아래로 내린다. 
+        - pos <- 부모 위치로 이동 
+        - 즉, 부모들을 한 단계씩 밑으로 "내려보내고" 마지막에 newitem을 넣는 구조이다. 
+    - 루트에 도달하거나 부모 <= newitem이면 멈춘다. 
+    - 현재 위치에 newitem을 둔다. 
+    - ex) [1, 3, 19, 2] -> 2 < 3 이므로  3을 아래로 내림. -> [1, 2, 19, 3]
+- `_siftup`: 자식들을 따라 "위로 올려보내면서" 원소를 정리하는 과정 
+    - 루트를 pop할때 마지막 원소를 루트 자리로 옮기고, 이제 루트에서부터 힙 규칙이 깨질 수 있으므로 아래로 내려가면서 정렬한다. 
+    - root에서 시작해서 자식을 따라 내려가면서 위치를 바꾸고, 마지막에 newitem을 넣은 후 위로 올려보내는 과정 
+    - 알고리즘  
+        - root 자리에 new item을 둔다. 
+        - 자식 노드 중 더 작은 자식을 고른다. 
+        - 그 자식 < newitem이면, 자식을 위로 올린다.
+            - pos <- 자식 위치로 이동 
+        - 자식 >= newitem이거나 leaf에 도달하면 멈춘다. 
+        - 현재 위치에 newitem을 둔다.
+    - 예시 
+        - step 1: pop root=1, last =3 -> 루트에 3 대입 [3, 2, 19]
+        - step 3: 자식 중 작은 건 2. (2 < 3) 자식 2를 위로 올림. 
+
+click the [link](https://www.cs.usfca.edu/~galles/visualization/Heap.html)
+
+- _siftdown 예시 
+    - 삽입: 5, 3, 8, 1, 6, 7, 2
+- _siftup 예시
+    - 현재 힙 [1, 2, 7, 3, 6, 8, 5] -> root 삭제 
+    - buildHeap button -> remove smallest 
+
+````
 ````{admonition} 힙 구현 
 :class: dropdown 
 
@@ -299,61 +347,60 @@ def heapsort(iterable):
 ---
 caption: python standard library에서 제공하는 heapq의 구현 방식을 참고하였다. 
 ---
-
 def heappush(heap, item):
-    """Push item onto heap, maintaining the heap invariant."""
     heap.append(item)
-    _siftdown(heap, 0, len(heap)-1)
+    _siftdown(heap, 0, len(heap) - 1)
 
-# 'heap' is a heap at all indices >= startpos, except possibly for pos.
-# pos is the index of a leaf with a possibly out-of-order value. 
-#  Restore the heap invariant.
-def _siftdown(heap, startpos, pos):
-    newitem = heap[pos]
-    # Follow the path to the root, moving parents down until finding a place
-    # newitem fits.
-    while pos > startpos:
-        parentpos = (pos - 1) >> 1
-        parent = heap[parentpos]
-        if newitem < parent:
-            heap[pos] = parent
-            pos = parentpos
-            continue
-        break
-    heap[pos] = newitem
-
+def _siftdown(heap, root, pos):
+    newitem = heap[pos] # newitem 값 저장 
+    while pos > root:
+        parent_pos = (pos-1) >> 1 
+        if heap[parent_pos] > newitem: # 항상 newtiem과 부모를 비교해야함. 
+            heap[pos] = heap[parent_pos] # 부모를 한 칸 내려보냄 
+            pos = parent_pos
+            continue 
+        break 
+    # SWAP 
+    heap[pos] = newitem 
 
 def heappop(heap):
-    """Pop the smallest item off the heap, maintaining the heap invariant."""
-    lastelt = heap.pop()    # raises appropriate IndexError if heap is empty
-    if heap:
+    # 맨 "마지막 원소"를 제거: heap안의 원소가 하나라면 맨 처음 원소이고, 아니라면 root position에 갈 원소가 됨. 
+    removed_item = heap.pop() # heap이 비어있으면 에러를 일으킴 
+    if heap: # pop 이후에도 heap안에 item이 있는 경우 
         returnitem = heap[0]
-        heap[0] = lastelt
+        heap[0] = removed_item 
         _siftup(heap, 0)
-        return returnitem
-    return lastelt
+        return returnitem 
+    return removed_item 
+
+def is_leaf(heap, pos):
+    # time complexity for len(list) = O(1), 내부에 길이를 따로 저장하고 있음.
+    # "왼쪽 자식 인덱스가 배열 길이보다 크거나 같은 경우"로 판정하면 충분 
+    return (pos * 2) + 1 >= len(heap)
+  
 
 def _siftup(heap, pos):
-    endpos = len(heap)
-    startpos = pos
+    end = len(heap)
     newitem = heap[pos]
-    # Bubble up the smaller child until hitting a leaf.
-    childpos = 2*pos + 1    # leftmost child position
-    while childpos < endpos:
-        # Set childpos to index of smaller child.
-        rightpos = childpos + 1
-        if rightpos < endpos and not heap[childpos] < heap[rightpos]:
-            childpos = rightpos
-        # Move the smaller child up.
-        heap[pos] = heap[childpos]
-        pos = childpos
-        childpos = 2*pos + 1
-    # The leaf at pos is empty now.  Put newitem there, and bubble it up
-    # to its final resting place (by sifting its parents down).
-    heap[pos] = newitem
-    _siftdown(heap, startpos, pos)
+    child = 2* pos + 1 # 왼쪽 자식 
 
+    while child < end: # is_leaf()와 동일한 형식   
+        right= child + 1 
+        # 더 작은 자식을 child로 선택 
+        if right < end and heap[right] < heap[child]:
+            child = right 
+        
+        # child가 newitem보다 작으면 child를 끌어올리고, pos를 child로 이동 
+        if heap[child] < newitem:
+            heap[pos] = heap[child] # child를 siftup 
+            pos = child 
+            child = 2 * pos + 1 
+        else:
+            break # newitem이 들어갈 자리이면 멈춤 
 
+    
+    heap[pos] = newitem 
+    _siftdown(heap, 0, pos)
 
 if __name__ == "__main__":
     heap = []
@@ -481,5 +528,15 @@ for i in range(1, n+1):
 ```
 ````
 
-## 플로이드 워셜 알고리즘 (Floyd-Warshall Algorithm)
+## Floyd-Warshall Algorithm
+
+플로이드 워셜 알고리즘은 "모든 지점에서 다른 모든 지점까지의 최단 경로를 모두 구해야 하는 경우"에 사용할 수 있는 알고리즘이다. 다익스트라 알고리즘은 단계마다 최단 거리를 가지는 노드를 하나씩 반복적으로 선택한다. 그리고 해당 노드를 거쳐 가는 경로를 확인하며, 최단 거리 테이블을 갱신하는 방식으로 동작한다. 플로이드 워셜 알고리즘 또한 단계마다 '거쳐 가는 노드'를 기준으로 알고리즘을 수행한다. 하지만 **매번 방문하지 않은 노드 중에서 최단 거리를 갖는 노드를 찾을 필요가 없다**는 점이 다르다. 
+
+노드의 개수가 N개 일 때 알고리즘상 N번의 단계를 수행하며, 단계마다 O($N^2$)의 연산을 통해 '현재 노드를 거쳐 가는' 모든 경로를 고려한다. 따라서 총 **시간 복잡도는 O($N^3$)**이다. 
+
+플로이드 워셜 알고리즘은 **2차원 리스트**에 '최단 거리'정보를 저장한다. 다익스트라 알고리즘은 그리디 알고리즘인 반면, 플로이드 워셜 알고리즘은 **다이나믹 프로그래밍**이다. 노드의 개수가 N개 일 때, N번 만큼의 단계를 반복하며 '점화식에 맞게' 2차원 리스트를 갱신하기 때문이다. 
+
+## 플로이드 워셜 알고리즘 핵심 아이디어 
+
+
 

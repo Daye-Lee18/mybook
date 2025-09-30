@@ -22,4 +22,5 @@ parts:
   - file: _pages/practice/2_DFS_BFSPS
   - file: _pages/practice/3_backtrackingPS
   - file: _pages/practice/4_DPPS
+  - file: _pages/practice/5_shortest_pathPS
 
