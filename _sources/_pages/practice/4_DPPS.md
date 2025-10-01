@@ -20,3 +20,171 @@ kernelspec:
   - [TreeDP 2](https://www.acmicpc.net/problem/1949): [정답](https://wikidocs.net/274552)
   - [TreeDP 3](https://www.acmicpc.net/problem/2533): [정답](https://wikidocs.net/273100)
 - [2번: 코드트리 메신저](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/codetree-messenger/description)
+
+
+## TreeDP 1
+
+````{admonition} Tree DP에서 Bottom-up 방식으로 구현하는 이유
+:class: dropdown 
+
+- **Tree DP는 보통 Bottom-up(post-order DFS)으로 구현한다.**  
+  → 자식들의 값을 모두 구한 뒤 부모 값을 계산하는 구조이기 때문.  
+- 경우에 따라 부모 정보를 자식에게 넘겨야 하는 문제는 Top-down(pre-order DFS)을 병행하기도 한다.  
+- 따라서 Tree DP에서는 보통 `dfs(curr, parent)` 형태로 구현해,  
+  parent-child 관계를 유지하며 DP 값을 계산한다.  
+- 또한 기본적으로 "parent"와 "children"정보는 그래프를 받을 때 저장을 해놓야하는 정보이다. 
+
+기본 post-order dfs는 다음과 같다. 
+
+```{code-block} python
+# u: 현재 노드, p: parent node 
+def dfs(u, p):
+    dp[u] = 1   # 자신도 자신을 루트로 하는 서브트리에 포함되므로 0이 아닌 1에서 시작한다.
+    for v in graph[u]:
+        # tree에서 현재 노드와 연결되어 있는 노드 중 p (부모)빼고는 모두 children이다.
+        if v == p:
+            continue
+        dfs(v, u)             # 자식 처리
+        dp[u] += dp[v]        # 자식 값 합치기
+```
+
+아래의 그림처럼, acyclic graph를 트리로 변환하는 함수를 구현할 수 있다. 
+
+![1](../../assets/img/DPPS/1.png)
+
+```{toggle}
+'''
+예시) 
+9 5 8
+1 3
+4 3
+5 4
+5 6
+6 7
+2 3
+9 6
+6 8
+
+'''
+n, r, e = map(int, input().split())
+
+graph = [[] for _ in range(n+1)]
+children_list = [[] for _ in range(n+1)]
+parent_list = [0] * (n+1)
+visited = [False] * (n+1)
+for _ in range(e):
+    a, b= map(int, input().split())
+    graph[a].append(b)
+    graph[b].append(a)
+
+# parent node가 r인경우 tree로 만들기, top-down (pre-order dfs)
+def makeTree(cur_node, parent):
+    visited[cur_node] = True 
+
+    for node in graph[cur_node]:
+        if node != parent and not visited[node]:
+            makeTree(node, cur_node)
+            children_list[cur_node].append(node)
+            parent_list[node] = cur_node
+
+# root에서 시작 
+makeTree(r, 0)
+
+print(f"parent list: {parent_list}")
+print(f"children list: {children_list}")
+
+```
+````
+
+
+````{admonition} makeTree and count_subtree
+:class: dropdown 
+
+```{code-block} python
+# f = open('Input.txt', 'r')
+n, r, q = map(int, input().split())
+
+graph = [[] for _ in range(n+1)]
+children_list = [[] for _ in range(n+1)]
+parent_list = [0] * (n+1)
+visited = [False] * (n+1)
+dp = [0] * (n+1)
+
+for _ in range(n-1):
+    # print(_)
+    a, b= map(int, input().split())
+    graph[a].append(b)
+    graph[b].append(a)
+
+# parent node가 r인경우 tree로 만들기, top-down (pre-order dfs)
+def makeTree(cur_node, parent):
+    visited[cur_node] = True 
+
+    for node in graph[cur_node]:
+        if node != parent and not visited[node]:
+            makeTree(node, cur_node)
+            children_list[cur_node].append(node)
+            parent_list[node] = cur_node
+
+# root에서 시작 
+makeTree(r, 0)
+
+# print(f"parent list: {parent_list}")
+# print(f"children list: {children_list}")
+def count_subtree(cur_node, parent):
+   dp[cur_node] = 1 
+
+   for node in children_list[cur_node]:
+       count_subtree(node, cur_node)
+       dp[cur_node] += dp[node]
+
+count_subtree(r, 0)
+
+for _ in range(q):
+    root = int(input())
+    print(dp[root])
+    
+```
+````
+
+````{admonition} solution
+:class: dropdown 
+
+문제는 위에처럼 maketree와 count_subtree를 따로 만들면, 두번의 dfs를 거쳐야해서 타임 아웃이 된다. 이미 데이터를 받을 때, graph정보안에 하나의 parent빼고 모두 children을 담고 있으므로 이를 이용하여, maketree함수를 따로 만드는 대신, count_tree함수만 사용할 수 있다. 
+
+```{code-block} python 
+import sys
+sys.setrecursionlimit(1_000_000)
+input = sys.stdin.readline
+
+n, r, q = map(int, input().split())
+
+g = [[] for _ in range(n + 1)]
+for _ in range(n - 1):
+    a, b = map(int, input().split())
+    g[a].append(b)
+    g[b].append(a)
+
+dp = [0] * (n + 1)
+parent = [0] * (n + 1)
+
+def dfs(u, p):
+    parent[u] = p
+    size = 1
+    for v in g[u]:
+        if v == p:
+            continue
+        size += dfs(v, u)
+    dp[u] = size
+    return size
+
+dfs(r, 0)
+
+out = []
+for _ in range(q):
+    u = int(input())
+    out.append(str(dp[u]))
+print("\n".join(out))
+
+```
+````

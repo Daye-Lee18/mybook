@@ -325,7 +325,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -341,6 +343,14 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> 내용 </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#treedp-1">TreeDP 1</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -363,6 +373,157 @@ document.write(`
 </li>
 <li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/codetree-messenger/description">2번: 코드트리 메신저</a></p></li>
 </ul>
+<section id="treedp-1">
+<h2>TreeDP 1<a class="headerlink" href="#treedp-1" title="Link to this heading">#</a></h2>
+<div class="dropdown admonition">
+<p class="admonition-title">Tree DP에서 Bottom-up 방식으로 구현하는 이유</p>
+<ul class="simple">
+<li><p><strong>Tree DP는 보통 Bottom-up(post-order DFS)으로 구현한다.</strong><br />
+→ 자식들의 값을 모두 구한 뒤 부모 값을 계산하는 구조이기 때문.</p></li>
+<li><p>경우에 따라 부모 정보를 자식에게 넘겨야 하는 문제는 Top-down(pre-order DFS)을 병행하기도 한다.</p></li>
+<li><p>따라서 Tree DP에서는 보통 <code class="docutils literal notranslate"><span class="pre">dfs(curr,</span> <span class="pre">parent)</span></code> 형태로 구현해,<br />
+parent-child 관계를 유지하며 DP 값을 계산한다.</p></li>
+<li><p>또한 기본적으로 “parent”와 “children”정보는 그래프를 받을 때 저장을 해놓야하는 정보이다.</p></li>
+</ul>
+<p>기본 post-order dfs는 다음과 같다.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># u: 현재 노드, p: parent node </span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dfs</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+    <span class="n">dp</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>   <span class="c1"># 자신도 자신을 루트로 하는 서브트리에 포함되므로 0이 아닌 1에서 시작한다.</span>
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">[</span><span class="n">u</span><span class="p">]:</span>
+        <span class="c1"># tree에서 현재 노드와 연결되어 있는 노드 중 p (부모)빼고는 모두 children이다.</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="n">p</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">dfs</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>             <span class="c1"># 자식 처리</span>
+        <span class="n">dp</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">+=</span> <span class="n">dp</span><span class="p">[</span><span class="n">v</span><span class="p">]</span>        <span class="c1"># 자식 값 합치기</span>
+</pre></div>
+</div>
+<p>아래의 그림처럼, acyclic graph를 트리로 변환하는 함수를 구현할 수 있다.</p>
+<p><img alt="1" src="../../_images/118.png" /></p>
+<div class="toggle docutils container">
+<p>‘’’
+예시)
+9 5 8
+1 3
+4 3
+5 4
+5 6
+6 7
+2 3
+9 6
+6 8</p>
+<p>‘’’
+n, r, e = map(int, input().split())</p>
+<p>graph = [[] for _ in range(n+1)]
+children_list = [[] for _ in range(n+1)]
+parent_list = [0] * (n+1)
+visited = [False] * (n+1)
+for _ in range(e):
+a, b= map(int, input().split())
+graph[a].append(b)
+graph[b].append(a)</p>
+<h1 class="rubric" id="parent-node-r-tree-top-down-pre-order-dfs">parent node가 r인경우 tree로 만들기, top-down (pre-order dfs)</h1>
+<p>def makeTree(cur_node, parent):
+visited[cur_node] = True</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>for node in graph[cur_node]:
+    if node != parent and not visited[node]:
+        makeTree(node, cur_node)
+        children_list[cur_node].append(node)
+        parent_list[node] = cur_node
+</pre></div>
+</div>
+<h1 class="rubric" id="root">root에서 시작</h1>
+<p>makeTree(r, 0)</p>
+<p>print(f”parent list: {parent_list}”)
+print(f”children list: {children_list}”)</p>
+</div>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">makeTree and count_subtree</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># f = open(&#39;Input.txt&#39;, &#39;r&#39;)</span>
+<span class="n">n</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+
+<span class="n">graph</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+<span class="n">children_list</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+<span class="n">parent_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">visited</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">dp</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="c1"># print(_)</span>
+    <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+    <span class="n">graph</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+    <span class="n">graph</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+<span class="c1"># parent node가 r인경우 tree로 만들기, top-down (pre-order dfs)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">makeTree</span><span class="p">(</span><span class="n">cur_node</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+    <span class="n">visited</span><span class="p">[</span><span class="n">cur_node</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span> 
+
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">[</span><span class="n">cur_node</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">node</span> <span class="o">!=</span> <span class="n">parent</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">visited</span><span class="p">[</span><span class="n">node</span><span class="p">]:</span>
+            <span class="n">makeTree</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">cur_node</span><span class="p">)</span>
+            <span class="n">children_list</span><span class="p">[</span><span class="n">cur_node</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+            <span class="n">parent_list</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="n">cur_node</span>
+
+<span class="c1"># root에서 시작 </span>
+<span class="n">makeTree</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># print(f&quot;parent list: {parent_list}&quot;)</span>
+<span class="c1"># print(f&quot;children list: {children_list}&quot;)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">count_subtree</span><span class="p">(</span><span class="n">cur_node</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+   <span class="n">dp</span><span class="p">[</span><span class="n">cur_node</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> 
+
+   <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">children_list</span><span class="p">[</span><span class="n">cur_node</span><span class="p">]:</span>
+       <span class="n">count_subtree</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">cur_node</span><span class="p">)</span>
+       <span class="n">dp</span><span class="p">[</span><span class="n">cur_node</span><span class="p">]</span> <span class="o">+=</span> <span class="n">dp</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+
+<span class="n">count_subtree</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="n">root</span><span class="p">])</span>
+    
+</pre></div>
+</div>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">solution</p>
+<p>문제는 위에처럼 maketree와 count_subtree를 따로 만들면, 두번의 dfs를 거쳐야해서 타임 아웃이 된다. 이미 데이터를 받을 때, graph정보안에 하나의 parent빼고 모두 children을 담고 있으므로 이를 이용하여, maketree함수를 따로 만드는 대신, count_tree함수만 사용할 수 있다.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">setrecursionlimit</span><span class="p">(</span><span class="mi">1_000_000</span><span class="p">)</span>
+<span class="nb">input</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span>
+
+<span class="n">n</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+
+<span class="n">g</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+    <span class="n">g</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+    <span class="n">g</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+<span class="n">dp</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">parent</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">dfs</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+    <span class="n">parent</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">g</span><span class="p">[</span><span class="n">u</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="n">p</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">size</span> <span class="o">+=</span> <span class="n">dfs</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
+    <span class="n">dp</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">=</span> <span class="n">size</span>
+    <span class="k">return</span> <span class="n">size</span>
+
+<span class="n">dfs</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">())</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="n">u</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -419,6 +580,21 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> 내용
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#treedp-1">TreeDP 1</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>
