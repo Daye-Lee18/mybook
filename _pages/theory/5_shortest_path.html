@@ -367,6 +367,15 @@ document.write(`
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#floyd-warshall-algorithm">Floyd-Warshall Algorithm</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">플로이드 워셜 알고리즘 핵심 아이디어</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">예시 문제</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">플로이드</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#find-a-safe-walk-through-a-grid">Find a Safe Walk Through a Grid</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#digit-operations-to-make-two-integers-equal">Digit Operations to Make Two Integers Equal</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluate-divison">Evaluate Divison</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#path-with-maximum-probability">Path with Maximum Probability</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#minimum-cost-to-converst-string-i">Minimum Cost to Converst String I</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -733,8 +742,8 @@ document.write(`
 </div>
 <div class="dropdown admonition">
 <p class="admonition-title">힙 구현</p>
-<div class="literal-block-wrapper docutils container" id="id8">
-<div class="code-block-caption"><span class="caption-number">예시 30 </span><span class="caption-text">python standard library에서 제공하는 heapq의 구현 방식을 참고하였다.</span><a class="headerlink" href="#id8" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-number">예시 30 </span><span class="caption-text">python standard library에서 제공하는 heapq의 구현 방식을 참고하였다.</span><a class="headerlink" href="#id10" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">heappush</span><span class="p">(</span><span class="n">heap</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
     <span class="n">heap</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
     <span class="n">_siftdown</span><span class="p">(</span><span class="n">heap</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">heap</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
@@ -930,9 +939,68 @@ document.write(`
 <p class="admonition-title">code for Floyd Warshall Algorithm</p>
 <p>위 예시에 해당하는 알고리즘을 파이썬으로 작성하였다.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="c1"># N = the number of nodes, M = the number of edges </span>
+<span class="n">N</span><span class="p">,</span> <span class="n">M</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+<span class="n">INF</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1e9</span><span class="p">)</span>
+<span class="n">dp</span> <span class="o">=</span> <span class="p">[[</span><span class="n">INF</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+
+<span class="c1"># print(dp)</span>
+
+<span class="c1"># diagonal of dp table </span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">dp</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="c1"># initialize the dp with edges</span>
+<span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+    <span class="c1"># from a to b with c cost </span>
+    <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+    <span class="n">dp</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span> 
+
+<span class="c1"># iterate through nodes for an intermidiate node </span>
+<span class="k">for</span> <span class="n">intermidiate</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+    <span class="c1"># update dp </span>
+    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">            if a == k, a-&gt;a-&gt;b이면, a-&gt;a = 0이므로 동일해서 </span>
+<span class="sd">            if a != k라는 조건이 있을 필요가 없음.</span>
+<span class="sd">            &#39;&#39;&#39;</span>
+            <span class="n">dp</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">],</span> <span class="n">dp</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">intermidiate</span><span class="p">]</span> <span class="o">+</span> <span class="n">dp</span><span class="p">[</span><span class="n">intermidiate</span><span class="p">][</span><span class="n">b</span><span class="p">])</span>
+
+
+<span class="c1"># print out the dp without node 0</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">:])</span>
 </pre></div>
 </div>
 </div>
+</section>
+<section id="id8">
+<h2>예시 문제<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
+<section id="id9">
+<h3>플로이드<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<p><a class="reference external" href="https://www.acmicpc.net/problem/11404">플로이드</a></p>
+</section>
+<section id="find-a-safe-walk-through-a-grid">
+<h3>Find a Safe Walk Through a Grid<a class="headerlink" href="#find-a-safe-walk-through-a-grid" title="Link to this heading">#</a></h3>
+<p><a class="reference external" href="https://leetcode.com/problems/find-a-safe-walk-through-a-grid/description/?envType=problem-list-v2&amp;amp;envId=shortest-path">Leetcode 3286</a></p>
+</section>
+<section id="digit-operations-to-make-two-integers-equal">
+<h3>Digit Operations to Make Two Integers Equal<a class="headerlink" href="#digit-operations-to-make-two-integers-equal" title="Link to this heading">#</a></h3>
+<p><a class="reference external" href="https://leetcode.com/problems/digit-operations-to-make-two-integers-equal/description/?envType=problem-list-v2&amp;amp;envId=shortest-path">Leetcode 3377</a></p>
+</section>
+<section id="evaluate-divison">
+<h3>Evaluate Divison<a class="headerlink" href="#evaluate-divison" title="Link to this heading">#</a></h3>
+<p><a class="reference external" href="https://leetcode.com/problems/evaluate-division/?envType=problem-list-v2&amp;amp;envId=shortest-path">Leetcode 399</a></p>
+</section>
+<section id="path-with-maximum-probability">
+<h3>Path with Maximum Probability<a class="headerlink" href="#path-with-maximum-probability" title="Link to this heading">#</a></h3>
+<p><a class="reference external" href="https://leetcode.com/problems/path-with-maximum-probability/description/?envType=problem-list-v2&amp;amp;envId=shortest-path">Leetcode 1512</a></p>
+</section>
+<section id="minimum-cost-to-converst-string-i">
+<h3>Minimum Cost to Converst String I<a class="headerlink" href="#minimum-cost-to-converst-string-i" title="Link to this heading">#</a></h3>
+<p><a class="reference external" href="https://leetcode.com/problems/minimum-cost-to-convert-string-i/description/?envType=problem-list-v2&amp;amp;envId=shortest-path">Leetcode 2976</a></p>
+</section>
 </section>
 </section>
 
@@ -1017,6 +1085,15 @@ document.write(`
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#floyd-warshall-algorithm">Floyd-Warshall Algorithm</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">플로이드 워셜 알고리즘 핵심 아이디어</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">예시 문제</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">플로이드</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#find-a-safe-walk-through-a-grid">Find a Safe Walk Through a Grid</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#digit-operations-to-make-two-integers-equal">Digit Operations to Make Two Integers Equal</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluate-divison">Evaluate Divison</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#path-with-maximum-probability">Path with Maximum Probability</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#minimum-cost-to-converst-string-i">Minimum Cost to Converst String I</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
