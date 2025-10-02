@@ -65,7 +65,7 @@
     <link rel="index" title="색인" href="../../genindex.html" />
     <link rel="search" title="검색" href="../../search.html" />
     <link rel="next" title="Lecture 2-2. DFS/BFS 실습" href="2_DFS_BFSPS.html" />
-    <link rel="prev" title="Lecture 3-1. 정렬" href="../theory/5_sort.html" />
+    <link rel="prev" title="Lecture 6-1. 정렬" href="../theory/6_sort.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ko"/>
   </head>
@@ -190,7 +190,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../theory/2_DFS_BFS.html">Lecture 2-1. DFS/BFS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../theory/3_backtracking.html">Lecture 3-1. Backtracking</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../theory/4_DP.html">Lecture 4-1. Dynamic Programming</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../theory/5_sort.html">Lecture 3-1. 정렬</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/5_shortest_path.html">Lecture 5-1. Shortest Path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/6_sort.html">Lecture 6-1. 정렬</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">실습</span></p>
 <ul class="current nav bd-sidenav">
@@ -198,6 +199,7 @@
 <li class="toctree-l1"><a class="reference internal" href="2_DFS_BFSPS.html">Lecture 2-2. DFS/BFS 실습</a></li>
 <li class="toctree-l1"><a class="reference internal" href="3_backtrackingPS.html">Lecture 3-2. Backtracking 실습</a></li>
 <li class="toctree-l1"><a class="reference internal" href="4_DPPS.html">Lecture 4-2. DP 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_shortest_pathPS.html">Lecture 5-2. Shortest Path 실습</a></li>
 </ul>
 
     </div>
@@ -441,7 +443,7 @@ document.write(`
 <p><img alt="3-6" src="../../_images/6.png" /></p>
 </div>
 <div class="dropdown admonition">
-<p class="admonition-title">최댓값 전파</p>
+<p class="admonition-title">최댓값 전파 BFS</p>
 <p>현재 골렘의 최댓값을 전파하려면, “다른 골렘의 ‘출구‘“와 맞닿아있어야함. 따라서, 현재 골렘 8방에 다른 골렘의 출구가 있는지 출구 일때에만 전파를 해주는 것을 명심!</p>
 <p><img alt="3-7" src="../../_images/7.png" /></p>
 <p>Finally, let’s look at how we propagate the maximum reachable row.</p>
@@ -468,10 +470,14 @@ document.write(`
 </li>
 </ol>
 </div>
-<div class="toggle docutils container">
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span> 
+<div class="dropdown admonition">
+<p class="admonition-title">Solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span> 
 
-<span class="c1"># f= open(&#39;/Users/dayelee/Documents/GitHub/mybook/Input.txt&#39;, &#39;r&#39;)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">stdin</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;Input.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span> 
+
 <span class="n">R</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">K</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
 <span class="n">H</span> <span class="o">=</span> <span class="n">R</span> <span class="o">+</span> <span class="mi">3</span> 
 <span class="n">graph</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">C</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">H</span><span class="p">)]</span>
@@ -548,15 +554,15 @@ document.write(`
 
             <span class="n">id_to_center_dir</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
             <span class="k">return</span> <span class="kc">False</span> 
-    <span class="k">else</span><span class="p">:</span> <span class="c1"># settle </span>
-        <span class="n">graph</span><span class="p">[</span><span class="n">cy</span><span class="p">][</span><span class="n">cx</span><span class="p">]</span> <span class="o">=</span> <span class="n">spirit_id</span>
-        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
-            <span class="n">ay</span> <span class="o">=</span> <span class="n">cy</span> <span class="o">+</span> <span class="n">AY</span><span class="p">[</span><span class="n">t</span><span class="p">];</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">cx</span> <span class="o">+</span> <span class="n">AX</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
-            <span class="n">graph</span><span class="p">[</span><span class="n">ay</span><span class="p">][</span><span class="n">ax</span><span class="p">]</span> <span class="o">=</span> <span class="n">spirit_id</span>
+    <span class="c1"># settle </span>
+    <span class="n">graph</span><span class="p">[</span><span class="n">cy</span><span class="p">][</span><span class="n">cx</span><span class="p">]</span> <span class="o">=</span> <span class="n">spirit_id</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+        <span class="n">ay</span> <span class="o">=</span> <span class="n">cy</span> <span class="o">+</span> <span class="n">AY</span><span class="p">[</span><span class="n">t</span><span class="p">];</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">cx</span> <span class="o">+</span> <span class="n">AX</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+        <span class="n">graph</span><span class="p">[</span><span class="n">ay</span><span class="p">][</span><span class="n">ax</span><span class="p">]</span> <span class="o">=</span> <span class="n">spirit_id</span>
 
-        <span class="c1"># id_to_center_dict update </span>
-        <span class="n">id_to_center_dir</span><span class="p">[</span><span class="n">spirit_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cy</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="nb">dir</span><span class="p">)</span>
-        <span class="k">return</span> <span class="kc">True</span> 
+    <span class="c1"># id_to_center_dict update </span>
+    <span class="n">id_to_center_dir</span><span class="p">[</span><span class="n">spirit_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cy</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="nb">dir</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">True</span> 
     
 <span class="k">def</span><span class="w"> </span><span class="nf">exit_cell</span><span class="p">(</span><span class="n">id_</span><span class="p">):</span>
     <span class="n">cy</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cd</span> <span class="o">=</span> <span class="n">id_to_center_dir</span><span class="p">[</span><span class="n">id_</span><span class="p">]</span>
@@ -591,6 +597,7 @@ document.write(`
     <span class="n">Neighbor_Y</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
     <span class="n">Neighbor_X</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
 
+    <span class="c1"># BFS </span>
     <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">([(</span><span class="n">cy</span><span class="p">,</span> <span class="n">cx</span><span class="p">,</span> <span class="nb">id</span><span class="p">)])</span> <span class="c1"># center y, x값을 넣어야함. </span>
     <span class="n">visited</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
     <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
@@ -1296,12 +1303,12 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../theory/5_sort.html"
+       href="../theory/6_sort.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">이전</p>
-        <p class="prev-next-title">Lecture 3-1. 정렬</p>
+        <p class="prev-next-title">Lecture 6-1. 정렬</p>
       </div>
     </a>
     <a class="right-next"

@@ -192,7 +192,8 @@
 <li class="toctree-l1"><a class="reference internal" href="2_DFS_BFS.html">Lecture 2-1. DFS/BFS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="3_backtracking.html">Lecture 3-1. Backtracking</a></li>
 <li class="toctree-l1"><a class="reference internal" href="4_DP.html">Lecture 4-1. Dynamic Programming</a></li>
-<li class="toctree-l1"><a class="reference internal" href="5_sort.html">Lecture 3-1. 정렬</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_shortest_path.html">Lecture 5-1. Shortest Path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_sort.html">Lecture 6-1. 정렬</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">실습</span></p>
 <ul class="nav bd-sidenav">
@@ -200,6 +201,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../practice/2_DFS_BFSPS.html">Lecture 2-2. DFS/BFS 실습</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../practice/3_backtrackingPS.html">Lecture 3-2. Backtracking 실습</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../practice/4_DPPS.html">Lecture 4-2. DP 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/5_shortest_pathPS.html">Lecture 5-2. Shortest Path 실습</a></li>
 </ul>
 
     </div>
@@ -365,14 +367,45 @@ document.write(`
 <li><p><strong>풀이 아이디어 <span class="math notranslate nohighlight">\(\rightarrow\)</span> 복잡도 <span class="math notranslate nohighlight">\(\rightarrow\)</span> 자료구조</strong> 선택을 메모하는 습관 추천</p></li>
 </ul>
 </li>
+</ol>
+<div class="dropdown admonition">
+<p class="admonition-title">N에 따른 시간 복잡도 계산 및 알고리즘 선택</p>
+<p>제한 시간이 1초 기준으로 입력 값의 범위가 다음과 같을 때 (언어, 채점 환경에 따라 달라질 수 있음)</p>
+<ul class="simple">
+<li><p>N의 범위가 ~500 : 시간 복잡도 O(N^3) 로 풀 수 있다.</p></li>
+<li><p>N의 범위가 ~2000 : 시간 복잡도 O(N^2) 로 풀 수 있다.</p></li>
+<li><p>N의 범위가 ~100,000 : 시간 복잡도 O(NlogN) 로 풀 수 있다.</p></li>
+<li><p>N의 범위가 ~10,000,000 : 시간 복잡도 O(N) 로 풀 수 있다.</p></li>
+</ul>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">N에 따른 메모리</p>
+<ul class="simple">
+<li><p>메모리
+int (4B) -&gt; 1,000,000 기준 4MB (256MB이면 64*10^6개 int N사용가능 (~10^6))
+long long / double (8B) -&gt; 1,000,000 기준 8MB
+char / bool (1B) -&gt; 1,000,000 기준 1MB</p></li>
+<li><p>스택(1MB) 주의
+재귀 깊이 한계: 프레임당 수십~수백 B + 지역변수.
+C++: 지역 큰 배열 금지. 재귀 DFS는 1e5 노드에서 위험 → 반복(스택 컨테이너) DFS/BFS로 전환.
+Python: 프레임 오버헤드 큼(+ 기본 재귀 제한 ≈ <strong>1000</strong>). 재귀 지양.
+규칙: 큰 배열 = 전역/힙, 재귀 함수 로컬에 큰 구조 금지.</p></li>
+</ul>
+</div>
+<ol class="arabic simple">
 <li><p>에지 케이스 (edge case) 정리</p>
 <ul class="simple">
 <li><p>중요 단계!</p>
 <ul>
-<li><p>최소 입력값 (N=0, N=2)</p></li>
-<li><p>최대 입력값 (시간복잡도 한계에 닿는 값)</p></li>
-<li><p>특수 입력 (중복, 음수, 동일 값 등)</p></li>
-<li><p>출력 애매한 케이스 (답이 여러 개 나올 수 있는 경우)</p></li>
+<li><p>크기: N=0,1 / N 최대</p></li>
+<li><p>값: 음수, 0, 최대값, 오버플로우 경계</p></li>
+<li><p>중복: 모두 동일 / 모두 다름 / 동점 다수</p></li>
+<li><p>정렬: 정렬/역정렬/지그재그</p></li>
+<li><p>포맷: 공백·개행·빈 줄 / 대소문자 / 선행 0</p></li>
+<li><p>구조: 비연결 그래프 / 사이클 / 자기루프 / 멀티엣지</p></li>
+<li><p>경계: 구간 끝이 맞닿음, 포함/미포함([ ], ( ))</p></li>
+<li><p>결과 없음/여러 개/타이브레이크 요구</p></li>
+<li><p>시간: 최악 입력 패턴(슬라이딩윈도우가 매번 실패, 이분탐색이 전부 False/전부 True 등)</p></li>
 </ul>
 </li>
 </ul>

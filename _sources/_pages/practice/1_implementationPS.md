@@ -72,7 +72,7 @@ We maintain two separate grids: `golem_arr` and `exit_map`. The `golem array` re
 ![3-6](../../assets/img/implementationPS/3/6.png)
 ```
 
-```{admonition} 최댓값 전파  
+```{admonition} 최댓값 전파 BFS 
 :class: dropdown
 
 현재 골렘의 최댓값을 전파하려면, "다른 골렘의 '출구'"와 맞닿아있어야함. 따라서, 현재 골렘 8방에 다른 골렘의 출구가 있는지 출구 일때에만 전파를 해주는 것을 명심! 
@@ -98,12 +98,16 @@ This two-step design ensures accuracy — newly placed golems immediately get th
 
 ```
 
-````{toggle}
+````{admonition} Solution
+:class: dropdown 
+
 ```{code-block} python
+import sys 
+
+sys.stdin = open('Input.txt', 'r')
 
 from collections import deque 
 
-# f= open('/Users/dayelee/Documents/GitHub/mybook/Input.txt', 'r')
 R, C, K = map(int, input().split())
 H = R + 3 
 graph = [[0] * C for _ in range(H)]
@@ -180,15 +184,15 @@ def reset_or_settle(cy, cx, dir, spirit_id):
 
             id_to_center_dir = dict()
             return False 
-    else: # settle 
-        graph[cy][cx] = spirit_id
-        for t in range(4):
-            ay = cy + AY[t]; ax = cx + AX[t]
-            graph[ay][ax] = spirit_id
+    # settle 
+    graph[cy][cx] = spirit_id
+    for t in range(4):
+        ay = cy + AY[t]; ax = cx + AX[t]
+        graph[ay][ax] = spirit_id
 
-        # id_to_center_dict update 
-        id_to_center_dir[spirit_id] = (cy, cx, dir)
-        return True 
+    # id_to_center_dict update 
+    id_to_center_dir[spirit_id] = (cy, cx, dir)
+    return True 
     
 def exit_cell(id_):
     cy, cx, cd = id_to_center_dir[id_]
@@ -223,6 +227,7 @@ def calculate(id):
     Neighbor_Y = [-2, -1, -1, 0, 0, 1, 1, 2]
     Neighbor_X = [0, -1, 1, -2, 2, -1, 1, 0]
 
+    # BFS 
     q = deque([(cy, cx, id)]) # center y, x값을 넣어야함. 
     visited = set()
     visited.add(id)
