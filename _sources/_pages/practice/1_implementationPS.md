@@ -7,7 +7,7 @@
 - [4번: 코드트리 민트초코 우유](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/mint-choco-milk/description)
 - [5번: 코드트리 메두사와 전사들](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/medusa-and-warriors/description)
 
-## 1번: 마법의 숲 탐색 문제 풀이 
+## 1번: 마법의 숲 탐색 문제 풀이 BFS
 
 ```{admonition} 문제 정리
 :class: dropdown 
@@ -276,7 +276,7 @@ if __name__ == "__main__":
 ```
 ````
 
-## 3번: 미생물 연구 
+## 3번: 미생물 연구 Sorting, PriorityQueue 
 
 ```{admonition} 문제 정리
 :class: dropdown
@@ -356,6 +356,30 @@ for f in range(list_len):
 ```
 ````
 
+````{admonition} 3중 for loop안에서 닫는 위치 
+:class: dropdown 
+
+```{code-block} python 
+for i in range(len(locs_and_id)):          # [루프 1]
+    for origin_x in range(N):              # [루프 2]
+        for origin_y in range(N):          # [루프 3]
+            ...
+            if flag:
+                ...
+                break   # <-- 여기서 끊기는 건 루프 3만
+        if flag: # [루프 2] 중단
+            break
+```
+````
+
+````{admonition} set.union
+:class: dropdown 
+
+```{code-block} python 
+set1.union(set2) # X 
+set1 = set1.union(set2) # O
+```
+````
 
 ````{admonition} 내 문제 풀이
 :class: dropdown
@@ -855,6 +879,221 @@ if __name__ == '__main__':
 ```
 ````
 
+````{admonition} 내 풀이 3
+:class: dropdown 
+
+min-heap으로 좀 더 쉽게 locs를 sorting 함 
+```{code-block} python 
+import sys 
+from heapq import heappush, heappop # min-heap 
+from collections import defaultdict
+
+sys.stdin = open('Input.txt', 'r')
+
+from collections import deque 
+
+N, Q = map(int, input().split())
+graph = [[0] * N for _ in range(N)]
+
+def insert_new_microbe(r1, c1, r2, c2, id):
+    # global graph 
+    # [(r1, c1) ~ exclusive (r2, c2)) 
+    candidates_for_removing = set()
+    for y in range(r1, r2):
+        for x in range(c1, c2):
+            if graph[y][x] != 0:
+                candidates_for_removing.add(graph[y][x])
+            graph[y][x] = id # list의 내부 요소만 수정하는 경우에는 "전역 객체의 참조"를 그대로 쓰는 거라 global 선언 업싱도 가능
+
+    # 침입된 id를 대상으로 group이 두개로 나누어졌는지 세기 
+    for r_id in candidates_for_removing:
+        count, locs = count_group_and_find_loc(r_id)
+        if count >= 2:
+            # removing 
+            for loc in locs:
+                graph[loc[0]][loc[1]] = 0
+
+def count_group_and_find_loc(id):
+    '''
+    count = int
+    return locs: list 
+    '''
+    visited = [[False]*N for _ in range(N)]
+    count = 0 
+    return_locs = set()
+    for y in range(N):
+        for x in range(N):
+            if graph[y][x] == id and not visited[y][x]:
+                locs = BFS(y, x, id, visited)
+                return_locs = return_locs.union(locs)
+                count += 1 
+    # print(f"count, locs: {count}, {return_locs}")
+    return count, list(return_locs)
+
+def in_range(y, x):
+    return 0<=y<N and 0<=x < N 
+
+def BFS(y, x, id, visited):
+    DY = [-1, 0, 1, 0]; DX = [0, 1, 0, -1]
+    q = deque([(y, x)])
+    visited[y][x] = True 
+    locs = set([(y, x)])
+    while q:
+        cur_y, cur_x = q.popleft()
+
+        for t in range(4):
+            ny = cur_y + DY[t]; nx = cur_x + DX[t]
+            # 옆의 위치의 id가 현재 id와 같을 때만 넣음 
+            # 방문하지 않았을 때에만 재방문해야함
+            if in_range(ny, nx) and not visited[ny][nx] and graph[ny][nx] == id:
+                visited[ny][nx] = True 
+                locs.add((ny, nx))
+                q.append((ny, nx))
+    
+    return locs
+
+def replace():  
+    new_graph = [[0] * N for _ in range(N)]
+    return_id_locs = defaultdict(list)
+
+    # 원래 그래프에 있는 id와 locs 계산 
+    visited =[[False]*N for _ in range(N)]
+    locs_and_id = []
+    visited_id = set()
+    for y in range(N):
+        for x in range(N):
+            if not graph[y][x] in visited_id and graph[y][x] != 0:
+                visited_id.add(graph[y][x])
+                cur_id = graph[y][x] 
+                locs = list(BFS(y, x, cur_id, visited))
+                locs_and_id.append((cur_id, locs))
+
+    # sorting [(id, locs)], locs이 넓은 것 우선 -> 같으면 id
+    '''
+    min_heap이용해서 저장하고 나중에 heappop()으로 최소부터 꺼내면 시간 복잡도 더 작음 
+    '''
+    sort(locs_and_id)
+
+    flag = False 
+    # 미생물 하나씩 옮김 
+    for i in range(len(locs_and_id)):  # [루프 1]
+        # origin 위치 찾기
+        # 현재 우리의 graph는 왼쪽 위가 기준이므로 y가 최대한 작게 -> x최대한 작게 
+        for origin_y in range(N):  # [루프 2]
+            for origin_x in range(N): # [루프 3]
+                flag, (distance_y, distance_x) = can_use_origin(origin_y, origin_x, new_graph, locs_and_id[i][0], locs_and_id[i][1])
+                # 옮기기 실행 
+                if flag:
+                    cur_id = locs_and_id[i][0]
+                    for before_y, before_x in locs_and_id[i][1]:
+                        y = before_y - distance_y
+                        x = before_x - distance_x
+                        new_graph[y][x] = cur_id
+                        return_id_locs[cur_id].append((y, x))
+                    break # 옮기면 현재 i에 대해서 멈춰야함. [루프 3 중단]
+            if flag:
+                break # 옮기면 현재 i에 대해서 멈춰야함. [루프 2 중단]
+
+    # 원래 그래프 update 필수  
+    for y in range(N):
+        for x in range(N):
+            graph[y][x] = new_graph[y][x]
+
+    return return_id_locs
+
+def can_use_origin(origin_y, origin_x, new_graph, id, locs):
+    '''
+    locs는 Sort되어서 맨 앞에 있는 것이 (y,x)가 제일 작아야함. -> min-heap을 사용해서 root가 제일 작게함. 
+    '''
+    # sort locs 
+    q = []
+    for i in range(len(locs)):
+        heappush(q, locs[i])
+
+    # 맨 첫 원소 q[0] 는 (y -> x)순으로 가장 작은 것이 들어있음 
+    distance_y = q[0][0] - origin_y 
+    distance_x = q[0][1] - origin_x
+
+    for cur_y, cur_x in q:
+        new_pos_y = cur_y - distance_y 
+        new_pos_x = cur_x - distance_x
+        if in_range(new_pos_y, new_pos_x) and new_graph[new_pos_y][new_pos_x] == 0:
+            continue 
+        else:
+            return False, (None, None)
+    return True, (distance_y, distance_x) 
+    
+
+
+def sort(locs_and_id):
+    '''
+    locs_and_id = [(id1, locs1 (list))]
+    '''
+    lens = len(locs_and_id)
+    for f in range(lens):
+        lowest = f 
+        for r in range(f+1, lens):
+            if not compare(locs_and_id[lowest][0], locs_and_id[lowest][1], locs_and_id[r][0], locs_and_id[r][1]):
+                lowest = r 
+        
+        # SWAP 
+        if lowest != f:
+            temp = locs_and_id[lowest]
+            locs_and_id[lowest] = locs_and_id[f]
+            locs_and_id[f] = temp 
+
+def compare(id1, locs1, id2, locs2):
+    if len(locs1) != len(locs2):
+        return len(locs1) > len(locs2)
+    return id1 < id2 
+
+def solve():
+    
+    for e_id in range(1, Q+1): # 글로벌 변수를 읽기만 할때는 global 선언안해도 됨. 
+        r1, c1, r2, c2 = map(int, input().split())
+        # 미생물 투입 
+        insert_new_microbe(r1, c1, r2, c2, e_id)
+
+        # print('graph:')
+        # for row in graph:
+        #     print(row[:])
+
+        # 배양 용기 이동, 옮긴 용기안의 {id: locs}으로 되어있는 dictionary 반환 
+        return_id_locs = replace()
+
+        # print('After moving graph:')
+        # for row in graph:
+        #     print(row[:])
+
+        # 인접한 미생물의 영역 넓이의 곱을 표시 
+        total = 0
+        keys = list(return_id_locs.keys())
+        for i in range(len(keys)):
+            for j in range(i+1, len(keys)):  # i < j 로만 돌림
+                id1, id2 = keys[i], keys[j]
+                locs1, locs2 = return_id_locs[id1], return_id_locs[id2]
+
+                if is_adjacent(id1, id2, locs1, locs2):
+                    total += len(locs1) * len(locs2)
+        print(total)
+
+def is_adjacent(id1, id2, locs1, locs2):
+    DY = [-1, 0, 1, 0]; DX = [0, 1, 0, -1]
+    for loc in locs1:
+        cur_y, cur_x = loc 
+
+        for t in range(4):
+            ny = cur_y + DY[t]
+            nx = cur_x + DX[t]
+            if in_range(ny, nx) and graph[ny][nx] == id2:
+                return True 
+    
+    return False 
+
+if __name__ == '__main__':
+    solve()
+```
+````
 ````{admonition} test case 
 :class: dropdown
 1. 
