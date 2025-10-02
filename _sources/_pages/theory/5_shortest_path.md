@@ -632,6 +632,87 @@ for i in range(1, N+1):
 ### Find a Safe Walk Through a Grid 
 [Leetcode 3286](https://leetcode.com/problems/find-a-safe-walk-through-a-grid/description/?envType=problem-list-v2&envId=shortest-path)
 
+````{admonition} solution
+:class: dropdown 
+
+```{code-block} python 
+from heapq import heappush, heappop 
+from typing import List
+
+class Solution:
+    def __init__(self):
+        
+        self.dp = []
+        self.m=0
+        self.n= 0
+        self.health = 0
+        
+
+    def findSafeWalk(self, grid: List[List[int]], health: int) -> bool:
+        MIN = -1
+        start = (0, 0)
+        self.m = len(grid)
+        self.n = len(grid[0])
+        self.dp = [[MIN]* self.n for _ in range(self.m)]
+        self.health = health
+        '''
+        state = each index 
+        what to store = the remaining health 
+        transition = 
+            if the current dp - (0/1 graph value) > 0:
+                neigbhor = min(dp of neighbor, current dp - (0/1 graph value)])
+        '''
+
+        self.dijkstra(start, grid)
+        '''
+        Return true if you can reach the final cell with a health value of 1 or more, and false otherwise.
+        '''
+        return self.dp[self.m-1][self.n-1] >= 1
+
+    def in_range(self, y, x):
+        return 0<=y < self.m and 0<=x < self.n 
+
+    def dijkstra(self, start, grid):
+
+        DY = [-1, 1, 0, 0]; DX = [0, 0, -1, 1]
+        cur_health = self.health - grid[0][0]
+        self.dp[start[0]][start[1]] = cur_health
+        q = []
+
+        # (max health, y, x): the first item should be the value which the heap is prioritied by 
+        q.append((-cur_health, 0, 0))
+
+        while q:
+            dis, y, x = heappop(q)
+            dis = -dis
+
+            if dis < self.dp[y][x]: # check visit 
+                continue 
+
+            for t in range(4):
+                ny = y + DY[t]; nx = x + DX[t]
+                if not self.in_range(ny, nx):
+                    continue 
+                
+                # 다음 칸으로 "들어갈 때" 그 칸의 비용 지불
+                # Cells (i, j) with grid[i][j] = 1 are considered unsafe and reduce your health by 1.
+                if self.dp[y][x] - grid[ny][nx] > 0:
+                    if self.dp[ny][nx] < self.dp[y][x] - grid[ny][nx]:
+                        self.dp[ny][nx] = self.dp[y][x] - grid[ny][nx]
+                        heappush(q, (-self.dp[ny][nx], ny, nx))
+
+
+if __name__ == "__main__":
+    sol = Solution()
+    # grid = [[1,1,1],[1,0,1],[1,1,1]]
+    # health = 5
+    grid = [[1,1,1,1]]
+    health = 4
+    print(sol.findSafeWalk(grid, health))
+    print(sol.dp)
+```
+````
+
 ### Digit Operations to Make Two Integers Equal 
 [Leetcode 3377](https://leetcode.com/problems/digit-operations-to-make-two-integers-equal/description/?envType=problem-list-v2&envId=shortest-path)
 
