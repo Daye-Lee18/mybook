@@ -341,7 +341,7 @@ click the [link](https://www.cs.usfca.edu/~galles/visualization/Heap.html)
 - _siftdown 예시 
     - 삽입: 5, 3, 8, 1, 6, 7, 2
 - _siftup 예시
-    - 현재 힙 [1, 2, 7, 3, 6, 8, 5] -> root 삭제 
+    - 현재 힙 [1, 2, 5, 3, 6, 8, 7] -> root 삭제 
     - buildHeap button -> remove smallest 
 
 ````
@@ -481,6 +481,14 @@ if __name__ == "__main__":
 ````{admonition} heapq를 이용한 dijkstra 구현 
 :class: dropdown 
 
+요약하면:
+
+간단한 dijkstra 구현방식에서는 get_smallest_node()가 “아직 확정(visit)되지 않은 노드들 중” 최소 거리 노드를 골라야 하므로 visited가 필수이다. 방문(=최단거리 확정)한 노드를 다시 고르는 걸 막아야 하니까요. 다익스트라의 성질상, 음수 간선이 없을 때 최소 거리로 뽑힌 순간 그 노드는 최단거리 확정 → 곧바로 visited[now]=True.
+
+그러나 힙/우선순위큐 버전의 dijkstra algorithm에서는 visited 없이도 동작한다. 이는 지연 삭제(lazy deletion) 패턴 때문인데, 힙에서 (거리, 노드)를 꺼낼 때 if cur_dis > distance[node]: continue로 오래된(더 긴) 후보를 무시합니다. 이 체크가 사실상 “이미 더 짧은 값으로 확정됨”을 검사하는 역할을 하므로, 별도의 visited가 없어도 됩니다. 
+
+둘 다 같은 원리(비음수 가중치에서 “처음 확정되는 경로가 최단”)를 쓰는데, 배열 버전은 명시적 visited 집합을 둬서 재선택을 막고, 힙 버전은 힙에 중복 후보를 허용하되, 거리 비교로 무시해서 visited가 필요 없습니다.
+
 ```{code-block} python
 import heapq 
 import sys 
@@ -515,7 +523,7 @@ def dijkstra(start):
         if cur_dis > distance[node]:
             continue 
 
-        for weight, nxt_node in graph[node]:
+        for nxt_node, weight in graph[node]:
             if cur_dis + weight < distance[nxt_node]:
                 distance[nxt_node] = cur_dis + weight # 현재 node까지 온 비용 + nxt_node로 가는 비용 
                 heapq.heappush(q, (distance[nxt_node], nxt_node))

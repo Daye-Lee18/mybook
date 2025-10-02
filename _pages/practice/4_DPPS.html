@@ -349,6 +349,9 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#treedp-1">TreeDP 1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#treedp-2">TreeDP 2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#treedp-3">TreeDP 3</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1번: 색깔 트리</a></li>
 </ul>
             </nav>
         </div>
@@ -524,6 +527,66 @@ print(f”children list: {children_list}”)</p>
 </div>
 </div>
 </section>
+<section id="treedp-2">
+<h2>TreeDP 2<a class="headerlink" href="#treedp-2" title="Link to this heading">#</a></h2>
+<div class="dropdown admonition">
+<p class="admonition-title">DP 설정</p>
+<p>이것을 DP로 구현하기 위해서 두 가지 경우를 생각하면 됩니다. 자신이 우수 마을인 경우와, 자신이 일반 마을인 경우 입니다.
+첫 번째로 자신이 우수 마을이라면 자신의 자식 마을은 무조건 일반 마을이어야 합니다. 우수 마을끼리는 인접할 수 없기 때문에 자식 마을이 우수 마을일 수는 없습니다. 반대로 자신이 일반 마을이라면 자식 마을이 꼭 우수 마을일 필요는 없습니다. 부모 마을이 우수 마을이면 되기 때문 입니다.</p>
+<p><img alt="2" src="../../_images/215.png" /></p>
+<p>위 그림에서 초록색은 우수 마을, 파란색은 일반 마을이라 생각해 보겠습니다. 1번이 우수 마을이라면 자신의 자식 마을인 2번, 3번은 반드시 일반 마을이어야 합니다. 반대로 2번이 일반 마을인 경우에는 자식 마을 4번, 5번이 우수 마을일 필요는 없습니다. 그림과 같이 6번, 7번이 우수 마을이기 때문에 조건에 위배되지 않습니다.
+이와 같은 규칙으로 우리는 인구수가 최대한 많은 경우만 따져주면 됩니다.</p>
+<p>즉,</p>
+<ul class="simple">
+<li><p>현재 노드가 우수마을이면 자식 마을은 반드시 일반 마을</p></li>
+<li><p>현재 노드가 일반 마을이라면, 자식 마을은 일반 마을/우수 마을 둘 다 가능</p></li>
+<li><p>state: dp[node] = the node id</p></li>
+<li><p>what to store: (현재 노드가 우수 마을인 경우 ‘subtree’의 전체 인구수 , 현재 노드가 일반 마을인 경우 ‘subtree’의 전체 인구수)</p></li>
+<li><p>init: (num people of the node, 0)</p></li>
+<li><p>recurrence relation:
+dp[parent][0] += dp[child][1]
+dp[parent][1] += max(dp[child][0], dp[child][1])</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">setrecursionlimit</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="mi">4</span><span class="p">)</span>
+<span class="nb">input</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span>
+<span class="n">mii</span> <span class="o">=</span> <span class="k">lambda</span> <span class="p">:</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+
+<span class="n">N</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">())</span>
+<span class="n">towns</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">mii</span><span class="p">())</span>
+
+<span class="n">tree</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">mii</span><span class="p">()</span>
+    <span class="n">tree</span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="n">tree</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+
+<span class="n">visited</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">dp</span> <span class="o">=</span> <span class="p">[[</span><span class="n">towns</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">dfs</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+    <span class="n">visited</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span> 
+
+    <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">tree</span><span class="p">[</span><span class="n">node</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">visited</span><span class="p">[</span><span class="n">child</span><span class="p">]:</span>
+            <span class="k">continue</span>
+
+        <span class="n">dfs</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+        <span class="n">dp</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">dp</span><span class="p">[</span><span class="n">child</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">dp</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">max</span><span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="n">child</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">dp</span><span class="p">[</span><span class="n">child</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="n">dfs</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># 아무 노드나 root로 설정 </span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">dp</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]))</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="treedp-3">
+<h2>TreeDP 3<a class="headerlink" href="#treedp-3" title="Link to this heading">#</a></h2>
+</section>
+<section id="id1">
+<h2>1번: 색깔 트리<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -591,6 +654,9 @@ print(f”children list: {children_list}”)</p>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#treedp-1">TreeDP 1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#treedp-2">TreeDP 2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#treedp-3">TreeDP 3</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1번: 색깔 트리</a></li>
 </ul>
   </nav></div>
 

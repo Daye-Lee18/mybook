@@ -188,3 +188,67 @@ print("\n".join(out))
 
 ```
 ````
+
+## TreeDP 2 
+
+````{admonition} DP 설정
+:class: dropdown 
+
+이것을 DP로 구현하기 위해서 두 가지 경우를 생각하면 됩니다. 자신이 우수 마을인 경우와, 자신이 일반 마을인 경우 입니다.
+첫 번째로 자신이 우수 마을이라면 자신의 자식 마을은 무조건 일반 마을이어야 합니다. 우수 마을끼리는 인접할 수 없기 때문에 자식 마을이 우수 마을일 수는 없습니다. 반대로 자신이 일반 마을이라면 자식 마을이 꼭 우수 마을일 필요는 없습니다. 부모 마을이 우수 마을이면 되기 때문 입니다.
+
+![2](../../assets/img/DPPS/2.png)
+
+위 그림에서 초록색은 우수 마을, 파란색은 일반 마을이라 생각해 보겠습니다. 1번이 우수 마을이라면 자신의 자식 마을인 2번, 3번은 반드시 일반 마을이어야 합니다. 반대로 2번이 일반 마을인 경우에는 자식 마을 4번, 5번이 우수 마을일 필요는 없습니다. 그림과 같이 6번, 7번이 우수 마을이기 때문에 조건에 위배되지 않습니다.
+이와 같은 규칙으로 우리는 인구수가 최대한 많은 경우만 따져주면 됩니다.
+
+즉,
+- 현재 노드가 우수마을이면 자식 마을은 반드시 일반 마을 
+- 현재 노드가 일반 마을이라면, 자식 마을은 일반 마을/우수 마을 둘 다 가능 
+
+
+- state: dp[node] = the node id 
+- what to store: (현재 노드가 우수 마을인 경우 'subtree'의 전체 인구수 , 현재 노드가 일반 마을인 경우 'subtree'의 전체 인구수)
+- init: (num people of the node, 0)
+- recurrence relation: 
+    dp[parent][0] += dp[child][1]
+    dp[parent][1] += max(dp[child][0], dp[child][1])
+
+```{code-block} python
+import sys
+sys.setrecursionlimit(10**4)
+input = sys.stdin.readline
+mii = lambda : map(int, input().split())
+
+N = int(input())
+towns = [0] + list(mii())
+
+tree = [[] for _ in range(N+1)]
+for _ in range(N-1):
+    u, v = mii()
+    tree[u].append(v)
+    tree[v].append(u)
+
+visited = [False] * (N + 1)
+dp = [[towns[i], 0] for i in range(N+1)]
+
+def dfs(node):
+    visited[node] = True 
+
+    for child in tree[node]:
+        if visited[child]:
+            continue
+
+        dfs(child)
+        dp[node][0] += dp[child][1]
+        dp[node][1] += max(dp[child][0], dp[child][1])
+
+dfs(1) # 아무 노드나 root로 설정 
+print(max(dp[1][0], dp[1][1]))
+
+```
+````
+
+## TreeDP 3 
+
+## 1번: 색깔 트리 
