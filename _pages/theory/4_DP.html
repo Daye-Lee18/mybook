@@ -201,6 +201,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../practice/2_DFS_BFSPS.html">Lecture 2-2. DFS/BFS 실습</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../practice/3_backtrackingPS.html">Lecture 3-2. Backtracking 실습</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../practice/4_DPPS.html">Lecture 4-2. DP 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/5_shortest_pathPS.html">Lecture 5-2. Shortest Path 실습</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">중간고사</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../midterm_student.html">Midterm</a></li>
 </ul>
 
     </div>
@@ -1466,6 +1471,41 @@ Follow up: Suppose there are lots of incoming s, say <span class="math notransla
 <section id="longest-palindromic-substring">
 <h4>Longest Palindromic Substring<a class="headerlink" href="#longest-palindromic-substring" title="Link to this heading">#</a></h4>
 <p>문제 - <a class="reference external" href="https://leetcode.com/problems/longest-palindromic-substring/description/?envType=study-plan-v2&amp;amp;envId=top-interview-150">Leetcode 5</a></p>
+<div class="dropdown admonition">
+<p class="admonition-title">~O(N)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">longestPalindrome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        dp[i][end] = s[i:end+1]까지 가장 긴 substring 길이 (end:inclusive s[i] == s[end] 비교해야함) </span>
+<span class="sd">        dp[i][end] = dp[i+1][end-1] + 2 if dp[i+1][end-1] == True &amp;&amp; s[i] == [end]이면 </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="c1"># dp[l][r] = s[l..r]가 팰린드롬인가</span>
+        <span class="n">dp</span> <span class="o">=</span> <span class="p">[[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+        <span class="n">start</span><span class="p">,</span> <span class="n">max_len</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span>
+
+        <span class="c1"># 길이 1: 항상 참</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">dp</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+        
+        <span class="c1"># 길이 2 이상: 길이가 작은 것부터 채워야함. </span>
+        <span class="k">for</span> <span class="n">L</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="o">-</span><span class="n">L</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="n">l</span> <span class="o">+</span> <span class="n">L</span> <span class="o">-</span><span class="mi">1</span>
+                <span class="k">if</span> <span class="n">s</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">==</span> <span class="n">s</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="ow">and</span> <span class="p">(</span><span class="n">L</span> <span class="o">&lt;=</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">dp</span><span class="p">[</span><span class="n">l</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="n">r</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]):</span>
+                    <span class="n">dp</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">if</span> <span class="n">L</span> <span class="o">&gt;</span> <span class="n">max_len</span><span class="p">:</span>
+                        <span class="n">start</span><span class="p">,</span> <span class="n">max_len</span> <span class="o">=</span> <span class="n">l</span><span class="p">,</span> <span class="n">L</span>
+
+        <span class="k">return</span> <span class="n">s</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">start</span><span class="o">+</span><span class="n">max_len</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
 <div class="dropdown admonition">
 <p class="admonition-title">O(N*N) solution using substring source code</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Palindromic check takes time of O(N) </span>

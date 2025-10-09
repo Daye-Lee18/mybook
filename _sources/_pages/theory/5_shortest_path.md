@@ -348,6 +348,21 @@ click the [link](https://www.cs.usfca.edu/~galles/visualization/Heap.html)
 ````{admonition} 힙 구현 
 :class: dropdown 
 
+주의!
+- heappush() → _siftdown 호출
+    - 하지만 이 함수는 “부모와 비교하면서 위로 올리는(= percolate up)” 동작을 해.
+    - 즉, 삽입 = 위로 올리기(sift-up) 가 맞음.
+    - 단지 CPython의 함수 이름이 역사적으로 _siftdown을 사용함.(이름과 실제 동작 방향이 반대처럼 보임)
+
+- heappop() → _siftup 호출
+    - 루트에 마지막 원소를 올린 뒤, 자식과 비교하며 아래로 내리는(= percolate down) 동작을 해.
+    - 즉, 삭제 = 아래로 내리기(sift-down) 가 맞음.
+    - 마지막에 heap[pos] = newitem 한 다음 _siftdown(heap, 0, pos) 를 한 번 더 호출하는 건, 동점/부모-자식 비교의 경계 케이스에서 힙 불변식을 더 깔끔히 보장하려는 테크닉이야.
+
+- 함수 동작 매핑 (개념 ↔ CPython 이름)
+    - 개념적 sift-up(위로 올리기) ⟷ heapq의 _siftdown
+    - 개념적 sift-down(아래로 내리기) ⟷ heapq의 _siftup
+
 ```{code-block} python
 ---
 caption: python standard library에서 제공하는 heapq의 구현 방식을 참고하였다. 

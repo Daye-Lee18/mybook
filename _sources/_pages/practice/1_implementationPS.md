@@ -1414,6 +1414,11 @@ for t in range(1, T + 1):
 ````{admonition} 틀린 답 
 :class: dropdown 
 
+어디서 틀렸나? 해당 group의 대표자의 전도 이후에는 음식이름이나, 신뢰도, 그에 따른 상태가 바뀌는데,
+현재 코드로하면 맨 처음의 groups에서 계속 iterate하는 것이라 틀림. 
+
+따라서, 계속 바뀌는 상황에서 맞게하려는 경우에는 
+
 ```{code-block} python 
 import sys 
 

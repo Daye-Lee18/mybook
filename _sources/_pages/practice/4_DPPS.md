@@ -20,7 +20,7 @@ kernelspec:
   - [TreeDP 2](https://www.acmicpc.net/problem/1949): [정답](https://wikidocs.net/274552)
   - [TreeDP 3](https://www.acmicpc.net/problem/2533): [정답](https://wikidocs.net/273100)
 - [2번: 코드트리 메신저](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/codetree-messenger/description)
-
+- [3번: String Compression II](https://leetcode.com/problems/string-compression-ii/description/)
 
 ## TreeDP 1
 
@@ -252,3 +252,5 @@ print(max(dp[1][0], dp[1][1]))
 ## TreeDP 3 
 
 ## 1번: 색깔 트리 
+
+## 3번: String Compression II 

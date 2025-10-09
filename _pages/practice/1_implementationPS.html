@@ -201,6 +201,10 @@
 <li class="toctree-l1"><a class="reference internal" href="4_DPPS.html">Lecture 4-2. DP 실습</a></li>
 <li class="toctree-l1"><a class="reference internal" href="5_shortest_pathPS.html">Lecture 5-2. Shortest Path 실습</a></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">중간고사</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../midterm_student.html">Midterm</a></li>
+</ul>
 
     </div>
 </nav></div>
@@ -1793,6 +1797,9 @@ document.write(`
 </div>
 <div class="dropdown admonition">
 <p class="admonition-title">틀린 답</p>
+<p>어디서 틀렸나? 해당 group의 대표자의 전도 이후에는 음식이름이나, 신뢰도, 그에 따른 상태가 바뀌는데,
+현재 코드로하면 맨 처음의 groups에서 계속 iterate하는 것이라 틀림.</p>
+<p>따라서, 계속 바뀌는 상황에서 맞게하려는 경우에는</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span> 
 
 <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;Input.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>

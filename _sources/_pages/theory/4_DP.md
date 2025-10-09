@@ -1014,6 +1014,43 @@ class Solution:
 #### Longest Palindromic Substring 
 문제 - [Leetcode 5](https://leetcode.com/problems/longest-palindromic-substring/description/?envType=study-plan-v2&envId=top-interview-150)
 
+````{admonition} ~O(N)
+:class: dropdown 
+
+```{code-block} python
+class Solution:
+    def longestPalindrome(self, s: str) -> str:
+        '''
+        dp[i][end] = s[i:end+1]까지 가장 긴 substring 길이 (end:inclusive s[i] == s[end] 비교해야함) 
+        dp[i][end] = dp[i+1][end-1] + 2 if dp[i+1][end-1] == True && s[i] == [end]이면 
+        '''
+        n = len(s)
+
+        if n == 0:
+            return ""
+
+        # dp[l][r] = s[l..r]가 팰린드롬인가
+        dp = [[False] * n for _ in range(n)]
+        start, max_len = 0, 1
+
+        # 길이 1: 항상 참
+        for i in range(n):
+            dp[i][i] = True
+
+        
+        # 길이 2 이상: 길이가 작은 것부터 채워야함. 
+        for L in range(2, n+1):
+            for l in range(0, n-L+1):
+                r = l + L -1
+                if s[l] == s[r] and (L <= 2 or dp[l + 1][r - 1]):
+                    dp[l][r] = True
+                    if L > max_len:
+                        start, max_len = l, L
+
+        return s[start:start+max_len]
+```
+
+````
 
 ````{admonition} O(N*N) solution using substring source code
 :class: dropdown 

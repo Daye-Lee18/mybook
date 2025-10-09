@@ -17,7 +17,8 @@ kernelspec:
 예시 문제 링크 
 - [1번: 프로그래머스 블록 이동하기](https://school.programmers.co.kr/learn/courses/30/lessons/60063)
 - [2번: 코드트리 고대 문명 유적 탐사](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/ancient-ruin-exploration/description)
-
+- [3번: AI 로봇 청소기](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/ai-robot/description)
+  
 ## 1번: 블록 이동하기  
 
 ````{admonition} 갈 수 있는 방향 설정 

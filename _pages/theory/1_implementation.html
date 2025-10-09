@@ -192,7 +192,8 @@
 <li class="toctree-l1"><a class="reference internal" href="2_DFS_BFS.html">Lecture 2-1. DFS/BFS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="3_backtracking.html">Lecture 3-1. Backtracking</a></li>
 <li class="toctree-l1"><a class="reference internal" href="4_DP.html">Lecture 4-1. Dynamic Programming</a></li>
-<li class="toctree-l1"><a class="reference internal" href="5_sort.html">Lecture 3-1. 정렬</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_shortest_path.html">Lecture 5-1. Shortest Path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_sort.html">Lecture 6-1. 정렬</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">실습</span></p>
 <ul class="nav bd-sidenav">
@@ -200,6 +201,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../practice/2_DFS_BFSPS.html">Lecture 2-2. DFS/BFS 실습</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../practice/3_backtrackingPS.html">Lecture 3-2. Backtracking 실습</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../practice/4_DPPS.html">Lecture 4-2. DP 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/5_shortest_pathPS.html">Lecture 5-2. Shortest Path 실습</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">중간고사</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../midterm_student.html">Midterm</a></li>
 </ul>
 
     </div>
@@ -410,6 +416,32 @@ document.write(`
 <li><p>구현문제는 완전 탐색과 시뮬레이션으로 나뉜다.</p></li>
 <li><p>알고리즘 문제를 풀 때는 시간 제한 (파이썬 기준 1초 2,000 만번 연산)과 데이터의 개수를 먼저 확인한 뒤, 시간 복잡도 계산 후 그에 맞는 알고리즘을 사용해 작성해야한다.</p></li>
 </ul>
+</div>
+<p>아직 여러 알고리즘을 배우진 않았지만, 각 시간 복잡도와 알고리즘을 매칭하여 나타내었다. 또한 아래 표의 O(logN)부터 O(<span class="math notranslate nohighlight">\(2^n\)</span>) 순서로 빠른 복잡도부터 가장 느린 복잡도를 나타내었다.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>복잡도</p></th>
+<th class="head"><p>특징</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>O(logN)</p></td>
+<td><p>이진 탐색 (bisect_left)</p></td>
+</tr>
+<tr class="row-odd"><td><p>O(N)</p></td>
+<td><p>입력 크기에 비례</p></td>
+</tr>
+<tr class="row-even"><td><p>O(NlogN)</p></td>
+<td><p>정렬 알고리즘 (merge sort, quick sort) 등</p></td>
+</tr>
+<tr class="row-odd"><td><p>O(<span class="math notranslate nohighlight">\(N^2\)</span>)</p></td>
+<td><p>중첩 반복문, brute-force 탐색</p></td>
+</tr>
+<tr class="row-even"><td><p>O(<span class="math notranslate nohighlight">\(2^n\)</span>)</p></td>
+<td><p>백트레킹 모든 부분집합 탐색 (가장 느림)</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </section>
 <section id="id3">
