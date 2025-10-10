@@ -1,0 +1,776 @@
+
+<!DOCTYPE html>
+
+
+<html lang="ko" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Midterm &#8212; 말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=9c59b310" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=ae323b5b"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script src="../../_static/translations.js?v=e33e7ba0"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_pages/exams/midterm_student';</script>
+    <script src="https://unpkg.com/jupyterquiz@1.1.8/dist/jupyterquiz.min.js"></script>
+    <link rel="icon" href="../../_static/favicon.png"/>
+    <link rel="index" title="색인" href="../../genindex.html" />
+    <link rel="search" title="검색" href="../../search.html" />
+    <link rel="prev" title="Lecture 5-2. Shortest Path 실습" href="../practice/5_shortest_pathPS.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="ko"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/mylogo.png" class="logo__image only-light" alt="말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업 - Home"/>
+    <script>document.write(`<img src="../../_static/mylogo.png" class="logo__image only-dark" alt="말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업 - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="검색" aria-label="검색" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">검색</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../intro.html">
+                    Welcome to 말레이시아 5급 IT 수업
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">이론</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../theory/0_tips.html">문제 풀이 순서 팁 (Tips)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/1_implementation.html">Lecture 1-1. 구현</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/2_DFS_BFS.html">Lecture 2-1. DFS/BFS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/3_backtracking.html">Lecture 3-1. Backtracking</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/4_DP.html">Lecture 4-1. Dynamic Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/5_shortest_path.html">Lecture 5-1. Shortest Path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/6_sort.html">Lecture 6-1. 정렬</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">실습</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../practice/1_implementationPS.html">Lecture 1-2. 구현 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/2_DFS_BFSPS.html">Lecture 2-2. DFS/BFS 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/3_backtrackingPS.html">Lecture 3-2. Backtracking 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/4_DPPS.html">Lecture 4-2. DP 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/5_shortest_pathPS.html">Lecture 5-2. Shortest Path 실습</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">시험</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Midterm</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="이 페이지 다운로드">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/_pages/exams/midterm_student.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="소스 파일 다운로드"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="PDF로 인쇄"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="전체 화면으로보기"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="검색" aria-label="검색" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Midterm</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> 내용 </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#short-answer-problems">Short answer problems</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#problem-solving-problems">Problem solving problems</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="midterm">
+<h1>Midterm<a class="headerlink" href="#midterm" title="Link to this heading">#</a></h1>
+<p>Submit your answer folder to <code class="docutils literal notranslate"><span class="pre">gbyou1694&#64;gmail.com</span></code>.</p>
+<section id="short-answer-problems">
+<h2>Short answer problems<a class="headerlink" href="#short-answer-problems" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>For each question below, fill in the blanks labeled (1), (2), (3), …, or briefly describe what is being asked.</p></li>
+<li><p>Write all short-answer responses in a file named <code class="docutils literal notranslate"><span class="pre">answer.md</span></code> and include it in your submission.</p></li>
+<li><p>Each correctly answered blank (e.g., (1), (2)) is worth 2 points.</p></li>
+</ul>
+<p>Q1. Complexity and Memory <br>
+Each integer occupies (1) bytes of memory. Therefore, if the total memory usage limit is 256 MB, the maximum size of N should be approximately between (2) and (3). Also, in Python, about (4) operations can be executed per second. If you are solving a problem where N = 10,000 and the time limit is 1 second, the maximum allowable algorithm time complexity is (5).</p>
+<p>참고) When writing in a .md file, to express exponents such as <span class="math notranslate nohighlight">\(2^3\)</span>, use the caret <code class="docutils literal notranslate"><span class="pre">^</span></code> symbol inside math mode, e.g., write <code class="docutils literal notranslate"><span class="pre">$2^3$</span></code>. Alternatively, you may write 2**3 for simplicity.</p>
+<p>Q2. Graph Representation <br>
+A graph can be represented in two main ways: one method stores the edge weights between nodes i and j in a (1), and the other connects each node i to its neighbors [j, k, …] like a linked list, called the (2). The advantage of the adjacency list is that it uses less (3), but its disadvantage is that (4).</p>
+<p>Q3. Backtracking<br>
+Backtracking is a method of systematically finding possible solutions by following given conditions. Unlike (1), it prunes search paths early by skipping any candidate that does not meet specific conditions. In backtracking, (2) represents the number of elements visited so far, and (3) represents the number of different options available at each step. For example, when arranging all possible orders of 2 people selected from 5, the maximum (2) is (4), and the (3) is (5).</p>
+<p>Q4. Dynamic programming<br>
+Dynamic Programming (DP) is a method of solving large problems by breaking them into smaller subproblems, where the solution to each small problem must remain valid when combined into the larger problem. By using (1), redundant calculations are avoided.</p>
+<p>When designing a DP solution, you must define the three key components below:</p>
+<ol class="arabic simple">
+<li><p>state: <strong>(2)</strong></p></li>
+<li><p>what to store: <strong>(3)</strong></p></li>
+<li><p>transition: <strong>(4)</strong></p></li>
+</ol>
+<p>Q5. Two algorithms for solving shortest path problems learned this semester are (1) and (2). The first algorithm finds the shortest path from one node to all others, following a greedy approach—at each step, selecting the node with the smallest current path cost.
+For an advanced Python implementation, use (3) with a min-heap structure. The standard Python library that provides this functionality is (4).</p>
+<p>Q6. (1) is a type of dynamic programming algorithm. It computes the minimum cost between all pairs of nodes. Implementation typically uses three nested loops. In the DP table, the cost from a node to itself (i → i) is initialized to (2), the cost between unconnected nodes is (3), and directly connected edges are initialized with their given weights. In the outermost loop (variable k), each node is considered as an intermediate node, and if a shorter path is found through k, the value is updated accordingly.</p>
+<p>Q7. BFS vs. DFS <br>
+BFS stands for (1) and is implemented using a (2) data structure. In contrast, DFS stands for (3) and is typically implemented using (4) through function recursion. Since recursive calls in DFS follow a stack structure, functions are executed and then return in LIFO order. BFS is advantageous for finding the shortest path, while DFS explores deeper paths, making it useful for exploring deep structures in trees and graphs.</p>
+<p>Q8. Complexity Ordering <br>
+Arrange the following time complexities in order from fastest to slowest:</p>
+<ol class="arabic simple">
+<li><p>O(<span class="math notranslate nohighlight">\(N^2\)</span>)</p></li>
+<li><p>O(NlogN)</p></li>
+<li><p>O(<span class="math notranslate nohighlight">\(2^n\)</span>)</p></li>
+<li><p>O(N)</p></li>
+<li><p>O(logN)</p></li>
+</ol>
+<p>Q9. Heap<br>
+In a min-heap, the smallest value is located at the root. The Python standard library used for heap implementation is (1). This library provides two core methods: (2) for inserting an element and (3) for retrieving the smallest-priority element. When inserting, if the parent node’s value is greater than the new item’s value, the new item “bubbles up” (sift-up) to maintain the heap property. When deleting, the last element of the heap is moved to the root position, and it is compared with its two child nodes; if the smaller child is less than the current value, they are swapped in a sift-down operation to restore the heap property.</p>
+</section>
+<section id="problem-solving-problems">
+<h2>Problem solving problems<a class="headerlink" href="#problem-solving-problems" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>The following problems cover the material taught up to the midterm, and are all easy-level coding exercises.</p></li>
+<li><p>Each problem includes 5 test cases. During grading, additional hidden test cases will be used, so you are encouraged to test your solutions with custom edge cases before submission.</p></li>
+<li><p>Save each solution as <a class="reference external" href="http://p1.py">p1.py</a>, <a class="reference external" href="http://p2.py">p2.py</a>, <a class="reference external" href="http://p3.py">p3.py</a>, <a class="reference external" href="http://p4.py">p4.py</a>, or <a class="reference external" href="http://p5.py">p5.py</a> within your submission folder.</p></li>
+<li><p>Use the provided starter code under the first toggle of each problem as your base implementation.</p></li>
+<li><p>Problems p1–p4 are each worth 10 points, and p5 is worth 20 points.</p></li>
+</ul>
+<div class="dropdown admonition">
+<p class="admonition-title">p1 simulation</p>
+<p>Robot Return to Origin</p>
+<p>There is a robot starting at the position <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">0)</span></code>, the origin, on a 2D plane. Given a sequence of its moves, judge if this robot ends up at (0, 0) after it completes its moves.</p>
+<p>You are given a string moves that represents the move sequence of the robot where moves[i] represents its ith move. Valid moves are ‘R’ (right), ‘L’ (left), ‘U’ (up), and ‘D’ (down).</p>
+<p>Return true if the robot returns to the origin after it finishes all of its moves, or false otherwise.</p>
+<p>Note: The way that the robot is “facing” is irrelevant. ‘R’ will always make the robot move to the right once, ‘L’ will always make it move left, etc. Also, assume that the magnitude of the robot’s movement is the same for each move.</p>
+<p>Example 1:</p>
+<p>Input: moves = “UD”
+Output: true
+Explanation: The robot moves up once, and then down once. All moves have the same magnitude, so it ended up at the origin where it started. Therefore, we return true.
+Example 2:</p>
+<p>Input: moves = “LL”
+Output: false
+Explanation: The robot moves left twice. It ends up two “moves” to the left of the origin. We return false because it is not at the origin at the end of its moves.</p>
+<p>Constraints:</p>
+<p>1 &lt;= moves.length &lt;= 2 * <span class="math notranslate nohighlight">\(10^4\)</span>
+moves only contains the characters ‘U’, ‘D’, ‘L’ and ‘R’.</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-number">예시 34 </span><span class="caption-text">source code</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">judgeCircle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">moves</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>    
+</pre></div>
+</div>
+</div>
+<div class="toggle docutils container">
+<p>test case 1 <br>
+input: ‘UD’<br>
+output: True</p>
+</div>
+<div class="toggle docutils container">
+<p>test case 2 <br>
+input: ‘LL’<br>
+output: False</p>
+</div>
+<div class="toggle docutils container">
+<p>test case 3 <br>
+input: ‘RULD’<br>
+output: True</p>
+</div>
+<div class="toggle docutils container">
+<p>test case 4 <br>
+input: ‘RRRRLLLL’<br>
+output: True</p>
+</div>
+<div class="toggle docutils container">
+<p>test case 5 <br>
+input: “UUDDLRLR”<br>
+output: True</p>
+</div>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">p2 BFS</p>
+<p>Given the root of a binary tree, invert the tree, and return its root.</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-number">예시 35 </span><span class="caption-text">source code for p2</span><a class="headerlink" href="#id2" title="Link to this code">#</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Definition for a binary tree node.</span>
+<span class="c1"># class TreeNode:</span>
+<span class="c1">#     def __init__(self, val=0, left=None, right=None):</span>
+<span class="c1">#         self.val = val</span>
+<span class="c1">#         self.left = left</span>
+<span class="c1">#         self.right = right</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">invertTree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TreeNode</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TreeNode</span><span class="p">]:</span>
+</pre></div>
+</div>
+</div>
+<div class="toggle docutils container">
+<p>test case 1 <br>
+<img alt="test1" src="../../_images/119.png" />
+input: root = [4,2,7,1,3,6,9] <br>
+output: [4,7,2,9,6,3,1]</p>
+</div>
+<div class="toggle docutils container">
+<p>test case 2 <br>
+<img alt="test2" src="../../_images/216.png" />
+input: root = [2,1,3] <br>
+output: [2,3,1]</p>
+</div>
+<div class="toggle docutils container">
+<p>test case 3 <br>
+input: root = [] <br>
+output: []</p>
+</div>
+<div class="toggle docutils container">
+<p>test case 4 <br>
+input: [1,2,null,3,null] <br>
+output: [1,null,2,null,3]</p>
+</div>
+<div class="toggle docutils container">
+<p>test case 5 <br>
+input: [1,2,3,4,5,null,6] <br>
+output: [1,3,2,6,null,5,4]</p>
+</div>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">p3 Backtracking</p>
+<p>Given the root of a binary tree, return all root-to-leaf paths in any order.</p>
+<p>A leaf is a node with no children.</p>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-number">예시 36 </span><span class="caption-text">source code for p3</span><a class="headerlink" href="#id3" title="Link to this code">#</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Definition for a binary tree node.</span>
+<span class="c1"># class TreeNode:</span>
+<span class="c1">#     def __init__(self, val=0, left=None, right=None):</span>
+<span class="c1">#         self.val = val</span>
+<span class="c1">#         self.left = left</span>
+<span class="c1">#         self.right = right</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">binaryTreePaths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TreeNode</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+</pre></div>
+</div>
+</div>
+<div class="toggle docutils container">
+<p>test case 1 <br>
+<img alt="3" src="../../_images/37.png" />
+input: root = [1,2,3,null,5] <br>
+output:[“1-&gt;2-&gt;5”,”1-&gt;3”]</p>
+</div>
+<div class="toggle docutils container">
+<p>test case 2 <br>
+Input: root = [1] <br>
+Output: [“1”]</p>
+</div>
+<div class="toggle docutils container">
+<p>test case 3 <br>
+input: [1,2,3,4,5,6] <br>
+output: [“1-&gt;2-&gt;4”,”1-&gt;2-&gt;5”,”1-&gt;3-&gt;6”]</p>
+</div>
+<div class="toggle docutils container">
+<p>test case 4 <br>
+input: []<br>
+output: []</p>
+</div>
+<div class="toggle docutils container">
+<p>test case 5 <br>
+input: [1,2,null,3,null,4,null]<br>
+output: [“1-&gt;2-&gt;3-&gt;4”]</p>
+</div>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">p4 DP</p>
+<p>You are given an integer array cost where cost[i] is the cost of ith step on a staircase. Once you pay the cost, you can either climb one or two steps.</p>
+<p>You can either start from the step with index 0, or the step with index 1.</p>
+<p>Return the minimum cost to reach the top of the floor.</p>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-number">예시 37 </span><span class="caption-text">source code for p4</span><a class="headerlink" href="#id4" title="Link to this code">#</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">minCostClimbingStairs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cost</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        
+</pre></div>
+</div>
+</div>
+<div class="toggle docutils container">
+<p>test case 1 <br>
+Input: cost = [10,15,20] <br>
+Output: 15 <br></p>
+<p>Explanation: You will start at index 1.</p>
+<ul class="simple">
+<li><p>Pay 15 and climb two steps to reach the top.
+The total cost is 15.</p></li>
+</ul>
+</div>
+<div class="toggle docutils container">
+<p>test case 2 <br>
+Input: cost = [1,100,1,1,1,100,1,1,100,1] <br>
+Output: 6 <br></p>
+<p>Explanation: You will start at index 0.</p>
+<ul class="simple">
+<li><p>Pay 1 and climb two steps to reach index 2.</p></li>
+<li><p>Pay 1 and climb two steps to reach index 4.</p></li>
+<li><p>Pay 1 and climb two steps to reach index 6.</p></li>
+<li><p>Pay 1 and climb one step to reach index 7.</p></li>
+<li><p>Pay 1 and climb two steps to reach index 9.</p></li>
+<li><p>Pay 1 and climb one step to reach the top.
+The total cost is 6.</p></li>
+</ul>
+</div>
+<div class="toggle docutils container">
+<p>test case 3 <br>
+input: [0,0,0,0] <br>
+output: 0</p>
+</div>
+<div class="toggle docutils container">
+<p>test case 4 <br>
+input: [5,4,3]<br>
+output: 4</p>
+</div>
+<div class="toggle docutils container">
+<p>test case 5 <br>
+input: [1,2] <br>
+output: 1</p>
+</div>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">p5 Shortest Path</p>
+<p>There are n cities numbered from 0 to n-1. Given the array edges where edges[i] = [fromi, toi, weighti] represents a bidirectional and weighted edge between cities fromi and toi, and given the integer distanceThreshold.</p>
+<p>Return the city with the smallest number of cities that are reachable through some path and whose distance is at most distanceThreshold, If there are multiple such cities, return the city with the greatest number.</p>
+<p>Notice that the distance of a path connecting cities i and j is equal to the sum of the edges’ weights along that path.</p>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-number">예시 38 </span><span class="caption-text">source code for p5</span><a class="headerlink" href="#id5" title="Link to this code">#</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">findTheCity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">edges</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">distanceThreshold</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        
+</pre></div>
+</div>
+</div>
+<div class="toggle docutils container">
+<p>test case 1 <br>
+Input: n = 4, edges = [[0,1,3],[1,2,1],[1,3,4],[2,3,1]], distanceThreshold = 4 <br>
+Output: 3 <br></p>
+<p><img alt="4" src="../../_images/45.png" />
+Explanation: The figure above describes the graph.
+The neighboring cities at a distanceThreshold = 4 for each city are:
+City 0 -&gt; [City 1, City 2]
+City 1 -&gt; [City 0, City 2, City 3]
+City 2 -&gt; [City 0, City 1, City 3]
+City 3 -&gt; [City 1, City 2]
+Cities 0 and 3 have 2 neighboring cities at a distanceThreshold = 4, but we have to return city 3 since it has the greatest number.</p>
+</div>
+<div class="toggle docutils container">
+<p>test case 2 <br>
+Input: n = 5, edges = [[0,1,2],[0,4,8],[1,2,3],[1,4,2],[2,3,1],[3,4,1]], distanceThreshold = 2 <br>
+Output: 0 <br></p>
+<p><img alt="5" src="../../_images/55.png" />
+Explanation: The figure above describes the graph.
+The neighboring cities at a distanceThreshold = 2 for each city are:
+City 0 -&gt; [City 1]
+City 1 -&gt; [City 0, City 4]
+City 2 -&gt; [City 3, City 4]
+City 3 -&gt; [City 2, City 4]
+City 4 -&gt; [City 1, City 2, City 3]
+The city 0 has 1 neighboring city at a distanceThreshold = 2.</p>
+</div>
+<div class="toggle docutils container">
+<p>test case 3 <br>
+input: n = 2, edges = [[0,1,5]], distanceThreshold = 4 <br>
+output: 1</p>
+</div>
+<div class="toggle docutils container">
+<p>test case 4 <br>
+input: n = 3, edges = [[0,1,1],[1,2,1],[0,2,1]], distanceThreshold = 2 <br>
+output: 2</p>
+</div>
+<div class="toggle docutils container">
+<p>test case 5 <br>
+input: n = 6, edges = [[0,1,1],[1,2,1],[2,3,1],[3,4,1],[4,5,1]], distanceThreshold = 2 <br>
+output: 5</p>
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./_pages/exams"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../practice/5_shortest_pathPS.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">이전</p>
+        <p class="prev-next-title">Lecture 5-2. Shortest Path 실습</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> 내용
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#short-answer-problems">Short answer problems</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#problem-solving-problems">Problem solving problems</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+으로 Daye Lee
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
