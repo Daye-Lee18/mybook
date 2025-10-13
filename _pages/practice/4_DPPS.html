@@ -595,6 +595,64 @@ dp[parent][1] += max(dp[child][0], dp[child][1])</p></li>
 </section>
 <section id="string-compression-ii">
 <h2>3번: String Compression II<a class="headerlink" href="#string-compression-ii" title="Link to this heading">#</a></h2>
+<div class="dropdown admonition">
+<p class="admonition-title">problems</p>
+<p>String Compression with Removal</p>
+<p>Strings with long blocks of repeating characters take up much less space if stored in a compressed representation. To obtain the  compressed representation, we replace each segment of equal characters in the string with the number of characters in the segment followed by the character.</p>
+<p>For example,</p>
+<ul class="simple">
+<li><p>“CCCC” -&gt; “4C”</p></li>
+<li><p>A single character is left unchanged (e.g. “B” -&gt; “B”)</p></li>
+<li><p>“BC” -&gt; “BC” (since there are no repeats)</p></li>
+</ul>
+<Example>
+- The compressed representation of "ABBCCDDCCC" is "A3B2C2D3C".
+- The compressed representation of "AAAAAAAAAABXXAAAAAAAAAA" is "11AB2X10A".
+<Observation>
+In the second example above, if we removed the "BXX" segment from the middle of the word before compression, we would obtain a much shorter compressed representation "21A". 
+<p>To take advantage of this, we modify our compression algorithm:</p>
+<ul class="simple">
+<li><p>Before compressing, we remove <strong>exactly K consecutive letters</strong> from the input string.</p></li>
+<li><p>Then we compress the remaining stirng.</p></li>
+</ul>
+<p>We want to know the shortest compressed length possible after this operation.</p>
+<Task>
+<p>Write a function <code class="docutils literal notranslate"><span class="pre">def</span> <span class="pre">solution(S,</span> <span class="pre">K):</span></code> that, given:</p>
+<ul class="simple">
+<li><p>a string S of length N,</p></li>
+<li><p>and an integer K,</p></li>
+</ul>
+<p>return <strong>the shortest possible length of the compressed representation of S</strong> after removing exactly K consecutive characters.</p>
+<Examples>
+<ol class="arabic simple">
+<li><p>S = “ABBCCDDCCC”, K = 3</p>
+<ul class="simple">
+<li><p>Remove “DDC” → string becomes “ABBCCCC”.</p></li>
+<li><p>Compressed form = “A3B4C”, length = 5.</p></li>
+<li><p>Function should return 5.</p></li>
+</ul>
+</li>
+<li><p>S = “AAAAAAAAAABXXAAAAAAAAAA”, K = 3</p>
+<ul class="simple">
+<li><p>Remove “BXX” → string becomes “AAAAAAAAAAAAAAAAAAAAAA”.</p></li>
+<li><p>Compressed form = “21A”, length = 3.</p></li>
+<li><p>Function should return 3.</p></li>
+</ul>
+</li>
+<li><p>S = “ABCDDDDEFG”, K = 2</p>
+<ul class="simple">
+<li><p>Remove “EF” → string becomes “ABCDDDDG”.</p></li>
+<li><p>Compressed form = “ABC3DG”, length = 6.</p></li>
+<li><p>Function should return 6.</p></li>
+</ul>
+</li>
+</ol>
+<Constraints>
+- N is an integer within the range [1 .. 100,000]
+- K is an integer within the range [0 .. 100,000]
+- K <= N
+- S consists only of uppercase English letters (A-Z)
+</div>
 </section>
 </section>
 

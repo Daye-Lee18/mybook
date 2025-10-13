@@ -254,3 +254,62 @@ print(max(dp[1][0], dp[1][1]))
 ## 1번: 색깔 트리 
 
 ## 3번: String Compression II 
+
+```{admonition} problems
+:class: dropdown 
+
+String Compression with Removal 
+
+Strings with long blocks of repeating characters take up much less space if stored in a compressed representation. To obtain the  compressed representation, we replace each segment of equal characters in the string with the number of characters in the segment followed by the character. 
+
+For example, 
+- "CCCC" -> "4C" 
+- A single character is left unchanged (e.g. "B" -> "B")
+- "BC" -> "BC" (since there are no repeats)
+
+<Example>
+- The compressed representation of "ABBCCDDCCC" is "A3B2C2D3C".
+- The compressed representation of "AAAAAAAAAABXXAAAAAAAAAA" is "11AB2X10A".
+
+<Observation>
+In the second example above, if we removed the "BXX" segment from the middle of the word before compression, we would obtain a much shorter compressed representation "21A". 
+
+To take advantage of this, we modify our compression algorithm:
+- Before compressing, we remove **exactly K consecutive letters** from the input string. 
+- Then we compress the remaining stirng. 
+
+We want to know the shortest compressed length possible after this operation. 
+
+<Task>
+
+Write a function `def solution(S, K):` that, given:
+
+- a string S of length N,
+- and an integer K,
+
+return **the shortest possible length of the compressed representation of S** after removing exactly K consecutive characters. 
+
+<Examples>
+
+1. S = "ABBCCDDCCC", K = 3
+    - Remove "DDC" → string becomes "ABBCCCC".
+    - Compressed form = "A3B4C", length = 5.
+    - Function should return 5.
+
+2. S = "AAAAAAAAAABXXAAAAAAAAAA", K = 3
+    - Remove "BXX" → string becomes "AAAAAAAAAAAAAAAAAAAAAA".
+    - Compressed form = "21A", length = 3.
+    - Function should return 3.
+
+3. S = "ABCDDDDEFG", K = 2
+    - Remove "EF" → string becomes "ABCDDDDG".
+    - Compressed form = "ABC3DG", length = 6.
+    - Function should return 6.
+
+<Constraints>
+- N is an integer within the range [1 .. 100,000]
+- K is an integer within the range [0 .. 100,000]
+- K <= N
+- S consists only of uppercase English letters (A-Z)
+```
+

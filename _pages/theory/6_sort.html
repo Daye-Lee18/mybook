@@ -352,7 +352,11 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#selection-sort">선택 정렬 (Selection Sort)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#selection-sort">선택 정렬 (Selection Sort)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">선택 정렬 예시</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">선택 정렬 코드 및 시간 복잡도</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -366,9 +370,89 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="lecture-6-1">
 <h1>Lecture 6-1. 정렬<a class="headerlink" href="#lecture-6-1" title="Link to this heading">#</a></h1>
-<p><code class="docutils literal notranslate"><span class="pre">정렬</span> <span class="pre">(Sorting)</span></code>이란 데이터를 특정한 기준에 따라서 순서대로 나열하는 것을 말한다. 정렬 알고리즘으로 데이터를 정렬하면 이후에 배울 <code class="docutils literal notranslate"><span class="pre">이진</span> <span class="pre">탐색</span> <span class="pre">(Binary</span> <span class="pre">Search)</span></code>이 가능해진다. 이번 수업에서는 총 4가지 정렬 (선택 정렬, 삽입 정렬, 퀵 정렬, 계수 정렬)에 대해서 배운다. 이 장에서 다루는 예제는 모두 <code class="docutils literal notranslate"><span class="pre">오름차순</span> <span class="pre">(Increasing</span> <span class="pre">order)</span></code> 정렬을 수행한다고 가정한다. 내림차순 정렬은 리스트의 원소를 뒤집는 (Reverse) 메서드를 제공하기 때문에 그 방법을 사용하여 O(N) 시간 복잡도로 만들 수 있다.</p>
+<p>정렬 (Sorting)이란 데이터를 특정한 기준에 따라서 순서대로 나열하는 것을 말한다. 정렬 알고리즘으로 데이터를 정렬하면 이후에 배울 이진 탐색 (Binary Search)이 가능해진다. 이번 수업에서는 총 4가지 정렬 (선택 정렬, 삽입 정렬, 퀵 정렬, 계수 정렬)에 대해서 배운다. 이 장에서 다루는 예제는 모두 <strong>오름차순 (Increasing order)</strong> 정렬을 수행한다고 가정한다. 내림차순 정렬은 리스트의 원소를 뒤집는 (Reverse) 메서드를 제공하기 때문에 그 방법을 사용하여 O(N) 시간 복잡도로 만들 수 있다.</p>
 <section id="selection-sort">
 <h2>선택 정렬 (Selection Sort)<a class="headerlink" href="#selection-sort" title="Link to this heading">#</a></h2>
+<p>선택 정렬은 매 스텝마다 가장 작은 것을 선택해 앞으로 보내는 과정을 반복 수행하는 알고리즘이다. 즉, 데이터가 무작위로 있을 때, ‘아직 정렬되지 않은 범위 속 가장 작은 데이터’를 선택해 ‘아직 정렬되지 않은 범위의 맨 앞에 있는 데이터’와 바꾸고, 그 다음 작은 데이터를 선택해 앞에서 두 번째 데이터와 바꾸는 과정을 반복한다. 이렇게 “데이터”를 “선택”하여 바꾸는 작업을 통해 정렬하는 알고리즘을 (데이터) 선택 정렬이라고 한다.</p>
+<p>데이터의 개수를 N=10이라고 할때, 다음 예제를 확인해보자.</p>
+<section id="id1">
+<h3>선택 정렬 예시<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<p>앞으로 그림에서, 회색 카드는 ‘현재 정렬되지 않은 데이터 중에서 가장 작은 데이터’를 의미하며, 하늘색 카드는 ‘이미 정렬된 데이터’를 의미한다.</p>
+<p><strong>Step 1</strong>
+<img alt="1" src="../../_images/120.png" /></p>
+<p>초기 단계에서는 모든 데이터가 정렬되어 있지 않으므로, 전체 중에서 가장 작은 데이터를 선택한다.
+‘7’: current element to be swapped (the first element in the remaining unordered section)
+‘0’: smallest element in the remaining unsorted section</p>
+<p>위의 데이터 ‘0’과 ‘7’를 바꾼다.</p>
+<p><strong>Step 2</strong></p>
+<p><img alt="2" src="../../_images/217.png" /></p>
+<p>데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다.</p>
+<p>‘5’: current element to be swapped (the first element in the remaining unordered section)
+‘1’: smallest element in the remaining unsorted section</p>
+<p><strong>Step 3</strong></p>
+<p><img alt="3" src="../../_images/38.png" /></p>
+<p>데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다.</p>
+<p>‘9’: current element to be swapped (the first element in the remaining unordered section)
+‘2’: smallest element in the remaining unsorted section</p>
+<p><strong>Step 4</strong></p>
+<p><img alt="4" src="../../_images/46.png" /></p>
+<p>데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다.</p>
+<p>‘7’: current element to be swapped (the first element in the remaining unordered section)
+‘3’: smallest element in the remaining unsorted section</p>
+<p><strong>Step 5</strong></p>
+<p><img alt="5" src="../../_images/56.png" /></p>
+<p>데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다.</p>
+<p>‘7’: current element to be swapped (the first element in the remaining unordered section)
+‘4’: smallest element in the remaining unsorted section</p>
+<p><strong>Step 6</strong></p>
+<p><img alt="6" src="../../_images/65.png" /></p>
+<p>데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다.</p>
+<p>‘5’: current element to be swapped (the first element in the remaining unordered section)
+‘5’: smallest element in the remaining unsorted section</p>
+<p><strong>Step 7</strong></p>
+<p><img alt="7" src="../../_images/75.png" /></p>
+<p>데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다.</p>
+<p>‘6’: current element to be swapped (the first element in the remaining unordered section)
+‘6’: smallest element in the remaining unsorted section</p>
+<p><strong>Step 8</strong></p>
+<p><img alt="8" src="../../_images/84.png" /></p>
+<p>데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다.</p>
+<p>‘9’: current element to be swapped (the first element in the remaining unordered section)
+‘7’: smallest element in the remaining unsorted section</p>
+<p><strong>Step 9</strong></p>
+<p><img alt="9" src="../../_images/93.png" /></p>
+<p>데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다.</p>
+<p>‘9’: current element to be swapped (the first element in the remaining unordered section)
+‘8’: smallest element in the remaining unsorted section</p>
+<p><strong>Step 10</strong></p>
+<p><img alt="10" src="../../_images/103.png" /></p>
+<p>데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다.</p>
+<p>‘9’: current element to be swapped (the first element in the remaining unordered section)
+‘9’: smallest element in the remaining unsorted section</p>
+</section>
+<section id="id2">
+<h3>선택 정렬 코드 및 시간 복잡도<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<div class="dropdown admonition">
+<p class="admonition-title">selection sort source code</p>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-number">예시 31 </span><span class="caption-text">selection sort python source code</span><a class="headerlink" href="#id3" title="Link to this code">#</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)):</span>
+  <span class="n">min_index</span> <span class="o">=</span> <span class="n">i</span> 
+  <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="n">arr</span><span class="p">[</span><span class="n">min_index</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">arr</span><span class="p">[</span><span class="n">j</span><span class="p">]:</span>
+      <span class="n">min_index</span> <span class="o">=</span> <span class="n">j</span> 
+  
+  <span class="c1"># SWAP</span>
+  <span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">arr</span><span class="p">[</span><span class="n">min_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="n">min_index</span><span class="p">],</span> <span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> 
+
+<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
 </section>
 </section>
 
@@ -436,7 +520,11 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#selection-sort">선택 정렬 (Selection Sort)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#selection-sort">선택 정렬 (Selection Sort)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">선택 정렬 예시</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">선택 정렬 코드 및 시간 복잡도</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
