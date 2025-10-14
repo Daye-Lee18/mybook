@@ -712,6 +712,11 @@ for i in range(1, n + 1):
         - in_range: 경계 체크
 ````
 
+```{toggle}
+grid가 아래처럼 start cell도 unsafe할 수 있는 경우를 생각하자. 
+[[1, 1, 1, 1]]
+```
+
 ````{admonition} class 정리 
 :class: important
 - “클래스는 상태와 동작을 함께 담아, 그래프 탐색 같은 문제에서 전역 없이 로직을 조직화한다.”
@@ -798,6 +803,7 @@ if __name__ == "__main__":
     print(sol.dp)
 ```
 ````
+
 
 ### Digit Operations to Make Two Integers Equal 
 [Leetcode 3377](https://leetcode.com/problems/digit-operations-to-make-two-integers-equal/description/?envType=problem-list-v2&envId=shortest-path)
