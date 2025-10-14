@@ -644,6 +644,42 @@ for i in range(1, N+1):
 ### 플로이드
 [플로이드](https://www.acmicpc.net/problem/11404)
 
+````{admonition} solution
+:class: dropdown 
+
+```{code-block} python
+import sys
+# sys.stdin = open('Input.txt', 'r')  # 로컬 테스트용
+
+n = int(input())
+m = int(input())
+INF = 10**9
+dp = [[INF] * (n + 1) for _ in range(n + 1)]
+
+# 자기 자신으로의 비용 0
+for i in range(1, n + 1):
+    dp[i][i] = 0
+
+# 간선 입력: 중복 간선 최소값 유지
+for _ in range(m):
+    a, b, c = map(int, input().split())
+    dp[a][b] = min(dp[a][b], c)
+
+def floyd():
+    for k in range(1, n + 1):
+        for a in range(1, n + 1):
+            for b in range(1, n + 1):
+                dp[a][b] = min(dp[a][b], dp[a][k] + dp[k][b])
+
+floyd()
+
+# 출력
+for i in range(1, n + 1):
+    for j in range(1, n + 1):
+        print(0 if dp[i][j] == INF else dp[i][j], end=' ')
+    print()
+```
+````
 ### Find a Safe Walk Through a Grid 
 [Leetcode 3286](https://leetcode.com/problems/find-a-safe-walk-through-a-grid/description/?envType=problem-list-v2&envId=shortest-path)
 

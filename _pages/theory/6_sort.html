@@ -59,6 +59,8 @@
     <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_pages/theory/6_sort';</script>
     <script src="https://unpkg.com/jupyterquiz@1.1.8/dist/jupyterquiz.min.js"></script>
     <link rel="icon" href="../../_static/favicon.png"/>
@@ -357,6 +359,10 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">선택 정렬 코드 및 시간 복잡도</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#insertion-sort">삽입 정렬 (Insertion Sort)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">삽입 정렬 예시</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -434,8 +440,8 @@ document.write(`
 <h3>선택 정렬 코드 및 시간 복잡도<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
 <p class="admonition-title">selection sort source code</p>
-<div class="literal-block-wrapper docutils container" id="id3">
-<div class="code-block-caption"><span class="caption-number">예시 31 </span><span class="caption-text">selection sort python source code</span><a class="headerlink" href="#id3" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-number">예시 31 </span><span class="caption-text">selection sort python source code</span><a class="headerlink" href="#id4" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
 
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)):</span>
@@ -452,6 +458,15 @@ document.write(`
 </div>
 </div>
 </div>
+<p>위의 구현 방식으로 연산 횟수는 (N) + (N-1) + (N-2) + … + 2 로 볼 수 있다. 따라서 N(N+1)/2로 연산을 수행한다고 가능하면 이는 간단히 O(<span class="math notranslate nohighlight">\(N^2\)</span>)로 표현할 수 있다.
+이러한 선택 정렬은 기본 정렬 라이브러리를 포함하여 뒤에서 다룰 알고리즘과 비교했을 때 매우 비효율적이다. 다만, 특정한 리스트에서 가장 적은 데이터를 찾는 일이 코딩 테스트에서 잦으므로 선택 정렬 소스코드 형태에 익숙해질 필요가 있다. 자주 작성하여서 선택 정렬 소스코드에 익숙해지자.</p>
+</section>
+</section>
+<section id="insertion-sort">
+<h2>삽입 정렬 (Insertion Sort)<a class="headerlink" href="#insertion-sort" title="Link to this heading">#</a></h2>
+<p>삽입 정렬은 데이터를 하나씩 확인하여, 각 데이터를 삽입하기에 적절한 위치는 어디일까? 라는 접근 방법을 가진 알고리즘이다. 삽입 정렬은 필요할 때만 위치를 바꾸므로 ‘데이터가 거의 정렬되어 있을 때’ 훨씬 효율적이다. 위에서 살펴본 것처럼 선택 정렬은 현재 데이터의 상태와 상관없이 무조건 모든 원소를 비교하고 위치를 바꾸지만 삽입 정렬은 아니다.</p>
+<section id="id3">
+<h3>삽입 정렬 예시<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
 </section>
 </section>
 </section>
@@ -523,6 +538,10 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#selection-sort">선택 정렬 (Selection Sort)</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">선택 정렬 예시</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">선택 정렬 코드 및 시간 복잡도</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#insertion-sort">삽입 정렬 (Insertion Sort)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">삽입 정렬 예시</a></li>
 </ul>
 </li>
 </ul>
