@@ -683,6 +683,41 @@ for i in range(1, n + 1):
 ### Find a Safe Walk Through a Grid 
 [Leetcode 3286](https://leetcode.com/problems/find-a-safe-walk-through-a-grid/description/?envType=problem-list-v2&envId=shortest-path)
 
+````{admonition} class 사용하기 
+:class: dropdown 
+
+- class: 관련있는 **데이터(상태)** 와 **동작(메서드)** 을 한 덩어리로 묶는 설계도 
+- instance(객체): 그 설계도로 찍어낸 실체. sol = Solution()처럼 생성 
+- 언제 클래스를 쓰면 좋은가? 
+    - 함수가 여러 개로 나뉘고 **공유해야 할 상태(예: 방문표시, DP 테이블)** 가 있을 때
+    - 여러 전략/알고리즘(BFS/다익스트라/0-1 BFS)을 같은 인터페이스로 바꿔 끼우고 싶을 때
+    - 로직이 커져 캡슐화/가독성이 필요할 때
+- 언제 굳이 안 써도 되는가? 
+    - 한두 개의 순수 함수로 끝나고 공유 상태가 거의 없을 때
+    - “입력 → 출력”만 깔끔하게 끝나는 작은 유틸일 때
+- 이 문제에서 클래스를 쓰는 이유 (장점)
+    - 상태 보관: m, n, dp, health 같은 값을 전역 없이 self에 담아 메서드 간 공유.
+    - 응집도↑: “그리드에서 안전 경로 찾기”라는 문제 도메인 로직이 한 곳에 모임.
+    - 재사용/테스트 용이: 다른 테스트 케이스를 돌릴 때 인스턴스를 새로 만들거나, 메서드만 교체/확장하기 쉬움.
+    - 확장성: 이후 “대각선 이동 허용”, “함정 칸 추가” 같은 규칙을 필드/메서드로 자연스럽게 추가.
+
+- 해당 문제에서 설계 포인트
+    - 상태: self.m, self.n, self.dp, self.health 
+    - 불면식 (생각하기)
+        - self.dp[y][x]: (y, x)에 도달했을때의 최대 남은 체력 
+        - 항상 self.dp는 "지금까지 알려진 최선"을 저장 (다익스트라의 거리 배열 역할)
+    - 메서드 분리 
+        - findSafeWlk: 세팅 + "정답 반환"
+        - dijkstra: 핵심 탐색 
+        - in_range: 경계 체크
+````
+
+````{admonition} class 정리 
+:class: important
+- “클래스는 상태와 동작을 함께 담아, 그래프 탐색 같은 문제에서 전역 없이 로직을 조직화한다.”
+- “공유 상태가 있거나 전략을 바꿔 끼우고 싶을 때 특히 유리하다.”
+- “짧고 순수한 변환 로직에는 함수형이 더 간단할 수 있다.”
+````
 ````{admonition} solution
 :class: dropdown 
 

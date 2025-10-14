@@ -1051,6 +1051,60 @@ document.write(`
 <h3>Find a Safe Walk Through a Grid<a class="headerlink" href="#find-a-safe-walk-through-a-grid" title="Link to this heading">#</a></h3>
 <p><a class="reference external" href="https://leetcode.com/problems/find-a-safe-walk-through-a-grid/description/?envType=problem-list-v2&amp;amp;envId=shortest-path">Leetcode 3286</a></p>
 <div class="dropdown admonition">
+<p class="admonition-title">class 사용하기</p>
+<ul class="simple">
+<li><p>class: 관련있는 <strong>데이터(상태)</strong> 와 <strong>동작(메서드)</strong> 을 한 덩어리로 묶는 설계도</p></li>
+<li><p>instance(객체): 그 설계도로 찍어낸 실체. sol = Solution()처럼 생성</p></li>
+<li><p>언제 클래스를 쓰면 좋은가?</p>
+<ul>
+<li><p>함수가 여러 개로 나뉘고 <strong>공유해야 할 상태(예: 방문표시, DP 테이블)</strong> 가 있을 때</p></li>
+<li><p>여러 전략/알고리즘(BFS/다익스트라/0-1 BFS)을 같은 인터페이스로 바꿔 끼우고 싶을 때</p></li>
+<li><p>로직이 커져 캡슐화/가독성이 필요할 때</p></li>
+</ul>
+</li>
+<li><p>언제 굳이 안 써도 되는가?</p>
+<ul>
+<li><p>한두 개의 순수 함수로 끝나고 공유 상태가 거의 없을 때</p></li>
+<li><p>“입력 → 출력”만 깔끔하게 끝나는 작은 유틸일 때</p></li>
+</ul>
+</li>
+<li><p>이 문제에서 클래스를 쓰는 이유 (장점)</p>
+<ul>
+<li><p>상태 보관: m, n, dp, health 같은 값을 전역 없이 self에 담아 메서드 간 공유.</p></li>
+<li><p>응집도↑: “그리드에서 안전 경로 찾기”라는 문제 도메인 로직이 한 곳에 모임.</p></li>
+<li><p>재사용/테스트 용이: 다른 테스트 케이스를 돌릴 때 인스턴스를 새로 만들거나, 메서드만 교체/확장하기 쉬움.</p></li>
+<li><p>확장성: 이후 “대각선 이동 허용”, “함정 칸 추가” 같은 규칙을 필드/메서드로 자연스럽게 추가.</p></li>
+</ul>
+</li>
+<li><p>해당 문제에서 설계 포인트</p>
+<ul>
+<li><p>상태: self.m, self.n, self.dp, self.health</p></li>
+<li><p>불면식 (생각하기)</p>
+<ul>
+<li><p>self.dp[y][x]: (y, x)에 도달했을때의 최대 남은 체력</p></li>
+<li><p>항상 self.dp는 “지금까지 알려진 최선”을 저장 (다익스트라의 거리 배열 역할)</p></li>
+</ul>
+</li>
+<li><p>메서드 분리</p>
+<ul>
+<li><p>findSafeWlk: 세팅 + “정답 반환”</p></li>
+<li><p>dijkstra: 핵심 탐색</p></li>
+<li><p>in_range: 경계 체크</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="important admonition">
+<p class="admonition-title">class 정리</p>
+<ul class="simple">
+<li><p>“클래스는 상태와 동작을 함께 담아, 그래프 탐색 같은 문제에서 전역 없이 로직을 조직화한다.”</p></li>
+<li><p>“공유 상태가 있거나 전략을 바꿔 끼우고 싶을 때 특히 유리하다.”</p></li>
+<li><p>“짧고 순수한 변환 로직에는 함수형이 더 간단할 수 있다.”</p></li>
+</ul>
+</div>
+<div class="dropdown admonition">
 <p class="admonition-title">solution</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">heapq</span><span class="w"> </span><span class="kn">import</span> <span class="n">heappush</span><span class="p">,</span> <span class="n">heappop</span> 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
