@@ -895,7 +895,7 @@ class Solution:
 
         # 2) dist[i] = start→i 까지의 최대 성공 확률
         dist = [0.0] * n
-        dist[start] = 1.0
+        dist[start] = 1.0 # 확률을 곱해야하므로 0.0이 아닌, 1.0로 저장 
 
         # 3) 최대 힙처럼 쓰기 위해 음수로 저장
         pq = [(-1.0, start)]  # (음수 확률, 노드)

@@ -1277,7 +1277,7 @@ document.write(`
 
         <span class="c1"># 2) dist[i] = start→i 까지의 최대 성공 확률</span>
         <span class="n">dist</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>
-        <span class="n">dist</span><span class="p">[</span><span class="n">start</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">dist</span><span class="p">[</span><span class="n">start</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="c1"># 확률을 곱해야하므로 0.0이 아닌, 1.0로 저장 </span>
 
         <span class="c1"># 3) 최대 힙처럼 쓰기 위해 음수로 저장</span>
         <span class="n">pq</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">start</span><span class="p">)]</span>  <span class="c1"># (음수 확률, 노드)</span>
