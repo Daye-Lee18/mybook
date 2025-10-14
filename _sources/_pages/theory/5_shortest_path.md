@@ -804,9 +804,70 @@ if __name__ == "__main__":
 ```
 ````
 
-
 ### Digit Operations to Make Two Integers Equal 
 [Leetcode 3377](https://leetcode.com/problems/digit-operations-to-make-two-integers-equal/description/?envType=problem-list-v2&envId=shortest-path)
+
+````{admonition} solution
+:class: dropdown 
+
+```{code-block} python
+import heapq
+
+class Solution:
+    def minOperations(self, n: int, m: int) -> int:
+        # 자릿수 범위에 맞춰 소수 테이블 만들기 (예: n=abcd → 0..9999)
+        limit = 10 ** len(str(n))
+        is_prime = self._sieve(limit)
+
+        # 시작/도착이 소수면 불가능
+        if is_prime[n] or is_prime[m]:
+            return -1
+
+        # 다익스트라: (누적비용, 현재값)
+        pq = [(n, n)]         # 시작 값도 비용에 포함
+        seen = {n}            # 재방문 방지
+
+        while pq:
+            cost, cur = heapq.heappop(pq)
+            if cur == m:
+                return cost
+
+            s = list(str(cur))
+            L = len(s)
+
+            for i, ch in enumerate(s):
+                # +1 시도 (9 불가)
+                if ch < '9':
+                    s[i] = str(int(ch) + 1)
+                    nxt = int(''.join(s))
+                    if not is_prime[nxt] and nxt not in seen:
+                        seen.add(nxt)
+                        heapq.heappush(pq, (cost + nxt, nxt))
+                    s[i] = ch  # 롤백
+
+                # -1 시도 (0 불가, 맨 앞자리는 1→0 금지)
+                if ch > '0' and not (i == 0 and ch == '1'):
+                    s[i] = str(int(ch) - 1)
+                    nxt = int(''.join(s))
+                    if not is_prime[nxt] and nxt not in seen:
+                        seen.add(nxt)
+                        heapq.heappush(pq, (cost + nxt, nxt))
+                    s[i] = ch  # 롤백
+
+        return -1
+
+    def _sieve(self, n: int):
+        is_prime = [False, False] + [True] * (n - 2)
+        p = 2
+        while p * p < n:
+            if is_prime[p]:
+                step = p
+                start = p * p
+                is_prime[start:n:step] = [False] * (((n - 1) - start) // step + 1)
+            p += 1
+        return is_prime
+```
+````
 
 ### Evaluate Divison 
 [Leetcode 399](https://leetcode.com/problems/evaluate-division/?envType=problem-list-v2&envId=shortest-path)
@@ -814,5 +875,52 @@ if __name__ == "__main__":
 ### Path with Maximum Probability 
 [Leetcode 1512](https://leetcode.com/problems/path-with-maximum-probability/description/?envType=problem-list-v2&envId=shortest-path)
 
+````{admonition} solution
+:class: dropdown 
+
+```{code-block} python 
+from heapq import heappush, heappop
+from typing import List
+
+class Solution:
+    def maxProbability(
+        self, n: int, edges: List[List[int]], succProb: List[float],
+        start: int, end: int
+    ) -> float:
+        # 1) 그래프 인접리스트 구성
+        g = [[] for _ in range(n)]
+        for (u, v), p in zip(edges, succProb):
+            g[u].append((v, p))
+            g[v].append((u, p))
+
+        # 2) dist[i] = start→i 까지의 최대 성공 확률
+        dist = [0.0] * n
+        dist[start] = 1.0
+
+        # 3) 최대 힙처럼 쓰기 위해 음수로 저장
+        pq = [(-1.0, start)]  # (음수 확률, 노드)
+
+        while pq:
+            neg_p, u = heappop(pq)
+            p = -neg_p
+
+            # 우선순위큐에서 뽑힌 값이 이미 더 작은(낡은) 값이면 스킵
+            if p < dist[u]:
+                continue
+
+            # 목적지에 도달하면 현재 p가 최대 확률
+            if u == end:
+                return p
+
+            # 4) 이웃 갱신
+            for v, w in g[u]:
+                np = p * w
+                if np > dist[v]:
+                    dist[v] = np
+                    heappush(pq, (-np, v))
+
+        return 0.0
+```
+````
 ### Minimum Cost to Converst String I
 [Leetcode 2976](https://leetcode.com/problems/minimum-cost-to-convert-string-i/description/?envType=problem-list-v2&envId=shortest-path)

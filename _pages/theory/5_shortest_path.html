@@ -1191,6 +1191,66 @@ document.write(`
 <section id="digit-operations-to-make-two-integers-equal">
 <h3>Digit Operations to Make Two Integers Equal<a class="headerlink" href="#digit-operations-to-make-two-integers-equal" title="Link to this heading">#</a></h3>
 <p><a class="reference external" href="https://leetcode.com/problems/digit-operations-to-make-two-integers-equal/description/?envType=problem-list-v2&amp;amp;envId=shortest-path">Leetcode 3377</a></p>
+<div class="dropdown admonition">
+<p class="admonition-title">solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">heapq</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">minOperations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">m</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="c1"># 자릿수 범위에 맞춰 소수 테이블 만들기 (예: n=abcd → 0..9999)</span>
+        <span class="n">limit</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+        <span class="n">is_prime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sieve</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span>
+
+        <span class="c1"># 시작/도착이 소수면 불가능</span>
+        <span class="k">if</span> <span class="n">is_prime</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="ow">or</span> <span class="n">is_prime</span><span class="p">[</span><span class="n">m</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+
+        <span class="c1"># 다익스트라: (누적비용, 현재값)</span>
+        <span class="n">pq</span> <span class="o">=</span> <span class="p">[(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">)]</span>         <span class="c1"># 시작 값도 비용에 포함</span>
+        <span class="n">seen</span> <span class="o">=</span> <span class="p">{</span><span class="n">n</span><span class="p">}</span>            <span class="c1"># 재방문 방지</span>
+
+        <span class="k">while</span> <span class="n">pq</span><span class="p">:</span>
+            <span class="n">cost</span><span class="p">,</span> <span class="n">cur</span> <span class="o">=</span> <span class="n">heapq</span><span class="o">.</span><span class="n">heappop</span><span class="p">(</span><span class="n">pq</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">cur</span> <span class="o">==</span> <span class="n">m</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">cost</span>
+
+            <span class="n">s</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">cur</span><span class="p">))</span>
+            <span class="n">L</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ch</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+                <span class="c1"># +1 시도 (9 불가)</span>
+                <span class="k">if</span> <span class="n">ch</span> <span class="o">&lt;</span> <span class="s1">&#39;9&#39;</span><span class="p">:</span>
+                    <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="n">nxt</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_prime</span><span class="p">[</span><span class="n">nxt</span><span class="p">]</span> <span class="ow">and</span> <span class="n">nxt</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>
+                        <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nxt</span><span class="p">)</span>
+                        <span class="n">heapq</span><span class="o">.</span><span class="n">heappush</span><span class="p">(</span><span class="n">pq</span><span class="p">,</span> <span class="p">(</span><span class="n">cost</span> <span class="o">+</span> <span class="n">nxt</span><span class="p">,</span> <span class="n">nxt</span><span class="p">))</span>
+                    <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">ch</span>  <span class="c1"># 롤백</span>
+
+                <span class="c1"># -1 시도 (0 불가, 맨 앞자리는 1→0 금지)</span>
+                <span class="k">if</span> <span class="n">ch</span> <span class="o">&gt;</span> <span class="s1">&#39;0&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">ch</span> <span class="o">==</span> <span class="s1">&#39;1&#39;</span><span class="p">):</span>
+                    <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="n">nxt</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_prime</span><span class="p">[</span><span class="n">nxt</span><span class="p">]</span> <span class="ow">and</span> <span class="n">nxt</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>
+                        <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nxt</span><span class="p">)</span>
+                        <span class="n">heapq</span><span class="o">.</span><span class="n">heappush</span><span class="p">(</span><span class="n">pq</span><span class="p">,</span> <span class="p">(</span><span class="n">cost</span> <span class="o">+</span> <span class="n">nxt</span><span class="p">,</span> <span class="n">nxt</span><span class="p">))</span>
+                    <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">ch</span>  <span class="c1"># 롤백</span>
+
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_sieve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">is_prime</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="kc">True</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">while</span> <span class="n">p</span> <span class="o">*</span> <span class="n">p</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">is_prime</span><span class="p">[</span><span class="n">p</span><span class="p">]:</span>
+                <span class="n">step</span> <span class="o">=</span> <span class="n">p</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="n">p</span> <span class="o">*</span> <span class="n">p</span>
+                <span class="n">is_prime</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">n</span><span class="p">:</span><span class="n">step</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="p">(((</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">//</span> <span class="n">step</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">p</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">is_prime</span>
+</pre></div>
+</div>
+</div>
 </section>
 <section id="evaluate-divison">
 <h3>Evaluate Divison<a class="headerlink" href="#evaluate-divison" title="Link to this heading">#</a></h3>
@@ -1199,6 +1259,52 @@ document.write(`
 <section id="path-with-maximum-probability">
 <h3>Path with Maximum Probability<a class="headerlink" href="#path-with-maximum-probability" title="Link to this heading">#</a></h3>
 <p><a class="reference external" href="https://leetcode.com/problems/path-with-maximum-probability/description/?envType=problem-list-v2&amp;amp;envId=shortest-path">Leetcode 1512</a></p>
+<div class="dropdown admonition">
+<p class="admonition-title">solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">heapq</span><span class="w"> </span><span class="kn">import</span> <span class="n">heappush</span><span class="p">,</span> <span class="n">heappop</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">maxProbability</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">edges</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">succProb</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+        <span class="n">start</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">end</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="c1"># 1) 그래프 인접리스트 구성</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">),</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">edges</span><span class="p">,</span> <span class="n">succProb</span><span class="p">):</span>
+            <span class="n">g</span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">v</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span>
+            <span class="n">g</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">u</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span>
+
+        <span class="c1"># 2) dist[i] = start→i 까지의 최대 성공 확률</span>
+        <span class="n">dist</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>
+        <span class="n">dist</span><span class="p">[</span><span class="n">start</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+        <span class="c1"># 3) 최대 힙처럼 쓰기 위해 음수로 저장</span>
+        <span class="n">pq</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">start</span><span class="p">)]</span>  <span class="c1"># (음수 확률, 노드)</span>
+
+        <span class="k">while</span> <span class="n">pq</span><span class="p">:</span>
+            <span class="n">neg_p</span><span class="p">,</span> <span class="n">u</span> <span class="o">=</span> <span class="n">heappop</span><span class="p">(</span><span class="n">pq</span><span class="p">)</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="o">-</span><span class="n">neg_p</span>
+
+            <span class="c1"># 우선순위큐에서 뽑힌 값이 이미 더 작은(낡은) 값이면 스킵</span>
+            <span class="k">if</span> <span class="n">p</span> <span class="o">&lt;</span> <span class="n">dist</span><span class="p">[</span><span class="n">u</span><span class="p">]:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># 목적지에 도달하면 현재 p가 최대 확률</span>
+            <span class="k">if</span> <span class="n">u</span> <span class="o">==</span> <span class="n">end</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">p</span>
+
+            <span class="c1"># 4) 이웃 갱신</span>
+            <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">g</span><span class="p">[</span><span class="n">u</span><span class="p">]:</span>
+                <span class="n">np</span> <span class="o">=</span> <span class="n">p</span> <span class="o">*</span> <span class="n">w</span>
+                <span class="k">if</span> <span class="n">np</span> <span class="o">&gt;</span> <span class="n">dist</span><span class="p">[</span><span class="n">v</span><span class="p">]:</span>
+                    <span class="n">dist</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span>
+                    <span class="n">heappush</span><span class="p">(</span><span class="n">pq</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="mf">0.0</span>
+</pre></div>
+</div>
+</div>
 </section>
 <section id="minimum-cost-to-converst-string-i">
 <h3>Minimum Cost to Converst String I<a class="headerlink" href="#minimum-cost-to-converst-string-i" title="Link to this heading">#</a></h3>
