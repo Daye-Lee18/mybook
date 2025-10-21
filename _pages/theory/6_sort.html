@@ -372,9 +372,13 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">퀵 정렬 소스코드 및 시간 복잡도</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">계수 정렬</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">파이썬의 정렬 라이브러리</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">정리</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#count-sort">계수 정렬 (count sort)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">계수 정렬 예시</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">계수 정렬 코드 및 시간 복잡도</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">파이썬의 정렬 라이브러리</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">정리</a></li>
 </ul>
             </nav>
         </div>
@@ -480,62 +484,82 @@ document.write(`
 <p>앞으로 그림에서, 회색 카드는 ‘현재 정렬되지 않은 데이터 중에서 가장 작은 데이터’를 의미하며, 하늘색 카드는 ‘이미 정렬된 데이터’를 의미한다.</p>
 <p><strong>Step 1</strong>
 <img alt="1" src="../../_images/120.png" /></p>
-<p>초기 단계에서는 모든 데이터가 정렬되어 있지 않으므로, 전체 중에서 가장 작은 데이터를 선택한다.
-‘7’: current element to be swapped (the first element in the remaining unordered section)
-‘0’: smallest element in the remaining unsorted section</p>
+<p>초기 단계에서는 모든 데이터가 정렬되어 있지 않으므로, 전체 중에서 가장 작은 데이터를 선택한다.</p>
+<ul class="simple">
+<li><p>‘7’: current element to be swapped (the first element in the remaining unordered section)</p></li>
+<li><p>‘0’: smallest element in the remaining unsorted section</p></li>
+</ul>
 <p>위의 데이터 ‘0’과 ‘7’를 바꾼다.</p>
 <p><strong>Step 2</strong></p>
 <p><img alt="2" src="../../_images/217.png" /></p>
 <p>데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다.</p>
-<p>‘5’: current element to be swapped (the first element in the remaining unordered section)
-‘1’: smallest element in the remaining unsorted section</p>
+<ul class="simple">
+<li><p>‘5’: current element to be swapped (the first element in the remaining unordered section)</p></li>
+<li><p>‘1’: smallest element in the remaining unsorted section</p></li>
+</ul>
 <p><strong>Step 3</strong></p>
 <p><img alt="3" src="../../_images/38.png" /></p>
 <p>데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다.</p>
-<p>‘9’: current element to be swapped (the first element in the remaining unordered section)
-‘2’: smallest element in the remaining unsorted section</p>
+<ul class="simple">
+<li><p>‘9’: current element to be swapped (the first element in the remaining unordered section)</p></li>
+<li><p>‘2’: smallest element in the remaining unsorted section</p></li>
+</ul>
 <p><strong>Step 4</strong></p>
 <p><img alt="4" src="../../_images/46.png" /></p>
 <p>데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다.</p>
-<p>‘7’: current element to be swapped (the first element in the remaining unordered section)
-‘3’: smallest element in the remaining unsorted section</p>
+<ul class="simple">
+<li><p>‘7’: current element to be swapped (the first element in the remaining unordered section)</p></li>
+<li><p>‘3’: smallest element in the remaining unsorted section</p></li>
+</ul>
 <p><strong>Step 5</strong></p>
 <p><img alt="5" src="../../_images/56.png" /></p>
 <p>데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다.</p>
-<p>‘7’: current element to be swapped (the first element in the remaining unordered section)
-‘4’: smallest element in the remaining unsorted section</p>
+<ul class="simple">
+<li><p>‘7’: current element to be swapped (the first element in the remaining unordered section)</p></li>
+<li><p>‘4’: smallest element in the remaining unsorted section</p></li>
+</ul>
 <p><strong>Step 6</strong></p>
 <p><img alt="6" src="../../_images/65.png" /></p>
 <p>데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다.</p>
-<p>‘5’: current element to be swapped (the first element in the remaining unordered section)
-‘5’: smallest element in the remaining unsorted section</p>
+<ul class="simple">
+<li><p>‘5’: current element to be swapped (the first element in the remaining unordered section)</p></li>
+<li><p>‘5’: smallest element in the remaining unsorted section</p></li>
+</ul>
 <p><strong>Step 7</strong></p>
 <p><img alt="7" src="../../_images/75.png" /></p>
 <p>데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다.</p>
-<p>‘6’: current element to be swapped (the first element in the remaining unordered section)
-‘6’: smallest element in the remaining unsorted section</p>
+<ul class="simple">
+<li><p>‘6’: current element to be swapped (the first element in the remaining unordered section)</p></li>
+<li><p>‘6’: smallest element in the remaining unsorted section</p></li>
+</ul>
 <p><strong>Step 8</strong></p>
 <p><img alt="8" src="../../_images/84.png" /></p>
 <p>데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다.</p>
-<p>‘9’: current element to be swapped (the first element in the remaining unordered section)
-‘7’: smallest element in the remaining unsorted section</p>
+<ul class="simple">
+<li><p>‘9’: current element to be swapped (the first element in the remaining unordered section)</p></li>
+<li><p>‘7’: smallest element in the remaining unsorted section</p></li>
+</ul>
 <p><strong>Step 9</strong></p>
 <p><img alt="9" src="../../_images/93.png" /></p>
 <p>데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다.</p>
-<p>‘9’: current element to be swapped (the first element in the remaining unordered section)
-‘8’: smallest element in the remaining unsorted section</p>
+<ul class="simple">
+<li><p>‘9’: current element to be swapped (the first element in the remaining unordered section)</p></li>
+<li><p>‘8’: smallest element in the remaining unsorted section</p></li>
+</ul>
 <p><strong>Step 10</strong></p>
 <p><img alt="10" src="../../_images/103.png" /></p>
 <p>데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다.</p>
-<p>‘9’: current element to be swapped (the first element in the remaining unordered section)
-‘9’: smallest element in the remaining unsorted section</p>
+<ul class="simple">
+<li><p>9’: current element to be swapped (the first element in the remaining unordered section)</p></li>
+<li><p>‘9’: smallest element in the remaining unsorted section</p></li>
+</ul>
 </section>
 <section id="id2">
 <h3>선택 정렬 코드 및 시간 복잡도<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
 <p class="admonition-title">selection sort source code</p>
-<div class="literal-block-wrapper docutils container" id="id13">
-<div class="code-block-caption"><span class="caption-number">예시 31 </span><span class="caption-text">selection sort python source code</span><a class="headerlink" href="#id13" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id14">
+<div class="code-block-caption"><span class="caption-number">예시 31 </span><span class="caption-text">selection sort python source code</span><a class="headerlink" href="#id14" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
 
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)):</span>
@@ -706,9 +730,11 @@ swap: 위에서 선택된 ‘9’과 ‘2’의 위치를 서로 변경</p>
 
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
         <span class="c1"># Move left pointer until you find an element greater than the pivot</span>
+        <span class="c1"># end position까지 pivot과 비교 필요 </span>
         <span class="k">while</span> <span class="n">left</span> <span class="o">&lt;=</span> <span class="n">end</span> <span class="ow">and</span> <span class="n">array</span><span class="p">[</span><span class="n">left</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">array</span><span class="p">[</span><span class="n">pivot</span><span class="p">]:</span>
             <span class="n">left</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="c1"># Move right pointer until you find an element smaller than the pivot</span>
+        <span class="c1"># right은 left에 비해 start (pivot) index보다 커야함. </span>
         <span class="k">while</span> <span class="n">right</span> <span class="o">&gt;</span> <span class="n">start</span> <span class="ow">and</span> <span class="n">array</span><span class="p">[</span><span class="n">right</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">array</span><span class="p">[</span><span class="n">pivot</span><span class="p">]:</span>
             <span class="n">right</span> <span class="o">-=</span> <span class="mi">1</span>
 
@@ -719,6 +745,7 @@ swap: 위에서 선택된 ‘9’과 ‘2’의 위치를 서로 변경</p>
             <span class="n">array</span><span class="p">[</span><span class="n">left</span><span class="p">],</span> <span class="n">array</span><span class="p">[</span><span class="n">right</span><span class="p">]</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">right</span><span class="p">],</span> <span class="n">array</span><span class="p">[</span><span class="n">left</span><span class="p">]</span>
 
     <span class="c1"># After partitioning, recursively sort the left and right subarrays</span>
+    <span class="c1"># partition이 끝난 시점에 right가 pivot이 들어갈 정확한 위치를 가리킵니다.</span>
     <span class="n">quick_sort</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">right</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">quick_sort</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">right</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
 
@@ -736,24 +763,95 @@ swap: 위에서 선택된 ‘9’과 ‘2’의 위치를 서로 변경</p>
 </ol>
 <p>즉, 아래 그림에서 “높이 = 재귀 깊이(분할 단계 수)”이고, 각 단계마다 N개의 비교가 일어나는 구조입니다.</p>
 <p><img alt="28" src="../../_images/281.png" /></p>
-<p>퀵 정렬의 재귀는 두 방향으로 뻗지만, 각 단계에서 처리되는 총 원소 수의 합은 항상 N이므로, 전체 시간은 O(N)(단계당) × O(log N)(단계 수) = O(N log N) 이 된다.</p>
+<p>퀵 정렬의 재귀 각 단계에서 처리되는 총 원소 수의 합은 항상 N이므로, 전체 시간은 O(N)(단계당) × O(log N)(단계 수) = O(N log N) 이 된다.</p>
+<p>아래의 재귀 트리 (recursion tree)로 보면 이해가 쉽다.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>깊이</p></th>
+<th class="head"><p>부분 배열 개수</p></th>
+<th class="head"><p>각 배열의 크기</p></th>
+<th class="head"><p>그 깊이의 총 연산량</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>1</p></td>
+<td><p>N</p></td>
+<td><p>N</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>2</p></td>
+<td><p>N/2</p></td>
+<td><p>2 * (N/2) = N</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>4</p></td>
+<td><p>N/4</p></td>
+<td><p>4 * (N/4) = N</p></td>
+</tr>
+<tr class="row-odd"><td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-even"><td><p>log N</p></td>
+<td><p>N</p></td>
+<td><p>1</p></td>
+<td><p>N</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <p>일반적으로 컴퓨터 과학에서 log의 의미는 밑이 2인 로그를 의미한다. 즉, <span class="math notranslate nohighlight">\(log_{2}N\)</span>을 의미하며 데이터의 개수 1000일 때, <span class="math notranslate nohighlight">\(log_{2}N\)</span>는 10 정도이다. 즉, N=1000일 때 10은 상대적으로 매우 작은 수이다. 데이터의 개수가 많을 수록 차이는 매우 극명하게 드러난다.</p>
+<p>다만, 퀵 정렬의 시간 복잡도에 대하여 한 가지 기억해둘 점이 있다. 바로 평균적으로 시간 복잡도가 O(NlogN)이지만 최악의 경우 시간 복잡도가 O(<span class="math notranslate nohighlight">\(N^2\)</span>)라는 것이다. 데이터가 무작위로 입력되는 경우 퀵 정렬은 빠르게 동작할 확률이 높다. 하지만, 우리가 사용한 방법처럼 리스트의 가장 왼쪽 데이터를 피벗으로 삼을 때, ‘이미 데이터가 정렬되어 있는 경우’에는 매우 느리게 동작한다. 즉, 삽입 정렬은 이미 데이터가 정렬되어 있는 겨웅에는 매우 빠르게 동작하고, 퀵 정렬은 그와 반대이다.</p>
+<p>실제로 파이썬에서 기본 정렬 라이브러리를 이용하면 O(NlogN)을 보장해주기 때문에 크게 걱정하지 않아도 된다.</p>
 </section>
 </section>
+<section id="count-sort">
+<h2>계수 정렬 (count sort)<a class="headerlink" href="#count-sort" title="Link to this heading">#</a></h2>
+<p>계수 정렬 (count sort) 알고리즘은 <em><strong>특정한 조건이 부합할 때만 사용할 수 있지만 매우 빠른 정렬 알고리즘</strong></em>이다. 계수 정렬은 데이터의 크기가 제한되어 있을 때에 한해서, 데이터의 개수가 매우 많더라도 빠르게 동작한다. 다음은 특정 조건에 대한 기술이다.</p>
+<ol class="arabic simple">
+<li><p>데이터의 개수가 N, 데이터 중 최댓값이 K일때, 데이터의 크기 범위가 제한되어 ‘정수 형태’로 표현할 수 있을때만 사용할 수 있다.</p></li>
+<li><p>가장 큰 데이터와 가장 작은 데이터의 차이가 너무 크다면 계수 정렬은 사용할 수 없다. (모든 범위를 담을 수 있는 크기의 리스트를 선언해야하기 때문, 그 차이가 예를 들어 1,000,000이라면 총 1,000,001개의 데이터가 들어갈 수 있는 리스트를 초기화해야한다.)</p></li>
+</ol>
+<p>위의 조건을 만족하는 예시는 예를 들어, 0이상 100이하인 성적 데이터를 정렬할때 계수 정렬이 효과적일 수 있다. 계수 정렬은 앞서 다루었던 3가지 정렬 알고리즘처럼 직접 데이터의 값을 비교한 뒤에 위치를 변경하며 정렬하는 방식 (비교 기반의 정렬 알고리즘)이 아니다.</p>
 <section id="id10">
-<h2>계수 정렬<a class="headerlink" href="#id10" title="Link to this heading">#</a></h2>
+<h3>계수 정렬 예시<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<p><strong>Step 1</strong>
+초기 단계: 7 5 9 0 3 1 6 2 9 1 4 8 0 5 2
+먼저 가장 큰 데이터와 가장 작은 데이터의 범위가 모두 담길 수 있도록 하나의 리스트를 생성한다. 현재 예시에선 가장 큰 데이터는 ‘9’이고 가장 작은 데이터가 ‘0’이다. 우리가 정렬한 데이터의 범위를 모두 포함하도록 리스트를 생성해야하므로 크기가 10인 리스트를 선언하면 된다. 리스트의 모든 값이 0이 되도록 초기화한다.</p>
+<p><strong>Step 2</strong>
+<strong>7</strong> 5 9 0 3 1 6 2 9 1 4 8 0 5 2
+<img alt="29" src="../../_images/291.png" /></p>
+<p>데이터를 하나씩 확인하며 데이터의 값과 동일한 인덱스 데이터를 1씩 증가시킨다.</p>
+<p><strong>Step 3</strong>
+<strong>7 5</strong> 9 0 3 1 6 2 9 1 4 8 0 5 2
+<img alt="30" src="../../_images/301.png" /></p>
+<p><strong>Step 4</strong>
+<strong>7 5 9</strong> 0 3 1 6 2 9 1 4 8 0 5 2
+<img alt="31" src="../../_images/312.png" /></p>
+<p><strong>Step 14</strong>
+<strong>7 5 9 0 3 1 6 2 9 1 4 8 0 5 2</strong>
+<img alt="32" src="../../_images/321.png" />
+결과적으로 위의 리스트에는 각 데이터가 몇 번 등장했는지 그 횟수가 기록된다. 이 리스트에 저장된 데이터 자체가 정렬된 형태 그 자체라고 할 수 있다. 결과를 출력하고 싶으면 리스트의 첫 번째 데이터부터 하나씩 그 값만큼 인덱스를 출력하면 된다.</p>
 </section>
 <section id="id11">
-<h2>파이썬의 정렬 라이브러리<a class="headerlink" href="#id11" title="Link to this heading">#</a></h2>
+<h3>계수 정렬 코드 및 시간 복잡도<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+</section>
 </section>
 <section id="id12">
-<h2>정리<a class="headerlink" href="#id12" title="Link to this heading">#</a></h2>
+<h2>파이썬의 정렬 라이브러리<a class="headerlink" href="#id12" title="Link to this heading">#</a></h2>
+</section>
+<section id="id13">
+<h2>정리<a class="headerlink" href="#id13" title="Link to this heading">#</a></h2>
 <div class="admonition-summary admonition">
 <p class="admonition-title">Summary</p>
+<p>ascending order를 기준으로,</p>
 <ul class="simple">
-<li><p>선택 정렬: swap할 “데이터”를 선택</p></li>
-<li><p>삽입 정렬: Swap할 “인덱스”를 선택</p></li>
+<li><p>선택 정렬: swap할 가장 작은 “데이터”를 선택</p></li>
+<li><p>삽입 정렬: swap할 “인덱스”를 선택</p></li>
 <li><p>퀵 정럴: 특정한 리스트에서 피벗을 설정하여 정렬을 수행한 이후, 피벗을 기준으로 왼쪽 리스트와 오른쪽 리스트에서 각각 다시 정렬 수행.</p></li>
+<li><p>계수 정렬: 데이터를 하나씩 확인하며 데이터의 값과 동일한 인덱스 데이터를 1씩 증가시킨다.</p></li>
 </ul>
 </div>
 </section>
@@ -841,9 +939,13 @@ swap: 위에서 선택된 ‘9’과 ‘2’의 위치를 서로 변경</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">퀵 정렬 소스코드 및 시간 복잡도</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">계수 정렬</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">파이썬의 정렬 라이브러리</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">정리</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#count-sort">계수 정렬 (count sort)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">계수 정렬 예시</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">계수 정렬 코드 및 시간 복잡도</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">파이썬의 정렬 라이브러리</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">정리</a></li>
 </ul>
   </nav></div>
 

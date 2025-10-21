@@ -88,8 +88,8 @@ print(arr[0:3:-1]) # step의 방향과 start end의 방향이 다름.
 ![1](../../assets/img/sort/1.png)
 
 초기 단계에서는 모든 데이터가 정렬되어 있지 않으므로, 전체 중에서 가장 작은 데이터를 선택한다. 
-'7': current element to be swapped (the first element in the remaining unordered section)
-'0': smallest element in the remaining unsorted section 
+- '7': current element to be swapped (the first element in the remaining unordered section)
+- '0': smallest element in the remaining unsorted section 
 
 위의 데이터 '0'과 '7'를 바꾼다. 
 
@@ -99,8 +99,8 @@ print(arr[0:3:-1]) # step의 방향과 start end의 방향이 다름.
 
 데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다. 
 
-'5': current element to be swapped (the first element in the remaining unordered section)
-'1': smallest element in the remaining unsorted section 
+- '5': current element to be swapped (the first element in the remaining unordered section)
+- '1': smallest element in the remaining unsorted section 
 
 
 **Step 3**
@@ -109,8 +109,8 @@ print(arr[0:3:-1]) # step의 방향과 start end의 방향이 다름.
 
 데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다. 
 
-'9': current element to be swapped (the first element in the remaining unordered section)
-'2': smallest element in the remaining unsorted section 
+- '9': current element to be swapped (the first element in the remaining unordered section)
+- '2': smallest element in the remaining unsorted section 
 
 **Step 4**
 
@@ -118,8 +118,8 @@ print(arr[0:3:-1]) # step의 방향과 start end의 방향이 다름.
 
 데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다. 
 
-'7': current element to be swapped (the first element in the remaining unordered section)
-'3': smallest element in the remaining unsorted section 
+- '7': current element to be swapped (the first element in the remaining unordered section)
+- '3': smallest element in the remaining unsorted section 
 
 **Step 5**
 
@@ -127,8 +127,8 @@ print(arr[0:3:-1]) # step의 방향과 start end의 방향이 다름.
 
 데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다. 
 
-'7': current element to be swapped (the first element in the remaining unordered section)
-'4': smallest element in the remaining unsorted section 
+- '7': current element to be swapped (the first element in the remaining unordered section)
+- '4': smallest element in the remaining unsorted section 
 
 
 **Step 6**
@@ -137,8 +137,8 @@ print(arr[0:3:-1]) # step의 방향과 start end의 방향이 다름.
 
 데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다. 
 
-'5': current element to be swapped (the first element in the remaining unordered section)
-'5': smallest element in the remaining unsorted section 
+- '5': current element to be swapped (the first element in the remaining unordered section)
+- '5': smallest element in the remaining unsorted section 
 
 
 **Step 7**
@@ -147,8 +147,8 @@ print(arr[0:3:-1]) # step의 방향과 start end의 방향이 다름.
 
 데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다. 
 
-'6': current element to be swapped (the first element in the remaining unordered section)
-'6': smallest element in the remaining unsorted section 
+- '6': current element to be swapped (the first element in the remaining unordered section)
+- '6': smallest element in the remaining unsorted section 
 
 **Step 8**
 
@@ -156,8 +156,8 @@ print(arr[0:3:-1]) # step의 방향과 start end의 방향이 다름.
 
 데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다. 
 
-'9': current element to be swapped (the first element in the remaining unordered section)
-'7': smallest element in the remaining unsorted section 
+- '9': current element to be swapped (the first element in the remaining unordered section)
+- '7': smallest element in the remaining unsorted section 
 
 **Step 9**
 
@@ -165,8 +165,8 @@ print(arr[0:3:-1]) # step의 방향과 start end의 방향이 다름.
 
 데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다. 
 
-'9': current element to be swapped (the first element in the remaining unordered section)
-'8': smallest element in the remaining unsorted section 
+- '9': current element to be swapped (the first element in the remaining unordered section)
+- '8': smallest element in the remaining unsorted section 
 
 **Step 10**
 
@@ -174,8 +174,8 @@ print(arr[0:3:-1]) # step의 방향과 start end의 방향이 다름.
 
 데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다. 
 
-'9': current element to be swapped (the first element in the remaining unordered section)
-'9': smallest element in the remaining unsorted section 
+- 9': current element to be swapped (the first element in the remaining unordered section)
+- '9': smallest element in the remaining unsorted section 
 
 ### 선택 정렬 코드 및 시간 복잡도
 
@@ -386,9 +386,11 @@ def quick_sort(array, start, end):
 
     while True:
         # Move left pointer until you find an element greater than the pivot
+        # end position까지 pivot과 비교 필요 
         while left <= end and array[left] <= array[pivot]:
             left += 1
         # Move right pointer until you find an element smaller than the pivot
+        # right은 left에 비해 start (pivot) index보다 커야함. 
         while right > start and array[right] >= array[pivot]:
             right -= 1
 
@@ -399,6 +401,7 @@ def quick_sort(array, start, end):
             array[left], array[right] = array[right], array[left]
 
     # After partitioning, recursively sort the left and right subarrays
+    # partition이 끝난 시점에 right가 pivot이 들어갈 정확한 위치를 가리킵니다.
     quick_sort(array, start, right - 1)
     quick_sort(array, right + 1, end)
 
@@ -419,19 +422,73 @@ print(arr)
 
 ![28](../../assets/img/sort/28.png)
 
-퀵 정렬의 재귀는 두 방향으로 뻗지만, 각 단계에서 처리되는 총 원소 수의 합은 항상 N이므로, 전체 시간은 O(N)(단계당) × O(log N)(단계 수) = O(N log N) 이 된다.
+퀵 정렬의 재귀 각 단계에서 처리되는 총 원소 수의 합은 항상 N이므로, 전체 시간은 O(N)(단계당) × O(log N)(단계 수) = O(N log N) 이 된다.
+
+아래의 재귀 트리 (recursion tree)로 보면 이해가 쉽다. 
+
+| 깊이 | 부분 배열 개수 | 각 배열의 크기 | 그 깊이의 총 연산량 |
+|---|---|---|---|
+|0 | 1| N | N|
+|1 | 2 | N/2 | 2 * (N/2) = N | 
+|2 | 4 | N/4 | 4 * (N/4) = N|
+| ...|...|...|...|
+|log N| N| 1| N |
 
 
 일반적으로 컴퓨터 과학에서 log의 의미는 밑이 2인 로그를 의미한다. 즉, $log_{2}N$을 의미하며 데이터의 개수 1000일 때, $log_{2}N$는 10 정도이다. 즉, N=1000일 때 10은 상대적으로 매우 작은 수이다. 데이터의 개수가 많을 수록 차이는 매우 극명하게 드러난다. 
 
-## 계수 정렬 
+다만, 퀵 정렬의 시간 복잡도에 대하여 한 가지 기억해둘 점이 있다. 바로 평균적으로 시간 복잡도가 O(NlogN)이지만 최악의 경우 시간 복잡도가 O($N^2$)라는 것이다. 데이터가 무작위로 입력되는 경우 퀵 정렬은 빠르게 동작할 확률이 높다. 하지만, 우리가 사용한 방법처럼 리스트의 가장 왼쪽 데이터를 피벗으로 삼을 때, '이미 데이터가 정렬되어 있는 경우'에는 매우 느리게 동작한다. 즉, 삽입 정렬은 이미 데이터가 정렬되어 있는 겨웅에는 매우 빠르게 동작하고, 퀵 정렬은 그와 반대이다. 
+
+실제로 파이썬에서 기본 정렬 라이브러리를 이용하면 O(NlogN)을 보장해주기 때문에 크게 걱정하지 않아도 된다. 
+
+## 계수 정렬 (count sort)
+
+계수 정렬 (count sort) 알고리즘은 ***특정한 조건이 부합할 때만 사용할 수 있지만 매우 빠른 정렬 알고리즘***이다. 계수 정렬은 데이터의 크기가 제한되어 있을 때에 한해서, 데이터의 개수가 매우 많더라도 빠르게 동작한다. 다음은 특정 조건에 대한 기술이다. 
+
+1. 데이터의 개수가 N, 데이터 중 최댓값이 K일때, 데이터의 크기 범위가 제한되어 '정수 형태'로 표현할 수 있을때만 사용할 수 있다. 
+2. 가장 큰 데이터와 가장 작은 데이터의 차이가 너무 크다면 계수 정렬은 사용할 수 없다. (모든 범위를 담을 수 있는 크기의 리스트를 선언해야하기 때문, 그 차이가 예를 들어 1,000,000이라면 총 1,000,001개의 데이터가 들어갈 수 있는 리스트를 초기화해야한다.)
+
+위의 조건을 만족하는 예시는 예를 들어, 0이상 100이하인 성적 데이터를 정렬할때 계수 정렬이 효과적일 수 있다. 계수 정렬은 앞서 다루었던 3가지 정렬 알고리즘처럼 직접 데이터의 값을 비교한 뒤에 위치를 변경하며 정렬하는 방식 (비교 기반의 정렬 알고리즘)이 아니다. 
+
+### 계수 정렬 예시 
+
+**Step 1**
+초기 단계: 7 5 9 0 3 1 6 2 9 1 4 8 0 5 2 
+먼저 가장 큰 데이터와 가장 작은 데이터의 범위가 모두 담길 수 있도록 하나의 리스트를 생성한다. 현재 예시에선 가장 큰 데이터는 '9'이고 가장 작은 데이터가 '0'이다. 우리가 정렬한 데이터의 범위를 모두 포함하도록 리스트를 생성해야하므로 크기가 10인 리스트를 선언하면 된다. 리스트의 모든 값이 0이 되도록 초기화한다. 
+
+**Step 2** 
+**7** 5 9 0 3 1 6 2 9 1 4 8 0 5 2 
+![29](../../assets/img/sort/29.png)
+
+데이터를 하나씩 확인하며 데이터의 값과 동일한 인덱스 데이터를 1씩 증가시킨다. 
+
+**Step 3** 
+**7 5** 9 0 3 1 6 2 9 1 4 8 0 5 2 
+![30](../../assets/img/sort/30.png)
+
+**Step 4** 
+**7 5 9** 0 3 1 6 2 9 1 4 8 0 5 2 
+![31](../../assets/img/sort/31.png)
+
+**Step 14** 
+**7 5 9 0 3 1 6 2 9 1 4 8 0 5 2**
+![32](../../assets/img/sort/32.png)
+결과적으로 위의 리스트에는 각 데이터가 몇 번 등장했는지 그 횟수가 기록된다. 이 리스트에 저장된 데이터 자체가 정렬된 형태 그 자체라고 할 수 있다. 결과를 출력하고 싶으면 리스트의 첫 번째 데이터부터 하나씩 그 값만큼 인덱스를 출력하면 된다. 
+
+### 계수 정렬 코드 및 시간 복잡도 
+
+
 
 ## 파이썬의 정렬 라이브러리 
+
 ## 정리 
 
 ````{admonition} Summary 
-- 선택 정렬: swap할 "데이터"를 선택 
-- 삽입 정렬: Swap할 "인덱스"를 선택 
-- 퀵 정럴: 특정한 리스트에서 피벗을 설정하여 정렬을 수행한 이후, 피벗을 기준으로 왼쪽 리스트와 오른쪽 리스트에서 각각 다시 정렬 수행. 
 
+ascending order를 기준으로, 
+
+- 선택 정렬: swap할 가장 작은 "데이터"를 선택 
+- 삽입 정렬: swap할 "인덱스"를 선택
+- 퀵 정럴: 특정한 리스트에서 피벗을 설정하여 정렬을 수행한 이후, 피벗을 기준으로 왼쪽 리스트와 오른쪽 리스트에서 각각 다시 정렬 수행. 
+- 계수 정렬: 데이터를 하나씩 확인하며 데이터의 값과 동일한 인덱스 데이터를 1씩 증가시킨다. 
 ````
