@@ -389,6 +389,34 @@ document.write(`
   <section class="tex2jax_ignore mathjax_ignore" id="lecture-6-1">
 <h1>Lecture 6-1. 정렬<a class="headerlink" href="#lecture-6-1" title="Link to this heading">#</a></h1>
 <p>정렬 (Sorting)이란 데이터를 특정한 기준에 따라서 순서대로 나열하는 것을 말한다. 정렬 알고리즘으로 데이터를 정렬하면 이후에 배울 이진 탐색 (Binary Search)이 가능해진다. 이번 수업에서는 총 4가지 정렬 (선택 정렬, 삽입 정렬, 퀵 정렬, 계수 정렬)에 대해서 배운다. 이 장에서 다루는 예제는 모두 <strong>오름차순 (Increasing order)</strong> 정렬을 수행한다고 가정한다. 내림차순 정렬은 리스트의 원소를 뒤집는 (Reverse) 메서드를 제공하기 때문에 그 방법을 사용하여 O(N) 시간 복잡도로 만들 수 있다.</p>
+<div class="dropdown admonition">
+<p class="admonition-title">Reversing ways in Python</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># method 1 </span>
+<span class="n">list1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+<span class="n">reversed_list</span> <span class="o">=</span> <span class="n">list1</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">reversed_list</span><span class="p">)</span>
+
+<span class="c1"># method 2 </span>
+<span class="n">list2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+<span class="n">list2</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span> <span class="c1"># list의 built-in 함수인 reverse()를 사용하면 original data가 없어지는 단점이 존재. </span>
+<span class="nb">print</span><span class="p">(</span><span class="n">list2</span><span class="p">)</span> 
+</pre></div>
+</div>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">slicing a list</p>
+<p>슬라이싱이란, 리스트 아이템의 일부를 자르는 것이다. 형식은 다음과 같다.</p>
+<div class="note admonition">
+<p class="admonition-title">slicing 방법</p>
+<p>리스트변수[start:end:step]</p>
+</div>
+<ul class="simple">
+<li><p>start: 슬라이싱 시작 인덱스</p></li>
+<li><p>end: 슬라이싱 끝 인덱스(끝 인덱스는 미포함)</p></li>
+<li><p>step: 이동간격, 양수이면 오른쪽으로 step만큼 이동한다. 음수이면 왼쪽으로 step만큼 이동한다.</p></li>
+<li><p>start, end, step 모두 생략 가능하다.</p></li>
+</ul>
+</div>
 <section id="selection-sort">
 <h2>선택 정렬 (Selection Sort)<a class="headerlink" href="#selection-sort" title="Link to this heading">#</a></h2>
 <p>선택 정렬은 매 스텝마다 가장 작은 것을 선택해 앞으로 보내는 과정을 반복 수행하는 알고리즘이다. 즉, 데이터가 무작위로 있을 때, ‘아직 정렬되지 않은 범위 속 가장 작은 데이터’를 선택해 ‘아직 정렬되지 않은 범위의 맨 앞에 있는 데이터’와 바꾸고, 그 다음 작은 데이터를 선택해 앞에서 두 번째 데이터와 바꾸는 과정을 반복한다. 이렇게 “데이터”를 “선택”하여 바꾸는 작업을 통해 정렬하는 알고리즘을 (데이터) 선택 정렬이라고 한다.</p>

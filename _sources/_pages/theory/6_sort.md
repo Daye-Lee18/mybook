@@ -16,6 +16,38 @@ kernelspec:
 
 정렬 (Sorting)이란 데이터를 특정한 기준에 따라서 순서대로 나열하는 것을 말한다. 정렬 알고리즘으로 데이터를 정렬하면 이후에 배울 이진 탐색 (Binary Search)이 가능해진다. 이번 수업에서는 총 4가지 정렬 (선택 정렬, 삽입 정렬, 퀵 정렬, 계수 정렬)에 대해서 배운다. 이 장에서 다루는 예제는 모두 **오름차순 (Increasing order)** 정렬을 수행한다고 가정한다. 내림차순 정렬은 리스트의 원소를 뒤집는 (Reverse) 메서드를 제공하기 때문에 그 방법을 사용하여 O(N) 시간 복잡도로 만들 수 있다.
 
+````{admonition} Reversing ways in Python 
+:class: dropdown 
+
+```{code-block} python 
+# method 1 
+list1 = [1, 2, 5, 6]
+reversed_list = list1[::-1]
+print(reversed_list)
+
+# method 2 
+list2 = [1, 3, 5, 6]
+list2.reverse() # list의 built-in 함수인 reverse()를 사용하면 original data가 없어지는 단점이 존재. 
+print(list2) 
+```
+````
+
+````{admonition} slicing a list 
+:class: dropdown 
+
+슬라이싱이란, 리스트 아이템의 일부를 자르는 것이다. 형식은 다음과 같다. 
+
+```{admonition} slicing 방법 
+:class: note 
+
+리스트변수[start:end:step]
+```
+- start: 슬라이싱 시작 인덱스
+- end: 슬라이싱 끝 인덱스(끝 인덱스는 미포함)
+- step: 이동간격, 양수이면 오른쪽으로 step만큼 이동한다. 음수이면 왼쪽으로 step만큼 이동한다.
+- start, end, step 모두 생략 가능하다.
+
+````
 ## 선택 정렬 (Selection Sort)
 
 선택 정렬은 매 스텝마다 가장 작은 것을 선택해 앞으로 보내는 과정을 반복 수행하는 알고리즘이다. 즉, 데이터가 무작위로 있을 때, '아직 정렬되지 않은 범위 속 가장 작은 데이터'를 선택해 '아직 정렬되지 않은 범위의 맨 앞에 있는 데이터'와 바꾸고, 그 다음 작은 데이터를 선택해 앞에서 두 번째 데이터와 바꾸는 과정을 반복한다. 이렇게 "데이터"를 "선택"하여 바꾸는 작업을 통해 정렬하는 알고리즘을 (데이터) 선택 정렬이라고 한다. 
