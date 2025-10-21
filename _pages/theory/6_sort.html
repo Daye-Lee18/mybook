@@ -410,12 +410,66 @@ document.write(`
 <p class="admonition-title">slicing 방법</p>
 <p>리스트변수[start:end:step]</p>
 </div>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>항목</p></th>
+<th class="head"><p>의미</p></th>
+<th class="head"><p>기본값 step &gt; 0</p></th>
+<th class="head"><p>기본값 step &lt; 0</p></th>
+<th class="head"><p>중요포인트</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>start</p></td>
+<td><p>시작인덱스</p></td>
+<td><p>0</p></td>
+<td><p>-1</p></td>
+<td><p>포함됨</p></td>
+</tr>
+<tr class="row-odd"><td><p>end</p></td>
+<td><p>끝인덱스</p></td>
+<td><p>len(arr)</p></td>
+<td><p>-(len(arr)+1)</p></td>
+<td><p>포함안됨</p></td>
+</tr>
+<tr class="row-even"><td><p>step</p></td>
+<td><p>간격 (양수면 오른쪽, 음수면 왼쪽으로 이동)</p></td>
+<td><p>1</p></td>
+<td><p>1</p></td>
+<td><p>방향 결정자</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <ul class="simple">
-<li><p>start: 슬라이싱 시작 인덱스</p></li>
-<li><p>end: 슬라이싱 끝 인덱스(끝 인덱스는 미포함)</p></li>
-<li><p>step: 이동간격, 양수이면 오른쪽으로 step만큼 이동한다. 음수이면 왼쪽으로 step만큼 이동한다.</p></li>
+<li><p>핵식 개념 정리</p>
+<ul>
 <li><p>start, end, step 모두 생략 가능하다.</p></li>
+<li><p>start와 end의 상대적 방향이 step과 맞아야한다.</p>
+<ul>
+<li><p>오른쪽으로 갈때는 start &lt; end 여야 값이 생기고,</p></li>
+<li><p>왼쪽으로 갈때는 start &gt; end여야 값이 생긴다.</p></li>
+<li><p>이 조건이 안 맞는 경우 빈 리스트 ([ ])가 나온다.</p></li>
 </ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>슬라이싱의 예시를 이용하여, 실제 어떻게 동작하는지 알아보자</p>
+<div class="toggle docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span> <span class="c1"># 인덱스 3 이전까지 오른쪽으로 1씩 이동하여 슬라이싱, 결과 [5, 7, 9]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:])</span> <span class="c1"># -3부터 끝까지 오른쪽으로 1씩 이동하여 슬라이싱, 결과 [2, 4, 8]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span> <span class="c1"># 0부터 인덱스 -3 이전까지 오른쪽으로 1씩 이동하여 슬라이싱, 결과 [5, 7, 9, 0, 3, 1, 6]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="c1"># 0부터 -3이전까지 왼쪽으로 1씩 이동하여 슬라이싱, 결과 [8, 4]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span> <span class="c1"># 0부터 -3이전까지 왼쪽으로 2씩 이동하여 슬라이싱, 결과 [8]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">[:</span><span class="o">-</span><span class="mi">5</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span> <span class="c1"># 0부터 -3이전까지 왼쪽으로 2씩 이동하여 슬라이싱, 결과 [8 ,2]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">[:</span><span class="mi">3</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="c1"># 0부터 3이전까지 왼쪽으로 1씩 이동하여 슬라이싱, [8, 4, 2, 6, 1, 3]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="c1"># step의 방향과 start end의 방향이 다름. </span>
+</pre></div>
+</div>
+</div>
 </div>
 <section id="selection-sort">
 <h2>선택 정렬 (Selection Sort)<a class="headerlink" href="#selection-sort" title="Link to this heading">#</a></h2>
