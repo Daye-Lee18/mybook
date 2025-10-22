@@ -352,10 +352,12 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#treedp-1">TreeDP 1</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#treedp-2">TreeDP 2</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#treedp-3">TreeDP 3</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1번: 색깔 트리</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1번: 색깔 트리</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#treedp-1">TreeDP 1</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#treedp-2">TreeDP 2</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#treedp-3">TreeDP 3</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#string-compression-ii">3번: String Compression II</a></li>
 </ul>
             </nav>
@@ -382,8 +384,10 @@ document.write(`
 <li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/codetree-messenger/description">2번: 코드트리 메신저</a></p></li>
 <li><p><a class="reference external" href="https://leetcode.com/problems/string-compression-ii/description/">3번: String Compression II</a></p></li>
 </ul>
+<section id="id1">
+<h2>1번: 색깔 트리<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <section id="treedp-1">
-<h2>TreeDP 1<a class="headerlink" href="#treedp-1" title="Link to this heading">#</a></h2>
+<h3>TreeDP 1<a class="headerlink" href="#treedp-1" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
 <p class="admonition-title">Tree DP에서 Bottom-up 방식으로 구현하는 이유</p>
 <ul class="simple">
@@ -534,7 +538,7 @@ print(f”children list: {children_list}”)</p>
 </div>
 </section>
 <section id="treedp-2">
-<h2>TreeDP 2<a class="headerlink" href="#treedp-2" title="Link to this heading">#</a></h2>
+<h3>TreeDP 2<a class="headerlink" href="#treedp-2" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
 <p class="admonition-title">DP 설정</p>
 <p>이것을 DP로 구현하기 위해서 두 가지 경우를 생각하면 됩니다. 자신이 우수 마을인 경우와, 자신이 일반 마을인 경우 입니다.
@@ -588,10 +592,8 @@ dp[parent][1] += max(dp[child][0], dp[child][1])</p></li>
 </div>
 </section>
 <section id="treedp-3">
-<h2>TreeDP 3<a class="headerlink" href="#treedp-3" title="Link to this heading">#</a></h2>
+<h3>TreeDP 3<a class="headerlink" href="#treedp-3" title="Link to this heading">#</a></h3>
 </section>
-<section id="id1">
-<h2>1번: 색깔 트리<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 </section>
 <section id="string-compression-ii">
 <h2>3번: String Compression II<a class="headerlink" href="#string-compression-ii" title="Link to this heading">#</a></h2>
@@ -720,10 +722,12 @@ In the second example above, if we removed the "BXX" segment from the middle of 
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#treedp-1">TreeDP 1</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#treedp-2">TreeDP 2</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#treedp-3">TreeDP 3</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1번: 색깔 트리</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1번: 색깔 트리</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#treedp-1">TreeDP 1</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#treedp-2">TreeDP 2</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#treedp-3">TreeDP 3</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#string-compression-ii">3번: String Compression II</a></li>
 </ul>
   </nav></div>

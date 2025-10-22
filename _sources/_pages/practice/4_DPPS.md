@@ -22,7 +22,8 @@ kernelspec:
 - [2번: 코드트리 메신저](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/codetree-messenger/description)
 - [3번: String Compression II](https://leetcode.com/problems/string-compression-ii/description/)
 
-## TreeDP 1
+## 1번: 색깔 트리 
+### TreeDP 1
 
 ````{admonition} Tree DP에서 Bottom-up 방식으로 구현하는 이유
 :class: dropdown 
@@ -189,7 +190,7 @@ print("\n".join(out))
 ```
 ````
 
-## TreeDP 2 
+### TreeDP 2 
 
 ````{admonition} DP 설정
 :class: dropdown 
@@ -249,9 +250,9 @@ print(max(dp[1][0], dp[1][1]))
 ```
 ````
 
-## TreeDP 3 
+### TreeDP 3 
 
-## 1번: 색깔 트리 
+
 
 ## 3번: String Compression II 
 
