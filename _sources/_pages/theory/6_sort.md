@@ -309,7 +309,7 @@ print(arr)
 
 퀵 정렬은 정렬 알고리즘 중에서 가장 많이 사용되는 알고리즘이다. ***퀵 정렬은 기준을 설정한 다음 큰 수와 작은 수를 교환한 후 리스트를 반으로 나누는 방식***으로 동작한다. 이해하는데 오래걸리지만, 원리를 이해하면 병합 정렬, 힙 정럴 등 다른 고급 정렬 기법에 비해 쉽게 소스코드를 작성할 수 있다. 
 
-피벗(Pivot)이라는 개념이 등장하는데, 큰 숫자와 작은 숫자를 교환할 때, 교환하기 위한 '기준'을 바로 피벗이라고 표현한다. 퀵 정렬을 수행하기 전에는 피벗을 어떻게 설정할 것인지 미리 명시해야 한다. 사실 퀵 정렬은 피벗 설정, 리스트 분할 방법에 따라 여러 가지 방식으로 나뉘는데, 오늘 수업에서는 가장 대표적인 분할 방식인 **호어 분할(Hoare Partition) 방식을 기준으로 퀵 정렬을 설명하겠다. 
+피벗(Pivot)이라는 개념이 등장하는데, 큰 숫자와 작은 숫자를 교환할 때, 교환하기 위한 '기준'을 바로 피벗이라고 표현한다. 퀵 정렬을 수행하기 전에는 피벗을 어떻게 설정할 것인지 미리 명시해야 한다. 사실 퀵 정렬은 피벗 설정, 리스트 분할 방법에 따라 여러 가지 방식으로 나뉘는데, 오늘 수업에서는 가장 대표적인 분할 방식인 **호어 분할(Hoare Partition)** 방식을 기준으로 퀵 정렬을 설명하겠다. 
 
 **호어 분할 방식**
 - 피벗 설정: 리스트에서 첫 번째 데이터를 피벗으로 정한다. 
@@ -324,27 +324,26 @@ print(arr)
 **Step 1**
 ![21](../../assets/img/sort/21.png)
 
-피벗: 리스트의 첫 번째 데이터인 '5' 
-피벗의 왼쪽: 왼쪽에서부터 '5'보다 큰 데이터 선택 '7' 
-피벗의 오른쪽: 오른쪽에서부터 '5'보다 작은 데이터 선택 '4' 
-swap: 위에서 선택된 '7'과 '4'의 위치를 서로 변경 
+- 피벗: 리스트의 첫 번째 데이터인 '5' 
+- 피벗의 왼쪽: 왼쪽에서부터 '5'보다 큰 데이터 선택 '7' 
+- 피벗의 오른쪽: 오른쪽에서부터 '5'보다 작은 데이터 선택 '4' 
+- swap: 위에서 선택된 '7'과 '4'의 위치를 서로 변경 
 
 **Step 2**
 ![22](../../assets/img/sort/22.png)
 
-피벗: 리스트의 첫 번째 데이터인 '5' 
-피벗의 왼쪽: 아까 바꿨던 위치에서부터 '5'보다 큰 데이터 선택 '9' 
-피벗의 오른쪽: 아까 바꿨던 위치에서부터'5'보다 작은 데이터 선택 '2' 
-swap: 위에서 선택된 '9'과 '2'의 위치를 서로 변경 
+- 피벗: 리스트의 첫 번째 데이터인 '5' 
+- 피벗의 왼쪽: 아까 바꿨던 위치에서부터 '5'보다 큰 데이터 선택 '9' 
+- 피벗의 오른쪽: 아까 바꿨던 위치에서부터'5'보다 작은 데이터 선택 '2' 
+- swap: 위에서 선택된 '9'과 '2'의 위치를 서로 변경 
 
 **Step 3**
 ![23](../../assets/img/sort/23.png)
 
-피벗: 리스트의 첫 번째 데이터인 '5' 
-피벗의 왼쪽: 아까 바꿨던 위치에서부터 '5'보다 큰 데이터 선택 '6' 
-피벗의 오른쪽: 아까 바꿨던 위치에서부터'5'보다 작은 데이터 선택 '1' 
--> 이 때 현재 왼쪽에서부터 찾는 값과 오른쪽에서부터 찾는 값의 위치가 서로 엇갈린 것을 알 수 있다. 이렇게 두 값의 위치가 엇갈린 경우에는 '작은 데이터'와 '피벗'의 위치를 서로 변경한다. 
-swap: 위에서 선택된 '9'과 '2'의 위치를 서로 변경 
+- 피벗: 리스트의 첫 번째 데이터인 '5' 
+- 피벗의 왼쪽: 아까 바꿨던 위치에서부터 '5'보다 큰 데이터 선택 '6' 
+- 피벗의 오른쪽: 아까 바꿨던 위치에서부터'5'보다 작은 데이터 선택 '1' -> 이 때 현재 왼쪽에서부터 찾는 값과 오른쪽에서부터 찾는 값의 위치가 서로 엇갈린 것을 알 수 있다. 이렇게 두 값의 위치가 엇갈린 경우에는 '작은 데이터'와 '피벗'의 위치를 서로 변경한다.
+- swap: 위에서 선택된 '9'과 '2'의 위치를 서로 변경 
 
 **Step 4: 분할 완료**
 ![24](../../assets/img/sort/24.png)
@@ -441,7 +440,7 @@ print(arr)
 
 실제로 파이썬에서 기본 정렬 라이브러리를 이용하면 O(NlogN)을 보장해주기 때문에 크게 걱정하지 않아도 된다. 
 
-## 계수 정렬 (count sort)
+## 계수 정렬 (Count sort)
 
 계수 정렬 (count sort) 알고리즘은 ***특정한 조건이 부합할 때만 사용할 수 있지만 매우 빠른 정렬 알고리즘***이다. 계수 정렬은 데이터의 크기가 제한되어 있을 때에 한해서, 데이터의 개수가 매우 많더라도 빠르게 동작한다. 다음은 특정 조건에 대한 기술이다. 
 
@@ -597,3 +596,146 @@ ascending order를 기준으로,
 ````
 
 ## 예시 문제 
+
+1. Merge sorted array 
+
+[문제 링크](https://leetcode.com/problems/merge-sorted-array/description/?envType=problem-list-v2&envId=sorting)
+
+````{admonition} solution
+:class: dropdown 
+
+```{code-block} python
+
+class Solution:
+    def merge(self, nums1: List[int], m: int, nums2: List[int], n: int) -> None:
+        """
+        Do not return anything, modify nums1 in-place instead.
+        """
+        # Initialize pointers for the last valid elements in nums1 and nums2
+        num1_r = m - 1
+        num2_r = n - 1
+
+        # Pointer for the last position in the merged array
+        whole_idx = m + n - 1
+
+        # Merge nums1 and nums2 from the back
+        while num1_r >= 0 and num2_r >= 0:
+            # Compare the last elements of both arrays
+            if nums1[num1_r] < nums2[num2_r]:
+                # If nums2 element is larger, place it at the current last position
+                nums1[whole_idx] = nums2[num2_r]
+                num2_r -= 1
+            else:
+                # Otherwise, place nums1 element at the current last position
+                nums1[whole_idx] = nums1[num1_r]
+                num1_r -= 1
+            whole_idx -= 1
+
+        # If there are remaining elements in nums2,
+        # copy them to the beginning of nums1.
+        # (No need to handle nums1's remaining part since they are already in place)
+        if num1_r < 0:
+            nums1[:(num2_r + 1)] = nums2[:(num2_r + 1)]
+
+```
+````
+
+두 개의 array는 이미 ascending order로 정렬되어 있다. 이를 이용하여 아래처럼 풀 수 있다. 
+
+- 이 코드는 뒤쪽에서부터 채워나가는 방식을 사용합니다.(whole_idx는 nums1의 맨 끝 인덱스부터 시작)
+- 이렇게 하면 별도의 임시 배열을 만들지 않고 in-place 정렬이 가능합니다.
+- num1_r < 0 인 경우는 nums2의 값이 모두 더 작았던 상황으로, 남은 nums2 원소들을 앞부분에 복사해야 합니다.
+- 반대로 num2_r < 0이면, nums1에 남은 값들은 이미 제자리에 있으므로 추가 작업이 필요 없습니다.
+
+2. Majority Element 
+
+[문제 링크](https://leetcode.com/problems/majority-element/?envType=problem-list-v2&envId=sorting)
+
+````{admonition} solution1
+:class: dropdown 
+
+```{code-block} python
+
+class Solution:
+    def majorityElement(self, nums: List[int]) -> int:
+        count_array = [] 
+
+        # nums[i]는 음수 혹은 양수 
+        max_num = nums[0]
+        max_count = 1
+        count_dict = dict()
+        for num in nums:
+            if num not in count_dict:
+                count_dict[num] = 1 
+            else:
+                count_dict[num] += 1 
+            
+            if max_count < count_dict[num]:
+                max_count = count_dict[num]
+                max_num = num 
+        return max_num
+        
+```
+````
+
+Boyer–Moore Voting 방식으로 최적으로 풀 수 있다. Boyer–Moore Voting Algorithm은 배열에서 다수 원소를 찾기 위해 투표 상쇄 원리를 이용한 O(N)·O(1) 알고리즘이다 최종적으로 남는 후보(candidate)는 “모든 원소들이 서로 상쇄된 뒤에도 표가 남는 유일한 원소”이기 때문에 majority element임이 보장된다.
+
+- Time: O(N) / Space: O(1)
+- 아이디어: 후보(candidate) 하나와 카운트만 유지. 같은 수 나오면 +1, 다른 수 나오면 -1, 0이 되면 후보 교체.
+- 다수 원소가 ⌊n/2⌋ 초과 존재하므로 최종 후보가 다수 원소가 됨.
+- 해시맵 대비 장점: 공간 O(1), 구현 간단, 최적.
+  
+````{admonition} solution2
+:class: dropdown 
+
+```{code-block} python
+class Solution:
+    def majorityElement(self, nums: List[int]) -> int:
+        candidate = None
+        count = 0
+        for x in nums:
+            if count == 0:
+                candidate = x
+            count += 1 if x == candidate else -1
+        return candidate
+
+```
+````
+
+3. Contains Duplicate 
+
+[문제 링크](https://leetcode.com/problems/contains-duplicate/description/?envType=problem-list-v2&envId=sorting)
+
+- set 자료형을 이용하여 풀기 
+````{admonition} solution1
+:class: dropdown 
+
+```{code-block} python
+class Solution:
+    def containsDuplicate(self, nums: List[int]) -> bool:
+        num_set = set() 
+        for num in nums:
+            if num in num_set:
+                return True 
+            num_set.add(num)
+        
+        return False 
+```
+````
+
+- 정렬을 이용하여 풀기 (더 느림)
+````{admonition} solution2
+:class: dropdown 
+
+```{code-block} python
+# 시간 복잡도: O(N log N)
+# 공간 복잡도: O(1)~O(N)
+class Solution:
+    def containsDuplicate(self, nums: List[int]) -> bool:
+        nums.sort()  # 정렬
+        for i in range(1, len(nums)):
+            if nums[i] == nums[i - 1]:
+                return True
+        return False
+```
+````
