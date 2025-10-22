@@ -13,11 +13,31 @@ Each integer occupies (1) bytes of memory. Therefore, if the total memory usage 
 
 참고) When writing in a .md file, to express exponents such as $2^3$, use the caret `^` symbol inside math mode, e.g., write `$2^3$`. Alternatively, you may write 2**3 for simplicity.
 
+A1. <br>
+(1) 4B  <br>
+(2) $10^7$  <br>
+(3) $10^8$  <br>
+(4) 2 * $10^7$ <br>
+(5) O(NlogN) <br>
+
 Q2. Graph Representation <br>
 A graph can be represented in two main ways: one method stores the edge weights between nodes i and j in a (1), and the other connects each node i to its neighbors [j, k, …] like a linked list, called the (2). The advantage of the adjacency list is that it uses less (3), but its disadvantage is that (4).
 
+A2.  <br>
+(1) adjacent matrix  <br>
+(2) adjacent list  <br>
+(3) memory usage  <br>
+(4) it takes longer to find connected nodes  <br>
+
 Q3. Backtracking<br>
 Backtracking is a method of systematically finding possible solutions by following given conditions. Unlike (1), it prunes search paths early by skipping any candidate that does not meet specific conditions. In backtracking, (2) represents the number of elements visited so far, and (3) represents the number of different options available at each step. For example, when arranging all possible orders of 2 people selected from 5, the maximum (2) is (4), and the (3) is (5).
+
+A3.  <br>
+(1) brute force <br>
+(2) depth <br>
+(3) branch <br>
+(4) 2 <br> 
+(5) 5 <br>
 
 Q4. Dynamic programming<br>
 Dynamic Programming (DP) is a method of solving large problems by breaking them into smaller subproblems, where the solution to each small problem must remain valid when combined into the larger problem. By using (1), redundant calculations are avoided.
@@ -28,6 +48,12 @@ When designing a DP solution, you must define the three key components below:
 2. what to store: **(3)**
 3. transition: **(4)**
    
+A4. <br>
+(1) memoization (for top-down) / tabulation (for bottom-up) <br>
+(2) 
+(3) 
+(4) 
+
 Q5. Two algorithms for solving shortest path problems learned this semester are (1) and (2). The first algorithm finds the shortest path from one node to all others, following a greedy approach—at each step, selecting the node with the smallest current path cost.
 For an advanced Python implementation, use (3) with a min-heap structure. The standard Python library that provides this functionality is (4).
 

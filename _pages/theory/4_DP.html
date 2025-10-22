@@ -362,7 +362,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bottom-up">Bottom-Up 방식</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dynamic-programming-table-dp-table">Dynamic Programming Table (DP Table)</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dp-table">DP Table</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sequence-array-dp">1. Sequence / Array DP</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#subsequence-string-dp">2. Subsequence/String DP</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#knapsack-family">3. Knapsack Family</a></li>
@@ -533,11 +533,60 @@ document.write(`
 </div>
 </section>
 </section>
-<section id="dynamic-programming-table-dp-table">
-<h2>Dynamic Programming Table (DP Table)<a class="headerlink" href="#dynamic-programming-table-dp-table" title="Link to this heading">#</a></h2>
+<section id="dp-table">
+<h2>DP Table<a class="headerlink" href="#dp-table" title="Link to this heading">#</a></h2>
 <p>What you choose to store in your DP table (list, dict, array, etc.) is the most important desing decision in solving a DP problem.</p>
 <p>DP is about <code class="docutils literal notranslate"><span class="pre">state</span> <span class="pre">representation</span></code>. DP works by breaking a big problem into smaller overlapping subproblems. To reuse solutions, you must define a <code class="docutils literal notranslate"><span class="pre">state</span></code> that fully describes a subproblem. That “state” is exactly what you store in the DP table.</p>
 <p>How can we decide <strong>what to store</strong>? You should ask yourself <strong>1. What subproblem do I need to solve repeatdly?</strong> and <strong>2. What result of that subproblem helps me build the next one?</strong>. The first question deinfes the state and the next question is the value you should store.</p>
+<ol class="arabic simple">
+<li><p>State (상태)</p>
+<ul class="simple">
+<li><p>정의: “하위 문제 (Subproblem)”를 유일하게 결정”하는 최소한의 매개변수 (paramter), 좌표나 인덱스</p></li>
+<li><p>목표: 겹치는 하위 문제가 생기도록 문제를 쪼개고, 그 하위 문제를 하나의 키(인덱스)로 표현.</p></li>
+<li><p>디자인 규칙:</p>
+<ul>
+<li><p>의존성이 1개면 i (예: 1D 수열)</p></li>
+<li><p>두 대상의 접두사 비교면 (i, j) (예: 두 문자열, LCS)</p></li>
+<li><p>구간 의존이면 (l, r) (interval DP, LPS)</p></li>
+<li><p>격자면 (y, x)</p></li>
+<li><p>트리면 node (+ 선택했는지 여부 같은 플래그)</p></li>
+<li><p>배낭류 “용량(또는 합)” 이 핵심 인덱스</p></li>
+</ul>
+</li>
+<li><p>암기 팁:</p></li>
+</ul>
+</li>
+<li><p>what to store (저장값)</p>
+<ul class="simple">
+<li><p>정의: 각 상태에 대해 “다음 단계 계산에 꼭 필요한 결과값”</p></li>
+<li><p>유형: min/max, count(경우의 수), boolean (가능/불가), value (최적값), 확률/기댓값, 복원용 포인터 (prev/choice)</p></li>
+<li><p>원칙: 점화식이 바로 사용하는 값만 저장</p></li>
+<li><p>예시:</p>
+<ul>
+<li><p>LIS -&gt; “i에서 끝나는 최장 길이”</p></li>
+<li><p>LCS -&gt; “A[:i], B[:j]의 LCS 길이”</p></li>
+<li><p>Word Break -&gt; “s[:i] 분해 가능 여부”</p></li>
+<li><p>Knapsack -&gt; 용량 w에서의 최대 가치</p></li>
+<li><p>Interweaving -&gt; s1[:i], s2[:j]로 s[:i+j] 가능 여부</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Transition (전이/점화식)</p>
+<ul class="simple">
+<li><p>정의: 현재 상태를 더 작은 상태들로부터 만드는 점화식</p></li>
+<li><p>형태:</p>
+<ul>
+<li><p>선택 비교형: <code class="docutils literal notranslate"><span class="pre">dp[i]</span> <span class="pre">=</span> <span class="pre">max(dp[i-1],</span> <span class="pre">dp[i-2]</span> <span class="pre">+</span> <span class="pre">val[i])</span></code></p></li>
+<li><p>분기 합산형: <code class="docutils literal notranslate"><span class="pre">dp[i]</span> <span class="pre">+=</span> <span class="pre">dp[i-w]</span></code></p></li>
+<li><p>매칭/불일치형(2D): <code class="docutils literal notranslate"><span class="pre">match</span> <span class="pre">?</span> <span class="pre">1+dp[i-1][j-1]</span> <span class="pre">:</span> <span class="pre">max(dp[i-1][j],</span> <span class="pre">dp[i][j-1])</span></code></p></li>
+<li><p>구간 분할형: <code class="docutils literal notranslate"><span class="pre">dp[l][r]</span> <span class="pre">=</span> <span class="pre">min/max</span> <span class="pre">over</span> <span class="pre">k</span> <span class="pre">(dp[l][k]</span> <span class="pre">+</span> <span class="pre">dp[k+1][r]</span> <span class="pre">+</span> <span class="pre">cost)</span></code></p></li>
+</ul>
+</li>
+<li><p>계산 순서: 점화식이 참조하는 더 작은 상태부터 채우기</p></li>
+</ul>
+</li>
+</ol>
 <p>Here is a handy “what to store” cheat-sheet for the most popular DP problems. each line tells you the state, what to store, and a one-line transition hint so you know why the storage works.</p>
 <section id="sequence-array-dp">
 <h3>1. Sequence / Array DP<a class="headerlink" href="#sequence-array-dp" title="Link to this heading">#</a></h3>
@@ -766,6 +815,33 @@ document.write(`
 <li><p><strong>Dimensions match dependencies</strong>: if you need two indices (like two strings), your state likely has two; if intervals matter, store by <code class="docutils literal notranslate"><span class="pre">(l,</span> <span class="pre">r)</span></code>; on trees, store per-node (optionally with a flag)</p></li>
 <li><p><strong>Space-optimize later</strong>: once the state is right, compress (1D knapsack, rolling rows in grides, etc.)</p></li>
 </ol>
+</div>
+<div class="note admonition">
+<p class="admonition-title">DP source code</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 6개 checklist </span>
+<span class="c1"># 1) State: dp[...]</span>
+<span class="c1"># 2) What to store: min/max/count/bool/value (필요시 prev/choice)</span>
+<span class="c1"># 3) Base case init</span>
+<span class="c1"># 4) Fill order: 작은 상태 → 큰 상태</span>
+<span class="c1"># 5) Transition</span>
+<span class="c1"># 6) Read answer</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">(</span><span class="o">...</span><span class="p">):</span>
+    <span class="c1"># 예: 2D (i, j)</span>
+    <span class="n">dp</span> <span class="o">=</span> <span class="p">[[</span><span class="n">INF</span><span class="p">]</span><span class="o">*</span> <span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+    <span class="c1"># base cases</span>
+    <span class="n">dp</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">dp</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">],</span> <span class="n">f</span><span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="p">],</span> <span class="o">...</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">j</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">dp</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">],</span> <span class="n">g</span><span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="o">...</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">dp</span><span class="p">[</span><span class="n">m</span><span class="p">][</span><span class="n">n</span><span class="p">]</span>
+</pre></div>
+</div>
 </div>
 </section>
 </section>
@@ -1707,7 +1783,7 @@ Follow up: Suppose there are lots of incoming s, say <span class="math notransla
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bottom-up">Bottom-Up 방식</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dynamic-programming-table-dp-table">Dynamic Programming Table (DP Table)</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dp-table">DP Table</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sequence-array-dp">1. Sequence / Array DP</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#subsequence-string-dp">2. Subsequence/String DP</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#knapsack-family">3. Knapsack Family</a></li>

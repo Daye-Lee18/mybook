@@ -151,13 +151,44 @@ print(d[n])
 
 ```
 ````
-## Dynamic Programming Table (DP Table)
+## DP Table
 
 What you choose to store in your DP table (list, dict, array, etc.) is the most important desing decision in solving a DP problem. 
 
 DP is about `state representation`. DP works by breaking a big problem into smaller overlapping subproblems. To reuse solutions, you must define a `state` that fully describes a subproblem. That "state" is exactly what you store in the DP table. 
 
 How can we decide **what to store**? You should ask yourself **1. What subproblem do I need to solve repeatdly?** and **2. What result of that subproblem helps me build the next one?**. The first question deinfes the state and the next question is the value you should store. 
+
+1) State (상태)
+   - 정의: "하위 문제 (Subproblem)"를 유일하게 결정"하는 최소한의 매개변수 (paramter), 좌표나 인덱스 
+   - 목표: 겹치는 하위 문제가 생기도록 문제를 쪼개고, 그 하위 문제를 하나의 키(인덱스)로 표현. 
+   - 디자인 규칙:
+     - 의존성이 1개면 i (예: 1D 수열)
+     - 두 대상의 접두사 비교면 (i, j) (예: 두 문자열, LCS)
+     - 구간 의존이면 (l, r) (interval DP, LPS)
+     - 격자면 (y, x)
+     - 트리면 node (+ 선택했는지 여부 같은 플래그)
+     - 배낭류 "용량(또는 합)" 이 핵심 인덱스 
+   - 암기 팁:
+2) what to store (저장값)
+   - 정의: 각 상태에 대해 "다음 단계 계산에 꼭 필요한 결과값" 
+   - 유형: min/max, count(경우의 수), boolean (가능/불가), value (최적값), 확률/기댓값, 복원용 포인터 (prev/choice)
+   - 원칙: 점화식이 바로 사용하는 값만 저장 
+   - 예시:
+     - LIS -> "i에서 끝나는 최장 길이"
+     - LCS -> "A[:i], B[:j]의 LCS 길이"
+     - Word Break -> "s[:i] 분해 가능 여부"
+     - Knapsack -> 용량 w에서의 최대 가치 
+     - Interweaving -> s1[:i], s2[:j]로 s[:i+j] 가능 여부 
+3) Transition (전이/점화식)
+   - 정의: 현재 상태를 더 작은 상태들로부터 만드는 점화식 
+   - 형태: 
+     - 선택 비교형: `dp[i] = max(dp[i-1], dp[i-2] + val[i])`
+     - 분기 합산형: `dp[i] += dp[i-w]`
+     - 매칭/불일치형(2D): `match ? 1+dp[i-1][j-1] : max(dp[i-1][j], dp[i][j-1])`
+     - 구간 분할형: `dp[l][r] = min/max over k (dp[l][k] + dp[k+1][r] + cost)`
+   - 계산 순서: 점화식이 참조하는 더 작은 상태부터 채우기 
+
 
 Here is a handy "what to store" cheat-sheet for the most popular DP problems. each line tells you the state, what to store, and a one-line transition hint so you know why the storage works. 
 
@@ -329,6 +360,36 @@ Quick rules for "what to store"
 2. **Exactly the quantity needed by the recurrence**: value, count, boolean, min/max, probability, etc.
 3. **Dimensions match dependencies**: if you need two indices (like two strings), your state likely has two; if intervals matter, store by `(l, r)`; on trees, store per-node (optionally with a flag)
 4. **Space-optimize later**: once the state is right, compress (1D knapsack, rolling rows in grides, etc.)
+````
+
+````{admonition} DP source code 
+:class: note 
+
+```{code-block} python
+# 6개 checklist 
+# 1) State: dp[...]
+# 2) What to store: min/max/count/bool/value (필요시 prev/choice)
+# 3) Base case init
+# 4) Fill order: 작은 상태 → 큰 상태
+# 5) Transition
+# 6) Read answer
+
+def solve(...):
+    # 예: 2D (i, j)
+    dp = [[INF]* (n+1) for _ in range(m+1)]
+    # base cases
+    dp[0][0] = 0
+
+    for i in range(0, m+1):
+        for j in range(0, n+1):
+            if i>0:
+                dp[i][j] = min(dp[i][j], f(dp[i-1][j], ...))
+            if j>0:
+                dp[i][j] = min(dp[i][j], g(dp[i][j-1], ...))
+
+    return dp[m][n]
+
+```
 ````
 ## 예시 문제 
 

@@ -379,10 +379,27 @@ document.write(`
 <p>Q1. Complexity and Memory <br>
 Each integer occupies (1) bytes of memory. Therefore, if the total memory usage limit is 256 MB, the maximum size of N should be approximately between (2) and (3). Also, in Python, about (4) operations can be executed per second. If you are solving a problem where N = 10,000 and the time limit is 1 second, the maximum allowable algorithm time complexity is (5).</p>
 <p>참고) When writing in a .md file, to express exponents such as <span class="math notranslate nohighlight">\(2^3\)</span>, use the caret <code class="docutils literal notranslate"><span class="pre">^</span></code> symbol inside math mode, e.g., write <code class="docutils literal notranslate"><span class="pre">$2^3$</span></code>. Alternatively, you may write 2**3 for simplicity.</p>
+<p>A1. <br>
+(1) 4B  <br>
+(2) <span class="math notranslate nohighlight">\(10^7\)</span>  <br>
+(3) <span class="math notranslate nohighlight">\(10^8\)</span>  <br>
+(4) 2 * <span class="math notranslate nohighlight">\(10^7\)</span> <br>
+(5) O(NlogN) <br></p>
 <p>Q2. Graph Representation <br>
 A graph can be represented in two main ways: one method stores the edge weights between nodes i and j in a (1), and the other connects each node i to its neighbors [j, k, …] like a linked list, called the (2). The advantage of the adjacency list is that it uses less (3), but its disadvantage is that (4).</p>
+<p>A2.  <br>
+(1) adjacent matrix  <br>
+(2) adjacent list  <br>
+(3) memory usage  <br>
+(4) it takes longer to find connected nodes  <br></p>
 <p>Q3. Backtracking<br>
 Backtracking is a method of systematically finding possible solutions by following given conditions. Unlike (1), it prunes search paths early by skipping any candidate that does not meet specific conditions. In backtracking, (2) represents the number of elements visited so far, and (3) represents the number of different options available at each step. For example, when arranging all possible orders of 2 people selected from 5, the maximum (2) is (4), and the (3) is (5).</p>
+<p>A3.  <br>
+(1) brute force <br>
+(2) depth <br>
+(3) branch <br>
+(4) 2 <br>
+(5) 5 <br></p>
 <p>Q4. Dynamic programming<br>
 Dynamic Programming (DP) is a method of solving large problems by breaking them into smaller subproblems, where the solution to each small problem must remain valid when combined into the larger problem. By using (1), redundant calculations are avoided.</p>
 <p>When designing a DP solution, you must define the three key components below:</p>
@@ -391,6 +408,11 @@ Dynamic Programming (DP) is a method of solving large problems by breaking them 
 <li><p>what to store: <strong>(3)</strong></p></li>
 <li><p>transition: <strong>(4)</strong></p></li>
 </ol>
+<p>A4. <br>
+(1) memoization (for top-down) / tabulation (for bottom-up) <br>
+(2)
+(3)
+(4)</p>
 <p>Q5. Two algorithms for solving shortest path problems learned this semester are (1) and (2). The first algorithm finds the shortest path from one node to all others, following a greedy approach—at each step, selecting the node with the smallest current path cost.
 For an advanced Python implementation, use (3) with a min-heap structure. The standard Python library that provides this functionality is (4).</p>
 <p>Q6. (1) is a type of dynamic programming algorithm. It computes the minimum cost between all pairs of nodes. Implementation typically uses three nested loops. In the DP table, the cost from a node to itself (i → i) is initialized to (2), the cost between unconnected nodes is (3), and directly connected edges are initialized with their given weights. In the outermost loop (variable k), each node is considered as an intermediate node, and if a shorter path is found through k, the value is updated accordingly.</p>
