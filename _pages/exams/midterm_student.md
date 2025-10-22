@@ -1,6 +1,6 @@
 # Midterm 
 
-Submit your answer folder to `gbyou1694@gmail.com`.
+Submit your answer folder to `gbyou1694@snu.ac.kr`.
 
 ## Short answer problems 
 
@@ -13,11 +13,43 @@ Each integer occupies (1) bytes of memory. Therefore, if the total memory usage 
 
 참고) When writing in a .md file, to express exponents such as $2^3$, use the caret `^` symbol inside math mode, e.g., write `$2^3$`. Alternatively, you may write 2**3 for simplicity.
 
+```{admonition} A1
+:class: dropdown
+
+A1. <br>
+(1) 4B  <br>
+(2) $10^7$  <br>
+(3) $10^8$  <br>
+(4) 2 * $10^7$ <br>
+(5) O(NlogN) <br>
+```
+
 Q2. Graph Representation <br>
 A graph can be represented in two main ways: one method stores the edge weights between nodes i and j in a (1), and the other connects each node i to its neighbors [j, k, …] like a linked list, called the (2). The advantage of the adjacency list is that it uses less (3), but its disadvantage is that (4).
 
+```{admonition} A2
+:class: dropdown
+
+A2.  <br>
+(1) adjacency matrix  <br>
+(2) adjacency list  <br>
+(3) memory usage  <br>
+(4) It takes longer to check if two nodes are directly connected.  <br>
+```
+
 Q3. Backtracking<br>
 Backtracking is a method of systematically finding possible solutions by following given conditions. Unlike (1), it prunes search paths early by skipping any candidate that does not meet specific conditions. In backtracking, (2) represents the number of elements visited so far, and (3) represents the number of different options available at each step. For example, when arranging all possible orders of 2 people selected from 5, the maximum (2) is (4), and the (3) is (5).
+
+```{admonition} A3
+:class: dropdown 
+
+A3.  <br>
+(1) brute force <br>
+(2) depth <br>
+(3) branch <br>
+(4) 2 <br> 
+(5) 5 <br>
+```
 
 Q4. Dynamic programming<br>
 Dynamic Programming (DP) is a method of solving large problems by breaking them into smaller subproblems, where the solution to each small problem must remain valid when combined into the larger problem. By using (1), redundant calculations are avoided.
@@ -28,14 +60,49 @@ When designing a DP solution, you must define the three key components below:
 2. what to store: **(3)**
 3. transition: **(4)**
    
+```{admonition} A4
+:class: dropdown 
+
+A4. <br>
+(1) memoization (for top-down) / tabulation (for bottom-up) <br>
+(2) minimal set of parameters uniquely defining each overlapping subproblem <br>
+(3) the value (answer) computed for that state to reuse in larger problems/ the optimal value/result corresponding to the state <br>
+(4) recurrence relation expressing how a state depends on smaller subproblems <br>
+```
+
 Q5. Two algorithms for solving shortest path problems learned this semester are (1) and (2). The first algorithm finds the shortest path from one node to all others, following a greedy approach—at each step, selecting the node with the smallest current path cost.
 For an advanced Python implementation, use (3) with a min-heap structure. The standard Python library that provides this functionality is (4).
 
+```{admonition} A5
+:class: dropdown 
+
+(1) Dijkstra <br>
+(2) Floyd Warshall <br> 
+(3) priority queue <br>
+(4) heapq <br>
+```
+
 Q6. (1) is a type of dynamic programming algorithm. It computes the minimum cost between all pairs of nodes. Implementation typically uses three nested loops. In the DP table, the cost from a node to itself (i → i) is initialized to (2), the cost between unconnected nodes is (3), and directly connected edges are initialized with their given weights. In the outermost loop (variable k), each node is considered as an intermediate node, and if a shorter path is found through k, the value is updated accordingly.
 
+```{admonition} A6
+:class: dropdown 
+
+(1) Floyd Warshall <br>
+(2) 0 <br>
+(3) Infinity, float('inf') <br> 
+```
 
 Q7. BFS vs. DFS <br>
 BFS stands for (1) and is implemented using a (2) data structure. In contrast, DFS stands for (3) and is typically implemented using (4) through function recursion. Since recursive calls in DFS follow a stack structure, functions are executed and then return in LIFO order. BFS is advantageous for finding the shortest path, while DFS explores deeper paths, making it useful for exploring deep structures in trees and graphs.
+
+```{admonition} A7
+:class: dropdown 
+
+(1) Breadth First Search <br>
+(2) queue (FIFO) <br>
+(3) Depth First Search <br>
+(4) stack (via recursion) <br>
+```
 
 Q8. Complexity Ordering <br>
 Arrange the following time complexities in order from fastest to slowest:
@@ -45,8 +112,22 @@ Arrange the following time complexities in order from fastest to slowest:
 4. O(N)
 5. O(logN)
 
+```{admonition} A8
+:class: dropdown 
+
+(fastest) 5 -> 4 -> 2 -> 1 -> 3 (slowest)
+```
+
 Q9. Heap<br>
 In a min-heap, the smallest value is located at the root. The Python standard library used for heap implementation is (1). This library provides two core methods: (2) for inserting an element and (3) for retrieving the smallest-priority element. When inserting, if the parent node’s value is greater than the new item’s value, the new item “bubbles up” (sift-up) to maintain the heap property. When deleting, the last element of the heap is moved to the root position, and it is compared with its two child nodes; if the smaller child is less than the current value, they are swapped in a sift-down operation to restore the heap property.
+
+```{admonition} A9
+:class: dropdown 
+
+(1) heapq <br>
+(2) heappush <br>
+(3) heappop <br>
+```
 
 ## Problem solving problems 
 
@@ -58,6 +139,8 @@ In a min-heap, the smallest value is located at the root. The Python standard li
 
 `````{admonition} p1 simulation 
 :class: dropdown 
+
+[문제](https://leetcode.com/problems/robot-return-to-origin/?envType=problem-list-v2&envId=simulation) 
 
 Robot Return to Origin 
 
@@ -128,6 +211,7 @@ output: True
 `````{admonition} p2 BFS 
 :class: dropdown 
 
+[문제](https://leetcode.com/problems/invert-binary-tree/description/?envType=problem-list-v2&envId=breadth-first-search)
 Given the root of a binary tree, invert the tree, and return its root.
 
 
@@ -177,6 +261,7 @@ output: [1,3,2,6,null,5,4]
 `````{admonition} p3 Backtracking
 :class: dropdown 
 
+[문제](https://leetcode.com/problems/binary-tree-paths/description/?envType=problem-list-v2&envId=backtracking)
 Given the root of a binary tree, return all root-to-leaf paths in any order.
 
 A leaf is a node with no children.
@@ -228,6 +313,7 @@ output: ["1->2->3->4"]
 `````{admonition} p4 DP
 :class: dropdown 
 
+[문제](https://leetcode.com/problems/min-cost-climbing-stairs/description/?envType=problem-list-v2&envId=dynamic-programming) 
 You are given an integer array cost where cost[i] is the cost of ith step on a staircase. Once you pay the cost, you can either climb one or two steps.
 
 You can either start from the step with index 0, or the step with index 1.
@@ -287,6 +373,7 @@ output: 1
 `````{admonition} p5 Shortest Path 
 :class: dropdown
 
+[문제](https://leetcode.com/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/description/?envType=problem-list-v2&envId=shortest-path)
 There are n cities numbered from 0 to n-1. Given the array edges where edges[i] = [fromi, toi, weighti] represents a bidirectional and weighted edge between cities fromi and toi, and given the integer distanceThreshold.
 
 Return the city with the smallest number of cities that are reachable through some path and whose distance is at most distanceThreshold, If there are multiple such cities, return the city with the greatest number.
