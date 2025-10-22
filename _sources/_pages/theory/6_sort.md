@@ -597,7 +597,7 @@ ascending order를 기준으로,
 
 ## 예시 문제 
 
-1. Merge sorted array 
+### 1. Merge sorted array 
 
 [문제 링크](https://leetcode.com/problems/merge-sorted-array/description/?envType=problem-list-v2&envId=sorting)
 
@@ -647,7 +647,7 @@ class Solution:
 - num1_r < 0 인 경우는 nums2의 값이 모두 더 작았던 상황으로, 남은 nums2 원소들을 앞부분에 복사해야 합니다.
 - 반대로 num2_r < 0이면, nums1에 남은 값들은 이미 제자리에 있으므로 추가 작업이 필요 없습니다.
 
-2. Majority Element 
+### 2. Majority Element 
 
 [문제 링크](https://leetcode.com/problems/majority-element/?envType=problem-list-v2&envId=sorting)
 
@@ -702,7 +702,7 @@ class Solution:
 ```
 ````
 
-3. Contains Duplicate 
+### 3. Contains Duplicate 
 
 [문제 링크](https://leetcode.com/problems/contains-duplicate/description/?envType=problem-list-v2&envId=sorting)
 

@@ -1,6 +1,6 @@
 # Midterm 
 
-Submit your answer folder to `gbyou1694@gmail.com`.
+Submit your answer folder to `gbyou1694@snu.ac.kr`.
 
 ## Short answer problems 
 
@@ -140,6 +140,8 @@ In a min-heap, the smallest value is located at the root. The Python standard li
 `````{admonition} p1 simulation 
 :class: dropdown 
 
+[문제](https://leetcode.com/problems/robot-return-to-origin/?envType=problem-list-v2&envId=simulation) 
+
 Robot Return to Origin 
 
 There is a robot starting at the position `(0, 0)`, the origin, on a 2D plane. Given a sequence of its moves, judge if this robot ends up at (0, 0) after it completes its moves.
@@ -209,6 +211,7 @@ output: True
 `````{admonition} p2 BFS 
 :class: dropdown 
 
+[문제](https://leetcode.com/problems/invert-binary-tree/description/?envType=problem-list-v2&envId=breadth-first-search)
 Given the root of a binary tree, invert the tree, and return its root.
 
 
@@ -258,6 +261,7 @@ output: [1,3,2,6,null,5,4]
 `````{admonition} p3 Backtracking
 :class: dropdown 
 
+[문제](https://leetcode.com/problems/binary-tree-paths/description/?envType=problem-list-v2&envId=backtracking)
 Given the root of a binary tree, return all root-to-leaf paths in any order.
 
 A leaf is a node with no children.
@@ -309,6 +313,7 @@ output: ["1->2->3->4"]
 `````{admonition} p4 DP
 :class: dropdown 
 
+[문제](https://leetcode.com/problems/min-cost-climbing-stairs/description/?envType=problem-list-v2&envId=dynamic-programming) 
 You are given an integer array cost where cost[i] is the cost of ith step on a staircase. Once you pay the cost, you can either climb one or two steps.
 
 You can either start from the step with index 0, or the step with index 1.
@@ -368,6 +373,7 @@ output: 1
 `````{admonition} p5 Shortest Path 
 :class: dropdown
 
+[문제](https://leetcode.com/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/description/?envType=problem-list-v2&envId=shortest-path)
 There are n cities numbered from 0 to n-1. Given the array edges where edges[i] = [fromi, toi, weighti] represents a bidirectional and weighted edge between cities fromi and toi, and given the integer distanceThreshold.
 
 Return the city with the smallest number of cities that are reachable through some path and whose distance is at most distanceThreshold, If there are multiple such cities, return the city with the greatest number.

@@ -255,7 +255,7 @@ print(max(dp[1][0], dp[1][1]))
 
 ## 3번: String Compression II 
 
-```{admonition} problems
+````{admonition} problems
 :class: dropdown 
 
 String Compression with Removal 
@@ -311,5 +311,5 @@ return **the shortest possible length of the compressed representation of S** af
 - K is an integer within the range [0 .. 100,000]
 - K <= N
 - S consists only of uppercase English letters (A-Z)
-```
+````
 
