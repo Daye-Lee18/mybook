@@ -7,7 +7,7 @@
 - [4번: 코드트리 민트초코 우유](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/mint-choco-milk/description)
 - [5번: 코드트리 메두사와 전사들](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/medusa-and-warriors/description)
 
-## 1번: 마법의 숲 탐색 문제 풀이 
+## 1번: 마법의 숲 탐색 문제 풀이 BFS
 
 ```{admonition} 문제 정리
 :class: dropdown 
@@ -72,7 +72,7 @@ We maintain two separate grids: `golem_arr` and `exit_map`. The `golem array` re
 ![3-6](../../assets/img/implementationPS/3/6.png)
 ```
 
-```{admonition} 최댓값 전파  
+```{admonition} 최댓값 전파 BFS 
 :class: dropdown
 
 현재 골렘의 최댓값을 전파하려면, "다른 골렘의 '출구'"와 맞닿아있어야함. 따라서, 현재 골렘 8방에 다른 골렘의 출구가 있는지 출구 일때에만 전파를 해주는 것을 명심! 
@@ -98,12 +98,16 @@ This two-step design ensures accuracy — newly placed golems immediately get th
 
 ```
 
-````{toggle}
+````{admonition} Solution
+:class: dropdown 
+
 ```{code-block} python
+import sys 
+
+sys.stdin = open('Input.txt', 'r')
 
 from collections import deque 
 
-# f= open('/Users/dayelee/Documents/GitHub/mybook/Input.txt', 'r')
 R, C, K = map(int, input().split())
 H = R + 3 
 graph = [[0] * C for _ in range(H)]
@@ -180,15 +184,15 @@ def reset_or_settle(cy, cx, dir, spirit_id):
 
             id_to_center_dir = dict()
             return False 
-    else: # settle 
-        graph[cy][cx] = spirit_id
-        for t in range(4):
-            ay = cy + AY[t]; ax = cx + AX[t]
-            graph[ay][ax] = spirit_id
+    # settle 
+    graph[cy][cx] = spirit_id
+    for t in range(4):
+        ay = cy + AY[t]; ax = cx + AX[t]
+        graph[ay][ax] = spirit_id
 
-        # id_to_center_dict update 
-        id_to_center_dir[spirit_id] = (cy, cx, dir)
-        return True 
+    # id_to_center_dict update 
+    id_to_center_dir[spirit_id] = (cy, cx, dir)
+    return True 
     
 def exit_cell(id_):
     cy, cx, cd = id_to_center_dir[id_]
@@ -223,6 +227,7 @@ def calculate(id):
     Neighbor_Y = [-2, -1, -1, 0, 0, 1, 1, 2]
     Neighbor_X = [0, -1, 1, -2, 2, -1, 1, 0]
 
+    # BFS 
     q = deque([(cy, cx, id)]) # center y, x값을 넣어야함. 
     visited = set()
     visited.add(id)
@@ -271,7 +276,7 @@ if __name__ == "__main__":
 ```
 ````
 
-## 3번: 미생물 연구 
+## 3번: 미생물 연구 Sorting, PriorityQueue 
 
 ```{admonition} 문제 정리
 :class: dropdown
@@ -351,6 +356,30 @@ for f in range(list_len):
 ```
 ````
 
+````{admonition} 3중 for loop안에서 닫는 위치 
+:class: dropdown 
+
+```{code-block} python 
+for i in range(len(locs_and_id)):          # [루프 1]
+    for origin_x in range(N):              # [루프 2]
+        for origin_y in range(N):          # [루프 3]
+            ...
+            if flag:
+                ...
+                break   # <-- 여기서 끊기는 건 루프 3만
+        if flag: # [루프 2] 중단
+            break
+```
+````
+
+````{admonition} set.union
+:class: dropdown 
+
+```{code-block} python 
+set1.union(set2) # X 
+set1 = set1.union(set2) # O
+```
+````
 
 ````{admonition} 내 문제 풀이
 :class: dropdown
@@ -850,6 +879,221 @@ if __name__ == '__main__':
 ```
 ````
 
+````{admonition} 내 풀이 3
+:class: dropdown 
+
+min-heap으로 좀 더 쉽게 locs를 sorting 함 
+```{code-block} python 
+import sys 
+from heapq import heappush, heappop # min-heap 
+from collections import defaultdict
+
+sys.stdin = open('Input.txt', 'r')
+
+from collections import deque 
+
+N, Q = map(int, input().split())
+graph = [[0] * N for _ in range(N)]
+
+def insert_new_microbe(r1, c1, r2, c2, id):
+    # global graph 
+    # [(r1, c1) ~ exclusive (r2, c2)) 
+    candidates_for_removing = set()
+    for y in range(r1, r2):
+        for x in range(c1, c2):
+            if graph[y][x] != 0:
+                candidates_for_removing.add(graph[y][x])
+            graph[y][x] = id # list의 내부 요소만 수정하는 경우에는 "전역 객체의 참조"를 그대로 쓰는 거라 global 선언 업싱도 가능
+
+    # 침입된 id를 대상으로 group이 두개로 나누어졌는지 세기 
+    for r_id in candidates_for_removing:
+        count, locs = count_group_and_find_loc(r_id)
+        if count >= 2:
+            # removing 
+            for loc in locs:
+                graph[loc[0]][loc[1]] = 0
+
+def count_group_and_find_loc(id):
+    '''
+    count = int
+    return locs: list 
+    '''
+    visited = [[False]*N for _ in range(N)]
+    count = 0 
+    return_locs = set()
+    for y in range(N):
+        for x in range(N):
+            if graph[y][x] == id and not visited[y][x]:
+                locs = BFS(y, x, id, visited)
+                return_locs = return_locs.union(locs)
+                count += 1 
+    # print(f"count, locs: {count}, {return_locs}")
+    return count, list(return_locs)
+
+def in_range(y, x):
+    return 0<=y<N and 0<=x < N 
+
+def BFS(y, x, id, visited):
+    DY = [-1, 0, 1, 0]; DX = [0, 1, 0, -1]
+    q = deque([(y, x)])
+    visited[y][x] = True 
+    locs = set([(y, x)])
+    while q:
+        cur_y, cur_x = q.popleft()
+
+        for t in range(4):
+            ny = cur_y + DY[t]; nx = cur_x + DX[t]
+            # 옆의 위치의 id가 현재 id와 같을 때만 넣음 
+            # 방문하지 않았을 때에만 재방문해야함
+            if in_range(ny, nx) and not visited[ny][nx] and graph[ny][nx] == id:
+                visited[ny][nx] = True 
+                locs.add((ny, nx))
+                q.append((ny, nx))
+    
+    return locs
+
+def replace():  
+    new_graph = [[0] * N for _ in range(N)]
+    return_id_locs = defaultdict(list)
+
+    # 원래 그래프에 있는 id와 locs 계산 
+    visited =[[False]*N for _ in range(N)]
+    locs_and_id = []
+    visited_id = set()
+    for y in range(N):
+        for x in range(N):
+            if not graph[y][x] in visited_id and graph[y][x] != 0:
+                visited_id.add(graph[y][x])
+                cur_id = graph[y][x] 
+                locs = list(BFS(y, x, cur_id, visited))
+                locs_and_id.append((cur_id, locs))
+
+    # sorting [(id, locs)], locs이 넓은 것 우선 -> 같으면 id
+    '''
+    min_heap이용해서 저장하고 나중에 heappop()으로 최소부터 꺼내면 시간 복잡도 더 작음 
+    '''
+    sort(locs_and_id)
+
+    flag = False 
+    # 미생물 하나씩 옮김 
+    for i in range(len(locs_and_id)):  # [루프 1]
+        # origin 위치 찾기
+        # 현재 우리의 graph는 왼쪽 위가 기준이므로 y가 최대한 작게 -> x최대한 작게 
+        for origin_y in range(N):  # [루프 2]
+            for origin_x in range(N): # [루프 3]
+                flag, (distance_y, distance_x) = can_use_origin(origin_y, origin_x, new_graph, locs_and_id[i][0], locs_and_id[i][1])
+                # 옮기기 실행 
+                if flag:
+                    cur_id = locs_and_id[i][0]
+                    for before_y, before_x in locs_and_id[i][1]:
+                        y = before_y - distance_y
+                        x = before_x - distance_x
+                        new_graph[y][x] = cur_id
+                        return_id_locs[cur_id].append((y, x))
+                    break # 옮기면 현재 i에 대해서 멈춰야함. [루프 3 중단]
+            if flag:
+                break # 옮기면 현재 i에 대해서 멈춰야함. [루프 2 중단]
+
+    # 원래 그래프 update 필수  
+    for y in range(N):
+        for x in range(N):
+            graph[y][x] = new_graph[y][x]
+
+    return return_id_locs
+
+def can_use_origin(origin_y, origin_x, new_graph, id, locs):
+    '''
+    locs는 Sort되어서 맨 앞에 있는 것이 (y,x)가 제일 작아야함. -> min-heap을 사용해서 root가 제일 작게함. 
+    '''
+    # sort locs 
+    q = []
+    for i in range(len(locs)):
+        heappush(q, locs[i])
+
+    # 맨 첫 원소 q[0] 는 (y -> x)순으로 가장 작은 것이 들어있음 
+    distance_y = q[0][0] - origin_y 
+    distance_x = q[0][1] - origin_x
+
+    for cur_y, cur_x in q:
+        new_pos_y = cur_y - distance_y 
+        new_pos_x = cur_x - distance_x
+        if in_range(new_pos_y, new_pos_x) and new_graph[new_pos_y][new_pos_x] == 0:
+            continue 
+        else:
+            return False, (None, None)
+    return True, (distance_y, distance_x) 
+    
+
+
+def sort(locs_and_id):
+    '''
+    locs_and_id = [(id1, locs1 (list))]
+    '''
+    lens = len(locs_and_id)
+    for f in range(lens):
+        lowest = f 
+        for r in range(f+1, lens):
+            if not compare(locs_and_id[lowest][0], locs_and_id[lowest][1], locs_and_id[r][0], locs_and_id[r][1]):
+                lowest = r 
+        
+        # SWAP 
+        if lowest != f:
+            temp = locs_and_id[lowest]
+            locs_and_id[lowest] = locs_and_id[f]
+            locs_and_id[f] = temp 
+
+def compare(id1, locs1, id2, locs2):
+    if len(locs1) != len(locs2):
+        return len(locs1) > len(locs2)
+    return id1 < id2 
+
+def solve():
+    
+    for e_id in range(1, Q+1): # 글로벌 변수를 읽기만 할때는 global 선언안해도 됨. 
+        r1, c1, r2, c2 = map(int, input().split())
+        # 미생물 투입 
+        insert_new_microbe(r1, c1, r2, c2, e_id)
+
+        # print('graph:')
+        # for row in graph:
+        #     print(row[:])
+
+        # 배양 용기 이동, 옮긴 용기안의 {id: locs}으로 되어있는 dictionary 반환 
+        return_id_locs = replace()
+
+        # print('After moving graph:')
+        # for row in graph:
+        #     print(row[:])
+
+        # 인접한 미생물의 영역 넓이의 곱을 표시 
+        total = 0
+        keys = list(return_id_locs.keys())
+        for i in range(len(keys)):
+            for j in range(i+1, len(keys)):  # i < j 로만 돌림
+                id1, id2 = keys[i], keys[j]
+                locs1, locs2 = return_id_locs[id1], return_id_locs[id2]
+
+                if is_adjacent(id1, id2, locs1, locs2):
+                    total += len(locs1) * len(locs2)
+        print(total)
+
+def is_adjacent(id1, id2, locs1, locs2):
+    DY = [-1, 0, 1, 0]; DX = [0, 1, 0, -1]
+    for loc in locs1:
+        cur_y, cur_x = loc 
+
+        for t in range(4):
+            ny = cur_y + DY[t]
+            nx = cur_x + DX[t]
+            if in_range(ny, nx) and graph[ny][nx] == id2:
+                return True 
+    
+    return False 
+
+if __name__ == '__main__':
+    solve()
+```
+````
 ````{admonition} test case 
 :class: dropdown
 1. 
@@ -877,3 +1121,572 @@ if __name__ == '__main__':
 
 ## 4번: 민트초코 우유 
 
+
+````{admonition} solution 
+:class: dropdown 
+
+```{code-block} python 
+import sys
+from collections import deque
+import heapq
+
+try:
+    sys.stdin = open("input.txt")
+except:
+    pass
+#
+
+#
+def print_trust():
+    for r in range(N):
+        for c in range(N):
+            print(board[r][c].trust, end=' ')
+        print()
+    print('=' * 20)
+
+
+def print_food():
+    for r in range(N):
+        for c in range(N):
+            print(board[r][c].food, end=' ')
+        print()
+    print('=' * 20)
+#
+
+#
+class Student:
+    def __init__(self, r, c):
+        self.r = r
+        self.c = c
+        self.food = 0
+        self.trust = 0  # 신앙심
+        self.defence = 0  # 방어
+    #
+    def __lt__(self, other):
+        return (-self.trust, self.r, self.c) < (-other.trust, other.r, other.c)
+#
+
+#
+class Group:
+    def __init__(self, food):
+        # 대표 좌표, 대표 음식
+        self.food = food
+        self.member = []
+        self.manager = None
+
+    #
+    def set_manager(self):
+        """
+        대표자 정하기 & trust set
+        대표자: trust up -> r down -> c down
+        대표자.trust += 그룹원 -1
+        팀원.trust -= 1
+        """
+        self.manager = min(self.member)
+        for m in self.member:
+            if m == self.manager:
+                m.trust += len(self.member) - 1
+            else:
+                m.trust -= 1
+    #
+    def print_group_member(self):
+        for m in self.member:
+            print((m.r, m.c), end=' ')
+        print()
+#
+
+#
+food2bin = {
+    'T': 0,
+    'C': 1,
+    'M': 2
+}
+#
+
+#
+def in_range(r, c):
+    return 0 <= r < N and 0 <= c < N
+#
+
+#
+def breakfast():
+    """
+    - 모든 학생의 trust += 1
+    """
+    for r in range(N):
+        for c in range(N):
+            stu = board[r][c]
+            stu.trust += 1
+#
+
+#
+dr = [-1, 1, 0, 0]
+dc = [0, 0, -1, 1]
+def bfs(sr, sc, food, group, v):
+    q = deque([(sr, sc)])
+    group.member.append(board[sr][sc])
+    while q:
+        r, c = q.popleft()
+        v[r][c] = True
+        for i in range(4):
+            nr = r + dr[i]
+            nc = c + dc[i]
+            if not in_range(nr, nc) or v[nr][nc] or board[nr][nc].food != food:
+                continue
+            q.append((nr, nc))
+            v[nr][nc] = True
+            group.member.append(board[nr][nc])
+    return v
+#
+
+#
+def lunch():
+    """
+    - 인접한 학생들과 신봉 음식이 같은 경우 그룹 형성
+    - 대표자: trust up -> r down -> c down
+    - 대표자.trust += 그룹원 -1
+    - 팀원.trust -= 1
+    :return:
+    """
+    visited = [[False] * N for _ in range(N)]
+    group_lst = []
+    for r in range(N):
+        for c in range(N):
+            if visited[r][c]:
+                continue
+            # 그룹 형성
+            group = Group(board[r][c].food)
+            visited = bfs(r, c, board[r][c].food, group, visited)
+            group_lst.append(group)
+            # 대표자 정하기 & trust set
+            group.set_manager()
+
+    return group_lst
+#
+
+#
+def set_order(group_lst):
+    """
+    [1] 전파 순서 정하기
+    - 전파 순서: 단일 -> 이중 -> 삼중 그룹
+        - 대표자의 B up -> 대표자의 r down -> c down
+    :return order_lst
+    """
+    order_lst = [[] for _ in range(3)]  # 단일/이중/삼중
+    for g in group_lst:
+        # 삼중인 경우
+        if g.food == 7:
+            order_lst[2].append(g.manager)
+        # 단일 인 경우
+        elif g.food in [1, 2, 4]:
+            order_lst[0].append(g.manager)
+        else:  # 이중인 경우
+            order_lst[1].append(g.manager)
+    return order_lst
+#
+
+#
+def strong_spread(x, spreader, target):
+    target.food = spreader.food
+    x -= (target.trust + 1)
+    target.trust += 1
+
+    return x
+
+
+def weak_spread(x, spreader, target):
+    for food in [0, 1, 2]:
+        if ((spreader.food >> food) & 1 == 1) and ((target.food >> food) & 1 == 0):
+            target.food |= (1 << food)
+    target.trust += x
+    x = 0
+
+    return x
+
+
+def do_spread(spreader):
+    """
+    [2] 전파하기
+    - 전파자
+        - 전파 방향: trust % 4
+        - x: B-1(간절함), B = 1check
+    - 전파 시작
+        - 전파 방향으로 1칸씩 이동하며 전파
+        - 격자 밖으로 나가거나 x = 0이 되면 전파 종료
+        - 전파 음식이 타겟음식과 같으면 전파 X, 다음 진행
+        - 다르면, 전파 수행
+    [3] 전파 방법
+    - y: 타겟의 trust
+    - 강한 전파(x > y):
+        - 타겟.food = 전파.food
+        - 전파.x -= y+1
+        - 타겟.trust += 1
+    - 약한 전파 (x <= y):
+        - 타겟.food |= 전파자.food   (있는지 확인 필요)
+        - 타겟.trust += x
+        - 전파.x = 0
+    :return:
+    """
+    d = spreader.trust % 4
+    x = spreader.trust - 1
+    spreader.trust = 1
+    r, c = spreader.r, spreader.c
+
+    for i in range(1, N):
+        nr = r + dr[d] * i
+        nc = c + dc[d] * i
+
+        if not in_range(nr, nc) or x <= 0:
+            break
+
+        target = board[nr][nc]
+        if target.food ^ spreader.food:  # 두 음식이 다를 때만 전파 진행
+            if x > target.trust:
+                x = strong_spread(x, spreader, target)
+            else:
+                x = weak_spread(x, spreader, target)
+            target.defence = t
+#
+
+#
+def dinner(group_lst):
+    # 전파 순서 정하기
+    order_lst = set_order(group_lst)
+
+    for order in order_lst:
+        order.sort()
+        for spreader in order:
+            if spreader.defence < t:
+                do_spread(spreader)
+#
+
+#
+def print_result():
+    """
+    TCM, TC, TM, CM, M, C, T 순으로 각 음식의 신봉자들의 신앙심 총합 출력
+    'T': 0,
+    'C': 1,
+    'M': 2
+    """
+    result = [0]*8
+    for r in range(N):
+        for c in range(N):
+            stu = board[r][c]
+            result[stu.food] += stu.trust
+
+    for food in ['TCM', 'TC', 'TM', 'CM', 'M', 'C', 'T']:
+        key_food = 0
+        for f in food:
+            key_food |= 1 << food2bin[f]
+        print(result[key_food], end=" ")
+    print()
+#
+
+#
+N, T = map(int, input().split())
+board = [[0] * N for _ in range(N)]
+for row in range(N):
+    tmp = input()
+    for column in range(N):
+        stu = Student(row, column)
+        food = food2bin[tmp[column]]
+        stu.food |= (1 << food)
+        board[row][column] = stu
+#
+for row in range(N):
+    tmp = list(map(int, input().split()))
+    for column in range(N):
+        board[row][column].trust = tmp[column]
+#
+
+#
+for t in range(1, T + 1):
+    breakfast()
+
+    GROUP_LST = lunch()
+
+    dinner(GROUP_LST)
+
+    print_result()
+```
+````
+
+````{admonition} 틀린 답 
+:class: dropdown 
+
+어디서 틀렸나? 해당 group의 대표자의 전도 이후에는 음식이름이나, 신뢰도, 그에 따른 상태가 바뀌는데,
+현재 코드로하면 맨 처음의 groups에서 계속 iterate하는 것이라 틀림. 
+
+따라서, 계속 바뀌는 상황에서 맞게하려는 경우에는 
+
+```{code-block} python 
+import sys 
+
+sys.stdin = open('Input.txt', 'r')
+
+from collections import deque 
+import heapq 
+
+N, T = map(int, input().split())
+graph = []
+belive_graph = []
+for n in range(N):
+    graph.append(list(input()))
+
+for _ in range(N):
+    belive_graph.append(list(map(int, input().split())))
+
+# 간절함 그래프 
+desperate_graph =[[-1] * N for _ in range(N)]
+
+def morning():
+    for y in range(N):
+        for x in range(N):
+            belive_graph[y][x] += 1 
+
+def lunch():
+    '''
+    1. 인접한 학생들과 신봉 음식이 "완전히 같은 경우"에 그룹 형성 
+    2. 대표자 선정 
+        - 신앙심이 가장 큰 사람 -> y가 작은 사람 -> x가 작은 사람 
+    3. 그룹의 대표자에게 <- 그룹 다른 학생들의 신앙심이 넘어감.
+        - 대표자는 +1, 그룹 내 다른 학생들 -1 
+    '''
+    visited = [[False]*N for _ in range(N)]
+    # group을 넣을때 순서가 있음 
+    groups = []
+    for y in range(N):
+        for x in range(N):
+            if not visited[y][x]:
+                locs = BFS(y, x, visited) # 음식순서 -> 대표자가 맨 앞에 있는 list반환, (len(음식), -belive_graph[ny][nx], ny, nx)
+                heapq.heappush(groups, locs)
+
+    # 각 그룹을 돌면서 대표자(맨 처음)에게 신앙심 넘겨주기 
+    for group in groups:
+        # 대표자 
+        representative = group[0]
+        for other in group[1:]:
+            belive_graph[other[2]][other[3]] -= 1
+            belive_graph[representative[2]][representative[3]] += 1
+
+    return groups 
+
+def in_range(y, x):
+    return 0 <= y < N and 0<=x <N 
+
+def BFS(cury, curx, visited):
+    DY = [-1, 0, 1, 0]; DX = [0, 1, 0, -1]
+    locs = [(len(graph[cury][curx]),-belive_graph[cury][curx],cury, curx)]
+    q = deque([(cury, curx)])
+    original_food = graph[cury][curx]
+    visited[cury][curx] = True 
+
+    while q:
+        y, x = q.popleft()
+
+        for t in range(4):
+            ny = y + DY[t]
+            nx = x + DX[t]
+            # graph내에 있고, 신봉 음식 이름이 원래 (cury, curx)와 동일하고 visited안했다면
+            if in_range(ny, nx) and graph[ny][nx] == original_food and not visited[ny][nx]:
+                visited[ny][nx]=True 
+                q.append((ny, nx))
+                # 음식순서: 단일 -> 2개 -> 3개 (min-heap), 대표자: 신앙심이 가장 큰 사람 (max_heap) -> y가 작은 사람 (min-heap) -> x가 작은 사람 (min-heap)
+                heapq.heappush(locs, (len(graph[ny][nx]), -belive_graph[ny][nx], ny, nx))
+
+    return locs
+
+
+
+def dinner(groups):
+    '''
+    groups안의 각 group은 다음과 같이 정렬 : heap이라서 heappop()으로 빼야함. 
+    # (음식조합개수, -belive_graph[ny][nx], y, x): 음식조합개수 min, 신앙심이 max, y가 최소, x가 최소 
+
+    대표자(==전파자) 의 신앙심 전파
+    - 만약 전파하기 전에, 다른 전파자에게 전파 당한 경우 
+        - 그 날 전파하지 못함. 
+        - 추가로 전파를 받을 수는 있음. 
+    - 자신과 다른 음식을 좋아하는 학생이 있는 경우에 전파 방향으로 전파함.
+        - 전파 방향: 신앙심 % 4
+        - 0: 위, 1: 아래, 2: 왼쪽, 3: 오른쪽
+        - 전파자 update 
+            - 간절함: 신앙심-1, 신앙심: 1 
+    - 전파 방향으로 한 칸 씩 이동하면 전파 
+        - 1. 전파 대상의 신봉음식이 동일한 경우, 전파하지 않고 지나감 
+        - 2. 신봉음식이 다른 경우 
+            - 강한 전파: 전파자의 간절함 > 전파대상의 신앙심인 경우 
+                - 전파대상의 신봉 음식 = 전파자의 신봉 음식 
+                - 전파자 간절함: 간절함 - (전파대상의 신앙심 + 1)
+                    - 간절함이 0이 되면 전파 종료 
+                - 전파대상 신앙심: 전파대상의 신앙심 + 1  
+            - 약한 전파: 전파자의 간절함 <= 전파대상의 신앙심인 경우 
+                - 전파대상의 신봉 음식 += 전파자의 신봉 음식 
+                - 전파자 간절함 = 0
+                - 전파대상의 신앙심 += 전파자의 간절함 
+        - 종료: Graph 밖을 벗어나거나, '간절함' 0이 되면 종료 
+    '''
+    DY = [-1, 1, 0, 0]; DX = [0, 0, -1, 1]
+    is_propagated = [[False] * N for _ in range(N)]
+
+    # 모든 대표자의 위치 
+    all_representatives = set()
+    for group in groups:
+        # 대표자 
+        representative = group[0]
+        r_y = representative[2]
+        r_x = representative[3]
+        all_representatives.add((r_y, r_x))
+
+
+    # 이후 ordered 순서로 전파 실행
+    # for representative in ordered:
+    #     ...
+
+
+    # for group in groups: # 순서대로 뽑기 
+    while groups:
+        group = heapq.heappop(groups)
+
+
+        # 대표자 
+        representative = group[0]
+        r_y = representative[2]
+        r_x = representative[3]
+        # print(f'representative: ({representative[2], representative[3]})')
+
+        # 대표자가 전파당한 경우 전파할 수 없음 
+        if is_propagated[r_y][r_x]:
+            continue    
+
+        # 전파 시작 
+        '''
+        전파자 update 
+            - 간절함: 신앙심-1, 신앙심: 1 
+        '''
+        dir = belive_graph[r_y][r_x] % 4  # 빙행 설정 
+        desperate_graph[r_y][r_x] = belive_graph[r_y][r_x] -1
+        belive_graph[r_y][r_x] = 1
+        r_food = graph[r_y][r_x]
+
+
+        cur_y = r_y + DY[dir]
+        cur_x = r_x + DX[dir]
+        while desperate_graph[r_y][r_x] > 0 and in_range(cur_y, cur_x): # 간절함이 0이 되면 전파 종료 혹은 그래프를 나가면 종료 
+            # 전파 대상의 신봉음식이 동일한 경우, 전파하지 않고 지나감 
+            if r_food == graph[cur_y][cur_x]:
+                cur_y += DY[dir]
+                cur_x += DX[dir]
+                # print(f'after propgation with repre {r_y, r_x}')
+                # for row in belive_graph:
+                #     print(row[:])
+                continue 
+
+            # 신봉음식이 다른 경우 
+            if desperate_graph[r_y][r_x] > belive_graph[cur_y][cur_x]: # 강한전파 
+                '''
+                - 전파대상의 신봉 음식 = 전파자의 신봉 음식 
+                - 전파자 간절함: 간절함 - (전파대상의 신앙심 + 1)
+                - 전파대상 신앙심: 전파대상의 신앙심 + 1  
+                '''
+                graph[cur_y][cur_x] = r_food 
+                belive_graph[cur_y][cur_x] += 1
+                desperate_graph[r_y][r_x] -= belive_graph[cur_y][cur_x]
+            
+            else: # 약한 전파 
+                '''
+                전파대상의 신봉 음식 += 전파자의 신봉 음식 
+                - 전파자 간절함 = 0
+                - 전파대상의 신앙심 += 전파자의 간절함 
+                
+                'TCM' -> 'TC' -> 'TM' -> 'CM' -> 'M' -> 'C' -> 'T' 
+                민트초코우유 -> 민트초코 -> 민트우유 -> 초코우유 -> 우유 -> 초코 -> 민트 순서대로 각 음식의 신앙심 출력 
+                '''
+                cur_food = set(graph[cur_y][cur_x])
+                cur_food = cur_food.union(set(graph[r_y][r_x]))
+                
+                result_food = []
+                if 'T' in cur_food:
+                    result_food.append('T')
+                if 'C' in cur_food:
+                    result_food.append('C')
+                if 'M' in cur_food:
+                    result_food.append('M')
+                
+
+                graph[cur_y][cur_x] = ''.join(result_food)
+                # print(result_food)
+                belive_graph[cur_y][cur_x] += desperate_graph[r_y][r_x]
+                desperate_graph[r_y][r_x] = 0
+
+            ## update 
+            if check_representative_propagaged(cur_y, cur_x, all_representatives):
+                is_propagated[cur_y][cur_x] = True 
+
+            cur_y += DY[dir]
+            cur_x += DX[dir]
+
+            # print(f'after propgation with repre {r_y, r_x}')
+            # for row in belive_graph:
+            #     print(row[:])
+
+
+def check_representative_propagaged(y, x, repres_set):
+    return (y, x) in repres_set
+
+
+def print_believe(idx):
+    '''
+    'TCM' -> 'TC' -> 'TM' -> 'CM' -> 'M' -> 'C' -> 'T' 
+    민트초코우유 -> 민트초코 -> 민트우유 -> 초코우유 -> 우유 -> 초코 -> 민트 순서대로 각 음식의 신앙심 출력 
+    '''
+    my_dict = {
+        'TCM': 0,
+        'TC': 1,
+        'TM': 2,
+        'CM': 3,
+        'M': 4,
+        'C': 5,
+        'T': 6
+    }
+    believe_sums = [0] * 7
+
+    for y in range(N):
+        for x in range(N):
+            believe_sums[my_dict[graph[y][x]]] += belive_graph[y][x]
+
+    for i in believe_sums:
+        print(i, end=' ')
+    if idx != T-1:
+        print()
+
+def solve():
+    for t in range(T):
+        # 아침 
+        morning()
+        # print('after morning: ')
+        # for row in belive_graph:
+        #     print(row[:])
+
+        # 점심 
+        groups = lunch()
+        # print('after lunch belif: ')
+        # for row in belive_graph:
+        #     print(row[:])
+        # print('after lunch food: ')
+        # for row in graph:
+        #     print(row[:])
+
+        # 저녁 
+        dinner(groups)
+        # print('after dinner: ')
+        # for row in belive_graph:
+        #     print(row[:])
+
+        # 출력 
+        print_believe(t)
+
+if __name__ == '__main__':
+    solve()    
+```
+````

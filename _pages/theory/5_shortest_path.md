@@ -348,6 +348,21 @@ click the [link](https://www.cs.usfca.edu/~galles/visualization/Heap.html)
 ````{admonition} 힙 구현 
 :class: dropdown 
 
+주의!
+- heappush() → _siftdown 호출
+    - 하지만 이 함수는 “부모와 비교하면서 위로 올리는(= percolate up)” 동작을 해.
+    - 즉, 삽입 = 위로 올리기(sift-up) 가 맞음.
+    - 단지 CPython의 함수 이름이 역사적으로 _siftdown을 사용함.(이름과 실제 동작 방향이 반대처럼 보임)
+
+- heappop() → _siftup 호출
+    - 루트에 마지막 원소를 올린 뒤, 자식과 비교하며 아래로 내리는(= percolate down) 동작을 해.
+    - 즉, 삭제 = 아래로 내리기(sift-down) 가 맞음.
+    - 마지막에 heap[pos] = newitem 한 다음 _siftdown(heap, 0, pos) 를 한 번 더 호출하는 건, 동점/부모-자식 비교의 경계 케이스에서 힙 불변식을 더 깔끔히 보장하려는 테크닉이야.
+
+- 함수 동작 매핑 (개념 ↔ CPython 이름)
+    - 개념적 sift-up(위로 올리기) ⟷ heapq의 _siftdown
+    - 개념적 sift-down(아래로 내리기) ⟷ heapq의 _siftup
+
 ```{code-block} python
 ---
 caption: python standard library에서 제공하는 heapq의 구현 방식을 참고하였다. 
@@ -629,11 +644,230 @@ for i in range(1, N+1):
 ### 플로이드
 [플로이드](https://www.acmicpc.net/problem/11404)
 
+````{admonition} solution
+:class: dropdown 
+
+```{code-block} python
+import sys
+# sys.stdin = open('Input.txt', 'r')  # 로컬 테스트용
+
+n = int(input())
+m = int(input())
+INF = 10**9
+dp = [[INF] * (n + 1) for _ in range(n + 1)]
+
+# 자기 자신으로의 비용 0
+for i in range(1, n + 1):
+    dp[i][i] = 0
+
+# 간선 입력: 중복 간선 최소값 유지
+for _ in range(m):
+    a, b, c = map(int, input().split())
+    dp[a][b] = min(dp[a][b], c)
+
+def floyd():
+    for k in range(1, n + 1):
+        for a in range(1, n + 1):
+            for b in range(1, n + 1):
+                dp[a][b] = min(dp[a][b], dp[a][k] + dp[k][b])
+
+floyd()
+
+# 출력
+for i in range(1, n + 1):
+    for j in range(1, n + 1):
+        print(0 if dp[i][j] == INF else dp[i][j], end=' ')
+    print()
+```
+````
 ### Find a Safe Walk Through a Grid 
 [Leetcode 3286](https://leetcode.com/problems/find-a-safe-walk-through-a-grid/description/?envType=problem-list-v2&envId=shortest-path)
 
+````{admonition} class 사용하기 
+:class: dropdown 
+
+- class: 관련있는 **데이터(상태)** 와 **동작(메서드)** 을 한 덩어리로 묶는 설계도 
+- instance(객체): 그 설계도로 찍어낸 실체. sol = Solution()처럼 생성 
+- 언제 클래스를 쓰면 좋은가? 
+    - 함수가 여러 개로 나뉘고 **공유해야 할 상태(예: 방문표시, DP 테이블)** 가 있을 때
+    - 여러 전략/알고리즘(BFS/다익스트라/0-1 BFS)을 같은 인터페이스로 바꿔 끼우고 싶을 때
+    - 로직이 커져 캡슐화/가독성이 필요할 때
+- 언제 굳이 안 써도 되는가? 
+    - 한두 개의 순수 함수로 끝나고 공유 상태가 거의 없을 때
+    - “입력 → 출력”만 깔끔하게 끝나는 작은 유틸일 때
+- 이 문제에서 클래스를 쓰는 이유 (장점)
+    - 상태 보관: m, n, dp, health 같은 값을 전역 없이 self에 담아 메서드 간 공유.
+    - 응집도↑: “그리드에서 안전 경로 찾기”라는 문제 도메인 로직이 한 곳에 모임.
+    - 재사용/테스트 용이: 다른 테스트 케이스를 돌릴 때 인스턴스를 새로 만들거나, 메서드만 교체/확장하기 쉬움.
+    - 확장성: 이후 “대각선 이동 허용”, “함정 칸 추가” 같은 규칙을 필드/메서드로 자연스럽게 추가.
+
+- 해당 문제에서 설계 포인트
+    - 상태: self.m, self.n, self.dp, self.health 
+    - 불면식 (생각하기)
+        - self.dp[y][x]: (y, x)에 도달했을때의 최대 남은 체력 
+        - 항상 self.dp는 "지금까지 알려진 최선"을 저장 (다익스트라의 거리 배열 역할)
+    - 메서드 분리 
+        - findSafeWlk: 세팅 + "정답 반환"
+        - dijkstra: 핵심 탐색 
+        - in_range: 경계 체크
+````
+
+```{toggle}
+grid가 아래처럼 start cell도 unsafe할 수 있는 경우를 생각하자. 
+[[1, 1, 1, 1]]
+```
+
+````{admonition} class 정리 
+:class: important
+- “클래스는 상태와 동작을 함께 담아, 그래프 탐색 같은 문제에서 전역 없이 로직을 조직화한다.”
+- “공유 상태가 있거나 전략을 바꿔 끼우고 싶을 때 특히 유리하다.”
+- “짧고 순수한 변환 로직에는 함수형이 더 간단할 수 있다.”
+````
+````{admonition} solution
+:class: dropdown 
+
+```{code-block} python 
+from heapq import heappush, heappop 
+from typing import List
+
+class Solution:
+    def __init__(self):
+        
+        self.dp = []
+        self.m=0
+        self.n= 0
+        self.health = 0
+        
+
+    def findSafeWalk(self, grid: List[List[int]], health: int) -> bool:
+        MIN = -1
+        start = (0, 0)
+        self.m = len(grid)
+        self.n = len(grid[0])
+        self.dp = [[MIN]* self.n for _ in range(self.m)]
+        self.health = health
+        '''
+        state = each index 
+        what to store = the remaining health 
+        transition = 
+            if the current dp - (0/1 graph value) > 0:
+                neigbhor = min(dp of neighbor, current dp - (0/1 graph value)])
+        '''
+
+        self.dijkstra(start, grid)
+        '''
+        Return true if you can reach the final cell with a health value of 1 or more, and false otherwise.
+        '''
+        return self.dp[self.m-1][self.n-1] >= 1
+
+    def in_range(self, y, x):
+        return 0<=y < self.m and 0<=x < self.n 
+
+    def dijkstra(self, start, grid):
+
+        DY = [-1, 1, 0, 0]; DX = [0, 0, -1, 1]
+        cur_health = self.health - grid[0][0]
+        self.dp[start[0]][start[1]] = cur_health
+        q = []
+
+        # (max health, y, x): the first item should be the value which the heap is prioritied by 
+        q.append((-cur_health, 0, 0))
+
+        while q:
+            dis, y, x = heappop(q)
+            dis = -dis
+
+            if dis < self.dp[y][x]: # check visit 
+                continue 
+
+            for t in range(4):
+                ny = y + DY[t]; nx = x + DX[t]
+                if not self.in_range(ny, nx):
+                    continue 
+                
+                # 다음 칸으로 "들어갈 때" 그 칸의 비용 지불
+                # Cells (i, j) with grid[i][j] = 1 are considered unsafe and reduce your health by 1.
+                if self.dp[y][x] - grid[ny][nx] > 0:
+                    if self.dp[ny][nx] < self.dp[y][x] - grid[ny][nx]:
+                        self.dp[ny][nx] = self.dp[y][x] - grid[ny][nx]
+                        heappush(q, (-self.dp[ny][nx], ny, nx))
+
+
+if __name__ == "__main__":
+    sol = Solution()
+    # grid = [[1,1,1],[1,0,1],[1,1,1]]
+    # health = 5
+    grid = [[1,1,1,1]]
+    health = 4
+    print(sol.findSafeWalk(grid, health))
+    print(sol.dp)
+```
+````
+
 ### Digit Operations to Make Two Integers Equal 
 [Leetcode 3377](https://leetcode.com/problems/digit-operations-to-make-two-integers-equal/description/?envType=problem-list-v2&envId=shortest-path)
+
+````{admonition} solution
+:class: dropdown 
+
+```{code-block} python
+import heapq
+
+class Solution:
+    def minOperations(self, n: int, m: int) -> int:
+        # 자릿수 범위에 맞춰 소수 테이블 만들기 (예: n=abcd → 0..9999)
+        limit = 10 ** len(str(n))
+        is_prime = self._sieve(limit)
+
+        # 시작/도착이 소수면 불가능
+        if is_prime[n] or is_prime[m]:
+            return -1
+
+        # 다익스트라: (누적비용, 현재값)
+        pq = [(n, n)]         # 시작 값도 비용에 포함
+        seen = {n}            # 재방문 방지
+
+        while pq:
+            cost, cur = heapq.heappop(pq)
+            if cur == m:
+                return cost
+
+            s = list(str(cur))
+            L = len(s)
+
+            for i, ch in enumerate(s):
+                # +1 시도 (9 불가)
+                if ch < '9':
+                    s[i] = str(int(ch) + 1)
+                    nxt = int(''.join(s))
+                    if not is_prime[nxt] and nxt not in seen:
+                        seen.add(nxt)
+                        heapq.heappush(pq, (cost + nxt, nxt))
+                    s[i] = ch  # 롤백
+
+                # -1 시도 (0 불가, 맨 앞자리는 1→0 금지)
+                if ch > '0' and not (i == 0 and ch == '1'):
+                    s[i] = str(int(ch) - 1)
+                    nxt = int(''.join(s))
+                    if not is_prime[nxt] and nxt not in seen:
+                        seen.add(nxt)
+                        heapq.heappush(pq, (cost + nxt, nxt))
+                    s[i] = ch  # 롤백
+
+        return -1
+
+    def _sieve(self, n: int):
+        is_prime = [False, False] + [True] * (n - 2)
+        p = 2
+        while p * p < n:
+            if is_prime[p]:
+                step = p
+                start = p * p
+                is_prime[start:n:step] = [False] * (((n - 1) - start) // step + 1)
+            p += 1
+        return is_prime
+```
+````
 
 ### Evaluate Divison 
 [Leetcode 399](https://leetcode.com/problems/evaluate-division/?envType=problem-list-v2&envId=shortest-path)
@@ -641,5 +875,52 @@ for i in range(1, N+1):
 ### Path with Maximum Probability 
 [Leetcode 1512](https://leetcode.com/problems/path-with-maximum-probability/description/?envType=problem-list-v2&envId=shortest-path)
 
+````{admonition} solution
+:class: dropdown 
+
+```{code-block} python 
+from heapq import heappush, heappop
+from typing import List
+
+class Solution:
+    def maxProbability(
+        self, n: int, edges: List[List[int]], succProb: List[float],
+        start: int, end: int
+    ) -> float:
+        # 1) 그래프 인접리스트 구성
+        g = [[] for _ in range(n)]
+        for (u, v), p in zip(edges, succProb):
+            g[u].append((v, p))
+            g[v].append((u, p))
+
+        # 2) dist[i] = start→i 까지의 최대 성공 확률
+        dist = [0.0] * n
+        dist[start] = 1.0 # 확률을 곱해야하므로 0.0이 아닌, 1.0로 저장 
+
+        # 3) 최대 힙처럼 쓰기 위해 음수로 저장
+        pq = [(-1.0, start)]  # (음수 확률, 노드)
+
+        while pq:
+            neg_p, u = heappop(pq)
+            p = -neg_p
+
+            # 우선순위큐에서 뽑힌 값이 이미 더 작은(낡은) 값이면 스킵
+            if p < dist[u]:
+                continue
+
+            # 목적지에 도달하면 현재 p가 최대 확률
+            if u == end:
+                return p
+
+            # 4) 이웃 갱신
+            for v, w in g[u]:
+                np = p * w
+                if np > dist[v]:
+                    dist[v] = np
+                    heappush(pq, (-np, v))
+
+        return 0.0
+```
+````
 ### Minimum Cost to Converst String I
 [Leetcode 2976](https://leetcode.com/problems/minimum-cost-to-convert-string-i/description/?envType=problem-list-v2&envId=shortest-path)
