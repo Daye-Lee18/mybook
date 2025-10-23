@@ -737,15 +737,17 @@ document.write(`
 
     <span class="n">pivot</span> <span class="o">=</span> <span class="n">start</span>
     <span class="n">left</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="mi">1</span>
-    <span class="n">right</span> <span class="o">=</span> <span class="n">end</span>
+    <span class="n">right</span> <span class="o">=</span> <span class="n">end</span> <span class="c1"># inclusive </span>
 
+    <span class="c1"># pivot(start) _ _ _ _ end </span>
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="c1"># Move left pointer until you find an element greater than the pivot</span>
-        <span class="c1"># end position까지 pivot과 비교 필요 </span>
+        <span class="c1"># range check: end position까지 pivot과 비교 필요 </span>
+        <span class="c1"># value check: Move left pointer until you find an element greater than the pivot</span>
         <span class="k">while</span> <span class="n">left</span> <span class="o">&lt;=</span> <span class="n">end</span> <span class="ow">and</span> <span class="n">array</span><span class="p">[</span><span class="n">left</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">array</span><span class="p">[</span><span class="n">pivot</span><span class="p">]:</span>
             <span class="n">left</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="c1"># Move right pointer until you find an element smaller than the pivot</span>
-        <span class="c1"># right은 left에 비해 start (pivot) index보다 커야함. </span>
+        
+        <span class="c1"># range check: right의 range는 start보다 커야함. </span>
+        <span class="c1"># value check: Move right pointer until you find an element smaller than the pivot</span>
         <span class="k">while</span> <span class="n">right</span> <span class="o">&gt;</span> <span class="n">start</span> <span class="ow">and</span> <span class="n">array</span><span class="p">[</span><span class="n">right</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">array</span><span class="p">[</span><span class="n">pivot</span><span class="p">]:</span>
             <span class="n">right</span> <span class="o">-=</span> <span class="mi">1</span>
 

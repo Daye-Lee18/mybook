@@ -381,15 +381,17 @@ def quick_sort(array, start, end):
 
     pivot = start
     left = start + 1
-    right = end
+    right = end # inclusive 
 
+    # pivot(start) _ _ _ _ end 
     while True:
-        # Move left pointer until you find an element greater than the pivot
-        # end position까지 pivot과 비교 필요 
+        # range check: end position까지 pivot과 비교 필요 
+        # value check: Move left pointer until you find an element greater than the pivot
         while left <= end and array[left] <= array[pivot]:
             left += 1
-        # Move right pointer until you find an element smaller than the pivot
-        # right은 left에 비해 start (pivot) index보다 커야함. 
+        
+        # range check: right의 range는 start보다 커야함. 
+        # value check: Move right pointer until you find an element smaller than the pivot
         while right > start and array[right] >= array[pivot]:
             right -= 1
 
