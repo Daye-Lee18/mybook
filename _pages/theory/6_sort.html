@@ -372,6 +372,10 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">퀵 정렬 소스코드 및 시간 복잡도</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#merge-sort">병합 정렬 (Merge sort)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#source-code">병합 정렬 source code 및 시간 복잡도</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#count-sort">계수 정렬 (Count sort)</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">계수 정렬 예시</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">계수 정렬 코드 및 시간 &amp; 공간 복잡도</a></li>
@@ -820,6 +824,86 @@ document.write(`
 <p>실제로 파이썬에서 기본 정렬 라이브러리를 이용하면 O(NlogN)을 보장해주기 때문에 크게 걱정하지 않아도 된다.</p>
 </section>
 </section>
+<section id="merge-sort">
+<h2>병합 정렬 (Merge sort)<a class="headerlink" href="#merge-sort" title="Link to this heading">#</a></h2>
+<p>우선 병합 정렬과 퀵 정렬을 비교하면 다음과 같다.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>구분</p></th>
+<th class="head"><p>병합 정렬 (Merge Sort)</p></th>
+<th class="head"><p>퀵 정렬 (Quick Sort)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>정렬방식</p></td>
+<td><p>분할 정복 (Divide &amp; Conquer) -&gt; 반으로 나누고, 정렬된 결과를 병합 (merge)</p></td>
+<td><p>분할 정복 (Divide &amp; Conquer) -&gt; 피벗(pivot)을 기준으로 작은 값/큰 값으로 분할</p></td>
+</tr>
+<tr class="row-odd"><td><p>기준</p></td>
+<td><p>단순히 절반으로 나눔</p></td>
+<td><p>피벗 값에 따라 나눔</p></td>
+</tr>
+<tr class="row-even"><td><p>정렬 과정</p></td>
+<td><p>분할 후 -&gt; 병합하며 정렬</p></td>
+<td><p>분할하면서 -&gt; 정렬</p></td>
+</tr>
+<tr class="row-odd"><td><p>시간 복잡도</p></td>
+<td><p>항상 O(NlogN)</p></td>
+<td><p>평균 O(NlogN), 최악 O(<span class="math notranslate nohighlight">\(N^2\)</span>)</p></td>
+</tr>
+<tr class="row-even"><td><p>공간 복잡도</p></td>
+<td><p>O(N) (추가배열필요)</p></td>
+<td><p>O(logN) (재귀 스택만 사용)</p></td>
+</tr>
+<tr class="row-odd"><td><p>정렬 안정성</p></td>
+<td><p>Stable (동일 값의 순서 유지됨)</p></td>
+<td><p>Unstable</p></td>
+</tr>
+<tr class="row-even"><td><p>적합한 경우</p></td>
+<td><p>대용량 데이터, 외부 정렬 (파일 단위 정렬 등)</p></td>
+<td><p>메모리 제한이 있는 경우, 평균 성능이 중요할 때</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>위의 테이블을 요약하자면, 병합 정렬을 항상 O(NlogN)을 보장하지만, 안정 정렬이지만, 메모리 공간을 추가로 사용한다. 또한 퀵 정렬은 보통 더 빠르지만 (캐시 효율, in-place), 데이터가 편향되면 O(<span class="math notranslate nohighlight">\(N^2\)</span>)로 느려진다.</p>
+<p>이때 <em><strong>Stable Sort</strong></em>의 의미는 동일한 값을 가진 원소의 기존 순서가 유지되는 것을 의미한다. 예를 들어, 아래처럼 정렬할 때,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[(</span><span class="n">Alice</span><span class="p">,</span> <span class="mi">90</span><span class="p">),</span> <span class="p">(</span><span class="n">Bob</span><span class="p">,</span> <span class="mi">90</span><span class="p">),</span> <span class="p">(</span><span class="n">Chris</span><span class="p">,</span> <span class="mi">80</span><span class="p">)]</span>
+</pre></div>
+</div>
+<p>점수를 기준으로 오름차순 정렬하면</p>
+<ul class="simple">
+<li><p>Stable sort라면 <code class="docutils literal notranslate"><span class="pre">[(Chris,</span> <span class="pre">80),</span> <span class="pre">(Alice,</span> <span class="pre">90),</span> <span class="pre">(Bob,</span> <span class="pre">90)]</span></code></p></li>
+<li><p>Unstable sort라면 <code class="docutils literal notranslate"><span class="pre">[(Chris,</span> <span class="pre">80),</span> <span class="pre">(Bob,</span> <span class="pre">90),</span> <span class="pre">(Alice,</span> <span class="pre">90)]</span></code>로 순서가 바뀔수도 있음.</p>
+<ul>
+<li><p>병합 정렬: 비교할 때 <code class="docutils literal notranslate"><span class="pre">&lt;=</span></code>로 구현하면 Stable</p></li>
+<li><p>퀵정렬: 피벗 swap과정에서 순서가 깨지므로 Unstable</p></li>
+</ul>
+</li>
+</ul>
+<p>알고리즘의 작동 순서는 다음과 같다. <em><strong>반으로 나누고 -&gt; 각각 정렬 -&gt; 다시 합치기</strong></em> 과정을 반복한다.</p>
+<ol class="arabic simple">
+<li><p>분할 (Divide): 리스트를 반으로 나눈다.</p>
+<ul class="simple">
+<li><p>[8, 3, 5, 4, 7, 6, 1, 2] → [8,3,5,4] + [7,6,1,2]</p></li>
+</ul>
+</li>
+<li><p>정복 (Conquer): 각 부분리스트를 재귀적으로 병합 정렬한다.</p>
+<ul class="simple">
+<li><p>[8,3,5,4] → [3,4,5,8]</p></li>
+<li><p>[7,6,1,2] → [1,2,6,7]</p></li>
+</ul>
+</li>
+<li><p>결합 (Combine/Merge): 두 정렬된 리스트를 하나로 병합한다.</p>
+<ul class="simple">
+<li><p>[3,4,5,8] + [1,2,6,7] → [1,2,3,4,5,6,7,8]</p></li>
+</ul>
+</li>
+</ol>
+<section id="source-code">
+<h3>병합 정렬 source code 및 시간 복잡도<a class="headerlink" href="#source-code" title="Link to this heading">#</a></h3>
+</section>
+</section>
 <section id="count-sort">
 <h2>계수 정렬 (Count sort)<a class="headerlink" href="#count-sort" title="Link to this heading">#</a></h2>
 <p>계수 정렬 (count sort) 알고리즘은 <em><strong>특정한 조건이 부합할 때만 사용할 수 있지만 매우 빠른 정렬 알고리즘</strong></em>이다. 계수 정렬은 데이터의 크기가 제한되어 있을 때에 한해서, 데이터의 개수가 매우 많더라도 빠르게 동작한다. 다음은 특정 조건에 대한 기술이다.</p>
@@ -1172,6 +1256,10 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">파트 3: 분할 완료된 피벗의 오른쪽 리스트</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">퀵 정렬 전체 정리 과정 그림</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">퀵 정렬 소스코드 및 시간 복잡도</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#merge-sort">병합 정렬 (Merge sort)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#source-code">병합 정렬 source code 및 시간 복잡도</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#count-sort">계수 정렬 (Count sort)</a><ul class="nav section-nav flex-column">
