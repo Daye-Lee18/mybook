@@ -159,6 +159,7 @@ DP is about `state representation`. DP works by breaking a big problem into smal
 
 How can we decide **what to store**? You should ask yourself **1. What subproblem do I need to solve repeatdly?** and **2. What result of that subproblem helps me build the next one?**. The first question deinfes the state and the next question is the value you should store. 
 
+0) DP table initialization 
 1) State (상태)
    - 정의: "하위 문제 (Subproblem)"를 유일하게 결정"하는 최소한의 매개변수 (paramter), 좌표나 인덱스 
    - 목표: 겹치는 하위 문제가 생기도록 문제를 쪼개고, 그 하위 문제를 하나의 키(인덱스)로 표현. 

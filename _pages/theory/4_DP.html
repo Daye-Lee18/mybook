@@ -194,6 +194,7 @@
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Lecture 4-1. Dynamic Programming</a></li>
 <li class="toctree-l1"><a class="reference internal" href="5_shortest_path.html">Lecture 5-1. Shortest Path</a></li>
 <li class="toctree-l1"><a class="reference internal" href="6_sort.html">Lecture 6-1. 정렬</a></li>
+<li class="toctree-l1"><a class="reference internal" href="7_binarysearch.html">Lecture 7-1. Binary Search</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">실습</span></p>
 <ul class="nav bd-sidenav">
@@ -538,7 +539,8 @@ document.write(`
 <p>What you choose to store in your DP table (list, dict, array, etc.) is the most important desing decision in solving a DP problem.</p>
 <p>DP is about <code class="docutils literal notranslate"><span class="pre">state</span> <span class="pre">representation</span></code>. DP works by breaking a big problem into smaller overlapping subproblems. To reuse solutions, you must define a <code class="docutils literal notranslate"><span class="pre">state</span></code> that fully describes a subproblem. That “state” is exactly what you store in the DP table.</p>
 <p>How can we decide <strong>what to store</strong>? You should ask yourself <strong>1. What subproblem do I need to solve repeatdly?</strong> and <strong>2. What result of that subproblem helps me build the next one?</strong>. The first question deinfes the state and the next question is the value you should store.</p>
-<ol class="arabic simple">
+<ol class="arabic simple" start="0">
+<li><p>DP table initialization</p></li>
 <li><p>State (상태)</p>
 <ul class="simple">
 <li><p>정의: “하위 문제 (Subproblem)”를 유일하게 결정”하는 최소한의 매개변수 (paramter), 좌표나 인덱스</p></li>

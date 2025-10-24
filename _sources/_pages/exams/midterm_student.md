@@ -208,7 +208,7 @@ output: True
 ```
 `````
 
-`````{admonition} p2 BFS 
+`````{admonition} p2 BFS/DFS
 :class: dropdown 
 
 [문제](https://leetcode.com/problems/invert-binary-tree/description/?envType=problem-list-v2&envId=breadth-first-search)

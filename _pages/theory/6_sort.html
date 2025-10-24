@@ -66,7 +66,7 @@
     <link rel="icon" href="../../_static/favicon.png"/>
     <link rel="index" title="색인" href="../../genindex.html" />
     <link rel="search" title="검색" href="../../search.html" />
-    <link rel="next" title="Lecture 1-2. 구현 실습" href="../practice/1_implementationPS.html" />
+    <link rel="next" title="Lecture 7-1. Binary Search" href="7_binarysearch.html" />
     <link rel="prev" title="Lecture 5-1. Shortest Path" href="5_shortest_path.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ko"/>
@@ -194,6 +194,7 @@
 <li class="toctree-l1"><a class="reference internal" href="4_DP.html">Lecture 4-1. Dynamic Programming</a></li>
 <li class="toctree-l1"><a class="reference internal" href="5_shortest_path.html">Lecture 5-1. Shortest Path</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Lecture 6-1. 정렬</a></li>
+<li class="toctree-l1"><a class="reference internal" href="7_binarysearch.html">Lecture 7-1. Binary Search</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">실습</span></p>
 <ul class="nav bd-sidenav">
@@ -819,6 +820,7 @@ document.write(`
 </tbody>
 </table>
 </div>
+<p>즉, 피벗이 항상 “중간값 근처”라면 두 부분이 거의 절반으로 나눠져서 평균 시간복잡도가 O(NlogN) 이지만, 피벗이 항상 “최댓값 or 최솟값”이라면, 한쪽에는 N-1개, 다른쪽에는 0개 이라 깊이가 = N개이고 각 단계에서 N, N-1, N-2 …를 비교하여 전체적으로 N + N-1 + N-2+ … + 1 = O(<span class="math notranslate nohighlight">\(N^2\)</span>) 이다.</p>
 <p>일반적으로 컴퓨터 과학에서 log의 의미는 밑이 2인 로그를 의미한다. 즉, <span class="math notranslate nohighlight">\(log_{2}N\)</span>을 의미하며 데이터의 개수 1000일 때, <span class="math notranslate nohighlight">\(log_{2}N\)</span>는 10 정도이다. 즉, N=1000일 때 10은 상대적으로 매우 작은 수이다. 데이터의 개수가 많을 수록 차이는 매우 극명하게 드러난다.</p>
 <p>다만, 퀵 정렬의 시간 복잡도에 대하여 한 가지 기억해둘 점이 있다. 바로 평균적으로 시간 복잡도가 O(NlogN)이지만 최악의 경우 시간 복잡도가 O(<span class="math notranslate nohighlight">\(N^2\)</span>)라는 것이다. 데이터가 무작위로 입력되는 경우 퀵 정렬은 빠르게 동작할 확률이 높다. 하지만, 우리가 사용한 방법처럼 리스트의 가장 왼쪽 데이터를 피벗으로 삼을 때, ‘이미 데이터가 정렬되어 있는 경우’에는 매우 느리게 동작한다. 즉, 삽입 정렬은 이미 데이터가 정렬되어 있는 겨웅에는 매우 빠르게 동작하고, 퀵 정렬은 그와 반대이다.</p>
 <p>실제로 파이썬에서 기본 정렬 라이브러리를 이용하면 O(NlogN)을 보장해주기 때문에 크게 걱정하지 않아도 된다.</p>
@@ -1216,11 +1218,11 @@ document.write(`
       </div>
     </a>
     <a class="right-next"
-       href="../practice/1_implementationPS.html"
+       href="7_binarysearch.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">다음</p>
-        <p class="prev-next-title">Lecture 1-2. 구현 실습</p>
+        <p class="prev-next-title">Lecture 7-1. Binary Search</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
