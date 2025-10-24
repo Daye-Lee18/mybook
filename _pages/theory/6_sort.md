@@ -381,15 +381,17 @@ def quick_sort(array, start, end):
 
     pivot = start
     left = start + 1
-    right = end
+    right = end # inclusive 
 
+    # pivot(start) _ _ _ _ end 
     while True:
-        # Move left pointer until you find an element greater than the pivot
-        # end position까지 pivot과 비교 필요 
+        # range check: end position까지 pivot과 비교 필요 
+        # value check: Move left pointer until you find an element greater than the pivot
         while left <= end and array[left] <= array[pivot]:
             left += 1
-        # Move right pointer until you find an element smaller than the pivot
-        # right은 left에 비해 start (pivot) index보다 커야함. 
+        
+        # range check: right의 range는 start보다 커야함. 
+        # value check: Move right pointer until you find an element smaller than the pivot
         while right > start and array[right] >= array[pivot]:
             right -= 1
 
@@ -433,12 +435,54 @@ print(arr)
 | ...|...|...|...|
 |log N| N| 1| N |
 
+즉, 피벗이 항상 "중간값 근처"라면 두 부분이 거의 절반으로 나눠져서 평균 시간복잡도가 O(NlogN) 이지만, 피벗이 항상 "최댓값 or 최솟값"이라면, 한쪽에는 N-1개, 다른쪽에는 0개 이라 깊이가 = N개이고 각 단계에서 N, N-1, N-2 ...를 비교하여 전체적으로 N + N-1 + N-2+ ... + 1 = O($N^2$) 이다. 
 
 일반적으로 컴퓨터 과학에서 log의 의미는 밑이 2인 로그를 의미한다. 즉, $log_{2}N$을 의미하며 데이터의 개수 1000일 때, $log_{2}N$는 10 정도이다. 즉, N=1000일 때 10은 상대적으로 매우 작은 수이다. 데이터의 개수가 많을 수록 차이는 매우 극명하게 드러난다. 
 
 다만, 퀵 정렬의 시간 복잡도에 대하여 한 가지 기억해둘 점이 있다. 바로 평균적으로 시간 복잡도가 O(NlogN)이지만 최악의 경우 시간 복잡도가 O($N^2$)라는 것이다. 데이터가 무작위로 입력되는 경우 퀵 정렬은 빠르게 동작할 확률이 높다. 하지만, 우리가 사용한 방법처럼 리스트의 가장 왼쪽 데이터를 피벗으로 삼을 때, '이미 데이터가 정렬되어 있는 경우'에는 매우 느리게 동작한다. 즉, 삽입 정렬은 이미 데이터가 정렬되어 있는 겨웅에는 매우 빠르게 동작하고, 퀵 정렬은 그와 반대이다. 
 
 실제로 파이썬에서 기본 정렬 라이브러리를 이용하면 O(NlogN)을 보장해주기 때문에 크게 걱정하지 않아도 된다. 
+
+## 병합 정렬 (Merge sort)
+
+우선 병합 정렬과 퀵 정렬을 비교하면 다음과 같다. 
+
+| 구분 | 병합 정렬 (Merge Sort) | 퀵 정렬 (Quick Sort)|
+|---|---|---|
+|정렬방식| 분할 정복 (Divide & Conquer) -> 반으로 나누고, 정렬된 결과를 병합 (merge) | 분할 정복 (Divide & Conquer) -> 피벗(pivot)을 기준으로 작은 값/큰 값으로 분할 | 
+|기준| 단순히 절반으로 나눔 | 피벗 값에 따라 나눔 |
+|정렬 과정 | 분할 후 -> 병합하며 정렬 | 분할하면서 -> 정렬 |
+|시간 복잡도| 항상 O(NlogN) | 평균 O(NlogN), 최악 O($N^2$)|
+|공간 복잡도 | O(N) (추가배열필요) | O(logN) (재귀 스택만 사용)|
+|정렬 안정성| Stable (동일 값의 순서 유지됨) | Unstable |
+|적합한 경우| 대용량 데이터, 외부 정렬 (파일 단위 정렬 등)| 메모리 제한이 있는 경우, 평균 성능이 중요할 때 | 
+
+위의 테이블을 요약하자면, 병합 정렬을 항상 O(NlogN)을 보장하지만, 안정 정렬이지만, 메모리 공간을 추가로 사용한다. 또한 퀵 정렬은 보통 더 빠르지만 (캐시 효율, in-place), 데이터가 편향되면 O($N^2$)로 느려진다. 
+
+이때 ***Stable Sort***의 의미는 동일한 값을 가진 원소의 기존 순서가 유지되는 것을 의미한다. 예를 들어, 아래처럼 정렬할 때,
+
+```python
+[(Alice, 90), (Bob, 90), (Chris, 80)]
+```
+
+점수를 기준으로 오름차순 정렬하면
+- Stable sort라면 `[(Chris, 80), (Alice, 90), (Bob, 90)]`
+- Unstable sort라면 `[(Chris, 80), (Bob, 90), (Alice, 90)]`로 순서가 바뀔수도 있음.
+  - 병합 정렬: 비교할 때 `<=`로 구현하면 Stable 
+  - 퀵정렬: 피벗 swap과정에서 순서가 깨지므로 Unstable 
+
+알고리즘의 작동 순서는 다음과 같다. ***반으로 나누고 -> 각각 정렬 -> 다시 합치기*** 과정을 반복한다. 
+
+1. 분할 (Divide): 리스트를 반으로 나눈다. 
+   - [8, 3, 5, 4, 7, 6, 1, 2] → [8,3,5,4] + [7,6,1,2]
+2. 정복 (Conquer): 각 부분리스트를 재귀적으로 병합 정렬한다. 
+   - [8,3,5,4] → [3,4,5,8]
+   - [7,6,1,2] → [1,2,6,7]
+3. 결합 (Combine/Merge): 두 정렬된 리스트를 하나로 병합한다. 
+    - [3,4,5,8] + [1,2,6,7] → [1,2,3,4,5,6,7,8]
+
+### 병합 정렬 source code 및 시간 복잡도 
+
 
 ## 계수 정렬 (Count sort)
 

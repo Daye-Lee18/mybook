@@ -17,11 +17,12 @@ class Solution:
         path: List[str] = []
 
         def dfs(node: TreeNode):
+            # pre-order dfs 
             path.append(str(node.val))
             if not node.left and not node.right:
                 res.append("->".join(path))
             else:
-                if node.left:
+                if node.left: # 없어도 되는데, 더 빨리 종료시키려면 넣어도 됨 
                     dfs(node.left)
                 if node.right:
                     dfs(node.right)

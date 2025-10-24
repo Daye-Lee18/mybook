@@ -1,4 +1,4 @@
-# p2.py — Invert Binary Tree (BFS/DFS 상관없음, 여기선 DFS로 구현)
+# p2.py — Invert Binary Tree (BFS/DFS 상관없음)
 
 from collections import deque
 from typing import Optional, List, Any
@@ -8,7 +8,7 @@ class TreeNode:
         self.val = val
         self.left = left
         self.right = right
-
+# DFS 
 class Solution:
     def invertTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
         if not root:
@@ -16,9 +16,31 @@ class Solution:
         root.left, root.right = self.invertTree(root.right), self.invertTree(root.left)
         return root
 
+# BFS 
+class Solution:
+    def invertTree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+        if not root:
+            return None
 
+        q = deque([root])  # BFS용 큐 초기화
+
+        while q:
+            node = q.popleft()
+            
+            # 왼쪽, 오른쪽 자식 교환
+            node.left, node.right = node.right, node.left
+
+            # 다음 레벨 탐색
+            if node.left:
+                q.append(node.left)
+            if node.right:
+                q.append(node.right)
+        
+        return root
+
+
+        
 # --- Helpers: level-order <-> list (LeetCode 스타일) ---
-
 def build_tree(vals: List[Optional[int]]) -> Optional[TreeNode]:
     if not vals or vals[0] is None:
         return None
@@ -30,11 +52,11 @@ def build_tree(vals: List[Optional[int]]) -> Optional[TreeNode]:
         if i < len(vals) and vals[i] is not None:
             node.left = TreeNode(vals[i])
             q.append(node.left)
-        i += 1
+        i += 1 # vals[i]가 None일때도 i를 증가시켜야하므로, if문 밖에 적어준다. 
         if i < len(vals) and vals[i] is not None:
             node.right = TreeNode(vals[i])
             q.append(node.right)
-        i += 1
+        i += 1 # vals[i]가 None일때도 i를 증가시켜야하므로, if문 밖에 적어준다. 
     return root
 
 

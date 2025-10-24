@@ -2,18 +2,33 @@
 
 from typing import List
 
+# class Solution:
+#     def minCostClimbingStairs(self, cost: List[int]) -> int:
+#         n = len(cost)
+#         if n == 0: return 0
+#         if n == 1: return 0  # 시작을 0 또는 1에서 할 수 있으므로, 한 칸만 있으면 0
+#         dp0, dp1 = 0, 0  # 도착 전 두 계단의 최소비용 (i-2, i-1에서 i로)
+#         for i in range(2, n + 1):
+#             dpi = min(dp1 + cost[i-1], dp0 + cost[i-2])
+#             dp0, dp1 = dp1, dpi
+#         return dp1
+
 class Solution:
     def minCostClimbingStairs(self, cost: List[int]) -> int:
-        n = len(cost)
-        if n == 0: return 0
-        if n == 1: return 0  # 시작을 0 또는 1에서 할 수 있으므로, 한 칸만 있으면 0
-        dp0, dp1 = 0, 0  # 도착 전 두 계단의 최소비용 (i-2, i-1에서 i로)
-        for i in range(2, n + 1):
-            dpi = min(dp1 + cost[i-1], dp0 + cost[i-2])
-            dp0, dp1 = dp1, dpi
-        return dp1
+        # INIT 
+        dp = [0] * (len(cost) + 1)
+        
+        '''
+        state: current index 
+        what to store: min cost to get the current index 
+        transition: the equation below 
+        '''
+        for idx in range(2, len(cost)+1):
+            dp[idx] = min(dp[idx-1]+cost[idx-1], dp[idx-2]+cost[idx-2])
 
+        return dp[len(cost)] # 맨 마지막 dp를 꺼내면 됨. 
 
+        
 def run_tests():
     sol = Solution()
     tests = [

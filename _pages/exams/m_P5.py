@@ -4,34 +4,50 @@ import math
 
 class Solution:
     def findTheCity(self, n: int, edges: List[List[int]], distanceThreshold: int) -> int:
-        # Floyd–Warshall
-        INF = 10**15
-        dist = [[INF]*n for _ in range(n)]
-        for i in range(n):
-            dist[i][i] = 0
-        for u, v, w in edges:
-            dist[u][v] = min(dist[u][v], w)
-            dist[v][u] = min(dist[v][u], w)
-        for k in range(n):
-            dk = dist[k]
-            for i in range(n):
-                di = dist[i]
-                ik = di[k]
-                if ik == INF: continue
-                for j in range(n):
-                    nd = ik + dk[j]
-                    if nd < di[j]:
-                        di[j] = nd
+        '''
+        bidirectional 
+        '''
+        # step 1. floyd warshall algorithm - dp
+        INF = int(1e9)
+        dp = [[INF]*n for _ in range(n)]
 
-        best_city = -1
-        best_cnt = math.inf  # 최소 개수
         for i in range(n):
-            cnt = sum(1 for j in range(n) if i != j and dist[i][j] <= distanceThreshold)
-            # 개수 최소, 동률이면 index 큰 도시
-            if cnt < best_cnt or (cnt == best_cnt and i > best_city):
-                best_cnt = cnt
-                best_city = i
-        return best_city
+            dp[i][i] = 0
+
+        graph = [[] for _ in range(n)]
+        for edge in edges:
+            # bidirectional 
+            graph[edge[0]].append((edge[1], edge[2]))
+            graph[edge[1]].append((edge[0], edge[2]))
+            # dp INIT 
+            dp[edge[0]][edge[1]] = edge[2]
+            dp[edge[1]][edge[0]] = edge[2]
+
+        '''
+        floyd-warshall 
+        distanceThreshold보다 낮은 path중, he city with the smallest number of cities that are reachable (해당 노드로의 path가 가장 적은 시티) -> 동일한 것이 있으면 시티의 node number가 가장 큰 것을 리턴 
+        '''
+        for k in range(n):
+            for a in range(n):
+                for b in range(n):
+                    dp[a][b] = min(dp[a][b], dp[a][k] + dp[k][b])
+
+        max_dis = -1
+        city_cnt = [0]*n
+        res_cities = []
+        for i in range(n):
+            for j in range(n):
+                if 0 < dp[i][j] <= distanceThreshold:
+                    city_cnt[i] += 1  
+        # print(city_cnt)
+        min_cnt = INF
+        res_city = -1
+        # 거꾸로 세서 동률일 경우 city number가 가장 큰 도시를 return하도록 하기 
+        for city in range(n-1, -1, -1):
+            if min_cnt > city_cnt[city]:
+                min_cnt = city_cnt[city]
+                res_city = city 
+        return res_city
 
 
 def run_tests():
@@ -59,7 +75,7 @@ def run_tests():
         # 15: 0에서만 연결된 별형(가중치 3), thr=3 → leaf들은 1명으로 최소, 동률 3
         (4, [[0,1,3],[0,2,3],[0,3,3]], 3, 3),
         # 16: 비균질 가중치로 일부만 가까움 → 최소 1명 다수, 동률 4
-        (5, [[0,1,1],[1,2,10],[2,3,1],[3,4,1],[0,4,10]], 2, 4),
+        (5, [[0,1,1],[1,2,10],[2,3,1],[3,4,1],[0,4,10]], 2, 1),
         # 17: n=1 단일 도시 → 이웃 0명, 정답 0
         (1, [], 5, 0),
         # 18: 우회 경로가 직통보다 유리, 최소 2명 동률(0,3) → tie-break로 3

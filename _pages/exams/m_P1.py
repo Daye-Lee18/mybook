@@ -1,19 +1,34 @@
-# p1.py — Robot Return to Origin
+# # p1.py — Robot Return to Origin
+
+# class Solution:
+#     def judgeCircle(self, moves: str) -> bool:
+#         x = y = 0
+#         for ch in moves:
+#             if ch == 'U':
+#                 y += 1
+#             elif ch == 'D':
+#                 y -= 1
+#             elif ch == 'L':
+#                 x -= 1
+#             elif ch == 'R':
+#                 x += 1
+#         return x == 0 and y == 0
 
 class Solution:
     def judgeCircle(self, moves: str) -> bool:
-        x = y = 0
-        for ch in moves:
-            if ch == 'U':
-                y += 1
-            elif ch == 'D':
+        x,y = 0,0
+        
+        for i in range(len(moves)):
+            if moves[i] == 'U':
                 y -= 1
-            elif ch == 'L':
+            elif moves[i] == 'D':
+                y += 1
+            elif moves[i] == 'L':
                 x -= 1
-            elif ch == 'R':
+            elif moves[i] == 'R':
                 x += 1
-        return x == 0 and y == 0
-
+                
+        return x==0 and y==0
 
 def run_tests():
     sol = Solution()
