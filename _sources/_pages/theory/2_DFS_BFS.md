@@ -211,16 +211,16 @@ print('재귀적으로 구현:', factorial_recursive(5)) # 재귀적으로 구�
 
 :::{grid-item}
 :columns: 6
-![Adjacent Matrix & Adjacent List](../../assets/img/DFS_BFS/6.png)
+![Adjacency Matrix & Adjacency List](../../assets/img/DFS_BFS/6.png)
 :::
 ```
 
 그래프는 크게 2가지 방식으로 표현할 수 있다. 
 
-1. 인접 행렬 (Adjacent Matrix): 2차월 배열로 그래프의 연결 관계 표현 
-2. 인접 리스트 (Adjacent List): 리스트로 그래프의 연결 관계를 표현 
+1. 인접 행렬 (Adjacency Matrix): 2차월 배열로 그래프의 연결 관계 표현 
+2. 인접 리스트 (Adjacency List): 리스트로 그래프의 연결 관계를 표현 
 
-우선 `인접 행렬 (Adjacent Matrix)` 방식은 파이썬에서는 `2차원 리스트`로 구현할 수 있다. 연결이 되어 있지 않은 노드끼리는 `무한 (Infinity)` 의 비용이라고 작성한다. 실제 코드에서는 논리적으로 정답이 될 수 없는 큰 값 중에서 999999999 등의 값으로 `초기화 (Initialization)`하는 경우가 많다. 
+우선 `인접 행렬 (Adjacency Matrix)` 방식은 파이썬에서는 `2차원 리스트`로 구현할 수 있다. 연결이 되어 있지 않은 노드끼리는 `무한 (Infinity)` 의 비용이라고 작성한다. 실제 코드에서는 논리적으로 정답이 될 수 없는 큰 값 중에서 999999999 등의 값으로 `초기화 (Initialization)`하는 경우가 많다. 
 
 ```{code-block} python
 ---
@@ -240,7 +240,7 @@ print(graph)
 [[0, 7, 5], [7, 0, 9999999999], [5, 9999999999, 0]]
 ```
 
-`인접 리스트 (Adjacent List)` 방식은 모든 노드에 연결된 노드에 대한 정보를 차례대로 연결하여 저장한다. 인접 리스트는 `연결 리스트 (Linked List)`라는 자료구조를 이용해 구현하고, C++/Java 와 같은 언어에서는 연결 리스트 기능을 위한 표준 라이브러리를 제공한다. 파이썬에서는 리스트 자료형을 사용해 단순히 2차원 리스트를 이용하면 된다. 
+`인접 리스트 (Adjacency List)` 방식은 모든 노드에 연결된 노드에 대한 정보를 차례대로 연결하여 저장한다. 인접 리스트는 `연결 리스트 (Linked List)`라는 자료구조를 이용해 구현하고, C++/Java 와 같은 언어에서는 연결 리스트 기능을 위한 표준 라이브러리를 제공한다. 파이썬에서는 리스트 자료형을 사용해 단순히 2차원 리스트를 이용하면 된다. 
 
 ```{code-block} python
 ---
@@ -273,7 +273,7 @@ print(graph)
 - Stack (스택, First In Last Out, FILO), Queue (큐, First In First Out, FIFO)  
 - 재귀 함수 (Recursive function)은 스택(stack) 구조로 생각할 수 있는데, 가장 마지막에 호출한 함수(last called function)가 먼저 수행을 끝내야(LIFO) 그 앞의 함수 호출이 종료된다.  
 - 따라서, 종료 조건 (base case)에서 반드시 재귀 함수를 호출하지 않고 종료(terminate) 조건을 만들어줘야 한다.  
-- Graph (그래프)는 Adjacent Matrix (인접 행렬)와 Adjacent List (인접 리스트) 방식으로 구현될 수 있고, 전자는 연결된 정보를 찾는 것(lookup)이 빠르며 후자는 메모리(memory) 효율적이다.  
+- Graph (그래프)는 Adjacency Matrix (인접 행렬)와 Adjacency List (인접 리스트) 방식으로 구현될 수 있고, 전자는 연결된 정보를 찾는 것(lookup)이 빠르며 후자는 메모리(memory) 효율적이다.  
 
 ```
 
