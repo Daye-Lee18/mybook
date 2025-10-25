@@ -181,6 +181,12 @@ print(bisect_left(arr, 6))  # 3 (6이 들어갈 "왼쪽" 위치)
 
 트리에는 루트 (root)가 있을 수도 없을 수도 있지만, 편의를 위해서 아무 정점이나 루트로 선택할 수 있다. 트리는 항상 루트를 기준으로 다시 그릴 수 있기 때문에, 루트가 고정되지 않는 한 어떤 정점이 '위에' 있는지 판정할 수 없다. 하지만 루트가 고정된다면, 우리는 정점 간에 '부모'와 '자식'의 관계를 정의할 수 있다. 
 
+**용어**
+- root: 
+- parent node:
+- leaf node:
+- subtree: 
+  
 **트리의 성질**
 - 임의의 두 정점 U와 V에 대해, U에서 V로 가는 최단 경로는 유일하다. 
 - 서브트리: 아무 정점이나 잡고 부모와의 연결을 끊었을 때, 해당 정점과 그 자식들, 그 자식들의 자식들...로 이루어진 부분그래프는 트리가 된다. 
@@ -191,15 +197,113 @@ print(bisect_left(arr, 6))  # 3 (6이 들어갈 "왼쪽" 위치)
 Tree <br>
 - 정의: 사이클이 없는 그래프 
 - 특징: 
+    - 임의의 두 정점 U와 V에 대해, U에서 V로 가는 최단 경로는 유일하다. 
     - 어느 한 정점을 (root)로 선택하면 트리는 부모 노드와 자식 관계로 표현될 수 있다. 
     - 트리에서 일부를 떼어내도 트리 구조이며 이를 서브트리라 한다. 
     - 트리는 파일 시스템과 같이 계층적이고 정렬된 데이터를 다루기에 적합하다. 
 ````
 
-### 트리 생성 소스 코드 
+### 트리 생성 소스 코드 1
 
-온라인 코딩 문제를 풀다보면, 
+온라인 코딩 문제를 풀다보면, 디버깅이 필요하다. 하지만, 구현해야하는 함수가 tree의 root을 argument로 받는 경우에 트리 자체를 손수 만드는 것은 시간이 걸린다. 따라서, `build_tree(list)`를 만들면, list 자료형을 받아 손 쉽게 트리로 만드는 코드를 사용하여 디버깅을 빠르게 할 수 있다. 또한, 이렇게 생성된 트리를 출력하여 확인하는 것도 어려우므로 이 트리를 다시 리스트로 바꾸는 `tree_to_list(TreeNode)` 함수를 만들면 편하다. 다음은, 해당 helper 함수를 나타낸다. 
+
+````{admonition} helper function for Tree 
+:class: dropdown 
+
+```{code-block} python 
+---
+caption: Helper Functions for Tree Problems. This script provides utility functions to build a binary tree from a level-order list representation (`build_tree`) and convert a tree back into a list (`tree_to_list`). It is commonly used when solving tree problems on LeetCode or similar platforms for easy input/output handling.
+---
+from typing import List 
+from collections import deque 
+
+class TreeNode:
+    def __init__(self, val, left=None, right=None):
+        self.val = val 
+        self.left = left 
+        self.right = right 
+
+def build_tree(arr: List[int]):
+    if len(arr) == 0 or arr[0] == None:
+        return None 
+    
+    root = TreeNode(arr[0])
+    idx = 1  # index pointing to the current value in the array
+    q = deque([root])
+    while idx < len(arr):
+        cur_node = q.popleft()
+
+        # If the current node's left child exists, create and append it
+        if idx < len(arr) and arr[idx] != None:  # when idx exceeds array length, no more children exist
+            cur_node.left = TreeNode(arr[idx])
+            q.append(cur_node.left)
+        idx += 1  # increment idx even when arr[idx] == None
+
+        # Same logic for the right child
+        if idx < len(arr) and arr[idx] != None:
+            cur_node.right = TreeNode(arr[idx])
+            q.append(cur_node.right)
+        
+        idx += 1 
+
+    return root 
+
+def tree_to_list(root: TreeNode):
+    if not root:
+        return []
+    
+    res = [] 
+    q = deque([root])
+    while q:
+        cur_node = q.popleft()
+        
+        if cur_node:
+            res.append(cur_node.val)
+        else:
+            res.append(None)  # For leaf nodes, no need to process child nodes further
+            continue 
+
+        # Even if children are None, they must be added to preserve tree structure
+        q.append(cur_node.left)
+        q.append(cur_node.right)
+
+    # Trim trailing None values that represent missing children beyond the last leaf level
+    while res and res[-1] == None:
+        res.pop()
+
+    return res 
+
+if __name__ == "__main__":
+    data = [0, 2, 4, 6, 8, 10, None, 14, 16]
+    root = build_tree(data)
+    print(tree_to_list(root))
+
+```
+````
+
+### 트리 생성 소스 코드 2
+
+트리에는 부모와 자식 관계가 있으므로, 각 정점별로 부모가 누구인지, 자식들의 목록은 어떻게 되는지를 저장해두면 요긴하게 쓰인다. 이를 아래와 같이 구현할 수 있다. 
+
+```python
+'''
+currentNode: 현재 탐색 중인 정점 
+parent: 해당 정점의 부모 정점
+'''
+def makeTree(currentNode, parent):
+    for (Node in connect[currentNode]):
+        if Node != parent:
+            add Node to currentNode's child 
+            set Node's parent to currentNode 
+            makeTree(Node, currentNode)
+```
+
+***트리에서는 어떤 정점의 부모는 하나이거나 없다.*** 따라서, 어떤 정점에 대해 연결된 모든 정점은 최대 한 개의 정점을 제외하면 모두 해당 정점의 자식들이 된다. 이에 따라 부모 정점의 정보를 가져와, 부무 정점이 아니지만 현재 탐색 노드와 연결되어 있는 정점을 모두 자식으로 연결할 수 있다. 또한 자신의 자식들의 부모를 현재 탐색 노드로 설정해준 후, 그 후 재귀적으로 자식 정점들에게 트리 구성을 요청하는 형태의 함수이다. 
+
+이를 아래처럼 DFS와 BFS로 구현할 수 있다. 
 
 ## 이진 탐색 트리 
+
+이진 탐색 트리는 ***트리 자료구조 중에서 가장 간단한 형태*** 이다. 이진 탐색 트리는 효율적인 이진 탐색이 동작할 수 있도록 고안된 자료구조이다. 
 
 ## 예시 문제 
