@@ -394,6 +394,15 @@ print("children:", ch)    # children[1]=[2,3], children[2]=[4,5], ...
 
 ```{code-block} python 
 
+# 노드 클래스 정의 
+class TreeNode:
+    def __init__(self, val):
+        self.val = val
+        self.children = []  # 다진 트리용 (자식이 2개 초과 가능)
+
+    def __repr__(self):
+        return f"TreeNode({self.val})"
+
 ```
 ````
 ## 이진 탐색 트리 
