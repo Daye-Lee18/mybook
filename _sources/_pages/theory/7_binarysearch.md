@@ -394,19 +394,114 @@ print("children:", ch)    # children[1]=[2,3], children[2]=[4,5], ...
 
 ```{code-block} python 
 
-# 노드 클래스 정의 
+# Step 1: 노드 클래스 정의
 class TreeNode:
     def __init__(self, val):
-        self.val = val
-        self.children = []  # 다진 트리용 (자식이 2개 초과 가능)
-
+        self.val = val 
+        self.children = [] 
     def __repr__(self):
         return f"TreeNode({self.val})"
+    
+# a = TreeNode(3) 
+# print(a)
+# print(f"{a}")
 
+# Step 2: 각 노드별 자식 리스트 생성 
+children = [
+    [],          # 0번은 사용 안 함
+    [2, 3],      # 1의 자식은 2, 3
+    [4, 5],      # 2의 자식은 4, 5
+    [6, 7],      # 3의 자식은 6, 7
+    [], [], [], []  # 나머지는 리프 노드
+]
+
+# Step 3: 실제 객체 트리 구성 
+def build_tree_from_children(children, root=1):
+    # 모든 노드 객체 미리 생성
+    nodes = [None] + [TreeNode(i) for i in range(1, len(children))]
+    
+    # 부모-자식 연결
+    for parent, child_list in enumerate(children):
+        if parent == 0:
+            continue
+        for c in child_list:
+            nodes[parent].children.append(nodes[c])
+    
+    return nodes[root]
+
+root = build_tree_from_children(children, root=1)
+
+# 출력 확인 (preorder DFS)
+def print_tree(node, depth=0):
+    print("  " * depth + str(node.val))
+    for c in node.children:
+        print_tree(c, depth + 1)
+
+print_tree(root)
 ```
 ````
 ## 이진 탐색 트리 
 
 이진 탐색 트리는 ***트리 자료구조 중에서 가장 간단한 형태*** 이다. 이진 탐색 트리는 효율적인 이진 탐색이 동작할 수 있도록 고안된 자료구조이다. 
 
+**이진 탐색 트리 특징**
+- 왼쪽 자식 노드 < 부모 노드 < 오른쪽 자식 노드
+
+이진 탐색 트리에 데이터를 넣고 빼는 방법은 알고리즘보다 자료구조에 가까우며, 이진 탐색 트리 자료구조를 구현하도록 요구하는 문제는 출제 빈도가 낮으므로, 이 책에서는 이진 탐색 트리 구현 방법은 소개하지 않는다. (위에서 소개한 것은 전체적인 트리 구조이다.)
+
+이진 탐색 트리가 미리 구현되어 있다고 가정하고, 다음 그림과 같은 이진 탐색 트리에서 데이터를 조회하는 과정을 살펴보자. 
+
+![4](../../assets/img/binarySearch/4.png)
+
+![5](../../assets/img/binarySearch/5.png)
+
+![6](../../assets/img/binarySearch/6.png)
+
+이진 탐색 트리에서 데이터 조회는 루트 노드부터 왼쪽 자식 혹은 오른쪽 자식 노드로 이동하며 반복적으로 방문한다. 자식 노드가 없을 때까지 찾지 못했다면, 이진 탐색 트리에 원소가 없는 것이다. 
+````{admonition} searching a node in a Binary Search Tree 
+:class: dropdown 
+
+```{code-block} python 
+
+class TreeNode:
+    def __init__(self, val):
+        self.val = val 
+        self.left = None 
+        self.right = None 
+
+    def __repr__(self):
+        return f"TreeNode({self.val})"
+    
+# a = TreeNode(3) 
+# print(a)
+# print(f"{a}")
+
+def find_node(root:TreeNode, target:int) -> bool:
+    node= root 
+    while node:
+        if node.val == target:
+            return node
+        
+        if node.val < target:
+            node = node.right 
+        else:
+            node = node.left 
+    return False # node == None 
+```
+````
+
 ## 예시 문제 
+
+### Convert Sorted Array to Binary Search Tree 
+[문제 링크](https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/description/?envType=problem-list-v2&envId=binary-search-tree)
+
+### Find Mode in Binary Search Tree 
+[문제 링크](https://leetcode.com/problems/find-mode-in-binary-search-tree/description/?envType=problem-list-v2&envId=binary-search-tree)
+
+### Minimum Absolute Difference in BST 
+
+[문제 링크](https://leetcode.com/problems/minimum-absolute-difference-in-bst/description/?envType=problem-list-v2&envId=binary-search-tree)
+
+### Two Sum IV - Input is a BST 
+
+[문제 링크](https://leetcode.com/problems/two-sum-iv-input-is-a-bst/description/?envType=problem-list-v2&envId=binary-search-tree)

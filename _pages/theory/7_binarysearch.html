@@ -185,6 +185,7 @@
         </ul>
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">기초</span></p>
 <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../basics/Input.html">입력</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics/oop.html">객체 지향 프로그래밍 (OOP)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics/oop-classes_instances_objects.html">클래스, 인스턴스, 객체</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics/regex.html">정규표현식</a></li>
@@ -370,7 +371,13 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">이진 탐색 트리</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">예시 문제</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">예시 문제</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#convert-sorted-array-to-binary-search-tree">Convert Sorted Array to Binary Search Tree</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#find-mode-in-binary-search-tree">Find Mode in Binary Search Tree</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#minimum-absolute-difference-in-bst">Minimum Absolute Difference in BST</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#two-sum-iv-input-is-a-bst">Two Sum IV - Input is a BST</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -737,14 +744,50 @@ document.write(`
 </div>
 <div class="dropdown admonition">
 <p class="admonition-title">children to Tree object</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 노드 클래스 정의 </span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Step 1: 노드 클래스 정의</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">TreeNode</span><span class="p">:</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">=</span> <span class="n">val</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># 다진 트리용 (자식이 2개 초과 가능)</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">=</span> <span class="n">val</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span> 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;TreeNode(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="si">}</span><span class="s2">)&quot;</span>
+    
+<span class="c1"># a = TreeNode(3) </span>
+<span class="c1"># print(a)</span>
+<span class="c1"># print(f&quot;{a}&quot;)</span>
+
+<span class="c1"># Step 2: 각 노드별 자식 리스트 생성 </span>
+<span class="n">children</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[],</span>          <span class="c1"># 0번은 사용 안 함</span>
+    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>      <span class="c1"># 1의 자식은 2, 3</span>
+    <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>      <span class="c1"># 2의 자식은 4, 5</span>
+    <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span>      <span class="c1"># 3의 자식은 6, 7</span>
+    <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>  <span class="c1"># 나머지는 리프 노드</span>
+<span class="p">]</span>
+
+<span class="c1"># Step 3: 실제 객체 트리 구성 </span>
+<span class="k">def</span><span class="w"> </span><span class="nf">build_tree_from_children</span><span class="p">(</span><span class="n">children</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="c1"># 모든 노드 객체 미리 생성</span>
+    <span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">TreeNode</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">children</span><span class="p">))]</span>
+    
+    <span class="c1"># 부모-자식 연결</span>
+    <span class="k">for</span> <span class="n">parent</span><span class="p">,</span> <span class="n">child_list</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">children</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">parent</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">child_list</span><span class="p">:</span>
+            <span class="n">nodes</span><span class="p">[</span><span class="n">parent</span><span class="p">]</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">c</span><span class="p">])</span>
+    
+    <span class="k">return</span> <span class="n">nodes</span><span class="p">[</span><span class="n">root</span><span class="p">]</span>
+
+<span class="n">root</span> <span class="o">=</span> <span class="n">build_tree_from_children</span><span class="p">(</span><span class="n">children</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># 출력 확인 (preorder DFS)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">print_tree</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  &quot;</span> <span class="o">*</span> <span class="n">depth</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">val</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+        <span class="n">print_tree</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">print_tree</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -753,9 +796,64 @@ document.write(`
 <section id="id3">
 <h2>이진 탐색 트리<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
 <p>이진 탐색 트리는 <em><strong>트리 자료구조 중에서 가장 간단한 형태</strong></em> 이다. 이진 탐색 트리는 효율적인 이진 탐색이 동작할 수 있도록 고안된 자료구조이다.</p>
+<p><strong>이진 탐색 트리 특징</strong></p>
+<ul class="simple">
+<li><p>왼쪽 자식 노드 &lt; 부모 노드 &lt; 오른쪽 자식 노드</p></li>
+</ul>
+<p>이진 탐색 트리에 데이터를 넣고 빼는 방법은 알고리즘보다 자료구조에 가까우며, 이진 탐색 트리 자료구조를 구현하도록 요구하는 문제는 출제 빈도가 낮으므로, 이 책에서는 이진 탐색 트리 구현 방법은 소개하지 않는다. (위에서 소개한 것은 전체적인 트리 구조이다.)</p>
+<p>이진 탐색 트리가 미리 구현되어 있다고 가정하고, 다음 그림과 같은 이진 탐색 트리에서 데이터를 조회하는 과정을 살펴보자.</p>
+<p><img alt="4" src="../../_images/47.png" /></p>
+<p><img alt="5" src="../../_images/57.png" /></p>
+<p><img alt="6" src="../../_images/66.png" /></p>
+<p>이진 탐색 트리에서 데이터 조회는 루트 노드부터 왼쪽 자식 혹은 오른쪽 자식 노드로 이동하며 반복적으로 방문한다. 자식 노드가 없을 때까지 찾지 못했다면, 이진 탐색 트리에 원소가 없는 것이다.</p>
+<div class="dropdown admonition">
+<p class="admonition-title">searching a node in a Binary Search Tree</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">TreeNode</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">=</span> <span class="n">val</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">left</span> <span class="o">=</span> <span class="kc">None</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">right</span> <span class="o">=</span> <span class="kc">None</span> 
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;TreeNode(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="si">}</span><span class="s2">)&quot;</span>
+    
+<span class="c1"># a = TreeNode(3) </span>
+<span class="c1"># print(a)</span>
+<span class="c1"># print(f&quot;{a}&quot;)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">find_node</span><span class="p">(</span><span class="n">root</span><span class="p">:</span><span class="n">TreeNode</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span><span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="n">node</span><span class="o">=</span> <span class="n">root</span> 
+    <span class="k">while</span> <span class="n">node</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">val</span> <span class="o">==</span> <span class="n">target</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">node</span>
+        
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">val</span> <span class="o">&lt;</span> <span class="n">target</span><span class="p">:</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">right</span> 
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">left</span> 
+    <span class="k">return</span> <span class="kc">False</span> <span class="c1"># node == None </span>
+</pre></div>
+</div>
+</div>
 </section>
 <section id="id4">
 <h2>예시 문제<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<section id="convert-sorted-array-to-binary-search-tree">
+<h3>Convert Sorted Array to Binary Search Tree<a class="headerlink" href="#convert-sorted-array-to-binary-search-tree" title="Link to this heading">#</a></h3>
+<p><a class="reference external" href="https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/description/?envType=problem-list-v2&amp;amp;envId=binary-search-tree">문제 링크</a></p>
+</section>
+<section id="find-mode-in-binary-search-tree">
+<h3>Find Mode in Binary Search Tree<a class="headerlink" href="#find-mode-in-binary-search-tree" title="Link to this heading">#</a></h3>
+<p><a class="reference external" href="https://leetcode.com/problems/find-mode-in-binary-search-tree/description/?envType=problem-list-v2&amp;amp;envId=binary-search-tree">문제 링크</a></p>
+</section>
+<section id="minimum-absolute-difference-in-bst">
+<h3>Minimum Absolute Difference in BST<a class="headerlink" href="#minimum-absolute-difference-in-bst" title="Link to this heading">#</a></h3>
+<p><a class="reference external" href="https://leetcode.com/problems/minimum-absolute-difference-in-bst/description/?envType=problem-list-v2&amp;amp;envId=binary-search-tree">문제 링크</a></p>
+</section>
+<section id="two-sum-iv-input-is-a-bst">
+<h3>Two Sum IV - Input is a BST<a class="headerlink" href="#two-sum-iv-input-is-a-bst" title="Link to this heading">#</a></h3>
+<p><a class="reference external" href="https://leetcode.com/problems/two-sum-iv-input-is-a-bst/description/?envType=problem-list-v2&amp;amp;envId=binary-search-tree">문제 링크</a></p>
+</section>
 </section>
 </section>
 
@@ -834,7 +932,13 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">이진 탐색 트리</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">예시 문제</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">예시 문제</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#convert-sorted-array-to-binary-search-tree">Convert Sorted Array to Binary Search Tree</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#find-mode-in-binary-search-tree">Find Mode in Binary Search Tree</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#minimum-absolute-difference-in-bst">Minimum Absolute Difference in BST</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#two-sum-iv-input-is-a-bst">Two Sum IV - Input is a BST</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Lecture 5-2. Shortest Path 실습 &#8212; 말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업</title>
+    <title>입력 &#8212; 말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업</title>
   
   
   
@@ -59,13 +59,13 @@
     <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '_pages/practice/5_shortest_pathPS';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_pages/basics/Input';</script>
     <script src="https://unpkg.com/jupyterquiz@1.1.8/dist/jupyterquiz.min.js"></script>
     <link rel="icon" href="../../_static/favicon.png"/>
     <link rel="index" title="색인" href="../../genindex.html" />
     <link rel="search" title="검색" href="../../search.html" />
-    <link rel="next" title="Midterm" href="../exams/midterm_student.html" />
-    <link rel="prev" title="Lecture 4-2. DP 실습" href="4_DPPS.html" />
+    <link rel="next" title="객체 지향 프로그래밍 (OOP)" href="oop.html" />
+    <link rel="prev" title="Welcome to 말레이시아 5급 IT 수업" href="../../intro.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ko"/>
   </head>
@@ -184,11 +184,11 @@
             </li>
         </ul>
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">기초</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../basics/Input.html">입력</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../basics/oop.html">객체 지향 프로그래밍 (OOP)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../basics/oop-classes_instances_objects.html">클래스, 인스턴스, 객체</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../basics/regex.html">정규표현식</a></li>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">입력</a></li>
+<li class="toctree-l1"><a class="reference internal" href="oop.html">객체 지향 프로그래밍 (OOP)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="oop-classes_instances_objects.html">클래스, 인스턴스, 객체</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regex.html">정규표현식</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">이론</span></p>
 <ul class="nav bd-sidenav">
@@ -202,12 +202,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../theory/7_binarysearch.html">Lecture 7-1. Binary Search</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">실습</span></p>
-<ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="1_implementationPS.html">Lecture 1-2. 구현 실습</a></li>
-<li class="toctree-l1"><a class="reference internal" href="2_DFS_BFSPS.html">Lecture 2-2. DFS/BFS 실습</a></li>
-<li class="toctree-l1"><a class="reference internal" href="3_backtrackingPS.html">Lecture 3-2. Backtracking 실습</a></li>
-<li class="toctree-l1"><a class="reference internal" href="4_DPPS.html">Lecture 4-2. DP 실습</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Lecture 5-2. Shortest Path 실습</a></li>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../practice/1_implementationPS.html">Lecture 1-2. 구현 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/2_DFS_BFSPS.html">Lecture 2-2. DFS/BFS 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/3_backtrackingPS.html">Lecture 3-2. Backtracking 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/4_DPPS.html">Lecture 4-2. DP 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/5_shortest_pathPS.html">Lecture 5-2. Shortest Path 실습</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">시험</span></p>
 <ul class="nav bd-sidenav">
@@ -266,7 +266,7 @@
       
       
       
-      <li><a href="../../_sources/_pages/practice/5_shortest_pathPS.md" target="_blank"
+      <li><a href="../../_sources/_pages/basics/Input.md" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="소스 파일 다운로드"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -348,7 +348,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Lecture 5-2. Shortest Path 실습</h1>
+    <h1>입력</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -362,15 +362,18 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="lecture-5-2-shortest-path">
-<h1>Lecture 5-2. Shortest Path 실습<a class="headerlink" href="#lecture-5-2-shortest-path" title="Link to this heading">#</a></h1>
-<p>예시 문제 링크</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/codetree-judger/description">코드 크리 채점기</a></p></li>
-<li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/codetree-tour/description">코드트리 투어</a></p></li>
-<li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/pirate-captain-coddy/description">해적 선장 코디</a></p></li>
-<li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/frog-journey/description">개구리의 여행</a></p></li>
-</ul>
+  <section class="tex2jax_ignore mathjax_ignore" id="id1">
+<h1>입력<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
+<p>이진 탐색 문제처럼 입력 데이터가 많거나, 탐색 범위가 매우 넓은 편의 경우 input()함수를 사용하면 오히려 동작 속도가 느려서 시간  초과로 오답 판정을 받을 수 있다. 이처럼 입력 데이터가 많은 문제는 sys 라이브러리의 readline()함수를 이용하면 된다.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span> 
+
+<span class="c1"># 하나의 문자열 데이터 입력받기 </span>
+<span class="n">input_data</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">input_data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>sys 라이브러리를 사용할때는 입력 후 엔터<font size='2'>Enter</font>가 줄 바꿈 기호로 입력되는데, 이 공백 문자를 제거하려면 rstrip()함수를 사용해야한다.</p>
 </section>
 
     <script type="text/x-thebe-config">
@@ -386,7 +389,7 @@ document.write(`
         },
         kernelOptions: {
             name: "python3",
-            path: "./_pages/practice"
+            path: "./_pages/basics"
         },
         predefinedOutput: true
     }
@@ -404,20 +407,20 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="4_DPPS.html"
+       href="../../intro.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">이전</p>
-        <p class="prev-next-title">Lecture 4-2. DP 실습</p>
+        <p class="prev-next-title">Welcome to 말레이시아 5급 IT 수업</p>
       </div>
     </a>
     <a class="right-next"
-       href="../exams/midterm_student.html"
+       href="oop.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">다음</p>
-        <p class="prev-next-title">Midterm</p>
+        <p class="prev-next-title">객체 지향 프로그래밍 (OOP)</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
