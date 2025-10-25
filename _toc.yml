@@ -5,6 +5,13 @@ format: jb-book
 root: intro
 
 parts:
+- caption: 기초 
+  chapters:
+  - file: _pages/basics/Input
+  - file: _pages/basics/oop
+  - file: _pages/basics/oop-classes_instances_objects
+  - file: _pages/basics/regex
+  
 - caption: 이론
   chapters:
   - file: _pages/theory/0_tips

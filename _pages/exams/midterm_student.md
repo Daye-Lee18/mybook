@@ -1,7 +1,5 @@
 # Midterm 
 
-Submit your answer folder to `gbyou1694@snu.ac.kr`.
-
 ## Short answer problems 
 
 - For each question below, fill in the blanks labeled (1), (2), (3), …, or briefly describe what is being asked.

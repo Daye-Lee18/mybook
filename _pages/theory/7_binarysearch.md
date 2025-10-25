@@ -167,7 +167,341 @@ print(bisect_left(arr, 6))  # 3 (6이 들어갈 "왼쪽" 위치)
 
 ## 트리 자료 구조 
 
-이진 탐색은 전제 조건이 데이터 정렬이다. 
+이진 탐색은 전제 조건이 ***데이터 정렬*** 이다. 실제로 많은 프로그램은 검색 효율을 높이기 위해 데이터를 미리 정렬된 형태로 유지한다. 예를 들어, 검색 기능 (Search)에서 네이버/구글의 자동완성 리스트 내부에선, "사과", "수박", "오렌지" 처럼 이미 정렬된 리스트를 유지하고 있다. 검색 효율성을 위해 데이터를 미리 정렬해둔 것이다. 또한 데이터베이트(DB)는 단순 배열이 아니라, B-Tree/B+Tree/Red-Black Tree같은 정렬된 트리 자료구조를 내부적으로 사용하여 이미 정렬된 상태를 유지하므로 이진 탐색과 비슷한 원리로 탐색이 가능하다. 마지막으로 운영체제/파일 시스템에선 파일 이름, inode 테이블, 스케쥴링 큐까지 효율적 접근을 위해 정렬된 리스트나 힙을 유지한다. 
+
+트리 자료 구조에 대해 살표보자. (그래프에 대해서는 `Lecture 2-1. DFS/BFS` 에서 배웠으므로 그래프에 대한 설명은 생략한다.)
+
+아래 그래프를 보자. 만일 그래프에 ***단 하나의 사이클도 없다면,*** 해당 그래프는 '트리 (Tree)'라고 부른다. 
+
+![2](../../assets/img/binarySearch/2.png)
+
+일반적으로 그래프에서는 정점의 위치나 간선의 모양 등에 대한 조건은 전혀 고려하지 않으며, 오직 연결성만을 고려하므로, 간선의 집합이 변하지 않는다는 가정 하에 그래프를 얼마든지 다시 그릴 수가 있다. 위의 트리에서 ***5번 정점을 잡고 위로 들어올리는*** 예시를 생각해보자. 아래쪽에 중력이 작용한다고 생각하고 5번 정점을 위쪽으로 들어올리게 되면 트리의 모양은 아래와 같이 변할 것이다. 
+
+![3](../../assets/img/binarySearch/3.png)
+
+트리에는 루트 (root)가 있을 수도 없을 수도 있지만, 편의를 위해서 아무 정점이나 루트로 선택할 수 있다. 트리는 항상 루트를 기준으로 다시 그릴 수 있기 때문에, 루트가 고정되지 않는 한 어떤 정점이 '위에' 있는지 판정할 수 없다. 하지만 루트가 고정된다면, 우리는 정점 간에 '부모'와 '자식'의 관계를 정의할 수 있다. 
+
+**용어**
+- root: 
+- parent node:
+- leaf node:
+- subtree: 
+  
+**트리의 성질**
+- 임의의 두 정점 U와 V에 대해, U에서 V로 가는 최단 경로는 유일하다. 
+- 서브트리: 아무 정점이나 잡고 부모와의 연결을 끊었을 때, 해당 정점과 그 자식들, 그 자식들의 자식들...로 이루어진 부분그래프는 트리가 된다. 
+
+````{admonition} Summary for Tree
+:class: important 
+
+Tree <br>
+- 정의: 사이클이 없는 그래프 
+- 특징: 
+    - 임의의 두 정점 U와 V에 대해, U에서 V로 가는 최단 경로는 유일하다. 
+    - 어느 한 정점을 (root)로 선택하면 트리는 부모 노드와 자식 관계로 표현될 수 있다. 
+    - 트리에서 일부를 떼어내도 트리 구조이며 이를 서브트리라 한다. 
+    - 트리는 파일 시스템과 같이 계층적이고 정렬된 데이터를 다루기에 적합하다. 
+````
+
+### 트리 생성 코드: 리스트 to root  
+
+온라인 코딩 문제를 풀다보면, 디버깅이 필요하다. 하지만, 구현해야하는 함수가 tree의 root을 argument로 받는 경우에 트리 자체를 손수 만드는 것은 시간이 걸린다. 따라서, `build_tree(list)`를 만들면, list 자료형을 받아 손 쉽게 트리로 만드는 코드를 사용하여 디버깅을 빠르게 할 수 있다. 또한, 이렇게 생성된 트리를 출력하여 확인하는 것도 어려우므로 이 트리를 다시 리스트로 바꾸는 `tree_to_list(TreeNode)` 함수를 만들면 편하다. 다음은, 해당 helper 함수를 나타낸다. 
+
+````{admonition} helper function for Tree 
+:class: dropdown 
+
+```{code-block} python 
+---
+caption: Helper Functions for Tree Problems. This script provides utility functions to build a binary tree from a level-order list representation (`build_tree`) and convert a tree back into a list (`tree_to_list`). It is commonly used when solving tree problems on LeetCode or similar platforms for easy input/output handling.
+---
+from typing import List 
+from collections import deque 
+
+class TreeNode:
+    def __init__(self, val, left=None, right=None):
+        self.val = val 
+        self.left = left 
+        self.right = right 
+
+def build_tree(arr: List[int]):
+    if len(arr) == 0 or arr[0] == None:
+        return None 
+    
+    root = TreeNode(arr[0])
+    idx = 1  # index pointing to the current value in the array
+    q = deque([root])
+    while idx < len(arr):
+        cur_node = q.popleft()
+
+        # If the current node's left child exists, create and append it
+        if idx < len(arr) and arr[idx] != None:  # when idx exceeds array length, no more children exist
+            cur_node.left = TreeNode(arr[idx])
+            q.append(cur_node.left)
+        idx += 1  # increment idx even when arr[idx] == None
+
+        # Same logic for the right child
+        if idx < len(arr) and arr[idx] != None:
+            cur_node.right = TreeNode(arr[idx])
+            q.append(cur_node.right)
+        
+        idx += 1 
+
+    return root 
+
+def tree_to_list(root: TreeNode):
+    if not root:
+        return []
+    
+    res = [] 
+    q = deque([root])
+    while q:
+        cur_node = q.popleft()
+        
+        if cur_node:
+            res.append(cur_node.val)
+        else:
+            res.append(None)  # For leaf nodes, no need to process child nodes further
+            continue 
+
+        # Even if children are None, they must be added to preserve tree structure
+        q.append(cur_node.left)
+        q.append(cur_node.right)
+
+    # Trim trailing None values that represent missing children beyond the last leaf level
+    while res and res[-1] == None:
+        res.pop()
+
+    return res 
+
+if __name__ == "__main__":
+    data = [0, 2, 4, 6, 8, 10, None, 14, 16]
+    root = build_tree(data)
+    print(tree_to_list(root))
+
+```
+````
+
+### 트리 생성 코드: edges to list (parent, children)
+
+트리에는 부모와 자식 관계가 있으므로, 각 정점별로 부모가 누구인지, 자식들의 목록은 어떻게 되는지를 저장해두면 요긴하게 쓰인다. 이를 아래와 같이 구현할 수 있다. 
+
+```python
+'''
+currentNode: 현재 탐색 중인 정점 
+parent: 해당 정점의 부모 정점
+'''
+def makeTree(currentNode, parent):
+    for (Node in connect[currentNode]):
+        if Node != parent:
+            add Node to currentNode's child 
+            set Node's parent to currentNode 
+            makeTree(Node, currentNode)
+```
+
+***트리에서는 어떤 정점의 부모는 하나이거나 없다.*** 따라서, 어떤 정점에 대해 연결된 모든 정점은 최대 한 개의 정점을 제외하면 모두 해당 정점의 자식들이 된다. 이에 따라 부모 정점의 정보를 가져와, 부무 정점이 아니지만 현재 탐색 노드와 연결되어 있는 정점을 모두 자식으로 연결할 수 있다. 또한 자신의 자식들의 부모를 현재 탐색 노드로 설정해준 후, 그 후 재귀적으로 자식 정점들에게 트리 구성을 요청하는 형태의 함수이다. 
+
+이를 아래처럼 DFS와 BFS로 구현할 수 있다. 
+
+````{admonition} build tree using DFS 
+:class: dropdown 
+**DFS(재귀)로 루트 트리 만들기**
+- 입력이 "이미 트리 (사이클 없음)"이라면 parent 체크만으로 충분 
+- 일반 그래프 (사이클 가능) 이라면 `visited`도 함께 사용 필요 
+
+```{code-block} python
+from collections import defaultdict, deque
+
+# 노드 넘버가 1~n일때는 root의 부모 & parent 리스트 초기화를 0으로 
+# 노드 넘버가 0~n-1일때는 root의 부모 & parent 리스트 초기화를 -1로 설정 
+def root_tree_dfs(n, edges, root, use_visited=False):
+    # 그래프 구성
+    g = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        g[a].append(b); g[b].append(a)
+
+    parent   = [0] * (n + 1)            # parent[u] = u의 부모
+    children = [[] for _ in range(n + 1)]  # children[u] = u의 자식들
+    visited  = [False] * (n + 1)
+
+    def dfs(u, p):
+        parent[u] = p
+        visited[u] = True
+        for v in g[u]:
+            if v == p: 
+                continue
+            if use_visited and visited[v]:
+                continue           # 일반 그래프일 때 사이클/역간선 차단
+            children[u].append(v)
+            dfs(v, u)
+
+    dfs(root, 0)  # 0은 부모 없음 표시
+    return parent, children
+
+n = 7
+edges = [(1,2),(1,3),(2,4),(2,5),(3,6),(3,7)]
+root = 1
+
+p, ch = root_tree_dfs(n, edges, root)
+print("parent:", p)       # parent[1]=0, parent[2]=1, parent[3]=1, ...
+print("children:", ch)    # children[1]=[2,3], children[2]=[4,5], ...
+
+```
+````
+
+````{admonition} build a tree using BFS 
+:class: dropdown 
+
+**BFS(반복)** 으로 루트 트리 만들기 
+- 재귀 한도 걱정 없고, 사이클도 자연스럽게 막음. 
+
+```{code-block} python
+def root_tree_bfs(n, edges, root):
+    g = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        g[a].append(b); g[b].append(a)
+
+    parent   = [-1] * (n + 1)
+    children = [[] for _ in range(n + 1)]
+
+    from collections import deque
+    q = deque([root])
+    parent[root] = 0
+
+    while q:
+        u = q.popleft()
+        for v in g[u]:
+            if parent[v] != -1:        # 이미 방문, visited 사용하지 않고 parent정보로 알 수 있음. 
+                continue
+            parent[v] = u
+            children[u].append(v)
+            q.append(v)
+
+    return parent, children
+
+n = 7
+edges = [(1,2),(1,3),(2,4),(2,5),(3,6),(3,7)]
+root = 1
+
+p, ch = root_tree_dfs(n, edges, root)
+print("parent:", p)       # parent[1]=0, parent[2]=1, parent[3]=1, ...
+print("children:", ch)    # children[1]=[2,3], children[2]=[4,5], ...
+
+```
+````
+
+````{admonition} children to Tree object 
+:class: dropdown 
+
+```{code-block} python 
+
+# Step 1: 노드 클래스 정의
+class TreeNode:
+    def __init__(self, val):
+        self.val = val 
+        self.children = [] 
+    def __repr__(self):
+        return f"TreeNode({self.val})"
+    
+# a = TreeNode(3) 
+# print(a)
+# print(f"{a}")
+
+# Step 2: 각 노드별 자식 리스트 생성 
+children = [
+    [],          # 0번은 사용 안 함
+    [2, 3],      # 1의 자식은 2, 3
+    [4, 5],      # 2의 자식은 4, 5
+    [6, 7],      # 3의 자식은 6, 7
+    [], [], [], []  # 나머지는 리프 노드
+]
+
+# Step 3: 실제 객체 트리 구성 
+def build_tree_from_children(children, root=1):
+    # 모든 노드 객체 미리 생성
+    nodes = [None] + [TreeNode(i) for i in range(1, len(children))]
+    
+    # 부모-자식 연결
+    for parent, child_list in enumerate(children):
+        if parent == 0:
+            continue
+        for c in child_list:
+            nodes[parent].children.append(nodes[c])
+    
+    return nodes[root]
+
+root = build_tree_from_children(children, root=1)
+
+# 출력 확인 (preorder DFS)
+def print_tree(node, depth=0):
+    print("  " * depth + str(node.val))
+    for c in node.children:
+        print_tree(c, depth + 1)
+
+print_tree(root)
+```
+````
 ## 이진 탐색 트리 
 
+이진 탐색 트리는 ***트리 자료구조 중에서 가장 간단한 형태*** 이다. 이진 탐색 트리는 효율적인 이진 탐색이 동작할 수 있도록 고안된 자료구조이다. 
+
+**이진 탐색 트리 특징**
+- 왼쪽 자식 노드 < 부모 노드 < 오른쪽 자식 노드
+
+이진 탐색 트리에 데이터를 넣고 빼는 방법은 알고리즘보다 자료구조에 가까우며, 이진 탐색 트리 자료구조를 구현하도록 요구하는 문제는 출제 빈도가 낮으므로, 이 책에서는 이진 탐색 트리 구현 방법은 소개하지 않는다. (위에서 소개한 것은 전체적인 트리 구조이다.)
+
+이진 탐색 트리가 미리 구현되어 있다고 가정하고, 다음 그림과 같은 이진 탐색 트리에서 데이터를 조회하는 과정을 살펴보자. 
+
+![4](../../assets/img/binarySearch/4.png)
+
+![5](../../assets/img/binarySearch/5.png)
+
+![6](../../assets/img/binarySearch/6.png)
+
+이진 탐색 트리에서 데이터 조회는 루트 노드부터 왼쪽 자식 혹은 오른쪽 자식 노드로 이동하며 반복적으로 방문한다. 자식 노드가 없을 때까지 찾지 못했다면, 이진 탐색 트리에 원소가 없는 것이다. 
+````{admonition} searching a node in a Binary Search Tree 
+:class: dropdown 
+
+```{code-block} python 
+
+class TreeNode:
+    def __init__(self, val):
+        self.val = val 
+        self.left = None 
+        self.right = None 
+
+    def __repr__(self):
+        return f"TreeNode({self.val})"
+    
+# a = TreeNode(3) 
+# print(a)
+# print(f"{a}")
+
+def find_node(root:TreeNode, target:int) -> bool:
+    node= root 
+    while node:
+        if node.val == target:
+            return node
+        
+        if node.val < target:
+            node = node.right 
+        else:
+            node = node.left 
+    return False # node == None 
+```
+````
+
 ## 예시 문제 
+
+### Convert Sorted Array to Binary Search Tree 
+[문제 링크](https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/description/?envType=problem-list-v2&envId=binary-search-tree)
+
+### Find Mode in Binary Search Tree 
+[문제 링크](https://leetcode.com/problems/find-mode-in-binary-search-tree/description/?envType=problem-list-v2&envId=binary-search-tree)
+
+### Minimum Absolute Difference in BST 
+
+[문제 링크](https://leetcode.com/problems/minimum-absolute-difference-in-bst/description/?envType=problem-list-v2&envId=binary-search-tree)
+
+### Two Sum IV - Input is a BST 
+
+[문제 링크](https://leetcode.com/problems/two-sum-iv-input-is-a-bst/description/?envType=problem-list-v2&envId=binary-search-tree)
