@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=9c59b310" />
@@ -183,7 +183,13 @@
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">이론</span></p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">기초</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../basics/oop.html">객체 지향 프로그래밍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/oop-classes_instances_objects.html">클래스, 인스턴스, 객체</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/regex.html">정규표현식</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">이론</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../theory/0_tips.html">문제 풀이 순서 팁 (Tips)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../theory/1_implementation.html">Lecture 1-1. 구현</a></li>
@@ -423,7 +429,7 @@ document.write(`
 </div>
 <div class="dropdown admonition">
 <p class="admonition-title">graph의 확장</p>
-<p><img alt="3-1" src="../../_images/1.png" /></p>
+<p><img alt="3-1" src="../../_images/11.png" /></p>
 <p>In the beginning, the golem may extend up to <code class="docutils literal notranslate"><span class="pre">3</span> <span class="pre">cells</span></code> above the forest. To handle this, we add 3 buffer rows at the top of the grid. These buffer rows are not part of the forest but provide enough room for the golem to move and settle safely.</p>
 </div>
 <div class="dropdown admonition">
@@ -434,13 +440,13 @@ document.write(`
 <div class="dropdown admonition">
 <p class="admonition-title">각 step 구현</p>
 <p>When the golem moves one step down, we must check 3 positions below the center: directly underneath, and one cell to the left and right. If all 3 are empty, the golem can move downward without collision.
-<img alt="3-2" src="../../_images/2.png" /></p>
+<img alt="3-2" src="../../_images/21.png" /></p>
 <p>Now let’s look at rotation to the left. For the golem to rotate, <code class="docutils literal notranslate"><span class="pre">five</span> <span class="pre">specific</span> <span class="pre">cells</span></code> must be empty. Interestingly, the rules allow rotation even if the upper-right or lower-right cells are occupied. We number the directions North, East, South, and West as 0, 1, 2, and 3. Using this, left rotation is simply (d + 3) mod 4, and right rotation is (d + 1) mod 4.</p>
-<p><img alt="3-3" src="../../_images/3.png" /></p>
+<p><img alt="3-3" src="../../_images/31.png" /></p>
 <p>Rotation to the right works symmetrically. Again, five surrounding cells must be empty to allow the move. The concept is the same as left rotation, but we apply the clockwise formula.
-<img alt="3-4" src="../../_images/4.png" /></p>
+<img alt="3-4" src="../../_images/41.png" /></p>
 <p>When the golem finally stops, all four arms must be inside the forest area, which is from row 3 down to H–1. To manage state, we store each golem’s position and exit direction in units[gid]. We also record which exit belongs to which golem in exit_map. This way, exit_map tells us the gid, and units gives us the exact center and direction.
-<img alt="3-5" src="../../_images/5.png" /></p>
+<img alt="3-5" src="../../_images/51.png" /></p>
 </div>
 <div class="dropdown admonition">
 <p class="admonition-title">정보 저장</p>
@@ -721,7 +727,7 @@ document.write(`
 <div class="dropdown admonition">
 <p class="admonition-title">원점위치에 따른 좌표 변환</p>
 <p>좌상단이 시작점인지, 좌하단이 시작점인지 좌표 변환 <a class="reference external" href="https://colab.research.google.com/github/Daye-Lee18/mybook/blob/main/assets/ipynb/grid_coords_rotations_cheatsheet.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
-<p><img alt="" src="../../_images/114.png" /></p>
+<p><img alt="" src="../../_images/12.png" /></p>
 <p>요약하자면,</p>
 <ul class="simple">
 <li><p><strong>좌하단→좌상단(배열)</strong>: <code class="docutils literal notranslate"><span class="pre">row</span> <span class="pre">=</span> <span class="pre">N</span> <span class="pre">-</span> <span class="pre">1</span> <span class="pre">-</span> <span class="pre">y</span></code>, <code class="docutils literal notranslate"><span class="pre">col</span> <span class="pre">=</span> <span class="pre">x</span></code></p></li>

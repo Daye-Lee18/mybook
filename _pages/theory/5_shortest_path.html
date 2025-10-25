@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=9c59b310" />
@@ -185,7 +185,13 @@
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">이론</span></p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">기초</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../basics/oop.html">객체 지향 프로그래밍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/oop-classes_instances_objects.html">클래스, 인스턴스, 객체</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/regex.html">정규표현식</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">이론</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="0_tips.html">문제 풀이 순서 팁 (Tips)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="1_implementation.html">Lecture 1-1. 구현</a></li>
@@ -420,24 +426,24 @@ document.write(`
 <h3>Dijkstra Algorithm 예시<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
 <p>다음과 같은 그래프가 있을 때, 1번 노드에서 다른 모든 노드로 가는 최단 경로를 구하는 문제를 생각해보자. 출발 노드는 1이라 가정한다. 즉, 1번 노드에서 다른 모든 노드로 가는 최단 거리를 계산할 것이다. 최단 경로 테이블을 보면, “<strong>초기 상태에서는 다른 모든 노드로 가는 최단 거리</strong>”를 “INF”로 초기화한다. 즉, 테이블의 각 값은
 <strong>해당 노드로 도달하는 가장 짧은 값</strong>”을 저장한다. 파이썬에서 기본으로 1e9를 실수 자료형으로 처리하므로 모든 간선이 정수형으로 표현되는 문제에서는 <code class="docutils literal notranslate"><span class="pre">int(1e9)</span></code>로 초기화한다. (대부분의 문제에서는 그래프의 간신 길이 정보를 줄 때 1억 미만의 값으로 준다.)</p>
-<p><img alt="image" src="../../_images/116.png" /></p>
+<p><img alt="image" src="../../_images/114.png" /></p>
 <p><strong>Step 1</strong></p>
 <p>먼저 방문하지 않은 노드 중에서 최단 거리가 가장 짧은 노드를 선택하는데, “출발 노드에서 출발 노드”로의 거리는 0으로 보기 때문에, 처음에는 출발 노드가 선택된다.</p>
 <p>이제 1번 노드를 거쳐 다른 노드로 가는 비용을 계산한다. 1번 노드와 연결된 모든 간선을 하나씩 확인한다. 현재 1번 노드까지 오는 비용은 0이므로, 1번 노드를 거쳐 2번, 3번, 4번 노드로 가는 최소 비용은 차례대로 2(0+2), 5(0+5), 1(0+1)이다. 현재 2, 3, 4번 노드로 가는 비용이 ‘무한’이므로 세 노드에 도달하는 더 짧은 경로를 찾았으므로 각각 새로운 값으로 갱신한다.</p>
-<p><img alt="2" src="../../_images/214.png" /></p>
+<p><img alt="2" src="../../_images/213.png" /></p>
 <p><strong>Step 2</strong></p>
 <p>이후의 모든 단계에서도 마찬가지로 방문하지 않은 노드 중에서 최단 거리가 가장 짧은 노드를 선택한다. 따라서 4번 노드가 선택된다. 이어서 4번 노드를 거쳐서 갈 수 있는 노드를 확인한다. 4번 노드에서 갈 수 있는 노드는 3번과 5번이고, 4번 노드까지의 거리는 1이므로 4번 노드를 거쳐서 3번과 5번 노드로 가는 최소 비용은 차례대로 4(1+3), 2(1+1)이다. 이 두 값은 기존의 리스트에 담겨 있던 값보다 작으므로 다음처럼 리스트가 갱신된다.</p>
-<p><img alt="3" src="../../_images/36.png" /></p>
+<p><img alt="3" src="../../_images/37.png" /></p>
 <p><strong>Step 3</strong></p>
 <p>방문하지 않은 노드 중 최단 거리가 가장 짧은 노드 선택: 2번
 2번 노드를 거쳐 갈 수 있는 노드들 중 방문하지 않은 노드들: 3번, 4번
 2번 노드를 거쳐 가는 경우 각 노드들까지의 최종 비용 계산: 3번 (2+3 vs. 4 -&gt; 갱신 x), 4번 (2+2 vs. 1 -&gt; 갱신 x)</p>
-<p><img alt="4" src="../../_images/44.png" /></p>
+<p><img alt="4" src="../../_images/45.png" /></p>
 <p><strong>Step 4</strong></p>
 <p>방문하지 않은 노드 중 최단 거리가 가장 짧은 노드 선택: 5번
 2번 노드를 거쳐 갈 수 있는 노드들 중 방문하지 않은 노드들: 3번, 6번
 2번 노드를 거쳐 가는 경우 각 노드들까지의 최종 비용 계산: 3번 (2+1 vs. 4 -&gt; 갱신), 6번 (2+2 vs. INF -&gt; 갱신)</p>
-<p><img alt="5" src="../../_images/54.png" /></p>
+<p><img alt="5" src="../../_images/55.png" /></p>
 <p><strong>Step 5</strong></p>
 <p>방문하지 않은 노드 중 최단 거리가 가장 짧은 노드 선택: 3번
 2번 노드를 거쳐 갈 수 있는 노드들 중 방문하지 않은 노드들: 2번, 6번
@@ -856,22 +862,22 @@ document.write(`
 <img alt="10" src="../../_images/102.png" /></p>
 <p><strong>Step 4</strong></p>
 <p>우선순위 큐에서 원소를 pop하면 노드 2가 꺼내진다. 2번 노드를 거쳐서 가는 경우 중 다음 노드에서 현재의 최단 거리를 더 짧게 갱신할 수 있는 방법은 없다. 따라서 우선순위 큐에 어떠한 원소도 들어가지 않고 다음과 같이 리스트가 갱신된다.</p>
-<p><img alt="11" src="../../_images/117.png" /></p>
+<p><img alt="11" src="../../_images/115.png" /></p>
 <p><strong>Step 5</strong></p>
 <p>이번 단계에서는 노드 5에 대해 처리한다. 5번 노드를 거쳐서 3번과 6번 노드로 갈 수 있다. 현재 5번 노드까지 가는 최단 거리가 2이므로 5번 노드에서 3번 노드로 가는 거리인 1을 더한 3이 기존의 값인 4보다 작다. 따라서 새로운 값인 3으로 갱신한다. 또한 6번 노드로 가는 최단 거리 역시 마찬가지로 갱신된다. 그래서 이번에는 (3, 3)과 (4, 6)이 우선순위 큐에 들어간다. 우선순위 큐를 보면, 작을 때마다 원소를 넣어주는데, 같은 노드이지만 이전에 넣어서 (거리) 값이 더 큰 원소가 있음을 확인할 수 있다. 따라서, heappop()으로 원소를 빼준 후, 가장 최신으로 업데이트된 값보다 큰 경우에는 무시하고 넘어가주면 된다.</p>
 <p><img alt="12" src="../../_images/122.png" /></p>
 <p><strong>Step 6</strong></p>
 <p>우선순위 큐에서 노드 3을 빼고, 3에서는 노드 2번과 6번으로 갈 수 있다. 최단 거리 테이블은 갱신되지 않으며 따라서 우선순위 큐에도 아무것도 넣어주지 않는다.</p>
-<p><img alt="13" src="../../_images/131.png" /></p>
+<p><img alt="13" src="../../_images/132.png" /></p>
 <p><strong>Step 7</strong></p>
 <p>원소 (4, 3)을 꺼낸다. 다만, 3번 노드는 현재 최단 거리 테이블의 값보다 크므로 이 원소는 무시한다.</p>
-<p><img alt="14" src="../../_images/141.png" /></p>
+<p><img alt="14" src="../../_images/142.png" /></p>
 <p><strong>Step 8</strong></p>
 <p>이어서 원소 (4, 6)이 꺼내진다.</p>
-<p><img alt="15" src="../../_images/151.png" /></p>
+<p><img alt="15" src="../../_images/152.png" /></p>
 <p><strong>Step 9</strong></p>
 <p>마지막으로 남은 원소를 꺼내지만, 아까와 마찬가지로 이미 처리된 노드이므로 무시한다.</p>
-<p><img alt="16" src="../../_images/161.png" /></p>
+<p><img alt="16" src="../../_images/162.png" /></p>
 </section>
 <section id="dijkstra">
 <h3>개선된 dijkstra 구현<a class="headerlink" href="#dijkstra" title="Link to this heading">#</a></h3>

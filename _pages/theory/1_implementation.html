@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=9c59b310" />
@@ -185,7 +185,13 @@
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">이론</span></p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">기초</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../basics/oop.html">객체 지향 프로그래밍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/oop-classes_instances_objects.html">클래스, 인스턴스, 객체</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/regex.html">정규표현식</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">이론</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="0_tips.html">문제 풀이 순서 팁 (Tips)</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Lecture 1-1. 구현</a></li>
@@ -388,7 +394,7 @@ document.write(`
 <p>문제를 파이썬 언어로 풀 때 주의해야할 부분은, <strong>메모리 제한</strong>이다. 보통 코딩 테스트에서는 128 ~ 512 MB로 메모리를 제한하는데, 문제는 수백만 개 이상의 데이터를 처리해야하는 문제가 출제되곤 한다.</p>
 <p>시스템 내부적으로 다음 표에서 보여주는 것과 유사한 크기만큼의 메모리를 차지한다.</p>
 <div class="pst-scrollable-table-container"><table class="table table-center" id="my-table">
-<caption><span class="caption-number">표 1 </span><span class="caption-text">int 자료형 데이터의 개수에 따른 메모리 사용량</span><a class="headerlink" href="#my-table" title="Link to this table">#</a></caption>
+<caption><span class="caption-number">표 15 </span><span class="caption-text">int 자료형 데이터의 개수에 따른 메모리 사용량</span><a class="headerlink" href="#my-table" title="Link to this table">#</a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>데이터의 개수 (리스트의 길이)</p></th>
 <th class="head"><p>메모리 사용량</p></th>
@@ -454,7 +460,7 @@ document.write(`
 <li><p>난이도 하 | 제한 시간 1초 | 메모리 제한 128 MB</p></li>
 </ul>
 <p>여행가 A는 NxN 크기의 정사각형 공간 위에 서 있다. 이 공간은 1x1 크기의 정사각형으로 나누어져 있다. 가장 왼쪽 위 좌표는 <code class="docutils literal notranslate"><span class="pre">(1,1)</span></code>이며, 가장 오른쪽 아래 좌표는 <code class="docutils literal notranslate"><span class="pre">(N,N)</span></code>에 해당한다. 여행가 A는 <code class="docutils literal notranslate"><span class="pre">상,</span> <span class="pre">하,</span> <span class="pre">좌,</span> <span class="pre">우</span></code> 방향으로 이동할 수 있으며, 시작 좌표는 항상 <code class="docutils literal notranslate"><span class="pre">(1,1)</span></code>이다. 우리 앞에는 여행가 A가 이동할 계획이 적힌 계획서 (아래 그림)가 놓여 있다.</p>
-<a class="bg-primary mb-1 reference internal image-reference" href="../../_images/11.png"><img alt="예시 이미지" class="bg-primary mb-1 align-center" src="../../_images/11.png" style="width: 400px;" />
+<a class="bg-primary mb-1 reference internal image-reference" href="../../_images/15.png"><img alt="예시 이미지" class="bg-primary mb-1 align-center" src="../../_images/15.png" style="width: 400px;" />
 </a>
 <p>계획서에는 하나의 줄에 띄어쓰기를 기준으로 하여 <code class="docutils literal notranslate"><span class="pre">L,</span> <span class="pre">R,</span> <span class="pre">U,</span> <span class="pre">D</span></code> 중 하나의 문자가 반복적으로 적혀 있다. 각 문자의 의미는 다음과 같다.</p>
 <ul class="simple">
@@ -464,7 +470,7 @@ document.write(`
 <li><p>D: 아래로 한 칸 이동</p></li>
 </ul>
 <p>이때 여행가 A가 N x N 크기의 정사각형 공간을 벗어나는 움직임은 무시된다. 예를 들어 (1, 1)의 위치에서 L혹은 U를 만나면 무시된다. 다음은 N=5인 지도와 계획서이다.</p>
-<a class="bg-primary mb-1 reference internal image-reference" href="../../_images/21.png"><img alt="예시 이미지" class="bg-primary mb-1 align-center" src="../../_images/21.png" style="width: 400px;" />
+<a class="bg-primary mb-1 reference internal image-reference" href="../../_images/24.png"><img alt="예시 이미지" class="bg-primary mb-1 align-center" src="../../_images/24.png" style="width: 400px;" />
 </a>
 <p>이 경우 6개의 명령에 따라서 여행가가 움직이게 되는 위치는 순서대로 (1,2), (1,3), (1,4), (1,4), (2,4), (3,4) 이므로, 최종적으로 여행가 A가 도착하게 되는 곳의 좌표는 (3,4)이다. 다시 말해 3행 4열의 위치에 해당하므로 (3,4)라고 적는다. 계획서가 주어졌을 때 여행가 A가 최종적으로 도착할 지점의 좌표를 출력하는 프로그램을 작성하시오.</p>
 <div class="note admonition">
@@ -578,7 +584,7 @@ R R R U D D</p>
 <li><p>수평으로 두 칸 이동한 뒤에 수직으로 한 칸 이동하기</p></li>
 <li><p>수직으로 두 칸 이동한 뒤에 수평으로 한 칸 이동하기</p></li>
 </ol>
-<a class="bg-primary mb-1 reference internal image-reference" href="../../_images/31.png"><img alt="예시 이미지" class="bg-primary mb-1 align-center" src="../../_images/31.png" style="width: 400px;" />
+<a class="bg-primary mb-1 reference internal image-reference" href="../../_images/33.png"><img alt="예시 이미지" class="bg-primary mb-1 align-center" src="../../_images/33.png" style="width: 400px;" />
 </a>
 <p>이처럼 8x8 좌표 평면상에서 <code class="docutils literal notranslate"><span class="pre">나이트의</span> <span class="pre">위치가</span> <span class="pre">주어졌을</span> <span class="pre">때</span> <span class="pre">나이트가</span> <span class="pre">이동할</span> <span class="pre">수</span> <span class="pre">있는</span> <span class="pre">경우의</span> <span class="pre">수</span></code>를 출력하는 프로그램을 작성하시오. 이때 왕실의 정원에서 <code class="docutils literal notranslate"><span class="pre">행</span> <span class="pre">위치</span></code>를 표현할 때는 <code class="docutils literal notranslate"><span class="pre">1부터</span> <span class="pre">8</span></code>로 표현하며, 열 위치를 표현할 때는 <code class="docutils literal notranslate"><span class="pre">a부터</span> <span class="pre">h</span></code>로 표현한다.</p>
 <p>예를 들어 만약 나이트가 a1에 있을 때 이동할 수 있는 경우의 수는 다음 2가지이다. a1의 위치는 좌표 평면에서 구석의 위치에 해당하며 나이트는 정원의 밖으로는 나갈 수 없기 때문이다.</p>

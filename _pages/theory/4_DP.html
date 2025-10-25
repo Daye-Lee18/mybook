@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=9c59b310" />
@@ -185,7 +185,13 @@
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">이론</span></p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">기초</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../basics/oop.html">객체 지향 프로그래밍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/oop-classes_instances_objects.html">클래스, 인스턴스, 객체</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/regex.html">정규표현식</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">이론</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="0_tips.html">문제 풀이 순서 팁 (Tips)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="1_implementation.html">Lecture 1-1. 구현</a></li>
@@ -413,13 +419,13 @@ document.write(`
 <section id="dp">
 <h2>DP 조건<a class="headerlink" href="#dp" title="Link to this heading">#</a></h2>
 <p>DFS를 배울 때, 피보나치 수열을 구현하는 방법을 배웠다. 피보나치 수열은 다음 그림과 같은 형태로 끝없이 이어진다.</p>
-<p><img alt="1" src="../../_images/115.png" /></p>
+<p><img alt="1" src="../../_images/113.png" /></p>
 <p>점화식을 통해 인접한 항들 사이의 관계식을 의미하는데, 예를 들어 수열 <span class="math notranslate nohighlight">\({a_{n}}\)</span>이 있을 때 수열에서의 각 항을 <span class="math notranslate nohighlight">\(a_{n}\)</span>이라고 부른다고 가정하자. 우리는 점화식을 통해 현재의 항을 이전의 항에 대한 식으로 표현할 수 있다. 예를 들어, 피보나치 수열의 점화식은 다음과 같이 표현할 수 있다.</p>
 <p><span class="math notranslate nohighlight">\(a_{n+2} = a_{n} + a_{n+1}, a_{1} =1, a_{2} = 2\)</span></p>
 <p>위와 같은 점화식은 인접 3항간 점화식이라고 부르는데, 인접한 총 3개의 항에 대해서 식이 정의되기 때문이다.</p>
 <p>프로그래밍에서는 이러한 수열을 <strong>배열</strong>이나 <strong>리스트</strong>로 표현할 수 있다. 수열 자체가 여러 개의 수가 규칙에 따라서 배열된 형태를 의미하는 것이기 때문이다. 파이썬에서는 리스트 자료형이 이를 처리하고, C/C++ 와 자바에서는 배열을 이용해 이를 처리한다.</p>
 <p>위와 같은 점화식을 실제로 어떻게 구현할 수 있을까? n번째 피보나치 수를 f(n)이라고 표현할 때 4번째 피보나치 수 f(4)를 구하려면 다음과 같이 함수 f를 반복해서 호출할 것이다. 그런데 f(2)와 f(1)은 항상 1이기 때문에 f(1)이나 f(2)를 만났을 때는 호출을 정지한다.</p>
-<p><img alt="2" src="../../_images/213.png" /></p>
+<p><img alt="2" src="../../_images/212.png" /></p>
 <p>수학적 점화식을 프로그래밍으로 표현하려면 재귀 함수를 사용하면 간단하다. 예시를 소스코드로 바꾸면 다음과 같다.</p>
 <div class="toggle docutils container">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 피보나치 함수(Fibonacci Function)을 재귀함수로 표현 </span>
@@ -495,7 +501,7 @@ document.write(`
 <p>즉, “중복되는 부분 문제 (overlapping subproblems)”를 효율적으로 처리하는 방식</p>
 </div>
 <p>아래 그림을 보면, f(6)을 호출할 때는 다음 그림처럼 색칠된 노드만 방문하게 되어, 효율적으로 문제를 풀 수 있다.</p>
-<p><img alt="3" src="../../_images/35.png" /></p>
+<p><img alt="3" src="../../_images/36.png" /></p>
 </section>
 <section id="id1">
 <h2>메모이제이션<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>

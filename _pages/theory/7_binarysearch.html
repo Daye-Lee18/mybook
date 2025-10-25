@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=9c59b310" />
@@ -185,7 +185,9 @@
         </ul>
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">기초</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../basics/1_regex.html">Lecture 1. 정규표현식 (Regular Expression)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/oop.html">객체 지향 프로그래밍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/oop-classes_instances_objects.html">클래스, 인스턴스, 객체</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/regex.html">정규표현식</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">이론</span></p>
 <ul class="current nav bd-sidenav">
@@ -363,12 +365,12 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">트리 자료 구조</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">트리 생성 소스 코드 1</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">트리 생성 소스 코드 2</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#to-root">트리 생성 코드: 리스트 to root</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#edges-to-list-parent-children">트리 생성 코드: edges to list (parent, children)</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">이진 탐색 트리</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">예시 문제</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">이진 탐색 트리</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">예시 문제</a></li>
 </ul>
             </nav>
         </div>
@@ -387,8 +389,8 @@ document.write(`
 <p><em><strong>순차 탐색 (Sequential Search)</strong></em> 이란, 리스트 안에 있는 특정한 데이터를 찾기 위해 앞에서부터 데이터를 하나씩 차례대로 확인하는 방법이다. 보통 정렬되지 않은 리스트에서 데이터를 찾아야 할 때 사용한다. 리스트 내에 데이터가 아무리 많아도 시간만 충분하다면 항상 원하는 원소 (데이터)를 찾을 수 있다는 장점이 있다.</p>
 <div class="dropdown admonition">
 <p class="admonition-title">source code for sequential search</p>
-<div class="literal-block-wrapper docutils container" id="id7">
-<div class="code-block-caption"><span class="caption-number">예시 34 </span><span class="caption-text">순차 탐색으로 Dongbin을 찾는 탐색 과정. 소스 코드를 실행하면 정상적으로 이름 문자열이 몇 번째 데이터인지 출력하는 것을 알 수 있다.</span><a class="headerlink" href="#id7" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-number">예시 34 </span><span class="caption-text">순차 탐색으로 Dongbin을 찾는 탐색 과정. 소스 코드를 실행하면 정상적으로 이름 문자열이 몇 번째 데이터인지 출력하는 것을 알 수 있다.</span><a class="headerlink" href="#id5" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">sequential_search</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">array</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">target</span><span class="p">:</span>
@@ -414,7 +416,7 @@ document.write(`
 <p>이진 탐색은 배열 내부의 <em><strong>데이터가 정렬되어 있어야만</strong></em> 사용할 수 있는 알고리즘이다. 이진 탐색은 탐색 범위를 절반씩 좁혀가며 데이터를 탐색하는 특징이 있다.
 이진 탐색은 위치를 나타내는 변수 3개를 사용하는데 탐색하고자 하는 범위의 <em><strong>시작점, 끝점, 그리고 중간점</strong></em> 이다. 찾으려는 데이터와 중간점 (Middle) 위치에 있는 데이터를 반복적으로 비교해서 원하는 데이터를 찾는다.</p>
 <p>“이미 정렬된” 9개의 데이터 중에서 값이 6인 원소를 찾는 예시를 살펴보자. 아래 그림에서 중요한 것은 end가 찾는 range에 inclusive한지 exclusive한지이다. 즉 아래의 예시는 [start: end)로 구현했을 때 결과를 보여준다.</p>
-<p><img alt="1" src="../../_images/124.png" /></p>
+<p><img alt="1" src="../../_images/118.png" /></p>
 <p>데이터의 개수는 9개이지만 총 3번의 탐색으로 원소를 찾을 수 있었다. 이진 탐색은 한 번 확인할때마다 확인하는 원소의 개수가 절반씩 줄어든다는 점에서 시간 복잡도가 O(logN)이다.
 코딩 테스트에서 이진 탐색 문제는 탐색 범위가 큰 상황에서의 탐색을 가정하는 문제가 많다. 따라서 탐색 범위가 2,000만을 넘어가면 이진 탐색으로 문제에 접근해보길 바란다.</p>
 <section id="id1">
@@ -424,8 +426,8 @@ document.write(`
 </ol>
 <div class="dropdown admonition">
 <p class="admonition-title">반복문으로 구현한 이진 탐색 소스코드 [start:end)</p>
-<div class="literal-block-wrapper docutils container" id="id8">
-<div class="code-block-caption"><span class="caption-number">예시 35 </span><span class="caption-text">binary search에서 [start:end) 범위인 경우</span><a class="headerlink" href="#id8" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-number">예시 35 </span><span class="caption-text">binary search에서 [start:end) 범위인 경우</span><a class="headerlink" href="#id6" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">binary_search</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
@@ -450,8 +452,8 @@ document.write(`
 </div>
 <div class="dropdown admonition">
 <p class="admonition-title">반복문으로 구현한 이진 탐색 소스코드 2 - [start:end]</p>
-<div class="literal-block-wrapper docutils container" id="id9">
-<div class="code-block-caption"><span class="caption-number">예시 36 </span><span class="caption-text">binary search에서 [start:end] 범위인 경우</span><a class="headerlink" href="#id9" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-number">예시 36 </span><span class="caption-text">binary search에서 [start:end] 범위인 경우</span><a class="headerlink" href="#id7" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">binary_search</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
@@ -479,8 +481,8 @@ document.write(`
 </ol>
 <div class="dropdown admonition">
 <p class="admonition-title">재귀 함수로 구현한 이진 탐색 소스 코드 [start:end)</p>
-<div class="literal-block-wrapper docutils container" id="id10">
-<div class="code-block-caption"><span class="caption-number">예시 37 </span><span class="caption-text">binary search에서 [start:end) 범위인 경우</span><a class="headerlink" href="#id10" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-number">예시 37 </span><span class="caption-text">binary search에서 [start:end) 범위인 경우</span><a class="headerlink" href="#id8" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">binary_search</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
@@ -526,7 +528,7 @@ document.write(`
 <p>이진 탐색은 전제 조건이 <em><strong>데이터 정렬</strong></em> 이다. 실제로 많은 프로그램은 검색 효율을 높이기 위해 데이터를 미리 정렬된 형태로 유지한다. 예를 들어, 검색 기능 (Search)에서 네이버/구글의 자동완성 리스트 내부에선, “사과”, “수박”, “오렌지” 처럼 이미 정렬된 리스트를 유지하고 있다. 검색 효율성을 위해 데이터를 미리 정렬해둔 것이다. 또한 데이터베이트(DB)는 단순 배열이 아니라, B-Tree/B+Tree/Red-Black Tree같은 정렬된 트리 자료구조를 내부적으로 사용하여 이미 정렬된 상태를 유지하므로 이진 탐색과 비슷한 원리로 탐색이 가능하다. 마지막으로 운영체제/파일 시스템에선 파일 이름, inode 테이블, 스케쥴링 큐까지 효율적 접근을 위해 정렬된 리스트나 힙을 유지한다.</p>
 <p>트리 자료 구조에 대해 살표보자. (그래프에 대해서는 <code class="docutils literal notranslate"><span class="pre">Lecture</span> <span class="pre">2-1.</span> <span class="pre">DFS/BFS</span></code> 에서 배웠으므로 그래프에 대한 설명은 생략한다.)</p>
 <p>아래 그래프를 보자. 만일 그래프에 <em><strong>단 하나의 사이클도 없다면,</strong></em> 해당 그래프는 ‘트리 (Tree)’라고 부른다.</p>
-<p><img alt="2" src="../../_images/219.png" /></p>
+<p><img alt="2" src="../../_images/216.png" /></p>
 <p>일반적으로 그래프에서는 정점의 위치나 간선의 모양 등에 대한 조건은 전혀 고려하지 않으며, 오직 연결성만을 고려하므로, 간선의 집합이 변하지 않는다는 가정 하에 그래프를 얼마든지 다시 그릴 수가 있다. 위의 트리에서 <em><strong>5번 정점을 잡고 위로 들어올리는</strong></em> 예시를 생각해보자. 아래쪽에 중력이 작용한다고 생각하고 5번 정점을 위쪽으로 들어올리게 되면 트리의 모양은 아래와 같이 변할 것이다.</p>
 <p><img alt="3" src="../../_images/39.png" /></p>
 <p>트리에는 루트 (root)가 있을 수도 없을 수도 있지만, 편의를 위해서 아무 정점이나 루트로 선택할 수 있다. 트리는 항상 루트를 기준으로 다시 그릴 수 있기 때문에, 루트가 고정되지 않는 한 어떤 정점이 ‘위에’ 있는지 판정할 수 없다. 하지만 루트가 고정된다면, 우리는 정점 간에 ‘부모’와 ‘자식’의 관계를 정의할 수 있다.</p>
@@ -557,13 +559,13 @@ document.write(`
 </li>
 </ul>
 </div>
-<section id="id3">
-<h3>트리 생성 소스 코드 1<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<section id="to-root">
+<h3>트리 생성 코드: 리스트 to root<a class="headerlink" href="#to-root" title="Link to this heading">#</a></h3>
 <p>온라인 코딩 문제를 풀다보면, 디버깅이 필요하다. 하지만, 구현해야하는 함수가 tree의 root을 argument로 받는 경우에 트리 자체를 손수 만드는 것은 시간이 걸린다. 따라서, <code class="docutils literal notranslate"><span class="pre">build_tree(list)</span></code>를 만들면, list 자료형을 받아 손 쉽게 트리로 만드는 코드를 사용하여 디버깅을 빠르게 할 수 있다. 또한, 이렇게 생성된 트리를 출력하여 확인하는 것도 어려우므로 이 트리를 다시 리스트로 바꾸는 <code class="docutils literal notranslate"><span class="pre">tree_to_list(TreeNode)</span></code> 함수를 만들면 편하다. 다음은, 해당 helper 함수를 나타낸다.</p>
 <div class="dropdown admonition">
 <p class="admonition-title">helper function for Tree</p>
-<div class="literal-block-wrapper docutils container" id="id11">
-<div class="code-block-caption"><span class="caption-number">예시 38 </span><span class="caption-text">Helper Functions for Tree Problems. This script provides utility functions to build a binary tree from a level-order list representation (<code class="docutils literal notranslate"><span class="pre">build_tree</span></code>) and convert a tree back into a list (<code class="docutils literal notranslate"><span class="pre">tree_to_list</span></code>). It is commonly used when solving tree problems on LeetCode or similar platforms for easy input/output handling.</span><a class="headerlink" href="#id11" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-number">예시 38 </span><span class="caption-text">Helper Functions for Tree Problems. This script provides utility functions to build a binary tree from a level-order list representation (<code class="docutils literal notranslate"><span class="pre">build_tree</span></code>) and convert a tree back into a list (<code class="docutils literal notranslate"><span class="pre">tree_to_list</span></code>). It is commonly used when solving tree problems on LeetCode or similar platforms for easy input/output handling.</span><a class="headerlink" href="#id9" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span> 
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span> 
 
@@ -632,8 +634,8 @@ document.write(`
 </div>
 </div>
 </section>
-<section id="id4">
-<h3>트리 생성 소스 코드 2<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<section id="edges-to-list-parent-children">
+<h3>트리 생성 코드: edges to list (parent, children)<a class="headerlink" href="#edges-to-list-parent-children" title="Link to this heading">#</a></h3>
 <p>트리에는 부모와 자식 관계가 있으므로, 각 정점별로 부모가 누구인지, 자식들의 목록은 어떻게 되는지를 저장해두면 요긴하게 쓰인다. 이를 아래와 같이 구현할 수 있다.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">currentNode: 현재 탐색 중인 정점 </span>
@@ -649,14 +651,104 @@ document.write(`
 </div>
 <p><em><strong>트리에서는 어떤 정점의 부모는 하나이거나 없다.</strong></em> 따라서, 어떤 정점에 대해 연결된 모든 정점은 최대 한 개의 정점을 제외하면 모두 해당 정점의 자식들이 된다. 이에 따라 부모 정점의 정보를 가져와, 부무 정점이 아니지만 현재 탐색 노드와 연결되어 있는 정점을 모두 자식으로 연결할 수 있다. 또한 자신의 자식들의 부모를 현재 탐색 노드로 설정해준 후, 그 후 재귀적으로 자식 정점들에게 트리 구성을 요청하는 형태의 함수이다.</p>
 <p>이를 아래처럼 DFS와 BFS로 구현할 수 있다.</p>
+<div class="dropdown admonition">
+<p class="admonition-title">build tree using DFS</p>
+<p><strong>DFS(재귀)로 루트 트리 만들기</strong></p>
+<ul class="simple">
+<li><p>입력이 “이미 트리 (사이클 없음)”이라면 parent 체크만으로 충분</p></li>
+<li><p>일반 그래프 (사이클 가능) 이라면 <code class="docutils literal notranslate"><span class="pre">visited</span></code>도 함께 사용 필요</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span><span class="p">,</span> <span class="n">deque</span>
+
+<span class="c1"># 노드 넘버가 1~n일때는 root의 부모 &amp; parent 리스트 초기화를 0으로 </span>
+<span class="c1"># 노드 넘버가 0~n-1일때는 root의 부모 &amp; parent 리스트 초기화를 -1로 설정 </span>
+<span class="k">def</span><span class="w"> </span><span class="nf">root_tree_dfs</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">use_visited</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="c1"># 그래프 구성</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
+        <span class="n">g</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">);</span> <span class="n">g</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+    <span class="n">parent</span>   <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>            <span class="c1"># parent[u] = u의 부모</span>
+    <span class="n">children</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>  <span class="c1"># children[u] = u의 자식들</span>
+    <span class="n">visited</span>  <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">dfs</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="n">parent</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span>
+        <span class="n">visited</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">g</span><span class="p">[</span><span class="n">u</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="n">p</span><span class="p">:</span> 
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">use_visited</span> <span class="ow">and</span> <span class="n">visited</span><span class="p">[</span><span class="n">v</span><span class="p">]:</span>
+                <span class="k">continue</span>           <span class="c1"># 일반 그래프일 때 사이클/역간선 차단</span>
+            <span class="n">children</span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="n">dfs</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">u</span><span class="p">)</span>
+
+    <span class="n">dfs</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># 0은 부모 없음 표시</span>
+    <span class="k">return</span> <span class="n">parent</span><span class="p">,</span> <span class="n">children</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="mi">7</span>
+<span class="n">edges</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">),(</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">),(</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">),(</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">),(</span><span class="mi">3</span><span class="p">,</span><span class="mi">7</span><span class="p">)]</span>
+<span class="n">root</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">p</span><span class="p">,</span> <span class="n">ch</span> <span class="o">=</span> <span class="n">root_tree_dfs</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;parent:&quot;</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>       <span class="c1"># parent[1]=0, parent[2]=1, parent[3]=1, ...</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;children:&quot;</span><span class="p">,</span> <span class="n">ch</span><span class="p">)</span>    <span class="c1"># children[1]=[2,3], children[2]=[4,5], ...</span>
+</pre></div>
+</div>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">build a tree using BFS</p>
+<p><strong>BFS(반복)</strong> 으로 루트 트리 만들기</p>
+<ul class="simple">
+<li><p>재귀 한도 걱정 없고, 사이클도 자연스럽게 막음.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">root_tree_bfs</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
+        <span class="n">g</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">);</span> <span class="n">g</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+    <span class="n">parent</span>   <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">children</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">([</span><span class="n">root</span><span class="p">])</span>
+    <span class="n">parent</span><span class="p">[</span><span class="n">root</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">while</span> <span class="n">q</span><span class="p">:</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">g</span><span class="p">[</span><span class="n">u</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">parent</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>        <span class="c1"># 이미 방문, visited 사용하지 않고 parent정보로 알 수 있음. </span>
+                <span class="k">continue</span>
+            <span class="n">parent</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">u</span>
+            <span class="n">children</span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">parent</span><span class="p">,</span> <span class="n">children</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="mi">7</span>
+<span class="n">edges</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">),(</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">),(</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">),(</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">),(</span><span class="mi">3</span><span class="p">,</span><span class="mi">7</span><span class="p">)]</span>
+<span class="n">root</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">p</span><span class="p">,</span> <span class="n">ch</span> <span class="o">=</span> <span class="n">root_tree_dfs</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;parent:&quot;</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>       <span class="c1"># parent[1]=0, parent[2]=1, parent[3]=1, ...</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;children:&quot;</span><span class="p">,</span> <span class="n">ch</span><span class="p">)</span>    <span class="c1"># children[1]=[2,3], children[2]=[4,5], ...</span>
+</pre></div>
+</div>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">children to Tree object</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
 </section>
 </section>
-<section id="id5">
-<h2>이진 탐색 트리<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<section id="id3">
+<h2>이진 탐색 트리<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
 <p>이진 탐색 트리는 <em><strong>트리 자료구조 중에서 가장 간단한 형태</strong></em> 이다. 이진 탐색 트리는 효율적인 이진 탐색이 동작할 수 있도록 고안된 자료구조이다.</p>
 </section>
-<section id="id6">
-<h2>예시 문제<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
+<section id="id4">
+<h2>예시 문제<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
 </section>
 </section>
 
@@ -730,12 +822,12 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">트리 자료 구조</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">트리 생성 소스 코드 1</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">트리 생성 소스 코드 2</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#to-root">트리 생성 코드: 리스트 to root</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#edges-to-list-parent-children">트리 생성 코드: edges to list (parent, children)</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">이진 탐색 트리</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">예시 문제</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">이진 탐색 트리</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">예시 문제</a></li>
 </ul>
   </nav></div>
 

@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=9c59b310" />
@@ -185,7 +185,13 @@
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">이론</span></p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">기초</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../basics/oop.html">객체 지향 프로그래밍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/oop-classes_instances_objects.html">클래스, 인스턴스, 객체</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/regex.html">정규표현식</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">이론</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="0_tips.html">문제 풀이 순서 팁 (Tips)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="1_implementation.html">Lecture 1-1. 구현</a></li>
@@ -410,7 +416,7 @@ Step 3. <strong>Unchoose / Backtrack</strong>: Remove the last chosen candidate 
 </pre></div>
 </div>
 <p>Without <code class="docutils literal notranslate"><span class="pre">pop</span></code> (unchoose), it is impossible to prevent duplicate solutions or correctly restore the state.</p>
-<a class="bg-primary mb-1 reference internal image-reference" href="../../_images/112.png"><img alt="backtracking diagram" class="bg-primary mb-1 align-center" src="../../_images/112.png" style="width: 400px;" />
+<a class="bg-primary mb-1 reference internal image-reference" href="../../_images/110.png"><img alt="backtracking diagram" class="bg-primary mb-1 align-center" src="../../_images/110.png" style="width: 400px;" />
 </a>
 <section id="combination">
 <h2>Combination (조합)<a class="headerlink" href="#combination" title="Link to this heading">#</a></h2>
@@ -456,7 +462,7 @@ The key idea: different orders of the same elements are considered the same, and
 <p>Example: choosing 2 cards out of <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">2,</span> <span class="pre">3]</span></code>.</p>
 <p>Since order does not matter, <code class="docutils literal notranslate"><span class="pre">indices</span> <span class="pre">smaller</span> <span class="pre">than</span> <span class="pre">the</span> <span class="pre">current</span> <span class="pre">index</span></code> are not revisited (to avoid duplicates).
 For instance, when index=1, <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">2]</span></code> is already generated, so <code class="docutils literal notranslate"><span class="pre">[2,</span> <span class="pre">1]</span></code> should not be repeated.</p>
-<a class="bg-primary mb-1 reference internal image-reference" href="../../_images/212.png"><img alt="combination without repetition" class="bg-primary mb-1 align-center" src="../../_images/212.png" style="width: 400px;" />
+<a class="bg-primary mb-1 reference internal image-reference" href="../../_images/210.png"><img alt="combination without repetition" class="bg-primary mb-1 align-center" src="../../_images/210.png" style="width: 400px;" />
 </a>
 <div class="literal-block-wrapper docutils container" id="id7">
 <div class="code-block-caption"><span class="caption-number">예시 12 </span><span class="caption-text">combination without repetition</span><a class="headerlink" href="#id7" title="Link to this code">#</a></div>
@@ -506,7 +512,7 @@ For instance, when index=1, <code class="docutils literal notranslate"><span cla
 </div>
 </div>
 <p>저번 시간에 배웠듯이, 조합 역시 DFS 기반으로 재귀 호출을 반복하며, 내부적으로는 stack 구조로 동작한다. 아래 그림처럼 함수가 호출될 때 스택에 쌓이고, 종료되면 스택에서 빠져나오면서 상태가 되돌려진다.</p>
-<a class="bg-primary mb-1 reference internal image-reference" href="../../_images/34.png"><img alt="stack for DFS" class="bg-primary mb-1 align-center" src="../../_images/34.png" style="width: 400px;" />
+<a class="bg-primary mb-1 reference internal image-reference" href="../../_images/35.png"><img alt="stack for DFS" class="bg-primary mb-1 align-center" src="../../_images/35.png" style="width: 400px;" />
 </a>
 </section>
 </section>
@@ -521,7 +527,7 @@ For instance, when index=1, <code class="docutils literal notranslate"><span cla
 <li><p>In the <code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">loop</span></code> range, if <code class="docutils literal notranslate"><span class="pre">start</span> <span class="pre">&gt;</span> <span class="pre">len(nums)</span></code>, the function ends automatically, so no explicit base case (termination condition) is needed.</p></li>
 </ul>
 <p>This is the same as <a class="reference external" href="https://leetcode.com/problems/subsets-ii/description/">Subset II</a>.</p>
-<p><img alt="" src="../../_images/53.png" /></p>
+<p><img alt="" src="../../_images/54.png" /></p>
 <p>If you see the below picture, the arr is <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">2,</span> <span class="pre">2]</span></code>. In this case, we must allow the path to continue at least once — that is, even if there are duplicate values, <code class="docutils literal notranslate"><span class="pre">the</span> <span class="pre">first</span> <span class="pre">occurrence</span></code> should be <strong>included</strong> to form a new subset. That’s why <code class="docutils literal notranslate"><span class="pre">the</span> <span class="pre">condition</span> <span class="pre">n_idx</span> <span class="pre">&gt;</span> <span class="pre">start</span></code> is added: we allow the first element, but skip subsequent duplicates at the same depth.</p>
 <p>Since the array is sorted in increasing order, if at the same depth we select a value identical to the one chosen in the previous index, the result would be the same subset (e.g., [1] == [1]). To avoid generating duplicate subsets, we skip that choice.</p>
 <p><img alt="" src="../../_images/63.png" /></p>
@@ -572,7 +578,7 @@ For instance, when index=1, <code class="docutils literal notranslate"><span cla
 The collection of all subsets is called the Powerset, with <span class="math notranslate nohighlight">\(2^n\)</span> subsets. A set originally has no duplicate elements, and the collection of all its subsets is called the powerset. The powerset can be easily generated by considering two cases for each element: “choose” or “do not choose.” In other words, each element creates a branch, resulting in a total of <span class="math notranslate nohighlight">\(2^n\)</span> possible subsets.</p>
 </section>
 <section id="id1">
-<h2><img alt="" src="../../_images/43.png" /><a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<h2><img alt="" src="../../_images/44.png" /><a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <div class="literal-block-wrapper docutils container" id="id12">
 <div class="code-block-caption"><span class="caption-number">예시 17 </span><span class="caption-text">Powerset</span><a class="headerlink" href="#id12" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ========= 1) Subset (powerset) — 인덱스 기준(중복 값이 있으면 같은 값 모양이 중복 출력될 수 있음)</span>

@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=9c59b310" />
@@ -187,7 +187,9 @@
         </ul>
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">기초</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../basics/1_regex.html">Lecture 1. 정규표현식 (Regular Expression)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/oop.html">객체 지향 프로그래밍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/oop-classes_instances_objects.html">클래스, 인스턴스, 객체</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/regex.html">정규표현식</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">이론</span></p>
 <ul class="nav bd-sidenav">
@@ -394,20 +396,20 @@ document.write(`
 <li><p><strong>Visited</strong>: 물체 (Robot)이 차지하는 셀이 한 개 초과 즉, 이경우에는 board에 표시하면 memory가 초과되기 때문에 visited={} set으로 방문 여부를 체크해주면 좋다.</p></li>
 <li><p><strong>Normalization</strong>: 상태 정규화(순서 고정)도 존재해야한다. 즉, (y,x,t,v)와 (t,v,y,x)는 같은 로봇 상태인데, visited가 다르게 취급해 중복 상태 폭증하며 시간도 초과된다. 매번 (a,b) 두 좌표를 정렬해서 (small,big)로 저장하거나, frozenset({pos1,pos2})로 관리해야 한다. 즉, 정규화를 통해 (P1, P2) 중 작은 것이 앞에 오도록하여 같은 위치에 있는 로봇의 상태 체크를 잘 할 수 있게 된다.</p></li>
 </ul>
-<p><img alt="" src="../../_images/110.png" /></p>
+<p><img alt="" src="../../_images/13.png" /></p>
 <p>When we run BFS, each robot state is represented as the positions of its two blocks and the current time. But we need consistency: which block should be stored first? To avoid duplicates, we always order the two coordinates so that the smaller one comes first. This normalization guarantees that the same robot configuration is stored uniquely in the queue.</p>
 </div>
 <div class="dropdown admonition">
 <p class="admonition-title">물체의 rotation 및 예상 결과 확인</p>
 <p>If the robot is lying horizontally, we can rotate it around either the left block or the right block. Each rotation can go both upward and downward, converting the robot into a vertical orientation. So, in total, we get four possible rotations in this situation.</p>
-<p><img alt="" src="../../_images/210.png" /></p>
+<p><img alt="" src="../../_images/22.png" /></p>
 <p>During rotation, we must check not only the pivot block but also the adjacent cells that the robot sweeps through.</p>
 <ul class="simple">
 <li><p>If the pivot is the right block, the non-pivot’s upper and lower cells must be empty.</p></li>
 <li><p>If the pivot is the left block, again the non-pivot’s upper and lower cells must also be empty.
 These checks prevent collisions during rotation.</p></li>
 </ul>
-<p><img alt="" src="../../_images/33.png" /></p>
+<p><img alt="" src="../../_images/32.png" /></p>
 <p>After rotation, the final state is defined by the pivot block plus the new block either above or below it.
 For example, rotating upward results in the pivot plus the cell above it.
 Rotating downward results in the pivot plus the cell below it.
@@ -431,13 +433,13 @@ This ensures that we represent the robot’s new vertical position consistently.
 <p>When the robot is vertical, the situation is symmetric.
 The pivot can be either the top block or the bottom block.
 Each pivot allows a rotation to the left or to the right, changing the robot’s orientation from vertical to horizontal.</p>
-<p><img alt="" src="../../_images/62.png" /></p>
+<p><img alt="" src="../../_images/61.png" /></p>
 <p>As in the horizontal case, rotation requires collision checks.
 If the pivot is the bottom block and we rotate left, the non-pivot’s left cell must be empty.
 If we rotate right, the non-pivot’s right cell must be empty.
 Similarly, when the pivot is the top block, we check the left and right cells of the non-pivot during rotation.
 These rules guarantee that rotations happen without intersecting obstacles.</p>
-<p><img alt="" src="../../_images/72.png" /></p>
+<p><img alt="" src="../../_images/71.png" /></p>
 <p>After a vertical rotation, the final state is also described by the pivot plus one adjacent cell.
 Rotating left results in the pivot plus its left neighbor.
 Rotating right results in the pivot plus its right neighbor.
@@ -574,13 +576,13 @@ The grid size is <span class="math notranslate nohighlight">\(N \times N\)</span
 <p>즉, 5x5 행렬에서는 총 9개의 센터가 존재하고, 각 센터마다 90 -&gt; 180 -&gt; 270 회전 (27번) 중에서 가장 우선순위가 높은 것만 저장하면 된다.
 또한, 각 센터에서 90 회전 다음에 또 90회전을 하면 180도이므로 CW 90도 회전 한 번을 구현해놓으면 코드가 간단해진다.</p>
 <p>center가 (1,1)일때 CW 90도 회전 이후 결과
-<img alt="" src="../../_images/82.png" /> <br>
+<img alt="" src="../../_images/81.png" /> <br>
 center가 (1,2)일때 CW 90도 회전 이후 결과
-<img alt="" src="../../_images/91.png" /> <br>
+<img alt="" src="../../_images/9.png" /> <br>
 center가 (1,3)일때 CW 90도 회전 이후 결과
-<img alt="" src="../../_images/101.png" /> <br>
+<img alt="" src="../../_images/10.png" /> <br>
 center가 (2,1)일때 CW 90도 회전 이후 결과
-<img alt="" src="../../_images/113.png" /> <br></p>
+<img alt="" src="../../_images/111.png" /> <br></p>
 </div>
 <div class="dropdown admonition">
 <p class="admonition-title"><a class="reference external" href="http://rotation.py">rotation.py</a> degugging file</p>

@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=9c59b310" />
@@ -185,7 +185,13 @@
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">이론</span></p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">기초</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../basics/oop.html">객체 지향 프로그래밍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/oop-classes_instances_objects.html">클래스, 인스턴스, 객체</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/regex.html">정규표현식</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">이론</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="0_tips.html">문제 풀이 순서 팁 (Tips)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="1_implementation.html">Lecture 1-1. 구현</a></li>
@@ -494,7 +500,7 @@ document.write(`
 <h3>선택 정렬 예시<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
 <p>앞으로 그림에서, 회색 카드는 ‘현재 정렬되지 않은 데이터 중에서 가장 작은 데이터’를 의미하며, 하늘색 카드는 ‘이미 정렬된 데이터’를 의미한다.</p>
 <p><strong>Step 1</strong>
-<img alt="1" src="../../_images/120.png" /></p>
+<img alt="1" src="../../_images/116.png" /></p>
 <p>초기 단계에서는 모든 데이터가 정렬되어 있지 않으므로, 전체 중에서 가장 작은 데이터를 선택한다.</p>
 <ul class="simple">
 <li><p>‘7’: current element to be swapped (the first element in the remaining unordered section)</p></li>
@@ -502,7 +508,7 @@ document.write(`
 </ul>
 <p>위의 데이터 ‘0’과 ‘7’를 바꾼다.</p>
 <p><strong>Step 2</strong></p>
-<p><img alt="2" src="../../_images/217.png" /></p>
+<p><img alt="2" src="../../_images/214.png" /></p>
 <p>데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다.</p>
 <ul class="simple">
 <li><p>‘5’: current element to be swapped (the first element in the remaining unordered section)</p></li>
@@ -602,23 +608,23 @@ document.write(`
 <section id="id3">
 <h3>삽입 정렬 예시<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
 <p><strong>Step 1</strong></p>
-<p><img alt="11" src="../../_images/1110.png" /></p>
+<p><img alt="11" src="../../_images/117.png" /></p>
 <p>삽입 정렬은 두 번째 데이터부터 시작한다. 왜냐하면 첫번째 데이터는 그 자체로 정렬되어 있다고 판단하기 때문이다.</p>
 <p><strong>Step 2</strong>
 <img alt="12" src="../../_images/123.png" /></p>
 <p>첫 번째 데이터 ‘7’은 그 자체로 정렬되어 있다고 판단하고, 두 번째 데이터인 ‘5’가 어떤 위치가 들어갈지 판단한다. ‘7’의 왼쪽으로 들어가거나 (기존 ‘7’의 위치) 혹은 오른쪽으로 들어가는 두 경우 (현재 ‘5’의 위치)만 존재한다. 우리는 카드를 오름차순으로 정렬하고자 하므로 ‘7’의 왼쪽에 삽입한다.</p>
 <p>** 그림에서 인덱스는 현재 수가 있는 자리의 왼쪽 화살표로 표시됨.</p>
 <p><strong>Step 3</strong>
-<img alt="13" src="../../_images/132.png" />
+<img alt="13" src="../../_images/133.png" />
 ‘9’가 들어갈 위치를 판단해야한다. 삽입될 수 있는 총 위치는 3가지이며 파란색 화살표로 9가 들어갈 위치를 표시하지만, 원래 자리이기 때문에 그대로둔다.</p>
 <p><strong>Step 4</strong>
-<img alt="14" src="../../_images/142.png" />
+<img alt="14" src="../../_images/143.png" />
 ‘0’이 들어갈 위치를 판단해야한다. 파란색 화살표 자리 즉, 현재 ‘5’가 있는 위치에 삽입한다.</p>
 <p><strong>Step 5</strong>
-<img alt="15" src="../../_images/152.png" />
+<img alt="15" src="../../_images/153.png" />
 ‘3’이 들어갈 위치를 판단해야한다. 파란색 화살표 자리 즉, 현재 ‘5’가 있는 위치에 삽입한다.</p>
 <p><strong>Step 6</strong>
-<img alt="16" src="../../_images/162.png" />
+<img alt="16" src="../../_images/163.png" />
 ‘1’이 들어갈 위치를 판단해야한다. 파란색 화살표 자리 즉, 현재 ‘3’이 있는 위치에 삽입한다.</p>
 <p><strong>중략</strong>
 중간 과정을 생략한다.</p>
@@ -687,7 +693,7 @@ document.write(`
 <section id="id5">
 <h3>파트 1<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
 <p><strong>Step 1</strong>
-<img alt="21" src="../../_images/218.png" /></p>
+<img alt="21" src="../../_images/215.png" /></p>
 <ul class="simple">
 <li><p>피벗: 리스트의 첫 번째 데이터인 ‘5’</p></li>
 <li><p>피벗의 왼쪽: 왼쪽에서부터 ‘5’보다 큰 데이터 선택 ‘7’</p></li>
@@ -703,7 +709,7 @@ document.write(`
 <li><p>swap: 위에서 선택된 ‘9’과 ‘2’의 위치를 서로 변경</p></li>
 </ul>
 <p><strong>Step 3</strong>
-<img alt="23" src="../../_images/231.png" /></p>
+<img alt="23" src="../../_images/232.png" /></p>
 <ul class="simple">
 <li><p>피벗: 리스트의 첫 번째 데이터인 ‘5’</p></li>
 <li><p>피벗의 왼쪽: 아까 바꿨던 위치에서부터 ‘5’보다 큰 데이터 선택 ‘6’</p></li>
@@ -711,14 +717,14 @@ document.write(`
 <li><p>swap: 위에서 선택된 ‘9’과 ‘2’의 위치를 서로 변경</p></li>
 </ul>
 <p><strong>Step 4: 분할 완료</strong>
-<img alt="24" src="../../_images/241.png" /></p>
+<img alt="24" src="../../_images/242.png" /></p>
 <p>이와 같이 ‘피벗’이 이동한 상태에 도달하면 분할 완료이다. 분할 완료 후에는 위의 그림처럼 피벗 데이터의 왼쪽 데이터는 모두 피벗 값인 ‘5’보다 작고, 오른쪽에 있는 데이터는 모두 ‘5’보다 크다.</p>
 <p>즉, 분할 (Divide) 또는 파티션 (Partition)이란, 피벗의 왼쪽에는 피벗보다 작은 데이터가 위치하고, 피벗의 오른쪽에는 피벗보다 큰 데이터가 위치하도록 하는 작업을 일컫는다.</p>
 </section>
 <section id="id6">
 <h3>파트 2: 분할 완료된 피벗의 왼쪽 리스트<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
 <p>분할 완료된 피벗의 왼쪽 리스트에서는 다음과 같이 정렬이 진행되며 구체적인 정렬과정은 동일하다.
-<img alt="25" src="../../_images/251.png" /></p>
+<img alt="25" src="../../_images/252.png" /></p>
 </section>
 <section id="id7">
 <h3>파트 3: 분할 완료된 피벗의 오른쪽 리스트<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>

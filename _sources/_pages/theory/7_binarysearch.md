@@ -203,7 +203,7 @@ Tree <br>
     - 트리는 파일 시스템과 같이 계층적이고 정렬된 데이터를 다루기에 적합하다. 
 ````
 
-### 트리 생성 소스 코드 1
+### 트리 생성 코드: 리스트 to root  
 
 온라인 코딩 문제를 풀다보면, 디버깅이 필요하다. 하지만, 구현해야하는 함수가 tree의 root을 argument로 받는 경우에 트리 자체를 손수 만드는 것은 시간이 걸린다. 따라서, `build_tree(list)`를 만들면, list 자료형을 받아 손 쉽게 트리로 만드는 코드를 사용하여 디버깅을 빠르게 할 수 있다. 또한, 이렇게 생성된 트리를 출력하여 확인하는 것도 어려우므로 이 트리를 다시 리스트로 바꾸는 `tree_to_list(TreeNode)` 함수를 만들면 편하다. 다음은, 해당 helper 함수를 나타낸다. 
 
@@ -281,7 +281,7 @@ if __name__ == "__main__":
 ```
 ````
 
-### 트리 생성 소스 코드 2
+### 트리 생성 코드: edges to list (parent, children)
 
 트리에는 부모와 자식 관계가 있으므로, 각 정점별로 부모가 누구인지, 자식들의 목록은 어떻게 되는지를 저장해두면 요긴하게 쓰인다. 이를 아래와 같이 구현할 수 있다. 
 
@@ -302,6 +302,100 @@ def makeTree(currentNode, parent):
 
 이를 아래처럼 DFS와 BFS로 구현할 수 있다. 
 
+````{admonition} build tree using DFS 
+:class: dropdown 
+**DFS(재귀)로 루트 트리 만들기**
+- 입력이 "이미 트리 (사이클 없음)"이라면 parent 체크만으로 충분 
+- 일반 그래프 (사이클 가능) 이라면 `visited`도 함께 사용 필요 
+
+```{code-block} python
+from collections import defaultdict, deque
+
+# 노드 넘버가 1~n일때는 root의 부모 & parent 리스트 초기화를 0으로 
+# 노드 넘버가 0~n-1일때는 root의 부모 & parent 리스트 초기화를 -1로 설정 
+def root_tree_dfs(n, edges, root, use_visited=False):
+    # 그래프 구성
+    g = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        g[a].append(b); g[b].append(a)
+
+    parent   = [0] * (n + 1)            # parent[u] = u의 부모
+    children = [[] for _ in range(n + 1)]  # children[u] = u의 자식들
+    visited  = [False] * (n + 1)
+
+    def dfs(u, p):
+        parent[u] = p
+        visited[u] = True
+        for v in g[u]:
+            if v == p: 
+                continue
+            if use_visited and visited[v]:
+                continue           # 일반 그래프일 때 사이클/역간선 차단
+            children[u].append(v)
+            dfs(v, u)
+
+    dfs(root, 0)  # 0은 부모 없음 표시
+    return parent, children
+
+n = 7
+edges = [(1,2),(1,3),(2,4),(2,5),(3,6),(3,7)]
+root = 1
+
+p, ch = root_tree_dfs(n, edges, root)
+print("parent:", p)       # parent[1]=0, parent[2]=1, parent[3]=1, ...
+print("children:", ch)    # children[1]=[2,3], children[2]=[4,5], ...
+
+```
+````
+
+````{admonition} build a tree using BFS 
+:class: dropdown 
+
+**BFS(반복)** 으로 루트 트리 만들기 
+- 재귀 한도 걱정 없고, 사이클도 자연스럽게 막음. 
+
+```{code-block} python
+def root_tree_bfs(n, edges, root):
+    g = [[] for _ in range(n + 1)]
+    for a, b in edges:
+        g[a].append(b); g[b].append(a)
+
+    parent   = [-1] * (n + 1)
+    children = [[] for _ in range(n + 1)]
+
+    from collections import deque
+    q = deque([root])
+    parent[root] = 0
+
+    while q:
+        u = q.popleft()
+        for v in g[u]:
+            if parent[v] != -1:        # 이미 방문, visited 사용하지 않고 parent정보로 알 수 있음. 
+                continue
+            parent[v] = u
+            children[u].append(v)
+            q.append(v)
+
+    return parent, children
+
+n = 7
+edges = [(1,2),(1,3),(2,4),(2,5),(3,6),(3,7)]
+root = 1
+
+p, ch = root_tree_dfs(n, edges, root)
+print("parent:", p)       # parent[1]=0, parent[2]=1, parent[3]=1, ...
+print("children:", ch)    # children[1]=[2,3], children[2]=[4,5], ...
+
+```
+````
+
+````{admonition} children to Tree object 
+:class: dropdown 
+
+```{code-block} python 
+
+```
+````
 ## 이진 탐색 트리 
 
 이진 탐색 트리는 ***트리 자료구조 중에서 가장 간단한 형태*** 이다. 이진 탐색 트리는 효율적인 이진 탐색이 동작할 수 있도록 고안된 자료구조이다. 
