@@ -181,11 +181,12 @@ print(bisect_left(arr, 6))  # 3 (6이 들어갈 "왼쪽" 위치)
 
 트리에는 루트 (root)가 있을 수도 없을 수도 있지만, 편의를 위해서 아무 정점이나 루트로 선택할 수 있다. 트리는 항상 루트를 기준으로 다시 그릴 수 있기 때문에, 루트가 고정되지 않는 한 어떤 정점이 '위에' 있는지 판정할 수 없다. 하지만 루트가 고정된다면, 우리는 정점 간에 '부모'와 '자식'의 관계를 정의할 수 있다. 
 
-**용어**
-- root: 
-- parent node:
-- leaf node:
-- subtree: 
+**용어 정리**
+- root: 트리의 **가장 위에 있는 정점(node)**으로, 부모가 없는 유일한 노드. 트리 탐색의 시작점이자 기준점.
+- parent node: 특정 노드에서 **한 단계 아래에 있는 다른 노드(자식)**를 직접 연결하는 노드. 즉, 자식 노드의 ‘바로 위’에 있는 노드.
+- child node:  어떤 노드가 가지는 **직접 연결된** 하위 노드.
+- leaf node: 자식이 없는 노드.
+- subtree: 어떤 노드를 루트로 하여, 그 노드와 그 아래의 모든 자식들을 포함한 트리.
   
 **트리의 성질**
 - 임의의 두 정점 U와 V에 대해, U에서 V로 가는 최단 경로는 유일하다. 
@@ -495,6 +496,67 @@ def find_node(root:TreeNode, target:int) -> bool:
 ### Convert Sorted Array to Binary Search Tree 
 [문제 링크](https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/description/?envType=problem-list-v2&envId=binary-search-tree)
 
+solution:
+```{toggle}
+from typing import List, Optional 
+from collections import deque 
+
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+    def __repr__(self):
+        return f"TreeNode({self.val})"
+
+class Solution:
+    def sortedArrayToBST(self, nums: List[int]) -> Optional[TreeNode]:
+        
+        start = 0; end = len(nums)-1 # inclusive 
+
+        def dfs(arr, start, end):
+            if start > end:
+                return None 
+            
+            mid = (start + end) // 2 
+            cur_node = TreeNode(arr[mid])
+
+            cur_node.left = dfs(arr, start, mid-1)
+            cur_node.right= dfs(arr, mid+1, end)
+        
+            return cur_node 
+        
+        return dfs(nums, start, end)
+        
+def tree_to_list(root:TreeNode) -> Optional[List]:
+    if not root:
+        return [] 
+    
+    res = [] 
+    q = deque([root])
+    while q:
+        cur_node = q.popleft()
+        if cur_node:
+            res.append(cur_node)
+        else:
+            res.append(None)
+            continue 
+
+        q.append(cur_node.left)
+        q.append(cur_node.right)
+
+    while res and not res[-1]:
+        res.pop()
+    return res
+
+
+# arr = [-10, -3, 0, 5, 9]
+arr = [1, 3]
+sol = Solution()
+root = sol.sortedArrayToBST(arr)
+print(tree_to_list(root))
+```
 ### Find Mode in Binary Search Tree 
 [문제 링크](https://leetcode.com/problems/find-mode-in-binary-search-tree/description/?envType=problem-list-v2&envId=binary-search-tree)
 
