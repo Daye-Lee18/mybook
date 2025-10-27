@@ -562,6 +562,12 @@ print(tree_to_list(root))
 ### Find Mode in Binary Search Tree 
 [문제 링크](https://leetcode.com/problems/find-mode-in-binary-search-tree/description/?envType=problem-list-v2&envId=binary-search-tree)
 
+```{toggle}
+![7](../../assets/img/binarySearch/7.png)
+위의 예시처럼 같은 수임에도 직접적으로 연결되어 있지 않은 예시도 존재. 
+```
+
+
 ### Minimum Absolute Difference in BST 
 
 [문제 링크](https://leetcode.com/problems/minimum-absolute-difference-in-bst/description/?envType=problem-list-v2&envId=binary-search-tree)
