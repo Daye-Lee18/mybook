@@ -497,7 +497,8 @@ def find_node(root:TreeNode, target:int) -> bool:
 [문제 링크](https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/description/?envType=problem-list-v2&envId=binary-search-tree)
 
 solution:
-```{toggle}
+````{toggle}
+```python
 from typing import List, Optional 
 from collections import deque 
 
@@ -557,6 +558,7 @@ sol = Solution()
 root = sol.sortedArrayToBST(arr)
 print(tree_to_list(root))
 ```
+````
 ### Find Mode in Binary Search Tree 
 [문제 링크](https://leetcode.com/problems/find-mode-in-binary-search-tree/description/?envType=problem-list-v2&envId=binary-search-tree)
 
