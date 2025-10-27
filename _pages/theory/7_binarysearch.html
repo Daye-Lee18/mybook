@@ -189,6 +189,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../basics/oop.html">객체 지향 프로그래밍 (OOP)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics/oop-classes_instances_objects.html">클래스, 인스턴스, 객체</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics/regex.html">정규표현식</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/variable_scope.html">Variable Scope</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">이론</span></p>
 <ul class="current nav bd-sidenav">
@@ -537,9 +538,13 @@ document.write(`
 <p>이진 탐색은 전제 조건이 <em><strong>데이터 정렬</strong></em> 이다. 실제로 많은 프로그램은 검색 효율을 높이기 위해 데이터를 미리 정렬된 형태로 유지한다. 예를 들어, 검색 기능 (Search)에서 네이버/구글의 자동완성 리스트 내부에선, “사과”, “수박”, “오렌지” 처럼 이미 정렬된 리스트를 유지하고 있다. 검색 효율성을 위해 데이터를 미리 정렬해둔 것이다. 또한 데이터베이트(DB)는 단순 배열이 아니라, B-Tree/B+Tree/Red-Black Tree같은 정렬된 트리 자료구조를 내부적으로 사용하여 이미 정렬된 상태를 유지하므로 이진 탐색과 비슷한 원리로 탐색이 가능하다. 마지막으로 운영체제/파일 시스템에선 파일 이름, inode 테이블, 스케쥴링 큐까지 효율적 접근을 위해 정렬된 리스트나 힙을 유지한다.</p>
 <p>트리 자료 구조에 대해 살표보자. (그래프에 대해서는 <code class="docutils literal notranslate"><span class="pre">Lecture</span> <span class="pre">2-1.</span> <span class="pre">DFS/BFS</span></code> 에서 배웠으므로 그래프에 대한 설명은 생략한다.)</p>
 <p>아래 그래프를 보자. 만일 그래프에 <em><strong>단 하나의 사이클도 없다면,</strong></em> 해당 그래프는 ‘트리 (Tree)’라고 부른다.</p>
-<p><img alt="2" src="../../_images/216.png" /></p>
+<!-- ![2](../../assets/img/binarySearch/2.png) -->
+<a class="reference internal image-reference" href="../../_images/216.png"><img alt="../../_images/216.png" src="../../_images/216.png" style="width: 500px;" />
+</a>
 <p>일반적으로 그래프에서는 정점의 위치나 간선의 모양 등에 대한 조건은 전혀 고려하지 않으며, 오직 연결성만을 고려하므로, 간선의 집합이 변하지 않는다는 가정 하에 그래프를 얼마든지 다시 그릴 수가 있다. 위의 트리에서 <em><strong>5번 정점을 잡고 위로 들어올리는</strong></em> 예시를 생각해보자. 아래쪽에 중력이 작용한다고 생각하고 5번 정점을 위쪽으로 들어올리게 되면 트리의 모양은 아래와 같이 변할 것이다.</p>
-<p><img alt="3" src="../../_images/39.png" /></p>
+<!-- ![3](../../assets/img/binarySearch/3.png) -->
+<a class="reference internal image-reference" href="../../_images/39.png"><img alt="../../_images/39.png" src="../../_images/39.png" style="width: 500px;" />
+</a>
 <p>트리에는 루트 (root)가 있을 수도 없을 수도 있지만, 편의를 위해서 아무 정점이나 루트로 선택할 수 있다. 트리는 항상 루트를 기준으로 다시 그릴 수 있기 때문에, 루트가 고정되지 않는 한 어떤 정점이 ‘위에’ 있는지 판정할 수 없다. 하지만 루트가 고정된다면, 우리는 정점 간에 ‘부모’와 ‘자식’의 관계를 정의할 수 있다.</p>
 <p><strong>용어 정리</strong></p>
 <ul class="simple">
@@ -806,11 +811,32 @@ document.write(`
 <li><p>in-order DFS (중위 순회)로 BST를 순회하면, <em><strong>오름 차순 정렬 순서</strong></em> 이다.</p></li>
 </ol>
 </div>
+<div class="dropdown admonition">
+<p class="admonition-title">in-order DFS</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">in_order_dfs</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="p">:</span>
+        <span class="k">return</span> 
+    
+    <span class="n">in_order_dfs</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">node</span><span class="p">:</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+    <span class="n">in_order_dfs</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">right</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+    
+    
+<span class="n">path</span> <span class="o">=</span> <span class="p">[]</span> 
+<span class="n">in_order_dfs</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 <p>이진 탐색 트리에 데이터를 넣고 빼는 방법은 알고리즘보다 자료구조에 가까우며, 이진 탐색 트리 자료구조를 구현하도록 요구하는 문제는 출제 빈도가 낮으므로, 이 책에서는 이진 탐색 트리 구현 방법은 소개하지 않는다. (위에서 소개한 것은 전체적인 트리 구조이다.)</p>
 <p>이진 탐색 트리가 미리 구현되어 있다고 가정하고, 다음 그림과 같은 이진 탐색 트리에서 데이터를 조회하는 과정을 살펴보자.</p>
-<p><img alt="4" src="../../_images/47.png" /></p>
-<p><img alt="5" src="../../_images/57.png" /></p>
-<p><img alt="6" src="../../_images/66.png" /></p>
+<a class="reference internal image-reference" href="../../_images/47.png"><img alt="../../_images/47.png" src="../../_images/47.png" style="width: 500px;" />
+</a>
+<a class="reference internal image-reference" href="../../_images/57.png"><img alt="../../_images/57.png" src="../../_images/57.png" style="width: 500px;" />
+</a>
+<a class="reference internal image-reference" href="../../_images/66.png"><img alt="../../_images/66.png" src="../../_images/66.png" style="width: 500px;" />
+</a>
 <p>이진 탐색 트리에서 데이터 조회는 루트 노드부터 왼쪽 자식 혹은 오른쪽 자식 노드로 이동하며 반복적으로 방문한다. 자식 노드가 없을 때까지 찾지 못했다면, 이진 탐색 트리에 원소가 없는 것이다.</p>
 <div class="dropdown admonition">
 <p class="admonition-title">searching a node in a Binary Search Tree</p>
@@ -933,78 +959,50 @@ document.write(`
 </ul>
 </div>
 <div class="dropdown admonition">
-<p class="admonition-title">in-order DFS</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>        <span class="k">def</span><span class="w"> </span><span class="nf">in_order_dfs</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+<p class="admonition-title">solution</p>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-number">예시 39 </span><span class="caption-text">in-order DFS를 사용하여, 계산하기</span><a class="headerlink" href="#id10" title="Link to this code">#</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">findMode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TreeNode</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">in_order_dfs</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+            <span class="c1"># nonlocal: 중첩 함수(outer function)의 변수 사용하기 </span>
+            <span class="k">nonlocal</span> <span class="n">max_len</span><span class="p">,</span> <span class="n">cnt</span><span class="p">,</span> <span class="n">root</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="p">:</span>
                 <span class="k">return</span> 
             
             <span class="n">in_order_dfs</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+
             <span class="k">if</span> <span class="n">node</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">!=</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">node</span><span class="o">.</span><span class="n">val</span> <span class="o">==</span> <span class="n">path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">cnt</span> <span class="o">+=</span> <span class="mi">1</span> 
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">cnt</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># 숫자가 앞의 수랑 다르면 cnt는 다시 1</span>
+                
+                
+                <span class="k">if</span> <span class="n">cnt</span> <span class="o">&gt;</span> <span class="n">max_len</span><span class="p">:</span>
+                        <span class="n">max_len</span> <span class="o">=</span> <span class="n">cnt</span> 
+                        <span class="c1"># res = [node.val] # dfs 안에서 reassign하면 외부 변수와 연결이 끊겨버림. </span>
+                        <span class="n">res</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                        <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">cnt</span> <span class="o">==</span> <span class="n">max_len</span><span class="p">:</span>
+                    <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+                
                 <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+
             <span class="n">in_order_dfs</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">right</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
             
             
         <span class="n">path</span> <span class="o">=</span> <span class="p">[]</span> 
+        <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">cnt</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">max_len</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">in_order_dfs</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="c1"># print(path)</span>
+        <span class="c1"># print(res)</span>
+        <span class="k">return</span> <span class="n">res</span> 
 </pre></div>
 </div>
-</div>
-<div class="dropdown admonition">
-<p class="admonition-title">solution</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span>
-
-<span class="c1"># LeetCode 501: Find Mode in BST</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">TreeNode</span><span class="p">:</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">val</span>   <span class="o">=</span> <span class="n">val</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">left</span>  <span class="o">=</span> <span class="n">left</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">right</span> <span class="o">=</span> <span class="n">right</span>
-
-<span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">findMode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TreeNode</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">root</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[]</span>
-
-        <span class="n">modes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">prev</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">max_count</span> <span class="o">=</span> <span class="mi">0</span>
-
-        <span class="k">def</span><span class="w"> </span><span class="nf">handle</span><span class="p">(</span><span class="n">val</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-            <span class="k">nonlocal</span> <span class="n">prev</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">max_count</span><span class="p">,</span> <span class="n">modes</span>
-            <span class="k">if</span> <span class="n">prev</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">val</span> <span class="o">!=</span> <span class="n">prev</span><span class="p">:</span>
-                <span class="n">prev</span> <span class="o">=</span> <span class="n">val</span>
-                <span class="n">count</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
-
-            <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="n">max_count</span><span class="p">:</span>
-                <span class="n">max_count</span> <span class="o">=</span> <span class="n">count</span>
-                <span class="n">modes</span> <span class="o">=</span> <span class="p">[</span><span class="n">val</span><span class="p">]</span>
-            <span class="k">elif</span> <span class="n">count</span> <span class="o">==</span> <span class="n">max_count</span><span class="p">:</span>
-                <span class="n">modes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-
-        <span class="c1"># Morris inorder traversal</span>
-        <span class="n">cur</span> <span class="o">=</span> <span class="n">root</span>
-        <span class="k">while</span> <span class="n">cur</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">cur</span><span class="o">.</span><span class="n">left</span><span class="p">:</span>
-                <span class="n">handle</span><span class="p">(</span><span class="n">cur</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
-                <span class="n">cur</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">right</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">pred</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">left</span>
-                <span class="k">while</span> <span class="n">pred</span><span class="o">.</span><span class="n">right</span> <span class="ow">and</span> <span class="n">pred</span><span class="o">.</span><span class="n">right</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">cur</span><span class="p">:</span>
-                    <span class="n">pred</span> <span class="o">=</span> <span class="n">pred</span><span class="o">.</span><span class="n">right</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">pred</span><span class="o">.</span><span class="n">right</span><span class="p">:</span>
-                    <span class="n">pred</span><span class="o">.</span><span class="n">right</span> <span class="o">=</span> <span class="n">cur</span>
-                    <span class="n">cur</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">left</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">pred</span><span class="o">.</span><span class="n">right</span> <span class="o">=</span> <span class="kc">None</span>
-                    <span class="n">handle</span><span class="p">(</span><span class="n">cur</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
-                    <span class="n">cur</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">right</span>
-
-        <span class="k">return</span> <span class="n">modes</span>
-</pre></div>
 </div>
 </div>
 </section>

@@ -173,11 +173,13 @@ print(bisect_left(arr, 6))  # 3 (6이 들어갈 "왼쪽" 위치)
 
 아래 그래프를 보자. 만일 그래프에 ***단 하나의 사이클도 없다면,*** 해당 그래프는 '트리 (Tree)'라고 부른다. 
 
-![2](../../assets/img/binarySearch/2.png)
+<!-- ![2](../../assets/img/binarySearch/2.png) -->
+<img src="../../assets/img/binarySearch/2.png" width="500px">
 
 일반적으로 그래프에서는 정점의 위치나 간선의 모양 등에 대한 조건은 전혀 고려하지 않으며, 오직 연결성만을 고려하므로, 간선의 집합이 변하지 않는다는 가정 하에 그래프를 얼마든지 다시 그릴 수가 있다. 위의 트리에서 ***5번 정점을 잡고 위로 들어올리는*** 예시를 생각해보자. 아래쪽에 중력이 작용한다고 생각하고 5번 정점을 위쪽으로 들어올리게 되면 트리의 모양은 아래와 같이 변할 것이다. 
 
-![3](../../assets/img/binarySearch/3.png)
+<!-- ![3](../../assets/img/binarySearch/3.png) -->
+<img src="../../assets/img/binarySearch/3.png" width="500px">
 
 트리에는 루트 (root)가 있을 수도 없을 수도 있지만, 편의를 위해서 아무 정점이나 루트로 선택할 수 있다. 트리는 항상 루트를 기준으로 다시 그릴 수 있기 때문에, 루트가 고정되지 않는 한 어떤 정점이 '위에' 있는지 판정할 수 없다. 하지만 루트가 고정된다면, 우리는 정점 간에 '부모'와 '자식'의 관계를 정의할 수 있다. 
 
@@ -452,15 +454,36 @@ print_tree(root)
 2. in-order DFS (중위 순회)로 BST를 순회하면, ***오름 차순 정렬 순서*** 이다. 
 ```
 
+
+````{admonition} in-order DFS
+:class: dropdown 
+
+```{code-block} python 
+def in_order_dfs(node, path):
+    if not node:
+        return 
+    
+    in_order_dfs(node.left, path)
+    if node:
+        path.append(node.val)
+    in_order_dfs(node.right, path)
+    
+    
+path = [] 
+in_order_dfs(root, path)
+print(path)
+```
+````
+
 이진 탐색 트리에 데이터를 넣고 빼는 방법은 알고리즘보다 자료구조에 가까우며, 이진 탐색 트리 자료구조를 구현하도록 요구하는 문제는 출제 빈도가 낮으므로, 이 책에서는 이진 탐색 트리 구현 방법은 소개하지 않는다. (위에서 소개한 것은 전체적인 트리 구조이다.)
 
 이진 탐색 트리가 미리 구현되어 있다고 가정하고, 다음 그림과 같은 이진 탐색 트리에서 데이터를 조회하는 과정을 살펴보자. 
 
-![4](../../assets/img/binarySearch/4.png)
 
-![5](../../assets/img/binarySearch/5.png)
+<img src="../../assets/img/binarySearch/4.png" width="500px" style="display:block;margin-bottom:20px;">
+<img src="../../assets/img/binarySearch/5.png" width="500px" style="margin-bottom: 20px;">
+<img src="../../assets/img/binarySearch/6.png" width="500px" style="margin-bottom: 20px;">
 
-![6](../../assets/img/binarySearch/6.png)
 
 이진 탐색 트리에서 데이터 조회는 루트 노드부터 왼쪽 자식 혹은 오른쪽 자식 노드로 이동하며 반복적으로 방문한다. 자식 노드가 없을 때까지 찾지 못했다면, 이진 탐색 트리에 원소가 없는 것이다. 
 ````{admonition} searching a node in a Binary Search Tree 
@@ -585,82 +608,53 @@ print(tree_to_list(root))
 - count > max_count면 modes = [val], count == max_count면 modes.append(val).
 ````
 
-````{admonition} in-order DFS
-:class: dropdown 
-
-```{code-block} python 
-        def in_order_dfs(node, path):
-            if not node:
-                return 
-            
-            in_order_dfs(node.left, path)
-            if node:
-                path.append(node.val)
-            in_order_dfs(node.right, path)
-            
-            
-        path = [] 
-        in_order_dfs(root, path)
-        print(path)
-```
-````
 
 ````{admonition} solution
 :class: dropdown
 
 ```{code-block} python 
+---
+caption: in-order DFS를 사용하여, 계산하기 
+---
 from typing import Optional, List
-
-# LeetCode 501: Find Mode in BST
-class TreeNode:
-    def __init__(self, val=0, left=None, right=None):
-        self.val   = val
-        self.left  = left
-        self.right = right
 
 class Solution:
     def findMode(self, root: Optional[TreeNode]) -> List[int]:
-        if not root:
-            return []
+        def in_order_dfs(node, path):
+            # nonlocal: 중첩 함수(outer function)의 변수 사용하기 
+            nonlocal max_len, cnt, root
+            if not node:
+                return 
+            
+            in_order_dfs(node.left, path)
 
-        modes: List[int] = []
-        prev = None
-        count = 0
-        max_count = 0
-
-        def handle(val: int):
-            nonlocal prev, count, max_count, modes
-            if prev is None or val != prev:
-                prev = val
-                count = 1
-            else:
-                count += 1
-
-            if count > max_count:
-                max_count = count
-                modes = [val]
-            elif count == max_count:
-                modes.append(val)
-
-        # Morris inorder traversal
-        cur = root
-        while cur:
-            if not cur.left:
-                handle(cur.val)
-                cur = cur.right
-            else:
-                pred = cur.left
-                while pred.right and pred.right is not cur:
-                    pred = pred.right
-                if not pred.right:
-                    pred.right = cur
-                    cur = cur.left
+            if node:
+                if len(path)!=0 and node.val == path[-1]:
+                    cnt += 1 
                 else:
-                    pred.right = None
-                    handle(cur.val)
-                    cur = cur.right
+                    cnt = 1 # 숫자가 앞의 수랑 다르면 cnt는 다시 1
+                
+                
+                if cnt > max_len:
+                        max_len = cnt 
+                        # res = [node.val] # dfs 안에서 reassign하면 외부 변수와 연결이 끊겨버림. 
+                        res.clear()
+                        res.append(node.val)
+                elif cnt == max_len:
+                    res.append(node.val)
+                
+                path.append(node.val)
 
-        return modes
+            in_order_dfs(node.right, path)
+            
+            
+        path = [] 
+        res = []
+        cnt = 1; max_len = 0
+        in_order_dfs(root, path)
+        # print(path)
+        # print(res)
+        return res 
 ```
 ````
 ### 3.Minimum Absolute Difference in BST 
