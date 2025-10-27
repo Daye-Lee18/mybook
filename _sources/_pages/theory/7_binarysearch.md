@@ -445,8 +445,12 @@ print_tree(root)
 
 이진 탐색 트리는 ***트리 자료구조 중에서 가장 간단한 형태*** 이다. 이진 탐색 트리는 효율적인 이진 탐색이 동작할 수 있도록 고안된 자료구조이다. 
 
-**이진 탐색 트리 특징**
-- 왼쪽 자식 노드 < 부모 노드 < 오른쪽 자식 노드
+```{admonition} 이진 탐색 트리 특징 
+:class: important
+
+1. 왼쪽 자식 노드 < 부모 노드 < 오른쪽 자식 노드
+2. in-order DFS (중위 순회)로 BST를 순회하면, ***오름 차순 정렬 순서*** 이다. 
+```
 
 이진 탐색 트리에 데이터를 넣고 빼는 방법은 알고리즘보다 자료구조에 가까우며, 이진 탐색 트리 자료구조를 구현하도록 요구하는 문제는 출제 빈도가 낮으므로, 이 책에서는 이진 탐색 트리 구현 방법은 소개하지 않는다. (위에서 소개한 것은 전체적인 트리 구조이다.)
 
@@ -493,7 +497,7 @@ def find_node(root:TreeNode, target:int) -> bool:
 
 ## 예시 문제 
 
-### Convert Sorted Array to Binary Search Tree 
+### 1. Convert Sorted Array to Binary Search Tree 
 [문제 링크](https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/description/?envType=problem-list-v2&envId=binary-search-tree)
 
 solution:
@@ -559,7 +563,8 @@ root = sol.sortedArrayToBST(arr)
 print(tree_to_list(root))
 ```
 ````
-### Find Mode in Binary Search Tree 
+
+### 2. Find Mode in Binary Search Tree 
 [문제 링크](https://leetcode.com/problems/find-mode-in-binary-search-tree/description/?envType=problem-list-v2&envId=binary-search-tree)
 
 ```{toggle}
@@ -567,11 +572,103 @@ print(tree_to_list(root))
 위의 예시처럼 같은 수임에도 직접적으로 연결되어 있지 않은 예시도 존재. 
 ```
 
+````{admonition} Idea 
+:class: dropdown 
 
-### Minimum Absolute Difference in BST 
+**Morris 중위 순회**: BST의 mdoe 찾기
+- BST의 중위 순회 (in-order BFS) 를 돌면, 비내림차순 배열임을 알 수 있음. 이전 값과의 연속 개수를 세면서 최대 빈도를 갱신할 수 있다. 
+
+**구현**
+- 중위 순회로 값을 오름차순으로 방문.
+- prev, count, max_count, modes를 유지.
+- 현재 값이 prev와 같으면 count += 1, 다르면 count = 1로 리셋.
+- count > max_count면 modes = [val], count == max_count면 modes.append(val).
+````
+
+````{admonition} in-order DFS
+:class: dropdown 
+
+```{code-block} python 
+        def in_order_dfs(node, path):
+            if not node:
+                return 
+            
+            in_order_dfs(node.left, path)
+            if node:
+                path.append(node.val)
+            in_order_dfs(node.right, path)
+            
+            
+        path = [] 
+        in_order_dfs(root, path)
+        print(path)
+```
+````
+
+````{admonition} solution
+:class: dropdown
+
+```{code-block} python 
+from typing import Optional, List
+
+# LeetCode 501: Find Mode in BST
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val   = val
+        self.left  = left
+        self.right = right
+
+class Solution:
+    def findMode(self, root: Optional[TreeNode]) -> List[int]:
+        if not root:
+            return []
+
+        modes: List[int] = []
+        prev = None
+        count = 0
+        max_count = 0
+
+        def handle(val: int):
+            nonlocal prev, count, max_count, modes
+            if prev is None or val != prev:
+                prev = val
+                count = 1
+            else:
+                count += 1
+
+            if count > max_count:
+                max_count = count
+                modes = [val]
+            elif count == max_count:
+                modes.append(val)
+
+        # Morris inorder traversal
+        cur = root
+        while cur:
+            if not cur.left:
+                handle(cur.val)
+                cur = cur.right
+            else:
+                pred = cur.left
+                while pred.right and pred.right is not cur:
+                    pred = pred.right
+                if not pred.right:
+                    pred.right = cur
+                    cur = cur.left
+                else:
+                    pred.right = None
+                    handle(cur.val)
+                    cur = cur.right
+
+        return modes
+```
+````
+### 3.Minimum Absolute Difference in BST 
 
 [문제 링크](https://leetcode.com/problems/minimum-absolute-difference-in-bst/description/?envType=problem-list-v2&envId=binary-search-tree)
 
-### Two Sum IV - Input is a BST 
+### 4.Kth Smallest Element in BST 
+[문제 링크](https://leetcode.com/problems/kth-smallest-element-in-a-bst/description/)
 
+### 5.Two Sum IV - Input is a BST 
 [문제 링크](https://leetcode.com/problems/two-sum-iv-input-is-a-bst/description/?envType=problem-list-v2&envId=binary-search-tree)
