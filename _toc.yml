@@ -11,6 +11,7 @@ parts:
   - file: _pages/basics/oop
   - file: _pages/basics/oop-classes_instances_objects
   - file: _pages/basics/regex
+  - file: _pages/basics/variable_scope
   
 - caption: 이론
   chapters:
@@ -22,6 +23,7 @@ parts:
   - file: _pages/theory/5_shortest_path
   - file: _pages/theory/6_sort
   - file: _pages/theory/7_binarysearch
+  - file: _pages/theory/8_graph
 
 
 - caption: 실습

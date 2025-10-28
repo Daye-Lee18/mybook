@@ -173,19 +173,22 @@ print(bisect_left(arr, 6))  # 3 (6이 들어갈 "왼쪽" 위치)
 
 아래 그래프를 보자. 만일 그래프에 ***단 하나의 사이클도 없다면,*** 해당 그래프는 '트리 (Tree)'라고 부른다. 
 
-![2](../../assets/img/binarySearch/2.png)
+<!-- ![2](../../assets/img/binarySearch/2.png) -->
+<img src="../../assets/img/binarySearch/2.png" width="500px">
 
 일반적으로 그래프에서는 정점의 위치나 간선의 모양 등에 대한 조건은 전혀 고려하지 않으며, 오직 연결성만을 고려하므로, 간선의 집합이 변하지 않는다는 가정 하에 그래프를 얼마든지 다시 그릴 수가 있다. 위의 트리에서 ***5번 정점을 잡고 위로 들어올리는*** 예시를 생각해보자. 아래쪽에 중력이 작용한다고 생각하고 5번 정점을 위쪽으로 들어올리게 되면 트리의 모양은 아래와 같이 변할 것이다. 
 
-![3](../../assets/img/binarySearch/3.png)
+<!-- ![3](../../assets/img/binarySearch/3.png) -->
+<img src="../../assets/img/binarySearch/3.png" width="500px">
 
 트리에는 루트 (root)가 있을 수도 없을 수도 있지만, 편의를 위해서 아무 정점이나 루트로 선택할 수 있다. 트리는 항상 루트를 기준으로 다시 그릴 수 있기 때문에, 루트가 고정되지 않는 한 어떤 정점이 '위에' 있는지 판정할 수 없다. 하지만 루트가 고정된다면, 우리는 정점 간에 '부모'와 '자식'의 관계를 정의할 수 있다. 
 
-**용어**
-- root: 
-- parent node:
-- leaf node:
-- subtree: 
+**용어 정리**
+- root: 트리의 **가장 위에 있는 정점(node)** 으로, 부모가 없는 유일한 노드. 트리 탐색의 시작점이자 기준점.
+- parent node: 특정 노드에서 **한 단계 아래에 있는 다른 노드(자식)** 를 직접 연결하는 노드. 즉, 자식 노드의 ‘바로 위’에 있는 노드.
+- child node:  어떤 노드가 가지는 **직접 연결된** 하위 노드.
+- leaf node: 자식이 없는 노드.
+- subtree: 어떤 노드를 루트로 하여, 그 노드와 그 아래의 모든 자식들을 포함한 트리.
   
 **트리의 성질**
 - 임의의 두 정점 U와 V에 대해, U에서 V로 가는 최단 경로는 유일하다. 
@@ -444,18 +447,43 @@ print_tree(root)
 
 이진 탐색 트리는 ***트리 자료구조 중에서 가장 간단한 형태*** 이다. 이진 탐색 트리는 효율적인 이진 탐색이 동작할 수 있도록 고안된 자료구조이다. 
 
-**이진 탐색 트리 특징**
-- 왼쪽 자식 노드 < 부모 노드 < 오른쪽 자식 노드
+```{admonition} 이진 탐색 트리 특징 
+:class: important
+
+1. 왼쪽 자식 노드 < 부모 노드 < 오른쪽 자식 노드
+2. in-order DFS (중위 순회)로 BST를 순회하면, ***오름 차순 정렬 순서*** 이다. 
+```
+
+
+````{admonition} in-order DFS
+:class: dropdown 
+
+```{code-block} python 
+def in_order_dfs(node, path):
+    if not node:
+        return 
+    
+    in_order_dfs(node.left, path)
+    if node:
+        path.append(node.val)
+    in_order_dfs(node.right, path)
+    
+    
+path = [] 
+in_order_dfs(root, path)
+print(path)
+```
+````
 
 이진 탐색 트리에 데이터를 넣고 빼는 방법은 알고리즘보다 자료구조에 가까우며, 이진 탐색 트리 자료구조를 구현하도록 요구하는 문제는 출제 빈도가 낮으므로, 이 책에서는 이진 탐색 트리 구현 방법은 소개하지 않는다. (위에서 소개한 것은 전체적인 트리 구조이다.)
 
 이진 탐색 트리가 미리 구현되어 있다고 가정하고, 다음 그림과 같은 이진 탐색 트리에서 데이터를 조회하는 과정을 살펴보자. 
 
-![4](../../assets/img/binarySearch/4.png)
 
-![5](../../assets/img/binarySearch/5.png)
+<img src="../../assets/img/binarySearch/4.png" width="500px" style="display:block;margin-bottom:20px;">
+<img src="../../assets/img/binarySearch/5.png" width="500px" style="margin-bottom: 20px;">
+<img src="../../assets/img/binarySearch/6.png" width="500px" style="margin-bottom: 20px;">
 
-![6](../../assets/img/binarySearch/6.png)
 
 이진 탐색 트리에서 데이터 조회는 루트 노드부터 왼쪽 자식 혹은 오른쪽 자식 노드로 이동하며 반복적으로 방문한다. 자식 노드가 없을 때까지 찾지 못했다면, 이진 탐색 트리에 원소가 없는 것이다. 
 ````{admonition} searching a node in a Binary Search Tree 
@@ -492,16 +520,149 @@ def find_node(root:TreeNode, target:int) -> bool:
 
 ## 예시 문제 
 
-### Convert Sorted Array to Binary Search Tree 
+### 1. Convert Sorted Array to Binary Search Tree 
 [문제 링크](https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/description/?envType=problem-list-v2&envId=binary-search-tree)
 
-### Find Mode in Binary Search Tree 
+solution:
+````{toggle}
+```python
+from typing import List, Optional 
+from collections import deque 
+
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+    def __repr__(self):
+        return f"TreeNode({self.val})"
+
+class Solution:
+    def sortedArrayToBST(self, nums: List[int]) -> Optional[TreeNode]:
+        
+        start = 0; end = len(nums)-1 # inclusive 
+
+        def dfs(arr, start, end):
+            if start > end:
+                return None 
+            
+            mid = (start + end) // 2 
+            cur_node = TreeNode(arr[mid])
+
+            cur_node.left = dfs(arr, start, mid-1)
+            cur_node.right= dfs(arr, mid+1, end)
+        
+            return cur_node 
+        
+        return dfs(nums, start, end)
+        
+def tree_to_list(root:TreeNode) -> Optional[List]:
+    if not root:
+        return [] 
+    
+    res = [] 
+    q = deque([root])
+    while q:
+        cur_node = q.popleft()
+        if cur_node:
+            res.append(cur_node)
+        else:
+            res.append(None)
+            continue 
+
+        q.append(cur_node.left)
+        q.append(cur_node.right)
+
+    while res and not res[-1]:
+        res.pop()
+    return res
+
+
+# arr = [-10, -3, 0, 5, 9]
+arr = [1, 3]
+sol = Solution()
+root = sol.sortedArrayToBST(arr)
+print(tree_to_list(root))
+```
+````
+
+### 2. Find Mode in Binary Search Tree 
 [문제 링크](https://leetcode.com/problems/find-mode-in-binary-search-tree/description/?envType=problem-list-v2&envId=binary-search-tree)
 
-### Minimum Absolute Difference in BST 
+```{toggle}
+![7](../../assets/img/binarySearch/7.png)
+위의 예시처럼 같은 수임에도 직접적으로 연결되어 있지 않은 예시도 존재. 
+```
+
+````{admonition} Idea 
+:class: dropdown 
+
+**Morris 중위 순회**: BST의 mdoe 찾기
+- BST의 중위 순회 (in-order BFS) 를 돌면, 비내림차순 배열임을 알 수 있음. 이전 값과의 연속 개수를 세면서 최대 빈도를 갱신할 수 있다. 
+
+**구현**
+- 중위 순회로 값을 오름차순으로 방문.
+- prev, count, max_count, modes를 유지.
+- 현재 값이 prev와 같으면 count += 1, 다르면 count = 1로 리셋.
+- count > max_count면 modes = [val], count == max_count면 modes.append(val).
+````
+
+
+````{admonition} solution
+:class: dropdown
+
+```{code-block} python 
+---
+caption: in-order DFS를 사용하여, 계산하기 
+---
+from typing import Optional, List
+
+class Solution:
+    def findMode(self, root: Optional[TreeNode]) -> List[int]:
+        def in_order_dfs(node, path):
+            # nonlocal: 중첩 함수(outer function)의 변수 사용하기 
+            nonlocal max_len, cnt, root
+            if not node:
+                return 
+            
+            in_order_dfs(node.left, path)
+
+            if node:
+                if len(path)!=0 and node.val == path[-1]:
+                    cnt += 1 
+                else:
+                    cnt = 1 # 숫자가 앞의 수랑 다르면 cnt는 다시 1
+                
+                
+                if cnt > max_len:
+                        max_len = cnt 
+                        # res = [node.val] # dfs 안에서 reassign하면 외부 변수와 연결이 끊겨버림. 
+                        res.clear()
+                        res.append(node.val)
+                elif cnt == max_len:
+                    res.append(node.val)
+                
+                path.append(node.val)
+
+            in_order_dfs(node.right, path)
+            
+            
+        path = [] 
+        res = []
+        cnt = 1; max_len = 0
+        in_order_dfs(root, path)
+        # print(path)
+        # print(res)
+        return res 
+```
+````
+### 3.Minimum Absolute Difference in BST 
 
 [문제 링크](https://leetcode.com/problems/minimum-absolute-difference-in-bst/description/?envType=problem-list-v2&envId=binary-search-tree)
 
-### Two Sum IV - Input is a BST 
+### 4.Kth Smallest Element in BST 
+[문제 링크](https://leetcode.com/problems/kth-smallest-element-in-a-bst/description/)
 
+### 5.Two Sum IV - Input is a BST 
 [문제 링크](https://leetcode.com/problems/two-sum-iv-input-is-a-bst/description/?envType=problem-list-v2&envId=binary-search-tree)
