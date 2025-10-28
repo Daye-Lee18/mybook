@@ -333,7 +333,7 @@ def dfs(node, path, result):
 
 ```
 
-## 실습 문제 
+## 개념 확인  
 
 ````{admonition} 전역 변수 생성 시점 확인 
 :class: dropdown 
@@ -395,3 +395,17 @@ outer()
 1<br>
 2<br>
 ````
+
+## 실제 문제 적용 
+
+1. 결과에 경로 저장할때 복사본 저장, 탐색 중에는 append/pop으로 원상복구 (backtrack) 
+   - 46. Permutations — 경로 path 공유하면 전부 뒤섞임 → path.append/pop 패턴 필수
+   - 78. Subsets
+   - 90. Subsets II — 중복/비중복 조합, 경로 복사/백트래킹
+2. 재귀 내부에서 누적 상태(예: prev, best, k)를 바꾸려면 nonlocal(또는 객체 속성)을 사용하면 깔끔합니다.
+   - 94. Binary Tree Inorder Traversal — 중위순회 기본(스택/재귀/Morris)
+   - 230. Kth Smallest Element in a BST — 중위순회 중 k 카운트 감소; nonlocal k, ans(또는 클래스 멤버)
+3. 문자열 + 반복은 매번 새 객체 생성 → 루프에선 list에 모았다가 ''.join.
+   - 151. Reverse Words in a String
+   - 58. Length of Last Word — 파싱 & 조합 시 join으로 효율 유지
+   - 415. Add Strings — 문자열 덧셈(뒤에서 앞으로), 새 문자열 생성 비용 고려

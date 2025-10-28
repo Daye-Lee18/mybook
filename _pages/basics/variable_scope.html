@@ -373,7 +373,8 @@ document.write(`
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mutable-vs-immutable">mutable 객체 vs. immutable 객체</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">코테 실수 예시</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">실습 문제</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">개념 확인</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">실제 문제 적용</a></li>
 </ul>
             </nav>
         </div>
@@ -470,8 +471,8 @@ document.write(`
 <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>    <span class="c1"># ✅ 99</span>
 </pre></div>
 </div>
-<div class="pst-scrollable-table-container"><table class="table" id="id3">
-<caption><span class="caption-number">표 17 </span><span class="caption-text">global 정리</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
+<div class="pst-scrollable-table-container"><table class="table" id="id4">
+<caption><span class="caption-number">표 17 </span><span class="caption-text">global 정리</span><a class="headerlink" href="#id4" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 14.3%" />
 <col style="width: 42.9%" />
@@ -511,8 +512,8 @@ document.write(`
 <li><p>중첩 함수(inner function)안에서 <em><strong>바로 한 단계 바깥 함수의 변수</strong></em> 를 수정하고 싶을 때 사용</p></li>
 <li><p>global과 마찬가지로, 해당 keyword없이 outer function과 동일한 변수이름을 가진 변수를 생성하는 경우, 새로운 지역 변수가 만들어져서, outer function의 변수에는 영향을 미치지 않는다.</p></li>
 </ul>
-<div class="pst-scrollable-table-container"><table class="table" id="id4">
-<caption><span class="caption-number">표 18 </span><span class="caption-text">global vs. nonlocal 비교표</span><a class="headerlink" href="#id4" title="Link to this table">#</a></caption>
+<div class="pst-scrollable-table-container"><table class="table" id="id5">
+<caption><span class="caption-number">표 18 </span><span class="caption-text">global vs. nonlocal 비교표</span><a class="headerlink" href="#id5" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 14.3%" />
 <col style="width: 42.9%" />
@@ -606,8 +607,8 @@ msg<span class="w"> </span>id<span class="w"> </span>after:<span class="w"> </sp
 <p>s가 처음엔 msg와 같은 객체를 참조했지만, “ world”를 더하는 순간 새 str 객체가 만들어졌다. 따라서 원본 msg는 영향을 받지 않음.</p>
 </div>
 <p>즉, call by object reference 는 “객체의 참조”가 전달되어 mutable이면 내부 변경 가능하고 immutable이면 새 객체로 대체된다.</p>
-<div class="pst-scrollable-table-container"><table class="table" id="id5">
-<caption><span class="caption-number">표 19 </span><span class="caption-text">객체 vs. 참조 vs. 주소</span><a class="headerlink" href="#id5" title="Link to this table">#</a></caption>
+<div class="pst-scrollable-table-container"><table class="table" id="id6">
+<caption><span class="caption-number">표 19 </span><span class="caption-text">객체 vs. 참조 vs. 주소</span><a class="headerlink" href="#id6" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 23.1%" />
 <col style="width: 76.9%" />
@@ -771,7 +772,7 @@ after<span class="w"> </span>:<span class="w"> </span><span class="m">1404600775
 </div>
 </section>
 <section id="id2">
-<h2>실습 문제<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<h2>개념 확인<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
 <div class="dropdown admonition">
 <p class="admonition-title">전역 변수 생성 시점 확인</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">create_var</span><span class="p">():</span>
@@ -826,6 +827,55 @@ after<span class="w"> </span>:<span class="w"> </span><span class="m">1404600775
 1<br>
 2<br></p>
 </div>
+</section>
+<section id="id3">
+<h2>실제 문제 적용<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p>결과에 경로 저장할때 복사본 저장, 탐색 중에는 append/pop으로 원상복구 (backtrack)</p>
+<ul class="simple">
+<li><ol class="arabic simple" start="46">
+<li><p>Permutations — 경로 path 공유하면 전부 뒤섞임 → path.append/pop 패턴 필수</p></li>
+</ol>
+</li>
+<li><ol class="arabic simple" start="78">
+<li><p>Subsets</p></li>
+</ol>
+</li>
+<li><ol class="arabic simple" start="90">
+<li><p>Subsets II — 중복/비중복 조합, 경로 복사/백트래킹</p></li>
+</ol>
+</li>
+</ul>
+</li>
+<li><p>재귀 내부에서 누적 상태(예: prev, best, k)를 바꾸려면 nonlocal(또는 객체 속성)을 사용하면 깔끔합니다.</p>
+<ul class="simple">
+<li><ol class="arabic simple" start="94">
+<li><p>Binary Tree Inorder Traversal — 중위순회 기본(스택/재귀/Morris)</p></li>
+</ol>
+</li>
+<li><ol class="arabic simple" start="230">
+<li><p>Kth Smallest Element in a BST — 중위순회 중 k 카운트 감소; nonlocal k, ans(또는 클래스 멤버)</p></li>
+</ol>
+</li>
+</ul>
+</li>
+<li><p>문자열 + 반복은 매번 새 객체 생성 → 루프에선 list에 모았다가 ‘’.join.</p>
+<ul class="simple">
+<li><ol class="arabic simple" start="151">
+<li><p>Reverse Words in a String</p></li>
+</ol>
+</li>
+<li><ol class="arabic simple" start="58">
+<li><p>Length of Last Word — 파싱 &amp; 조합 시 join으로 효율 유지</p></li>
+</ol>
+</li>
+<li><ol class="arabic simple" start="415">
+<li><p>Add Strings — 문자열 덧셈(뒤에서 앞으로), 새 문자열 생성 비용 고려</p></li>
+</ol>
+</li>
+</ul>
+</li>
+</ol>
 </section>
 </section>
 
@@ -902,7 +952,8 @@ after<span class="w"> </span>:<span class="w"> </span><span class="m">1404600775
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mutable-vs-immutable">mutable 객체 vs. immutable 객체</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">코테 실수 예시</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">실습 문제</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">개념 확인</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">실제 문제 적용</a></li>
 </ul>
   </nav></div>
 
