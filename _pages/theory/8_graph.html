@@ -59,6 +59,8 @@
     <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_pages/theory/8_graph';</script>
     <script src="https://unpkg.com/jupyterquiz@1.1.8/dist/jupyterquiz.min.js"></script>
     <link rel="icon" href="../../_static/favicon.png"/>
@@ -189,6 +191,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../basics/oop.html">객체 지향 프로그래밍 (OOP)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics/oop-classes_instances_objects.html">클래스, 인스턴스, 객체</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics/regex.html">정규표현식</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/variable_scope.html">Variable Scope</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">이론</span></p>
 <ul class="current nav bd-sidenav">
@@ -363,10 +366,13 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">서로소 집합</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">서로소 집합 자료구조</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#path-compression">경로 압축 (Path Compression)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#union-by-rank-size">랭크 기반 합치기 (Union by Rank / Size)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">대표 활용 예시</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">신장 트리</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">위상 정렬</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">신장 트리</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">위상 정렬</a></li>
 </ul>
             </nav>
         </div>
@@ -389,13 +395,136 @@ document.write(`
 <h3>서로소 집합 자료구조<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
 <p>서로소 집합 자료구조란 <em><strong>서로소 부분 집합들로 나누어진 원소들의 데이터를 처리하기 위한 자료구조</strong></em> 이다. “union”과 “find” 2개의 연산으로 조작할 수 있다. 서로소 집합에서 “find”연산은 특정한 원소가 속한 집합이 어떤 집합인지 알려주는 연산, “union”연산은 합집합으로 2개의 원소가 포함된 집합을 하나의 집합으로 합치는 연산이다.</p>
 <p>서로소 집합 자료구조는 <em><strong>union-find 자료구조</strong></em> 라고 불리기도 한다. 두 집합이 서로소 관계인지를 확인할 수 있다는 말은 각 집합이 어떤 원소를 공통으로 가지고 있는지를 확인할 수 있다는 말과 같기 때문이다.</p>
+<p><strong>핵심 개념 요약</strong></p>
+<div class="pst-scrollable-table-container"><table class="table" id="id6">
+<caption><span class="caption-number">표 21 </span><span class="caption-text">disjoint set / union-find</span><a class="headerlink" href="#id6" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 23.1%" />
+<col style="width: 76.9%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>항목</p></th>
+<th class="head"><p>설명</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>정의</p></td>
+<td><p>서로 겹치지 않는 부분 집합들로 구성된 집합을 관리하는 자료구조</p></td>
+</tr>
+<tr class="row-odd"><td><p>핵심 연산</p></td>
+<td><p>find(x): 원소 <code class="docutils literal notranslate"><span class="pre">x</span></code>가 속한 집합 (루트 노드) 찾기 <br> , union(a, b): 두 원소가 속한 집합을 하나로 합치기</p></td>
+</tr>
+<tr class="row-even"><td><p>주요 목적</p></td>
+<td><p>두 원소가 “같은 집합(=같은 그룹)”에 속해 있는지 빠르게 판별하기</p></td>
+</tr>
+<tr class="row-odd"><td><p>대표 활용</p></td>
+<td><p>그래프의 사이클 판별, 네트워크 연결 여부, MST (최소 신장 트리) (Kruskal 알고리즘)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>기본 아이디어</strong></p>
+<ul class="simple">
+<li><p>각 노드는 자기 자신을 부모로 가지는 트리 형태로 시작한다.</p></li>
+<li><p>집합을 병할할때는 <strong>루트 노드(대표자)</strong> 를 기준으로 합친다.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 부모 노드 정보 저장 </span>
+<span class="n">parent</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+
+<span class="c1"># find 연산 (경로 압축)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">find</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+  <span class="k">if</span> <span class="n">parent</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">!=</span> <span class="n">x</span><span class="p">:</span>
+    <span class="n">parent</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">parent</span><span class="p">[</span><span class="n">x</span><span class="p">])</span>
+  <span class="k">return</span> <span class="n">parent</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+
+<span class="c1"># union 연산 (대표자 기준으로 합치기)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">union</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+  <span class="n">rootA</span><span class="p">,</span> <span class="n">rootB</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">find</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">rootA</span> <span class="o">!=</span> <span class="n">rootB</span><span class="p">:</span>
+    <span class="n">parent</span><span class="p">[</span><span class="n">rootB</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootA</span> 
+</pre></div>
+</div>
 </section>
+<section id="path-compression">
+<h3>경로 압축 (Path Compression)<a class="headerlink" href="#path-compression" title="Link to this heading">#</a></h3>
+<p>find() 연산을 반복할수록 트리 깊이가 깊어지면 성능이 나빠진다.
+-&gt; 경로 압축을 적용하면 <em><strong>모든 노드가 바로 루트를 가리키게 만들어</strong></em> 평균 시간복잡도 O(<span class="math notranslate nohighlight">\(\alpha(N)\)</span>)*로 줄일 수 있다.</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\alpha\)</span>는 아커만 함수의 역함수로 사실상 상수</p></li>
+</ul>
+<p>예를 들어, union(a, b)로 두 집합이 합쳐진 후에, find함수로 root를 찾으면, parent가 모두 root으로 되어 후에 다시 parent를 찾고자 할때 빠른 시간안에 찾을 수 있다.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># without compression </span>
+<span class="c1"># def find(x):</span>
+<span class="c1">#   return parent[x]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">find</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">parent</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">!=</span> <span class="n">x</span><span class="p">:</span>
+        <span class="n">parent</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">parent</span><span class="p">[</span><span class="n">x</span><span class="p">])</span>  <span class="c1"># 루트를 재귀적으로 찾으며 압축</span>
+    <span class="k">return</span> <span class="n">parent</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="union-by-rank-size">
+<h3>랭크 기반 합치기 (Union by Rank / Size)<a class="headerlink" href="#union-by-rank-size" title="Link to this heading">#</a></h3>
+<p>두 집합의 크기 (혹은 깊이)를 기준으로 더 작은 트리를 큰 트리에 붙이면 트리의 깊이가 커지지 않아 효율적이다.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rank</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">union</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="n">rootA</span><span class="p">,</span> <span class="n">rootB</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">find</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">rootA</span> <span class="o">==</span> <span class="n">rootB</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="k">if</span> <span class="n">rank</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">rank</span><span class="p">[</span><span class="n">rootB</span><span class="p">]:</span>
+        <span class="n">parent</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootB</span>
+    <span class="k">elif</span> <span class="n">rank</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">rank</span><span class="p">[</span><span class="n">rootB</span><span class="p">]:</span>
+        <span class="n">parent</span><span class="p">[</span><span class="n">rootB</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootA</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">parent</span><span class="p">[</span><span class="n">rootB</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootA</span>
+        <span class="n">rank</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<div class="pst-scrollable-table-container"><table class="table" id="id7">
+<caption><span class="caption-number">표 22 </span><span class="caption-text">union/find 시간 복잡도</span><a class="headerlink" href="#id7" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 40.0%" />
+<col style="width: 45.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>연산</p></th>
+<th class="head"><p>평균 시간복잡도</p></th>
+<th class="head"><p>설명</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>find()</p></td>
+<td><p>O(<span class="math notranslate nohighlight">\(\alpha (N)\)</span>)</p></td>
+<td><p>경로 압축 사용 시 거의 상수</p></td>
+</tr>
+<tr class="row-odd"><td><p>union()</p></td>
+<td><p>O(<span class="math notranslate nohighlight">\(\alpha (N)\)</span>)</p></td>
+<td><p>find를 포함하므로 동일</p></td>
+</tr>
+<tr class="row-even"><td><p>전체 N개의 원소, M개의 연산</p></td>
+<td><p>O((N+M) <span class="math notranslate nohighlight">\(\alpha (N)\)</span>) ~ O(N+M)</p></td>
+<td><p>거의 선형 시간</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </section>
 <section id="id3">
-<h2>신장 트리<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<h3>대표 활용 예시<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>사이클 판별 (Cycle Detection): 그래프 간선을 순서대로 확인하며 같은 집합에 속한 두 노드를 다시 연결하려 할 때 -&gt; 사이클 존재</p></li>
+<li></li>
+</ol>
+</section>
 </section>
 <section id="id4">
-<h2>위상 정렬<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<h2>신장 트리<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+</section>
+<section id="id5">
+<h2>위상 정렬<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
 </section>
 </section>
 
@@ -465,10 +594,13 @@ document.write(`
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">서로소 집합</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">서로소 집합 자료구조</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#path-compression">경로 압축 (Path Compression)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#union-by-rank-size">랭크 기반 합치기 (Union by Rank / Size)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">대표 활용 예시</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">신장 트리</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">위상 정렬</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">신장 트리</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">위상 정렬</a></li>
 </ul>
   </nav></div>
 

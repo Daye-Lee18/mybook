@@ -54,6 +54,7 @@ LEGB 규칙
   - 파이썬이 기본 제공하는 이름 
   - len, sum, print 등 
 ```
+** Enclosing: 중첩 함수 (inner()) 입장에서 outer function의 지역 범위(local scope)가 enclosing scope임 
 
 ## global, nonlocal 키워드 
 
