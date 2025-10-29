@@ -368,7 +368,14 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">서로소 집합 자료구조</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#path-compression">경로 압축 (Path Compression)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#union-by-rank-size">랭크 기반 합치기 (Union by Rank / Size)</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">대표 활용 예시</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">대표 활용 예시</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#redundant-connection">Redundant Connection</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#number-of-provinces">Number of Provinces</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#graph-valid-tree">Graph Valid Tree</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lexicographically-smallest-equivalent-string">Lexicographically Smallest Equivalent String</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#find-if-path-exists-in-graph">Find if Path Exists in Graph</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">신장 트리</a></li>
@@ -516,8 +523,52 @@ document.write(`
 <h3>대표 활용 예시<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
 <ol class="arabic simple">
 <li><p>사이클 판별 (Cycle Detection): 그래프 간선을 순서대로 확인하며 같은 집합에 속한 두 노드를 다시 연결하려 할 때 -&gt; 사이클 존재</p></li>
-<li></li>
 </ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
+  <span class="k">if</span> <span class="n">find</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">==</span> <span class="n">find</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cycle detected&quot;</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">union</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>최소 신장 트리 (Kruskal Algorithm)</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">edges</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="c1"># (a, b, weight)</span>
+<span class="n">cost</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
+  <span class="k">if</span> <span class="n">find</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">!=</span> <span class="n">find</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
+    <span class="n">union</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+    <span class="n">cost</span> <span class="o">+=</span> <span class="n">w</span> 
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>연결 요소 세기 (Connected Components): find(i)를 전체 노드에 수행하여 루트가 몇 개인지 카운트하면 서로 연결된 컴포넌트 개수를 구할 수 있음</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">components</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">find</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+<section id="redundant-connection">
+<h4>Redundant Connection<a class="headerlink" href="#redundant-connection" title="Link to this heading">#</a></h4>
+<p>[Leetcode 684]</p>
+</section>
+<section id="number-of-provinces">
+<h4>Number of Provinces<a class="headerlink" href="#number-of-provinces" title="Link to this heading">#</a></h4>
+<p>[Leetcode 547]</p>
+</section>
+<section id="graph-valid-tree">
+<h4>Graph Valid Tree<a class="headerlink" href="#graph-valid-tree" title="Link to this heading">#</a></h4>
+<p>[Leetcode 261]</p>
+</section>
+<section id="lexicographically-smallest-equivalent-string">
+<h4>Lexicographically Smallest Equivalent String<a class="headerlink" href="#lexicographically-smallest-equivalent-string" title="Link to this heading">#</a></h4>
+<p>[Leetcode 1061]</p>
+</section>
+<section id="find-if-path-exists-in-graph">
+<h4>Find if Path Exists in Graph<a class="headerlink" href="#find-if-path-exists-in-graph" title="Link to this heading">#</a></h4>
+<p>[Leetcode 1971]</p>
+</section>
 </section>
 </section>
 <section id="id4">
@@ -596,7 +647,14 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">서로소 집합 자료구조</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#path-compression">경로 압축 (Path Compression)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#union-by-rank-size">랭크 기반 합치기 (Union by Rank / Size)</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">대표 활용 예시</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">대표 활용 예시</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#redundant-connection">Redundant Connection</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#number-of-provinces">Number of Provinces</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#graph-valid-tree">Graph Valid Tree</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lexicographically-smallest-equivalent-string">Lexicographically Smallest Equivalent String</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#find-if-path-exists-in-graph">Find if Path Exists in Graph</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">신장 트리</a></li>

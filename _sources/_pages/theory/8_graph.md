@@ -129,7 +129,40 @@ def union(a, b):
 ### 대표 활용 예시 
 
 1. 사이클 판별 (Cycle Detection): 그래프 간선을 순서대로 확인하며 같은 집합에 속한 두 노드를 다시 연결하려 할 때 -> 사이클 존재 
-2. 
+```python
+for a, b in edges:
+  if find(a) == find(b):
+    print("Cycle detected")
+  else:
+    union(a, b)
+```
+2. 최소 신장 트리 (Kruskal Algorithm)
+```python
+edges.sort(key=lambda x: x[2]) # (a, b, weight)
+cost = 0
+
+for a, b, w in edges:
+  if find(a) != find(b):
+    union(a, b)
+    cost += w 
+```
+
+3. 연결 요소 세기 (Connected Components): find(i)를 전체 노드에 수행하여 루트가 몇 개인지 카운트하면 서로 연결된 컴포넌트 개수를 구할 수 있음 
+  
+```python
+components = len(set(find(i)) for i in range(1, n+1))
+```
+   
+#### Redundant Connection 
+[Leetcode 684]
+#### Number of Provinces 
+[Leetcode 547]
+#### Graph Valid Tree 
+[Leetcode 261]
+#### Lexicographically Smallest Equivalent String 
+[Leetcode 1061]
+#### Find if Path Exists in Graph 
+[Leetcode 1971]
 
 ## 신장 트리 
 
