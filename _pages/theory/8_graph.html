@@ -455,7 +455,7 @@ document.write(`
 <section id="path-compression">
 <h3>경로 압축 (Path Compression)<a class="headerlink" href="#path-compression" title="Link to this heading">#</a></h3>
 <p>find() 연산을 반복할수록 트리 깊이가 깊어지면 성능이 나빠진다.
--&gt; 경로 압축을 적용하면 <em><strong>모든 노드가 바로 루트를 가리키게 만들어</strong></em> 평균 시간복잡도 O(<span class="math notranslate nohighlight">\(\alpha(N)\)</span>)*로 줄일 수 있다.</p>
+-&gt; 경로 압축을 적용하면 <em><strong>모든 노드가 바로 루트를 가리키게 만들어</strong></em> 평균 시간복잡도 O(<span class="math notranslate nohighlight">\(\alpha(N)\)</span>)*로 줄일 수 있다. 즉, find()시 트리를 납작하게 만드는 역할을 한다.</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(\alpha\)</span>는 아커만 함수의 역함수로 사실상 상수</p></li>
 </ul>
@@ -473,7 +473,24 @@ document.write(`
 </section>
 <section id="union-by-rank-size">
 <h3>랭크 기반 합치기 (Union by Rank / Size)<a class="headerlink" href="#union-by-rank-size" title="Link to this heading">#</a></h3>
-<p>두 집합의 크기 (혹은 깊이)를 기준으로 더 작은 트리를 큰 트리에 붙이면 트리의 깊이가 커지지 않아 효율적이다.</p>
+<p>Union by Rank”는 항상 낮은 트리를 높은 트리에 붙여서, **트리의 높이(깊이)**를 일정하게 유지시키는 균형 유지 전략이다. 이로 인해 find()의 평균 시간이 **거의 O(1)**로 줄어든다</p>
+<ul class="simple">
+<li><p>랭크 (rank): <em><strong>트리의 높이</strong></em> , 또는 <em><strong>노드 수(size)</strong></em> 를 나타내는 값.</p>
+<ul>
+<li><p>union by rank (height) -&gt; 높이가 낮은 트리를 높은 트리에 붙임</p></li>
+<li><p>union by size (count) -&gt; 노드 수가 적은 트리를 많은 쪽에 붙임</p></li>
+</ul>
+</li>
+<li><p>목적: 트리의 불균형 방지 (=<strong>높이의 최소화 및 breadth가 넓음</strong> )</p></li>
+<li><p>구현: 처음에 0 (height) 이나 1(size)로 초기화해준 후, “union”이 일어날 때만 갱신되며 트리의 대략적인 깊이 정보를 유지한다.</p></li>
+</ul>
+<p><strong>예시</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">union</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">union</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">union</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">union</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rank</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">union</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
