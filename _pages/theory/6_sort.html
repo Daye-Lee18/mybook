@@ -191,6 +191,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../basics/oop.html">객체 지향 프로그래밍 (OOP)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics/oop-classes_instances_objects.html">클래스, 인스턴스, 객체</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics/regex.html">정규표현식</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/variable_scope.html">Variable Scope</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">이론</span></p>
 <ul class="current nav bd-sidenav">
@@ -578,7 +579,7 @@ document.write(`
 <div class="dropdown admonition">
 <p class="admonition-title">selection sort source code</p>
 <div class="literal-block-wrapper docutils container" id="id15">
-<div class="code-block-caption"><span class="caption-number">예시 31 </span><span class="caption-text">selection sort python source code</span><a class="headerlink" href="#id15" title="Link to this code">#</a></div>
+<div class="code-block-caption"><span class="caption-number">예시 33 </span><span class="caption-text">selection sort python source code</span><a class="headerlink" href="#id15" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
 
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)):</span>
@@ -1000,7 +1001,7 @@ document.write(`
 <p>람다 함수는 짧고 일회성으로 쓸 때 유용한데, 특히 함수형 프로그래밍 도구 (map, sorted 등)에서 자주 사용된다. lambda는 “표현식(expression)”만 가능하고, 여러 줄 (if, for, return)은 불가하다.</p>
 <p>아래의 활용 예시들을 간단히 살펴보자.</p>
 <div class="literal-block-wrapper docutils container" id="id16">
-<div class="code-block-caption"><span class="caption-number">예시 32 </span><span class="caption-text">sorted()와 key인자</span><a class="headerlink" href="#id16" title="Link to this code">#</a></div>
+<div class="code-block-caption"><span class="caption-number">예시 34 </span><span class="caption-text">sorted()와 key인자</span><a class="headerlink" href="#id16" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">students</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;Jane&quot;</span><span class="p">,</span> <span class="mi">22</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;Tom&quot;</span><span class="p">,</span> <span class="mi">19</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span> <span class="mi">24</span><span class="p">)]</span>
 
 <span class="c1"># 나이를 기준으로 오름차순 정렬</span>
@@ -1011,7 +1012,7 @@ document.write(`
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id17">
-<div class="code-block-caption"><span class="caption-number">예시 33 </span><span class="caption-text">map()과 함께</span><a class="headerlink" href="#id17" title="Link to this code">#</a></div>
+<div class="code-block-caption"><span class="caption-number">예시 35 </span><span class="caption-text">map()과 함께</span><a class="headerlink" href="#id17" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">numbers</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
 <span class="n">squared</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">numbers</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">squared</span><span class="p">)</span>  <span class="c1"># [1, 4, 9, 16, 25]</span>

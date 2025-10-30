@@ -191,6 +191,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../basics/oop.html">객체 지향 프로그래밍 (OOP)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics/oop-classes_instances_objects.html">클래스, 인스턴스, 객체</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics/regex.html">정규표현식</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/variable_scope.html">Variable Scope</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">이론</span></p>
 <ul class="current nav bd-sidenav">
@@ -783,7 +784,7 @@ document.write(`
 </li>
 </ul>
 <div class="literal-block-wrapper docutils container" id="id10">
-<div class="code-block-caption"><span class="caption-number">예시 30 </span><span class="caption-text">python standard library에서 제공하는 heapq의 구현 방식을 참고하였다.</span><a class="headerlink" href="#id10" title="Link to this code">#</a></div>
+<div class="code-block-caption"><span class="caption-number">예시 32 </span><span class="caption-text">python standard library에서 제공하는 heapq의 구현 방식을 참고하였다.</span><a class="headerlink" href="#id10" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">heappush</span><span class="p">(</span><span class="n">heap</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
     <span class="n">heap</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
     <span class="n">_siftdown</span><span class="p">(</span><span class="n">heap</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">heap</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>

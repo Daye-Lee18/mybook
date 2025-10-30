@@ -186,9 +186,115 @@ components = len(set(find(i)) for i in range(1, n+1))
 ```
    
 #### Redundant Connection 
-[Leetcode 684]
+[Leetcode 684](https://leetcode.com/problems/redundant-connection/description/)
+
+````{admonition} solution 
+:class: dropdown 
+
+```{code-block} python
+class Solution:
+    def findRedundantConnection(self, edges: List[List[int]]) -> List[int]:  
+        def find(v):
+            nonlocal parent 
+            if parent[v] == v:
+                return v 
+            parent[v] = find(parent[v]) # parent compression 
+            return parent[v]
+
+        def union(a, b):
+            nonlocal parent, rank
+            rootA = find(a)
+            rootB = find(b) 
+
+            if rootA != rootB:
+                if rank[rootA]== rank[rootB]:
+                    rank[rootA] += 1 
+                    parent[rootB] = rootA 
+                elif rank[rootA] > rank[rootB]:
+                    parent[rootB] = rootA 
+                else:
+                    parent[rootA] = rootB 
+                return False 
+            else:
+                return True # has a cycle 
+        
+        n = len(edges)
+        parent = [i for i in range(n+1)]
+        rank = [1] * (n+1) # height 
+        for edge in edges:
+            flag = union(edge[0], edge[1])
+            if flag: # if the graph has a cycle 
+                return edge 
+```
+````
+
 #### Number of Provinces 
-[Leetcode 547]
+[Leetcode 547](https://leetcode.com/problems/number-of-provinces/description/)
+
+````{admonition} solution
+:class: dropdown 
+
+```{code-block} python
+from typing import List 
+
+class Solution:
+    def findCircleNum(self, isConnected: List[List[int]]) -> int:
+
+        def find(node):
+            nonlocal parent 
+            if parent[node] == node:
+                return node 
+            parent[node] = find(parent[node])
+            return parent[node]
+        
+        def union(a, b):
+            nonlocal parent, rank, Gcnt, total_Gcnt
+            rootA = find(a); rootB = find(b)
+            if rootA == rootB: # 두 개를 연결하면 cycle이 된다는 건 이미 같은 그룹이었다는 것이므로 total group cntㄹ를 뺄 필요가 없음 
+                return 
+            
+            if rank[rootA] == rank[rootB]:
+                parent[rootB] = rootA
+                rank[rootA] += 1 
+                Gcnt[rootA] += Gcnt[rootB]
+                Gcnt[rootB] = 0
+            elif rank[rootA] > rank[rootB]:
+                parent[rootB] = rootA 
+                Gcnt[rootA] += Gcnt[rootB]
+                Gcnt[rootB] = 0
+            else:
+                parent[rootA] = rootB 
+                Gcnt[rootB] += Gcnt[rootA]
+                Gcnt[rootA] = 0 
+            
+            # 전체 group 카운트 세기 
+            total_Gcnt -= 1
+        
+        n = len(isConnected)
+        if n == 1:
+            return 1 
+        
+    
+        total_Gcnt = n 
+        Gcnt = [1] * n
+        parent = [i for i in range(n)]
+        rank = [0] * n
+
+        for cur_node in range(n):
+            for nxt_node in range(cur_node+1, n): # undirected graph라서 matrix의 대각선 위쪽만 보고 계산 
+                if isConnected[cur_node][nxt_node]:
+                    union(cur_node, nxt_node)
+        
+
+        return total_Gcnt 
+
+# isConnected = [[1,1,0],[1,1,0],[0,0,1]]
+isConnected = [[1,0,0],[0,1,0],[0,0,1]]
+sol = Solution()
+print(sol.findCircleNum(isConnected))
+```
+````
+
 #### Graph Valid Tree 
 [Leetcode 261]
 #### Lexicographically Smallest Equivalent String 

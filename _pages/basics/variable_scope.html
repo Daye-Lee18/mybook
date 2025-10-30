@@ -456,6 +456,11 @@ document.write(`
 <h2>global, nonlocal 키워드<a class="headerlink" href="#global-nonlocal" title="Link to this heading">#</a></h2>
 <section id="global">
 <h3>global<a class="headerlink" href="#global" title="Link to this heading">#</a></h3>
+<p>정의</p>
+<ul class="simple">
+<li><p>지역 스코프 안에서 전역 변수를 직접 수정하거나 생성할 때 사용</p></li>
+<li></li>
+</ul>
 <p>특징</p>
 <ul class="simple">
 <li><p>전역 변수임을 명시하여, 함수 안에서 전역 변수를 수정할 때 사용한다.</p></li>
@@ -464,7 +469,7 @@ document.write(`
 </ul>
 <p>따라서, 위의 세번째 특징에서는 함수가 호출될때 전역 변수가 생성되므로, 함수 호출 전 해당 변수에 접근하면 오류가 난다.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">create_var</span><span class="p">():</span>
-    <span class="k">global</span> <span class="n">x</span>
+    <span class="k">global</span> <span class="n">x</span> <span class="c1"># 전역 변수 생성 </span>
     <span class="n">x</span> <span class="o">=</span> <span class="mi">99</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>    <span class="c1"># ❌ NameError: name &#39;x&#39; is not defined</span>
@@ -633,6 +638,78 @@ msg<span class="w"> </span>id<span class="w"> </span>after:<span class="w"> </sp
 </table>
 </div>
 <p>즉, 참조는 “주소 자체”가 아니라, “주소를 통해 객체를 가리키는 추상적 이름표”라고 생각하는 게 가장 정확합니다.</p>
+<p><strong>cf. 동일성 연산자 (Identity Operators, is) vs. 비교 연산자 (Comparision Operators, ==)</strong></p>
+<div class="dropdown admonition">
+<p class="admonition-title">is vs. ==</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id7">
+<caption><span class="caption-number">표 20 </span><span class="caption-text">is vs. ==</span><a class="headerlink" href="#id7" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 16.7%" />
+<col style="width: 22.2%" />
+<col style="width: 22.2%" />
+<col style="width: 22.2%" />
+<col style="width: 16.7%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>비교 연산자</p></th>
+<th class="head"><p>의미</p></th>
+<th class="head"><p>비교 기준</p></th>
+<th class="head"><p>예시</p></th>
+<th class="head"><p>결과</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>is</p></td>
+<td><p>객체의 동일성 (identity) 비교</p></td>
+<td><p>두 변수가 같은 객체 (같은 메모리 주소)를 가리키는가</p></td>
+<td><p>a is b</p></td>
+<td><p>True/False</p></td>
+</tr>
+<tr class="row-odd"><td><p>==</p></td>
+<td><p>값의 동등성(equality) 비교</p></td>
+<td><p>두 객체의 내용(값)이 같은가</p></td>
+<td><p>a == b</p></td>
+<td><p>True/False</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul class="simple">
+<li><p>실무 규칙: <em><strong><code class="docutils literal notranslate"><span class="pre">is</span></code>는 <code class="docutils literal notranslate"><span class="pre">None</span></code>, <code class="docutils literal notranslate"><span class="pre">True</span></code>, <code class="docutils literal notranslate"><span class="pre">False</span></code> 비교용 / 나머지는 <code class="docutils literal notranslate"><span class="pre">==</span></code> 사용</strong></em></p></li>
+</ul>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-number">예시 1 </span><span class="caption-text">같은 객체 vs. 다른 객체</span><a class="headerlink" href="#id8" title="Link to this code">#</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">a</span>
+<span class="n">c</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="o">==</span> <span class="n">b</span><span class="p">)</span>  <span class="c1"># ✅ True  (값이 같음)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="ow">is</span> <span class="n">b</span><span class="p">)</span>  <span class="c1"># ✅ True  (같은 객체 참조)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="o">==</span> <span class="n">c</span><span class="p">)</span>  <span class="c1"># ✅ True  (값이 같음)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="ow">is</span> <span class="n">c</span><span class="p">)</span>  <span class="c1"># ❌ False (다른 객체)</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-number">예시 2 </span><span class="caption-text">불변 (immutable) 객체는 재사용될수도 있음</span><a class="headerlink" href="#id9" title="Link to this code">#</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">y</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="n">y</span><span class="p">)</span>  <span class="c1"># ✅ True</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span> <span class="ow">is</span> <span class="n">y</span><span class="p">)</span>  <span class="c1"># ❌ False (큰 수는 서로 다른 int 객체)</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">b</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="o">==</span> <span class="n">b</span><span class="p">)</span>  <span class="c1"># ✅ True</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="ow">is</span> <span class="n">b</span><span class="p">)</span>  <span class="c1"># ✅ True (작은 수는 interning되어 같은 객체 참조)</span>
+</pre></div>
+</div>
+</div>
+<ul class="simple">
+<li><p>mutable 객체 (list, dict): <code class="docutils literal notranslate"><span class="pre">is</span></code> -&gt; 객체 동일성만 True, <code class="docutils literal notranslate"><span class="pre">==</span></code>-&gt; 내용 비교</p></li>
+<li><p>immutable 객체 (str, int): 값이 같으면 True지만, <code class="docutils literal notranslate"><span class="pre">is</span></code>는 interning 여부에 따라 달라짐.</p></li>
+</ul>
+</div>
 <img alt="../../_images/120.png" src="../../_images/120.png" />
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 <span class="n">b</span> <span class="o">=</span> <span class="n">a</span>

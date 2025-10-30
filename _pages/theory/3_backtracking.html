@@ -191,6 +191,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../basics/oop.html">객체 지향 프로그래밍 (OOP)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics/oop-classes_instances_objects.html">클래스, 인스턴스, 객체</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../basics/regex.html">정규표현식</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/variable_scope.html">Variable Scope</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">이론</span></p>
 <ul class="current nav bd-sidenav">
@@ -467,7 +468,7 @@ For instance, when index=1, <code class="docutils literal notranslate"><span cla
 <a class="bg-primary mb-1 reference internal image-reference" href="../../_images/210.png"><img alt="combination without repetition" class="bg-primary mb-1 align-center" src="../../_images/210.png" style="width: 400px;" />
 </a>
 <div class="literal-block-wrapper docutils container" id="id7">
-<div class="code-block-caption"><span class="caption-number">예시 12 </span><span class="caption-text">combination without repetition</span><a class="headerlink" href="#id7" title="Link to this code">#</a></div>
+<div class="code-block-caption"><span class="caption-number">예시 14 </span><span class="caption-text">combination without repetition</span><a class="headerlink" href="#id7" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Combination (순서 무관, 중복 불허, 길이 k)</span>
 <span class="n">array</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 <span class="n">k</span> <span class="o">=</span> <span class="mi">2</span>
@@ -489,7 +490,7 @@ For instance, when index=1, <code class="docutils literal notranslate"><span cla
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id8">
-<div class="code-block-caption"><span class="caption-number">예시 13 </span><span class="caption-text">The result of combination without repetition</span><a class="headerlink" href="#id8" title="Link to this code">#</a></div>
+<div class="code-block-caption"><span class="caption-number">예시 15 </span><span class="caption-text">The result of combination without repetition</span><a class="headerlink" href="#id8" title="Link to this code">#</a></div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Combination without repetition result of [1, 2, 3] with k=2:
 [1, 2]
 [1, 3]
@@ -502,7 +503,7 @@ For instance, when index=1, <code class="docutils literal notranslate"><span cla
 <h3>Combination with repetition (중복 허용)<a class="headerlink" href="#combination-with-repetition" title="Link to this heading">#</a></h3>
 <p>If repetition is allowed, call <code class="docutils literal notranslate"><span class="pre">combination(i,</span> <span class="pre">depth+1)</span></code> instead of combination(i+1, depth+1).</p>
 <div class="literal-block-wrapper docutils container" id="id9">
-<div class="code-block-caption"><span class="caption-number">예시 14 </span><span class="caption-text">The result of combination with repetition</span><a class="headerlink" href="#id9" title="Link to this code">#</a></div>
+<div class="code-block-caption"><span class="caption-number">예시 16 </span><span class="caption-text">The result of combination with repetition</span><a class="headerlink" href="#id9" title="Link to this code">#</a></div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Combination result of [1, 2, 3] with k=2:
 [1, 1]
 [1, 2]
@@ -534,7 +535,7 @@ For instance, when index=1, <code class="docutils literal notranslate"><span cla
 <p>Since the array is sorted in increasing order, if at the same depth we select a value identical to the one chosen in the previous index, the result would be the same subset (e.g., [1] == [1]). To avoid generating duplicate subsets, we skip that choice.</p>
 <p><img alt="" src="../../_images/63.png" /></p>
 <div class="literal-block-wrapper docutils container" id="id10">
-<div class="code-block-caption"><span class="caption-number">예시 15 </span><span class="caption-text">Multiset Implementation</span><a class="headerlink" href="#id10" title="Link to this code">#</a></div>
+<div class="code-block-caption"><span class="caption-number">예시 17 </span><span class="caption-text">Multiset Implementation</span><a class="headerlink" href="#id10" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
 
 
@@ -568,7 +569,7 @@ For instance, when index=1, <code class="docutils literal notranslate"><span cla
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id11">
-<div class="code-block-caption"><span class="caption-number">예시 16 </span><span class="caption-text">Multiset 결과</span><a class="headerlink" href="#id11" title="Link to this code">#</a></div>
+<div class="code-block-caption"><span class="caption-number">예시 18 </span><span class="caption-text">Multiset 결과</span><a class="headerlink" href="#id11" title="Link to this code">#</a></div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[[], [1], [1, 1], [1, 1, 2], [1, 2], [2]]
 </pre></div>
 </div>
@@ -582,7 +583,7 @@ The collection of all subsets is called the Powerset, with <span class="math not
 <section id="id1">
 <h2><img alt="" src="../../_images/44.png" /><a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <div class="literal-block-wrapper docutils container" id="id12">
-<div class="code-block-caption"><span class="caption-number">예시 17 </span><span class="caption-text">Powerset</span><a class="headerlink" href="#id12" title="Link to this code">#</a></div>
+<div class="code-block-caption"><span class="caption-number">예시 19 </span><span class="caption-text">Powerset</span><a class="headerlink" href="#id12" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ========= 1) Subset (powerset) — 인덱스 기준(중복 값이 있으면 같은 값 모양이 중복 출력될 수 있음)</span>
 <span class="n">array</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 <span class="n">path</span> <span class="o">=</span> <span class="p">[]</span>
@@ -656,7 +657,7 @@ c
 </pre></div>
 </div>
 <div class="literal-block-wrapper docutils container" id="id13">
-<div class="code-block-caption"><span class="caption-number">예시 18 </span><span class="caption-text">모든 Subarray 구하기</span><a class="headerlink" href="#id13" title="Link to this code">#</a></div>
+<div class="code-block-caption"><span class="caption-number">예시 20 </span><span class="caption-text">모든 Subarray 구하기</span><a class="headerlink" href="#id13" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">all_subarrays</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
@@ -696,7 +697,7 @@ c
 </ul>
 <p>Backtracking (DFS) is used to explore subsequences by choosing or skipping each element. Therefore, the total number of subsequences is <span class="math notranslate nohighlight">\(2^n\)</span>. Whether to include the empty set can be adjusted depending on the problem. In terms of implementation, subsequences are very similar to combinations; the difference is that combinations have a fixed target depth, whereas subsequences proceed from the starting index and output all possible paths of lengths from 0 to n.</p>
 <div class="literal-block-wrapper docutils container" id="id14">
-<div class="code-block-caption"><span class="caption-number">예시 19 </span><span class="caption-text">모든 Subsequence 구하기</span><a class="headerlink" href="#id14" title="Link to this code">#</a></div>
+<div class="code-block-caption"><span class="caption-number">예시 21 </span><span class="caption-text">모든 Subsequence 구하기</span><a class="headerlink" href="#id14" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">array</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 <span class="n">path</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -797,7 +798,7 @@ c
 <p>문제 - <a class="reference external" href="https://leetcode.com/problems/subsets-ii/description/">leetcode 90번 문제</a></p>
 <div class="toggle docutils container">
 <div class="literal-block-wrapper docutils container" id="id15">
-<div class="code-block-caption"><span class="caption-number">예시 20 </span><span class="caption-text">Solution</span><a class="headerlink" href="#id15" title="Link to this code">#</a></div>
+<div class="code-block-caption"><span class="caption-number">예시 22 </span><span class="caption-text">Solution</span><a class="headerlink" href="#id15" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">subsetsWithDup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nums</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
         <span class="n">result</span> <span class="o">=</span> <span class="p">[[]]</span>

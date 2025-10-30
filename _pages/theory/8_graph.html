@@ -404,7 +404,7 @@ document.write(`
 <p>서로소 집합 자료구조는 <em><strong>union-find 자료구조</strong></em> 라고 불리기도 한다. 두 집합이 서로소 관계인지를 확인할 수 있다는 말은 각 집합이 어떤 원소를 공통으로 가지고 있는지를 확인할 수 있다는 말과 같기 때문이다.</p>
 <p><strong>핵심 개념 요약</strong></p>
 <div class="pst-scrollable-table-container"><table class="table" id="id6">
-<caption><span class="caption-number">표 21 </span><span class="caption-text">disjoint set / union-find</span><a class="headerlink" href="#id6" title="Link to this table">#</a></caption>
+<caption><span class="caption-number">표 22 </span><span class="caption-text">disjoint set / union-find</span><a class="headerlink" href="#id6" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 23.1%" />
 <col style="width: 76.9%" />
@@ -524,7 +524,7 @@ union(1,5) → 5의 높이 낮으므로 5를 1 밑으로
 </pre></div>
 </div>
 <div class="pst-scrollable-table-container"><table class="table" id="id7">
-<caption><span class="caption-number">표 22 </span><span class="caption-text">union/find 시간 복잡도</span><a class="headerlink" href="#id7" title="Link to this table">#</a></caption>
+<caption><span class="caption-number">표 23 </span><span class="caption-text">union/find 시간 복잡도</span><a class="headerlink" href="#id7" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 15.0%" />
 <col style="width: 40.0%" />
@@ -585,11 +585,111 @@ union(1,5) → 5의 높이 낮으므로 5를 1 밑으로
 </div>
 <section id="redundant-connection">
 <h4>Redundant Connection<a class="headerlink" href="#redundant-connection" title="Link to this heading">#</a></h4>
-<p>[Leetcode 684]</p>
+<p><a class="reference external" href="https://leetcode.com/problems/redundant-connection/description/">Leetcode 684</a></p>
+<div class="dropdown admonition">
+<p class="admonition-title">solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">findRedundantConnection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edges</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>  
+        <span class="k">def</span><span class="w"> </span><span class="nf">find</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+            <span class="k">nonlocal</span> <span class="n">parent</span> 
+            <span class="k">if</span> <span class="n">parent</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">==</span> <span class="n">v</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">v</span> 
+            <span class="n">parent</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">parent</span><span class="p">[</span><span class="n">v</span><span class="p">])</span> <span class="c1"># parent compression </span>
+            <span class="k">return</span> <span class="n">parent</span><span class="p">[</span><span class="n">v</span><span class="p">]</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">union</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+            <span class="k">nonlocal</span> <span class="n">parent</span><span class="p">,</span> <span class="n">rank</span>
+            <span class="n">rootA</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+            <span class="n">rootB</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> 
+
+            <span class="k">if</span> <span class="n">rootA</span> <span class="o">!=</span> <span class="n">rootB</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">rank</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span><span class="o">==</span> <span class="n">rank</span><span class="p">[</span><span class="n">rootB</span><span class="p">]:</span>
+                    <span class="n">rank</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span> 
+                    <span class="n">parent</span><span class="p">[</span><span class="n">rootB</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootA</span> 
+                <span class="k">elif</span> <span class="n">rank</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">rank</span><span class="p">[</span><span class="n">rootB</span><span class="p">]:</span>
+                    <span class="n">parent</span><span class="p">[</span><span class="n">rootB</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootA</span> 
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">parent</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootB</span> 
+                <span class="k">return</span> <span class="kc">False</span> 
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span> <span class="c1"># has a cycle </span>
+        
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span>
+        <span class="n">parent</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+        <span class="n">rank</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># height </span>
+        <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
+            <span class="n">flag</span> <span class="o">=</span> <span class="n">union</span><span class="p">(</span><span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">flag</span><span class="p">:</span> <span class="c1"># if the graph has a cycle </span>
+                <span class="k">return</span> <span class="n">edge</span> 
+</pre></div>
+</div>
+</div>
 </section>
 <section id="number-of-provinces">
 <h4>Number of Provinces<a class="headerlink" href="#number-of-provinces" title="Link to this heading">#</a></h4>
-<p>[Leetcode 547]</p>
+<p><a class="reference external" href="https://leetcode.com/problems/number-of-provinces/description/">Leetcode 547</a></p>
+<div class="dropdown admonition">
+<p class="admonition-title">solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span> 
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">findCircleNum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">isConnected</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">find</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+            <span class="k">nonlocal</span> <span class="n">parent</span> 
+            <span class="k">if</span> <span class="n">parent</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">==</span> <span class="n">node</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">node</span> 
+            <span class="n">parent</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">parent</span><span class="p">[</span><span class="n">node</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">parent</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+        
+        <span class="k">def</span><span class="w"> </span><span class="nf">union</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+            <span class="k">nonlocal</span> <span class="n">parent</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">Gcnt</span><span class="p">,</span> <span class="n">total_Gcnt</span>
+            <span class="n">rootA</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">a</span><span class="p">);</span> <span class="n">rootB</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">rootA</span> <span class="o">==</span> <span class="n">rootB</span><span class="p">:</span> <span class="c1"># 두 개를 연결하면 cycle이 된다는 건 이미 같은 그룹이었다는 것이므로 total group cntㄹ를 뺄 필요가 없음 </span>
+                <span class="k">return</span> 
+            
+            <span class="k">if</span> <span class="n">rank</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span> <span class="o">==</span> <span class="n">rank</span><span class="p">[</span><span class="n">rootB</span><span class="p">]:</span>
+                <span class="n">parent</span><span class="p">[</span><span class="n">rootB</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootA</span>
+                <span class="n">rank</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span> 
+                <span class="n">Gcnt</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span> <span class="o">+=</span> <span class="n">Gcnt</span><span class="p">[</span><span class="n">rootB</span><span class="p">]</span>
+                <span class="n">Gcnt</span><span class="p">[</span><span class="n">rootB</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">elif</span> <span class="n">rank</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">rank</span><span class="p">[</span><span class="n">rootB</span><span class="p">]:</span>
+                <span class="n">parent</span><span class="p">[</span><span class="n">rootB</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootA</span> 
+                <span class="n">Gcnt</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span> <span class="o">+=</span> <span class="n">Gcnt</span><span class="p">[</span><span class="n">rootB</span><span class="p">]</span>
+                <span class="n">Gcnt</span><span class="p">[</span><span class="n">rootB</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">parent</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootB</span> 
+                <span class="n">Gcnt</span><span class="p">[</span><span class="n">rootB</span><span class="p">]</span> <span class="o">+=</span> <span class="n">Gcnt</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span>
+                <span class="n">Gcnt</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span> 
+            
+            <span class="c1"># 전체 group 카운트 세기 </span>
+            <span class="n">total_Gcnt</span> <span class="o">-=</span> <span class="mi">1</span>
+        
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">isConnected</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span> 
+        
+    
+        <span class="n">total_Gcnt</span> <span class="o">=</span> <span class="n">n</span> 
+        <span class="n">Gcnt</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>
+        <span class="n">parent</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+        <span class="n">rank</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>
+
+        <span class="k">for</span> <span class="n">cur_node</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">nxt_node</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cur_node</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span> <span class="c1"># undirected graph라서 matrix의 대각선 위쪽만 보고 계산 </span>
+                <span class="k">if</span> <span class="n">isConnected</span><span class="p">[</span><span class="n">cur_node</span><span class="p">][</span><span class="n">nxt_node</span><span class="p">]:</span>
+                    <span class="n">union</span><span class="p">(</span><span class="n">cur_node</span><span class="p">,</span> <span class="n">nxt_node</span><span class="p">)</span>
+        
+
+        <span class="k">return</span> <span class="n">total_Gcnt</span> 
+
+<span class="c1"># isConnected = [[1,1,0],[1,1,0],[0,0,1]]</span>
+<span class="n">isConnected</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]]</span>
+<span class="n">sol</span> <span class="o">=</span> <span class="n">Solution</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">findCircleNum</span><span class="p">(</span><span class="n">isConnected</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
 </section>
 <section id="graph-valid-tree">
 <h4>Graph Valid Tree<a class="headerlink" href="#graph-valid-tree" title="Link to this heading">#</a></h4>
