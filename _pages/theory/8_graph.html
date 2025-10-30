@@ -66,7 +66,7 @@
     <link rel="icon" href="../../_static/favicon.png"/>
     <link rel="index" title="색인" href="../../genindex.html" />
     <link rel="search" title="검색" href="../../search.html" />
-    <link rel="next" title="Lecture 1-2. 구현 실습" href="../practice/1_implementationPS.html" />
+    <link rel="next" title="Lecture 9-1. Greedy" href="9_greedy.html" />
     <link rel="prev" title="Lecture 7-1. Binary Search" href="7_binarysearch.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ko"/>
@@ -204,6 +204,7 @@
 <li class="toctree-l1"><a class="reference internal" href="6_sort.html">Lecture 6-1. 정렬</a></li>
 <li class="toctree-l1"><a class="reference internal" href="7_binarysearch.html">Lecture 7-1. Binary Search</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Lecture 8-1. Graph Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="9_greedy.html">Lecture 9-1. Greedy</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">실습</span></p>
 <ul class="nav bd-sidenav">
@@ -381,9 +382,16 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spanning-tree">신장 트리 (Spanning Tree)</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kruskal-s-algorithm">Kruskal’s Algorithm</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#code-and-time-complexity">Code and Time Complexity</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mst">MST 예시 문제</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#min-cost-to-connect-all-points">Min Cost to Connect All Points</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topology-sort">위상 정렬 (Topology Sort)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topological-sort">위상 정렬 (Topological Sort)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">위상 정렬 알고리즘 및 시간 복잡도</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -407,8 +415,8 @@ document.write(`
 <p>서로소 집합 자료구조란 <em><strong>서로소 부분 집합들로 나누어진 원소들의 데이터를 처리하기 위한 자료구조</strong></em> 이다. “union”과 “find” 2개의 연산으로 조작할 수 있다. 서로소 집합에서 “find”연산은 특정한 원소가 속한 집합이 어떤 집합인지 알려주는 연산, “union”연산은 합집합으로 2개의 원소가 포함된 집합을 하나의 집합으로 합치는 연산이다.</p>
 <p>서로소 집합 자료구조는 <em><strong>union-find 자료구조</strong></em> 라고 불리기도 한다. 두 집합이 서로소 관계인지를 확인할 수 있다는 말은 각 집합이 어떤 원소를 공통으로 가지고 있는지를 확인할 수 있다는 말과 같기 때문이다.</p>
 <p><strong>핵심 개념 요약</strong></p>
-<div class="pst-scrollable-table-container"><table class="table" id="id3">
-<caption><span class="caption-number">표 22 </span><span class="caption-text">disjoint set / union-find</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
+<div class="pst-scrollable-table-container"><table class="table" id="id4">
+<caption><span class="caption-number">표 22 </span><span class="caption-text">disjoint set / union-find</span><a class="headerlink" href="#id4" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 23.1%" />
 <col style="width: 76.9%" />
@@ -527,8 +535,8 @@ union(1,5) → 5의 높이 낮으므로 5를 1 밑으로
         <span class="n">rank</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
 </pre></div>
 </div>
-<div class="pst-scrollable-table-container"><table class="table" id="id4">
-<caption><span class="caption-number">표 23 </span><span class="caption-text">union/find 시간 복잡도</span><a class="headerlink" href="#id4" title="Link to this table">#</a></caption>
+<div class="pst-scrollable-table-container"><table class="table" id="id5">
+<caption><span class="caption-number">표 23 </span><span class="caption-text">union/find 시간 복잡도</span><a class="headerlink" href="#id5" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 15.0%" />
 <col style="width: 40.0%" />
@@ -819,8 +827,8 @@ union(1,5) → 5의 높이 낮으므로 5를 1 밑으로
 </pre></div>
 </div>
 </div>
-<div class="pst-scrollable-table-container"><table class="table" id="id5">
-<caption><span class="caption-number">표 24 </span><span class="caption-text">Kruskal’s Algorithm 시간 복잡도</span><a class="headerlink" href="#id5" title="Link to this table">#</a></caption>
+<div class="pst-scrollable-table-container"><table class="table" id="id6">
+<caption><span class="caption-number">표 24 </span><span class="caption-text">Kruskal’s Algorithm 시간 복잡도</span><a class="headerlink" href="#id6" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 30.8%" />
 <col style="width: 69.2%" />
@@ -856,10 +864,90 @@ union(1,5) → 5의 높이 낮으므로 5를 1 밑으로
 </ul>
 </div>
 </section>
+<section id="mst">
+<h3>MST 예시 문제<a class="headerlink" href="#mst" title="Link to this heading">#</a></h3>
+<section id="min-cost-to-connect-all-points">
+<h4>Min Cost to Connect All Points<a class="headerlink" href="#min-cost-to-connect-all-points" title="Link to this heading">#</a></h4>
+<p><a class="reference external" href="https://leetcode.com/problems/min-cost-to-connect-all-points/description/?envType=problem-list-v2&amp;amp;envId=minimum-spanning-tree">Leetcode 1584</a></p>
+<p><a class="reference external" href="https://leetcode.com/problems/find-critical-and-pseudo-critical-edges-in-minimum-spanning-tree/description/?envType=problem-list-v2&amp;amp;envId=minimum-spanning-tree">Leetcode 1489</a></p>
 </section>
-<section id="topology-sort">
-<h2>위상 정렬 (Topology Sort)<a class="headerlink" href="#topology-sort" title="Link to this heading">#</a></h2>
-<p>위상 정렬 (Topology Sort)은 정렬 알고리즘의 일종으로 <em><strong>방향 그래프의 모든 노드를 ‘방향성에 거스르지 않도록 순서대로 나열’하는 것</strong></em> 이다. 예를 들어, 대학 교과목에서 선수 과목이 있을 때, 차례대로 들어야하는 과목들의 나열하는 예시가 있다.</p>
+</section>
+</section>
+<section id="topological-sort">
+<h2>위상 정렬 (Topological Sort)<a class="headerlink" href="#topological-sort" title="Link to this heading">#</a></h2>
+<p>위상 정렬 (Topological Sort)은 정렬 알고리즘의 일종으로 <em><strong>방향 그래프(Directed Graph)의 모든 노드를 ‘방향성(간선의 방향)에 거스르지 않도록 순서대로 나열’하는 것</strong></em> 이다. 즉, 한 노드가 다른 노드보다 먼저 처리되어야하는 순서가 있을 때, 그 순서를 유지하면서 모든 노드를 정렬하는 알고리즘이다.</p>
+<p>예를 들어, 대학 교과목에서 선수 과목이 있을 때, 차례대로 들어야하는 과목들의 나열하는 예시가 있다. 대학 교과목에서 “A -&gt; B -&gt; C”처럼 B를 듣기 전에 반드시 A를 들어야 하는 경우를 생각해보자.</p>
+<ul class="simple">
+<li><p>A -&gt; B: A를 먼저 수강해야 B를 수강할 수 있음</p></li>
+<li><p>B -&gt; C: B를 먼저 수강해야 C를 수강할 수 있음</p></li>
+<li><p>가능한 위상 정렬 결과: A -&gt; B -&gt; C</p></li>
+</ul>
+<p>따라서, 위상 정렬의 핵심조건은 다음과 같다.</p>
+<div class="note admonition">
+<p class="admonition-title">위상 정렬 조건 및 아이디어</p>
+<p><strong>조건</strong> <br></p>
+<ol class="arabic simple">
+<li><p>방향 그래프 (Directed Graph)여야 함</p></li>
+<li><p>사이클이 없어야함 (DAG: Directed Acyclic Graph) -&gt; 만약 사이클이 있다면, 순서를 정할 수 없다.</p></li>
+</ol>
+<p><strong>아이디어</strong> <br></p>
+<ul class="simple">
+<li><p>“진입 차수(indegree)”가 0인 노드부터 차례대로 제거한다.</p>
+<ul>
+<li><p>진입 차수란, 특정 노드로 들어오는 간선의 개수</p></li>
+<li><p>즉, “먼저 처리되어야 하는 선행 노드의 개수”를 의미한다.</p></li>
+</ul>
+</li>
+</ul>
+</div>
+<p><strong>알고리즘 순서 (Kahn’s Algorithm)</strong></p>
+<ol class="arabic simple">
+<li><p>그래프의 모든 노드에 대해 진입 차수를 계산한다.</p></li>
+<li><p>진입 차수가 0인 노드를 큐(Queue)에 넣는다.  -&gt; 선행 조건이 없는 노드부터 시작</p></li>
+<li><p>큐에서 노드를 꺼내며 결과 리스트에 추가한다. -&gt; 그리고 그 노드와 연결된 노드의 진입 차수를 -1 낮춘다. (그 노드와 연결된 간선을 제거한다)</p></li>
+<li><p>새롭게 진입 차수가 0이 된 노드를 큐에 넣는다.</p></li>
+<li><p>큐가 빌때까지 3~4를 반복한다.
+-&gt; 사이클이 존재하면, 진입차수가 0인 노드가 더 이상 남지 않게 되어 정렬을 완료할 수 없다.</p></li>
+</ol>
+<p><strong>예시</strong></p>
+<section id="id3">
+<h3>위상 정렬 알고리즘 및 시간 복잡도<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<div class="dropdown admonition">
+<p class="admonition-title">source code for topological sort</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">topology_sort</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">edges</span><span class="p">):</span>
+    <span class="n">indegree</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">V</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">graph</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">V</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+
+    <span class="c1"># 1️⃣ 그래프 구성 및 진입차수 계산</span>
+    <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
+        <span class="n">graph</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+        <span class="n">indegree</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c1"># 2️⃣ 진입차수 0인 노드 큐에 삽입</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">V</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">indegree</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">])</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># 3️⃣ 큐가 빌 때까지 반복</span>
+    <span class="k">while</span> <span class="n">q</span><span class="p">:</span>
+        <span class="n">cur</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cur</span><span class="p">)</span>
+
+        <span class="c1"># 4️⃣ 연결된 노드들의 진입차수 감소</span>
+        <span class="k">for</span> <span class="n">nxt</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">[</span><span class="n">cur</span><span class="p">]:</span>
+            <span class="n">indegree</span><span class="p">[</span><span class="n">nxt</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">indegree</span><span class="p">[</span><span class="n">nxt</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nxt</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span>
+</pre></div>
+</div>
+</div>
+<p>시간 복잡도: O(V+E)
+모든 노드와 간선을 한번씩만 탐색</p>
+<p>정리하자면, 위상 정렬은 사이클이 없는 <em><strong>방향 그래프 (DAG)</strong></em> 에서, 간선의 방향을 거스르지 않게 노드를 나열하는 정렬 알고리즘 이다. 주요 개념으로 진입 차수, 큐가 있고, BFS기반인 Kahn’s Algorithm을 통해 구현한다. 시간 복잡도는 O(V +E)이다. 만약 진행 과정 중 진입 차수가 0인 노드가 더 이상 없을 때 남은 노드가 존재한다면 사이클이 존재함을 검출할 수 있다.</p>
+</section>
 </section>
 </section>
 
@@ -903,11 +991,11 @@ union(1,5) → 5의 높이 낮으므로 5를 1 밑으로
       </div>
     </a>
     <a class="right-next"
-       href="../practice/1_implementationPS.html"
+       href="9_greedy.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">다음</p>
-        <p class="prev-next-title">Lecture 1-2. 구현 실습</p>
+        <p class="prev-next-title">Lecture 9-1. Greedy</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -944,9 +1032,16 @@ union(1,5) → 5의 높이 낮으므로 5를 1 밑으로
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spanning-tree">신장 트리 (Spanning Tree)</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kruskal-s-algorithm">Kruskal’s Algorithm</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#code-and-time-complexity">Code and Time Complexity</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mst">MST 예시 문제</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#min-cost-to-connect-all-points">Min Cost to Connect All Points</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topology-sort">위상 정렬 (Topology Sort)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topological-sort">위상 정렬 (Topological Sort)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">위상 정렬 알고리즘 및 시간 복잡도</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>문제 풀이 순서 팁 (Tips) &#8212; 말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업</title>
+    <title>Lecture 9-1. Greedy &#8212; 말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업</title>
   
   
   
@@ -59,15 +59,13 @@
     <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '_pages/theory/0_tips';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_pages/theory/9_greedy';</script>
     <script src="https://unpkg.com/jupyterquiz@1.1.8/dist/jupyterquiz.min.js"></script>
     <link rel="icon" href="../../_static/favicon.png"/>
     <link rel="index" title="색인" href="../../genindex.html" />
     <link rel="search" title="검색" href="../../search.html" />
-    <link rel="next" title="Lecture 1-1. 구현" href="1_implementation.html" />
-    <link rel="prev" title="Variable Scope" href="../basics/variable_scope.html" />
+    <link rel="next" title="Lecture 1-2. 구현 실습" href="../practice/1_implementationPS.html" />
+    <link rel="prev" title="Lecture 8-1. Graph Algorithm" href="8_graph.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ko"/>
   </head>
@@ -195,7 +193,7 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">이론</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">문제 풀이 순서 팁 (Tips)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="0_tips.html">문제 풀이 순서 팁 (Tips)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="1_implementation.html">Lecture 1-1. 구현</a></li>
 <li class="toctree-l1"><a class="reference internal" href="2_DFS_BFS.html">Lecture 2-1. DFS/BFS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="3_backtracking.html">Lecture 3-1. Backtracking</a></li>
@@ -204,7 +202,7 @@
 <li class="toctree-l1"><a class="reference internal" href="6_sort.html">Lecture 6-1. 정렬</a></li>
 <li class="toctree-l1"><a class="reference internal" href="7_binarysearch.html">Lecture 7-1. Binary Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="8_graph.html">Lecture 8-1. Graph Algorithm</a></li>
-<li class="toctree-l1"><a class="reference internal" href="9_greedy.html">Lecture 9-1. Greedy</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Lecture 9-1. Greedy</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">실습</span></p>
 <ul class="nav bd-sidenav">
@@ -271,7 +269,7 @@
       
       
       
-      <li><a href="../../_sources/_pages/theory/0_tips.md" target="_blank"
+      <li><a href="../../_sources/_pages/theory/9_greedy.md" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="소스 파일 다운로드"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -353,7 +351,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>문제 풀이 순서 팁 (Tips)</h1>
+    <h1>Lecture 9-1. Greedy</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -367,84 +365,8 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="tips">
-<h1>문제 풀이 순서 팁 (Tips)<a class="headerlink" href="#tips" title="Link to this heading">#</a></h1>
-<ol class="arabic simple" start="0">
-<li><p>(사전) 코딩테스트 IDE 준비</p>
-<ul class="simple">
-<li><p>필수. 빠른 입출력 세팅 (sys.stdin.readline 등), 자주 쓰이는 함수 (예: dfs/bfs, 이분탐색) 미리 준비해두면 좋습니다.</p></li>
-<li><p>다만, 온라인 IDE 환경과 로컬 IDE가 다르므로 실제 환경에 맞게 미리 연습해두는 게 핵심입니다.</p></li>
-</ul>
-</li>
-<li><p>복잡도 파악</p>
-<ul class="simple">
-<li><p>문제를 읽고 <strong>제약 조건(입력 크기, 시간 제한)</strong> 먼저 확인 <span class="math notranslate nohighlight">\(\rightarrow\)</span> 바로 시간복잡도 상한을 설정해야 합니다.</p></li>
-<li><p><strong>풀이 아이디어 <span class="math notranslate nohighlight">\(\rightarrow\)</span> 복잡도 <span class="math notranslate nohighlight">\(\rightarrow\)</span> 자료구조</strong> 선택을 메모하는 습관 추천</p></li>
-</ul>
-</li>
-</ol>
-<div class="dropdown admonition">
-<p class="admonition-title">N에 따른 시간 복잡도 계산 및 알고리즘 선택</p>
-<p>제한 시간이 1초 기준으로 입력 값의 범위가 다음과 같을 때 (언어, 채점 환경에 따라 달라질 수 있음)</p>
-<ul class="simple">
-<li><p>N의 범위가 ~500 : 시간 복잡도 O(N^3) 로 풀 수 있다.</p></li>
-<li><p>N의 범위가 ~2000 : 시간 복잡도 O(N^2) 로 풀 수 있다.</p></li>
-<li><p>N의 범위가 ~100,000 : 시간 복잡도 O(NlogN) 로 풀 수 있다.</p></li>
-<li><p>N의 범위가 ~10,000,000 : 시간 복잡도 O(N) 로 풀 수 있다.</p></li>
-</ul>
-</div>
-<div class="dropdown admonition">
-<p class="admonition-title">N에 따른 메모리</p>
-<ul class="simple">
-<li><p>메모리
-int (4B) -&gt; 1,000,000 기준 4MB (256MB이면 64*10^6개 int N사용가능 (~10^6))
-long long / double (8B) -&gt; 1,000,000 기준 8MB
-char / bool (1B) -&gt; 1,000,000 기준 1MB</p></li>
-<li><p>스택(1MB) 주의
-재귀 깊이 한계: 프레임당 수십~수백 B + 지역변수.
-C++: 지역 큰 배열 금지. 재귀 DFS는 1e5 노드에서 위험 → 반복(스택 컨테이너) DFS/BFS로 전환.
-Python: 프레임 오버헤드 큼(+ 기본 재귀 제한 ≈ <strong>1000</strong>). 재귀 지양.
-규칙: 큰 배열 = 전역/힙, 재귀 함수 로컬에 큰 구조 금지.</p></li>
-</ul>
-</div>
-<ol class="arabic simple">
-<li><p>에지 케이스 (edge case) 정리</p>
-<ul class="simple">
-<li><p>중요 단계!</p>
-<ul>
-<li><p>크기: N=0,1 / N 최대</p></li>
-<li><p>값: 음수, 0, 최대값, 오버플로우 경계</p></li>
-<li><p>중복: 모두 동일 / 모두 다름 / 동점 다수</p></li>
-<li><p>정렬: 정렬/역정렬/지그재그</p></li>
-<li><p>포맷: 공백·개행·빈 줄 / 대소문자 / 선행 0</p></li>
-<li><p>구조: 비연결 그래프 / 사이클 / 자기루프 / 멀티엣지</p></li>
-<li><p>경계: 구간 끝이 맞닿음, 포함/미포함([ ], ( ))</p></li>
-<li><p>결과 없음/여러 개/타이브레이크 요구</p></li>
-<li><p>시간: 최악 입력 패턴(슬라이딩윈도우가 매번 실패, 이분탐색이 전부 False/전부 True 등)</p></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>코드 짜기 및 디버깅</p>
-<ul class="simple">
-<li><p>기본 구조 먼저 (입력 처리 <span class="math notranslate nohighlight">\(\rightarrow\)</span> 로직 함수화 <span class="math notranslate nohighlight">\(\rightarrow\)</span> 출력)</p></li>
-<li><p>디버깅하기 편하게 <strong>단계별로 프린트</strong> 넣었다가 제출 직전 삭제</p>
-<ul>
-<li><p>디버깅하면서 그때그때 바뀌는 것을 확인하는 것도 좋지만,</p></li>
-<li><p>별도의 file (touch <a class="reference external" href="http://rotation.py">rotation.py</a>)을 만들어서 print로 변경 전, 변경 후 원하는 결과와 같은지 확인해보는 것이 빠르다.</p></li>
-<li><p><strong>출력 형식 오류 (띄어쓰기, 개행)</strong> 체크 필수.</p></li>
-</ul>
-</li>
-<li><p>특히 구현 문제는 <code class="docutils literal notranslate"><span class="pre">작은</span> <span class="pre">함수</span> <span class="pre">단위</span></code>로 쪼개는 게 실수 줄이는 데 도움 됩니다.</p></li>
-</ul>
-</li>
-<li><p>디버깅</p>
-<ol class="arabic simple">
-<li><p>시간 초과 시: 입력 방식, 자료구조, 알고리즘 복잡도 재확인</p></li>
-<li><p>틀렸습니다 시: 정리해둔 에지 케이스를 넣어서 로컬에서 재현해보기</p></li>
-</ol>
-</li>
-</ol>
+  <section class="tex2jax_ignore mathjax_ignore" id="lecture-9-1-greedy">
+<h1>Lecture 9-1. Greedy<a class="headerlink" href="#lecture-9-1-greedy" title="Link to this heading">#</a></h1>
 </section>
 
     <script type="text/x-thebe-config">
@@ -478,20 +400,20 @@ Python: 프레임 오버헤드 큼(+ 기본 재귀 제한 ≈ <strong>1000</stro
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../basics/variable_scope.html"
+       href="8_graph.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">이전</p>
-        <p class="prev-next-title">Variable Scope</p>
+        <p class="prev-next-title">Lecture 8-1. Graph Algorithm</p>
       </div>
     </a>
     <a class="right-next"
-       href="1_implementation.html"
+       href="../practice/1_implementationPS.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">다음</p>
-        <p class="prev-next-title">Lecture 1-1. 구현</p>
+        <p class="prev-next-title">Lecture 1-2. 구현 실습</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

@@ -461,7 +461,89 @@ def kruskal(n: int, edges: List[Tuple[int, int, int]]) -> int:
   - 트리 자료 구조는 노드의 개수가 N개일 때, 항상 간선의 개수가 N-1개이다. 
   - 시간 복잡도는 O(E logE)이며, 서로소 집합 구조를 활용하여 union-find 함수로 구현한다. 
 ````
+### MST 예시 문제 
 
-## 위상 정렬 (Topology Sort)
+#### Min Cost to Connect All Points 
 
-위상 정렬 (Topology Sort)은 정렬 알고리즘의 일종으로 ***방향 그래프의 모든 노드를 '방향성에 거스르지 않도록 순서대로 나열'하는 것*** 이다. 예를 들어, 대학 교과목에서 선수 과목이 있을 때, 차례대로 들어야하는 과목들의 나열하는 예시가 있다. 
+[Leetcode 1584](https://leetcode.com/problems/min-cost-to-connect-all-points/description/?envType=problem-list-v2&envId=minimum-spanning-tree)
+
+[Leetcode 1489](https://leetcode.com/problems/find-critical-and-pseudo-critical-edges-in-minimum-spanning-tree/description/?envType=problem-list-v2&envId=minimum-spanning-tree)
+
+## 위상 정렬 (Topological Sort)
+
+위상 정렬 (Topological Sort)은 정렬 알고리즘의 일종으로 ***방향 그래프(Directed Graph)의 모든 노드를 '방향성(간선의 방향)에 거스르지 않도록 순서대로 나열'하는 것*** 이다. 즉, 한 노드가 다른 노드보다 먼저 처리되어야하는 순서가 있을 때, 그 순서를 유지하면서 모든 노드를 정렬하는 알고리즘이다. 
+
+예를 들어, 대학 교과목에서 선수 과목이 있을 때, 차례대로 들어야하는 과목들의 나열하는 예시가 있다. 대학 교과목에서 "A -> B -> C"처럼 B를 듣기 전에 반드시 A를 들어야 하는 경우를 생각해보자. 
+
+- A -> B: A를 먼저 수강해야 B를 수강할 수 있음 
+- B -> C: B를 먼저 수강해야 C를 수강할 수 있음 
+- 가능한 위상 정렬 결과: A -> B -> C 
+
+따라서, 위상 정렬의 핵심조건은 다음과 같다. 
+
+```{admonition} 위상 정렬 조건 및 아이디어 
+:class: note 
+
+**조건** <br>
+1. 방향 그래프 (Directed Graph)여야 함
+2. 사이클이 없어야함 (DAG: Directed Acyclic Graph) -> 만약 사이클이 있다면, 순서를 정할 수 없다. 
+
+**아이디어** <br>
+- "진입 차수(indegree)"가 0인 노드부터 차례대로 제거한다. 
+  - 진입 차수란, 특정 노드로 들어오는 간선의 개수
+  - 즉, "먼저 처리되어야 하는 선행 노드의 개수"를 의미한다. 
+```
+
+**알고리즘 순서 (Kahn's Algorithm)** 
+
+1. 그래프의 모든 노드에 대해 진입 차수를 계산한다. 
+2. 진입 차수가 0인 노드를 큐(Queue)에 넣는다.  -> 선행 조건이 없는 노드부터 시작 
+3. 큐에서 노드를 꺼내며 결과 리스트에 추가한다. -> 그리고 그 노드와 연결된 노드의 진입 차수를 -1 낮춘다. (그 노드와 연결된 간선을 제거한다)
+4. 새롭게 진입 차수가 0이 된 노드를 큐에 넣는다. 
+5. 큐가 빌때까지 3~4를 반복한다. 
+-> 사이클이 존재하면, 진입차수가 0인 노드가 더 이상 남지 않게 되어 정렬을 완료할 수 없다. 
+
+**예시**
+
+
+### 위상 정렬 알고리즘 및 시간 복잡도 
+
+````{admonition} source code for topological sort 
+:class: dropdown 
+
+```{code-block} python
+from collections import deque
+
+def topology_sort(V, edges):
+    indegree = [0] * (V + 1)
+    graph = [[] for _ in range(V + 1)]
+
+    # 1️⃣ 그래프 구성 및 진입차수 계산
+    for a, b in edges:
+        graph[a].append(b)
+        indegree[b] += 1
+
+    # 2️⃣ 진입차수 0인 노드 큐에 삽입
+    q = deque([i for i in range(1, V + 1) if indegree[i] == 0])
+    result = []
+
+    # 3️⃣ 큐가 빌 때까지 반복
+    while q:
+        cur = q.popleft()
+        result.append(cur)
+
+        # 4️⃣ 연결된 노드들의 진입차수 감소
+        for nxt in graph[cur]:
+            indegree[nxt] -= 1
+            if indegree[nxt] == 0:
+                q.append(nxt)
+
+    return result
+
+```
+````
+
+시간 복잡도: O(V+E)
+모든 노드와 간선을 한번씩만 탐색 
+
+정리하자면, 위상 정렬은 사이클이 없는 ***방향 그래프 (DAG)*** 에서, 간선의 방향을 거스르지 않게 노드를 나열하는 정렬 알고리즘 이다. 주요 개념으로 진입 차수, 큐가 있고, BFS기반인 Kahn's Algorithm을 통해 구현한다. 시간 복잡도는 O(V +E)이다. 만약 진행 과정 중 진입 차수가 0인 노드가 더 이상 없을 때 남은 노드가 존재한다면 사이클이 존재함을 검출할 수 있다. 
