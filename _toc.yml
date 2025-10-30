@@ -24,6 +24,7 @@ parts:
   - file: _pages/theory/6_sort
   - file: _pages/theory/7_binarysearch
   - file: _pages/theory/8_graph
+  - file: _pages/theory/9_greedy
 
 
 - caption: 실습
