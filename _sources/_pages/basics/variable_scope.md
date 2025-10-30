@@ -105,6 +105,8 @@ print(x)    # ✅ 99
 ### nonlocal 
 특징 
 - 중첩 함수(inner function)안에서 ***바로 한 단계 바깥 함수의 변수*** 를 수정하고 싶을 때 사용 
+  - mutable 객체: 내용을 수정 (modify)할때는 불필요, 재할당 (reassign)시에는 키워드 필요 
+  - immutable 객체: 항상 필요 
 - global과 마찬가지로, 해당 keyword없이 outer function과 동일한 변수이름을 가진 변수를 생성하는 경우, 새로운 지역 변수가 만들어져서, outer function의 변수에는 영향을 미치지 않는다. 
 
 ```{list-table} global vs. nonlocal 비교표 

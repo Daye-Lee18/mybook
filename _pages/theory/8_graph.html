@@ -364,11 +364,11 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">서로소 집합</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">서로소 집합 자료구조</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#disjoint-set">서로소 집합 (Disjoint Set)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">서로소 집합 자료구조</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#path-compression">경로 압축 (Path Compression)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#union-by-rank-size">랭크 기반 합치기 (Union by Rank / Size)</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">대표 활용 예시</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">대표 활용 예시</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#redundant-connection">Redundant Connection</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#number-of-provinces">Number of Provinces</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#graph-valid-tree">Graph Valid Tree</a></li>
@@ -378,8 +378,12 @@ document.write(`
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">신장 트리</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">위상 정렬</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spanning-tree">신장 트리 (Spanning Tree)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kruskal-s-algorithm">Kruskal’s Algorithm</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#code-and-time-complexity">Code and Time Complexity</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topology-sort">위상 정렬 (Topology Sort)</a></li>
 </ul>
             </nav>
         </div>
@@ -394,17 +398,17 @@ document.write(`
   <section class="tex2jax_ignore mathjax_ignore" id="lecture-8-1-graph-algorithm">
 <h1>Lecture 8-1. Graph Algorithm<a class="headerlink" href="#lecture-8-1-graph-algorithm" title="Link to this heading">#</a></h1>
 <p>DFS/BFS와 최단 경로에서 다른 내용은 모두 그래프 알고리즘의 한 유형으로 볼 수 있다. 일단, 알고리즘 문제를 접했을 때 <em><strong>서로 다른 개체 (혹은 객체<font size='2'> Object </font>)가 연결되어 있다</strong></em> 는 것을 보면 가장 먼저 그래프 알고리즘을 떠올려야 한다.</p>
-<section id="id1">
-<h2>서로소 집합<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<section id="disjoint-set">
+<h2>서로소 집합 (Disjoint Set)<a class="headerlink" href="#disjoint-set" title="Link to this heading">#</a></h2>
 <p>수학에서 <em><strong>서로소 집합</strong></em> <font size='2'>Disjoint Sets</font>이란 공통 원소가 없는 두 집합을 의미한다.</p>
 <p><img alt="1" src="../../_images/119.png" /></p>
-<section id="id2">
-<h3>서로소 집합 자료구조<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<section id="id1">
+<h3>서로소 집합 자료구조<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
 <p>서로소 집합 자료구조란 <em><strong>서로소 부분 집합들로 나누어진 원소들의 데이터를 처리하기 위한 자료구조</strong></em> 이다. “union”과 “find” 2개의 연산으로 조작할 수 있다. 서로소 집합에서 “find”연산은 특정한 원소가 속한 집합이 어떤 집합인지 알려주는 연산, “union”연산은 합집합으로 2개의 원소가 포함된 집합을 하나의 집합으로 합치는 연산이다.</p>
 <p>서로소 집합 자료구조는 <em><strong>union-find 자료구조</strong></em> 라고 불리기도 한다. 두 집합이 서로소 관계인지를 확인할 수 있다는 말은 각 집합이 어떤 원소를 공통으로 가지고 있는지를 확인할 수 있다는 말과 같기 때문이다.</p>
 <p><strong>핵심 개념 요약</strong></p>
-<div class="pst-scrollable-table-container"><table class="table" id="id6">
-<caption><span class="caption-number">표 22 </span><span class="caption-text">disjoint set / union-find</span><a class="headerlink" href="#id6" title="Link to this table">#</a></caption>
+<div class="pst-scrollable-table-container"><table class="table" id="id3">
+<caption><span class="caption-number">표 22 </span><span class="caption-text">disjoint set / union-find</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 23.1%" />
 <col style="width: 76.9%" />
@@ -523,8 +527,8 @@ union(1,5) → 5의 높이 낮으므로 5를 1 밑으로
         <span class="n">rank</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
 </pre></div>
 </div>
-<div class="pst-scrollable-table-container"><table class="table" id="id7">
-<caption><span class="caption-number">표 23 </span><span class="caption-text">union/find 시간 복잡도</span><a class="headerlink" href="#id7" title="Link to this table">#</a></caption>
+<div class="pst-scrollable-table-container"><table class="table" id="id4">
+<caption><span class="caption-number">표 23 </span><span class="caption-text">union/find 시간 복잡도</span><a class="headerlink" href="#id4" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 15.0%" />
 <col style="width: 40.0%" />
@@ -553,8 +557,8 @@ union(1,5) → 5의 높이 낮으므로 5를 1 밑으로
 </table>
 </div>
 </section>
-<section id="id3">
-<h3>대표 활용 예시<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<section id="id2">
+<h3>대표 활용 예시<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
 <ol class="arabic simple">
 <li><p>사이클 판별 (Cycle Detection): 그래프 간선을 순서대로 확인하며 같은 집합에 속한 두 노드를 다시 연결하려 할 때 -&gt; 사이클 존재</p></li>
 </ol>
@@ -636,14 +640,14 @@ union(1,5) → 5의 높이 낮으므로 5를 1 밑으로
     <span class="k">def</span><span class="w"> </span><span class="nf">findCircleNum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">isConnected</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">find</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
-            <span class="k">nonlocal</span> <span class="n">parent</span> 
+            <span class="c1"># nonlocal parent: mutable객체의 내용을 수정할때는 키워드 불필요, 재할당시에는 필요 </span>
             <span class="k">if</span> <span class="n">parent</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">==</span> <span class="n">node</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">node</span> 
             <span class="n">parent</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">parent</span><span class="p">[</span><span class="n">node</span><span class="p">])</span>
             <span class="k">return</span> <span class="n">parent</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
         
         <span class="k">def</span><span class="w"> </span><span class="nf">union</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-            <span class="k">nonlocal</span> <span class="n">parent</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">Gcnt</span><span class="p">,</span> <span class="n">total_Gcnt</span>
+            <span class="c1"># nonlocal parent, rank, Gcnt, total_Gcnt</span>
             <span class="n">rootA</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">a</span><span class="p">);</span> <span class="n">rootB</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">rootA</span> <span class="o">==</span> <span class="n">rootB</span><span class="p">:</span> <span class="c1"># 두 개를 연결하면 cycle이 된다는 건 이미 같은 그룹이었다는 것이므로 total group cntㄹ를 뺄 필요가 없음 </span>
                 <span class="k">return</span> 
@@ -651,16 +655,11 @@ union(1,5) → 5의 높이 낮으므로 5를 1 밑으로
             <span class="k">if</span> <span class="n">rank</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span> <span class="o">==</span> <span class="n">rank</span><span class="p">[</span><span class="n">rootB</span><span class="p">]:</span>
                 <span class="n">parent</span><span class="p">[</span><span class="n">rootB</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootA</span>
                 <span class="n">rank</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span> 
-                <span class="n">Gcnt</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span> <span class="o">+=</span> <span class="n">Gcnt</span><span class="p">[</span><span class="n">rootB</span><span class="p">]</span>
-                <span class="n">Gcnt</span><span class="p">[</span><span class="n">rootB</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">elif</span> <span class="n">rank</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">rank</span><span class="p">[</span><span class="n">rootB</span><span class="p">]:</span>
                 <span class="n">parent</span><span class="p">[</span><span class="n">rootB</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootA</span> 
-                <span class="n">Gcnt</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span> <span class="o">+=</span> <span class="n">Gcnt</span><span class="p">[</span><span class="n">rootB</span><span class="p">]</span>
-                <span class="n">Gcnt</span><span class="p">[</span><span class="n">rootB</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">parent</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootB</span> 
-                <span class="n">Gcnt</span><span class="p">[</span><span class="n">rootB</span><span class="p">]</span> <span class="o">+=</span> <span class="n">Gcnt</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span>
-                <span class="n">Gcnt</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span> 
+
             
             <span class="c1"># 전체 group 카운트 세기 </span>
             <span class="n">total_Gcnt</span> <span class="o">-=</span> <span class="mi">1</span>
@@ -671,7 +670,6 @@ union(1,5) → 5의 높이 낮으므로 5를 1 밑으로
         
     
         <span class="n">total_Gcnt</span> <span class="o">=</span> <span class="n">n</span> 
-        <span class="n">Gcnt</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>
         <span class="n">parent</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
         <span class="n">rank</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>
 
@@ -705,11 +703,163 @@ union(1,5) → 5의 높이 낮으므로 5를 1 밑으로
 </section>
 </section>
 </section>
-<section id="id4">
-<h2>신장 트리<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<section id="spanning-tree">
+<h2>신장 트리 (Spanning Tree)<a class="headerlink" href="#spanning-tree" title="Link to this heading">#</a></h2>
+<p>Spanning Tree란 <em><strong>하나의 그래프가 있을 때 모든 노드를 포함하면서 사이클이 존재하지 않는 “부분 그래프”</strong></em> 를 의미한다. 이때 위의 조건은 트리의 성립조건과 동일하기도 하다.</p>
+<a class="reference internal image-reference" href="../../_images/217.png"><img alt="../../_images/217.png" src="../../_images/217.png" style="width: 500px;" />
+</a>
+<p>위의 그림의 오른쪽은 왼쪽 그래프의 신장 트리를 찾을 수 있다. 하나의 그래프에서 여러 개의 신장 트리를 찾을 수 있다. 아래 그림을 보면, 신장 트리가 아닌 부분 그래프 예시를 볼 수 있다.</p>
+<a class="reference internal image-reference" href="../../_images/310.png"><img alt="../../_images/310.png" src="../../_images/310.png" style="width: 500px;" />
+</a>
+<p><em><strong>최소 신장 트리(Minimum Spanning Tree)</strong></em> 란, “하나의 그래프에서 모든 노드를 연결하면서, 그 중 <strong>간선의 가중치 합이 최소가 되는</strong> 신장 트리”를 의미한다.</p>
+<p>즉, 그래프의 모든 노드를 연결하되,</p>
+<ul class="simple">
+<li><p>사이클이 없어야하고 (Tree 조건),</p></li>
+<li><p>전체 간선 가중치의 합이 최소가 되도록 해야 한다.</p></li>
+</ul>
+<p>대표적인 최소 신장 트리 알고리즘은 Kruskal과 Prim 알고리즘이 있다.</p>
+<section id="kruskal-s-algorithm">
+<h3>Kruskal’s Algorithm<a class="headerlink" href="#kruskal-s-algorithm" title="Link to this heading">#</a></h3>
+<p>크루스칼 알고리즘은 탐욕적 (Greedy) 접근법을 사용한다. 가중치가 가장 작은 간선부터 차례대로 선택하면서 <em><strong>사이클이 생기지 않도록</strong></em> 트리를 만들어나간다. 즉 핵심 아이디어는 <br></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&quot;항상 가장 비용이 작은 간선을 선택하되, 이미 연결된 노드끼리는 연결하지 않는다.&quot; 
+</pre></div>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Kruskal’s Algorithm</p>
+<p><strong>알고리즘 과정</strong></p>
+<ol class="arabic simple">
+<li><p>모든 간선을 가중치 기준으로 오름차순 정렬</p></li>
+<li><p>가장 작은 간선부터 차례대로 확인</p>
+<ul class="simple">
+<li><p>두 노드가 서로 다른 집합 (즉, 연결되어있지 않음)이면 Union</p></li>
+<li><p>이미 같은 집합이면 Cycle이 생기므로 Skip</p></li>
+</ul>
+</li>
+<li><p>모든 노드가 연결될 때까지 반복</p></li>
+<li><p>최종적으로 선택된 간선들의 가중치 합이 MST의 비용</p></li>
+</ol>
+</div>
+<p>위의 알고리즘에서 cycle 판별을 구현할때, 앞서 배운 서로소 집합 (disjoint set) 구조를 이용한다. 즉, 이전에 배운 Union-Find 알고리즘을 사용하여 cycle을 판별하면 된다.</p>
+<p><strong>예시</strong></p>
+<a class="reference internal image-reference" href="../../_images/48.png"><img alt="../../_images/48.png" src="../../_images/48.png" style="width: 500px;" />
+</a>
+<p>위의 그래프에서 MST를 구해보자. 먼저 MST는 트리 자료 구조인데, 트리 자료 구조는 노드의 개수가 N개일 때, 항상 간선의 개수가 N-1개임을 알아야한다.</p>
+<p><strong>Step 1</strong>
+<a class="reference internal" href="../../_images/58.png"><img alt="../../_images/58.png" src="../../_images/58.png" style="width: 500px;" /></a></p>
+<p>간선 정보들을 모은 리스트를 간선 비용에 대하여 오름차순으로 정리한다.</p>
+<p><strong>Step 2</strong>
+<a class="reference internal" href="../../_images/67.png"><img alt="../../_images/67.png" src="../../_images/67.png" style="width: 500px;" /></a></p>
+<p>가장 짧은 간선을 처리한다. (3, 4)가 선택되고 이것을 집합에 포함하면 된다. 다시 말해 노드 3과 노드 4에 대해서 union함수를 실행하여 동일한 집합에 속하도록 만든다.</p>
+<p><strong>Step 3</strong>
+<a class="reference internal" href="../../_images/77.png"><img alt="../../_images/77.png" src="../../_images/77.png" style="width: 500px;" /></a></p>
+<p>그 다음 가장 짧은 간선을 처리한다. (4, 7)가 선택되고 이것을 집합에 포함하면 된다. 노드 4과 노드 7는 같은 집합에 속해있는지 확인하고 같은 집합에 속해있지 않기 때문에, union함수를 호출한다.</p>
+<p><strong>Step 4</strong>
+<a class="reference internal" href="../../_images/85.png"><img alt="../../_images/85.png" src="../../_images/85.png" style="width: 500px;" /></a></p>
+<p>그 다음 가장 짧은 간선을 처리한다. (4, 6)가 선택한다. 노드 4과 노드 6는 같은 집합에 속해있는지 확인하고 같은 집합에 속해있지 않기 때문에, union함수를 호출한다.</p>
+<p><strong>Step 4</strong>
+<a class="reference internal" href="../../_images/94.png"><img alt="../../_images/94.png" src="../../_images/94.png" style="width: 500px;" /></a></p>
+<p>그 다음 가장 짧은 간선을 처리한다. (6, 7)가 선택한다. 노드 6과 노드 7는 이미 같은 집합에 속해있으므로 union함수를 호출하지 않아 신장 트리에 포함하지 않는다. 그림에서 처리된 간선만 파란색 점선으로 표시된다.</p>
+<p><strong>Step 5</strong>
+<a class="reference internal" href="../../_images/104.png"><img alt="../../_images/104.png" src="../../_images/104.png" style="width: 500px;" /></a></p>
+<p>그 다음 가장 짧은 간선을 처리한다. (1, 2)가 선택한다. 노드 1과 노드 2는 같은 집합에 속해있는지 확인하고 같은 집합에 속해있지 않기 때문에, union함수를 호출한다.</p>
+<p><strong>Step 6</strong>
+<a class="reference internal" href="../../_images/1110.png"><img alt="../../_images/1110.png" src="../../_images/1110.png" style="width: 500px;" /></a></p>
+<p>그 다음 가장 짧은 간선을 처리한다. (2, 6)가 선택한다. 노드 2과 노드 6는 같은 집합에 속해있는지 확인하고 같은 집합에 속해있지 않기 때문에, union함수를 호출한다.</p>
+<p><strong>Step 7</strong>
+<a class="reference internal" href="../../_images/124.png"><img alt="../../_images/124.png" src="../../_images/124.png" style="width: 500px;" /></a></p>
+<p>그 다음 가장 짧은 간선을 처리한다. (2, 3)가 선택한다.  노드 2과 노드 3는 이미 같은 집합에 속해있으므로 union함수를 호출하지 않아 신장 트리에 포함하지 않는다.</p>
+<p><strong>Step 8</strong>
+<a class="reference internal" href="../../_images/134.png"><img alt="../../_images/134.png" src="../../_images/134.png" style="width: 500px;" /></a></p>
+<p>그 다음 가장 짧은 간선을 처리한다. (5, 6)가 선택한다.  노드 5과 노드 6는 같은 집합에 속해있는지 확인하고 같은 집합에 속해있지 않기 때문에, union함수를 호출한다.</p>
+<p><strong>Step 9</strong>
+<a class="reference internal" href="../../_images/144.png"><img alt="../../_images/144.png" src="../../_images/144.png" style="width: 500px;" /></a></p>
+<p>그 다음 가장 짧은 간선을 처리한다. (1, 5)가 선택한다.  노드 1과 노드 5는 이미 같은 집합에 속해있으므로 union함수를 호출하지 않아 신장 트리에 포함하지 않는다.</p>
+<p>결과적으로 아래와 같은 MST를 찾을 수 있으며, 최소 신장 트리에 포함되어 있는 간선의 비용만 모두 더하면 그 값이 최종 비용에 해당한다.</p>
+<a class="reference internal image-reference" href="../../_images/154.png"><img alt="../../_images/154.png" src="../../_images/154.png" style="width: 500px;" />
+</a>
 </section>
-<section id="id5">
-<h2>위상 정렬<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<section id="code-and-time-complexity">
+<h3>Code and Time Complexity<a class="headerlink" href="#code-and-time-complexity" title="Link to this heading">#</a></h3>
+<p>다음은 Kruskal’s Algorithm의 소스 코드 및 시간 복잡도이다.</p>
+<div class="dropdown admonition">
+<p class="admonition-title">code of Kruskal’s Algorithm</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Kruskal&#39;s Algorithm (Union-Find 이용)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">find</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">parent</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">!=</span> <span class="n">x</span><span class="p">:</span>
+        <span class="n">parent</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">parent</span><span class="p">[</span><span class="n">x</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">parent</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">union</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="n">rootA</span><span class="p">,</span> <span class="n">rootB</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">a</span><span class="p">),</span> <span class="n">find</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">rootA</span> <span class="o">==</span> <span class="n">rootB</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">rank</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">rank</span><span class="p">[</span><span class="n">rootB</span><span class="p">]:</span>
+        <span class="n">parent</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootB</span>
+    <span class="k">elif</span> <span class="n">rank</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">rank</span><span class="p">[</span><span class="n">rootB</span><span class="p">]:</span>
+        <span class="n">parent</span><span class="p">[</span><span class="n">rootB</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootA</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">parent</span><span class="p">[</span><span class="n">rootB</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootA</span>
+        <span class="n">rank</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">kruskal</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">edges</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="c1"># edges: (비용, 노드1, 노드2)</span>
+    <span class="n">edges</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>  <span class="c1"># 1️⃣ 간선 정렬</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+    <span class="n">rank</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>
+    <span class="n">total_cost</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">cost</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>         <span class="c1"># 2️⃣ 간선 하나씩 확인</span>
+        <span class="k">if</span> <span class="n">union</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span> <span class="c1"># 3️⃣ 사이클 없으면 포함</span>
+            <span class="n">total_cost</span> <span class="o">+=</span> <span class="n">cost</span>
+
+    <span class="k">return</span> <span class="n">total_cost</span>
+</pre></div>
+</div>
+</div>
+<div class="pst-scrollable-table-container"><table class="table" id="id5">
+<caption><span class="caption-number">표 24 </span><span class="caption-text">Kruskal’s Algorithm 시간 복잡도</span><a class="headerlink" href="#id5" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 30.8%" />
+<col style="width: 69.2%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>단계</p></th>
+<th class="head"><p>복잡도</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>간선 정렬</p></td>
+<td><p>O(E logE)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Union-Find 연산</p></td>
+<td><p>O (E <span class="math notranslate nohighlight">\(\alpha\)</span>(V)) ~ O(E)</p></td>
+</tr>
+<tr class="row-even"><td><p>총합</p></td>
+<td><p>O(E logE)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="important admonition">
+<p class="admonition-title">Summary for MST</p>
+<ul class="simple">
+<li><p>MST (Minimum Spanning Tree): 간선 비용의 합이 최소가 되는 Spanning Tree (cycle이 없으며, 모든 노드를 포함하는 트리)</p></li>
+<li><p>크루스칼 알고리즘: “간선을 정렬하고, Cycle이 생기지 않게 하나씩 추가하는 Greedy 방식의 MST 알고리즘이다.</p>
+<ul>
+<li><p>트리 자료 구조는 노드의 개수가 N개일 때, 항상 간선의 개수가 N-1개이다.</p></li>
+<li><p>시간 복잡도는 O(E logE)이며, 서로소 집합 구조를 활용하여 union-find 함수로 구현한다.</p></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+<section id="topology-sort">
+<h2>위상 정렬 (Topology Sort)<a class="headerlink" href="#topology-sort" title="Link to this heading">#</a></h2>
+<p>위상 정렬 (Topology Sort)은 정렬 알고리즘의 일종으로 <em><strong>방향 그래프의 모든 노드를 ‘방향성에 거스르지 않도록 순서대로 나열’하는 것</strong></em> 이다. 예를 들어, 대학 교과목에서 선수 과목이 있을 때, 차례대로 들어야하는 과목들의 나열하는 예시가 있다.</p>
 </section>
 </section>
 
@@ -777,11 +927,11 @@ union(1,5) → 5의 높이 낮으므로 5를 1 밑으로
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">서로소 집합</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">서로소 집합 자료구조</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#disjoint-set">서로소 집합 (Disjoint Set)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">서로소 집합 자료구조</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#path-compression">경로 압축 (Path Compression)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#union-by-rank-size">랭크 기반 합치기 (Union by Rank / Size)</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">대표 활용 예시</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">대표 활용 예시</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#redundant-connection">Redundant Connection</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#number-of-provinces">Number of Provinces</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#graph-valid-tree">Graph Valid Tree</a></li>
@@ -791,8 +941,12 @@ union(1,5) → 5의 높이 낮으므로 5를 1 밑으로
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">신장 트리</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">위상 정렬</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spanning-tree">신장 트리 (Spanning Tree)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kruskal-s-algorithm">Kruskal’s Algorithm</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#code-and-time-complexity">Code and Time Complexity</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topology-sort">위상 정렬 (Topology Sort)</a></li>
 </ul>
   </nav></div>
 

@@ -16,7 +16,7 @@ kernelspec:
 
 DFS/BFS와 최단 경로에서 다른 내용은 모두 그래프 알고리즘의 한 유형으로 볼 수 있다. 일단, 알고리즘 문제를 접했을 때 ***서로 다른 개체 (혹은 객체<font size='2'> Object </font>)가 연결되어 있다*** 는 것을 보면 가장 먼저 그래프 알고리즘을 떠올려야 한다. 
 
-## 서로소 집합 
+## 서로소 집합 (Disjoint Set)
 
 수학에서 ***서로소 집합*** <font size='2'>Disjoint Sets</font>이란 공통 원소가 없는 두 집합을 의미한다. 
 
@@ -241,14 +241,14 @@ class Solution:
     def findCircleNum(self, isConnected: List[List[int]]) -> int:
 
         def find(node):
-            nonlocal parent 
+            # nonlocal parent: mutable객체의 내용을 수정할때는 키워드 불필요, 재할당시에는 필요 
             if parent[node] == node:
                 return node 
             parent[node] = find(parent[node])
             return parent[node]
         
         def union(a, b):
-            nonlocal parent, rank, Gcnt, total_Gcnt
+            # nonlocal parent, rank, Gcnt, total_Gcnt
             rootA = find(a); rootB = find(b)
             if rootA == rootB: # 두 개를 연결하면 cycle이 된다는 건 이미 같은 그룹이었다는 것이므로 total group cntㄹ를 뺄 필요가 없음 
                 return 
@@ -256,16 +256,11 @@ class Solution:
             if rank[rootA] == rank[rootB]:
                 parent[rootB] = rootA
                 rank[rootA] += 1 
-                Gcnt[rootA] += Gcnt[rootB]
-                Gcnt[rootB] = 0
             elif rank[rootA] > rank[rootB]:
                 parent[rootB] = rootA 
-                Gcnt[rootA] += Gcnt[rootB]
-                Gcnt[rootB] = 0
             else:
                 parent[rootA] = rootB 
-                Gcnt[rootB] += Gcnt[rootA]
-                Gcnt[rootA] = 0 
+
             
             # 전체 group 카운트 세기 
             total_Gcnt -= 1
@@ -276,7 +271,6 @@ class Solution:
         
     
         total_Gcnt = n 
-        Gcnt = [1] * n
         parent = [i for i in range(n)]
         rank = [0] * n
 
@@ -302,7 +296,172 @@ print(sol.findCircleNum(isConnected))
 #### Find if Path Exists in Graph 
 [Leetcode 1971]
 
-## 신장 트리 
+## 신장 트리 (Spanning Tree)
 
-## 위상 정렬 
+Spanning Tree란 ***하나의 그래프가 있을 때 모든 노드를 포함하면서 사이클이 존재하지 않는 "부분 그래프"*** 를 의미한다. 이때 위의 조건은 트리의 성립조건과 동일하기도 하다. 
 
+<img src="../../assets/img/graph/2.png" width="500px">
+
+위의 그림의 오른쪽은 왼쪽 그래프의 신장 트리를 찾을 수 있다. 하나의 그래프에서 여러 개의 신장 트리를 찾을 수 있다. 아래 그림을 보면, 신장 트리가 아닌 부분 그래프 예시를 볼 수 있다. 
+
+<img src="../../assets/img/graph/3.png" width="500px">
+
+***최소 신장 트리(Minimum Spanning Tree)*** 란, "하나의 그래프에서 모든 노드를 연결하면서, 그 중 **간선의 가중치 합이 최소가 되는** 신장 트리"를 의미한다. 
+
+즉, 그래프의 모든 노드를 연결하되, 
+- 사이클이 없어야하고 (Tree 조건),
+- 전체 간선 가중치의 합이 최소가 되도록 해야 한다. 
+
+대표적인 최소 신장 트리 알고리즘은 Kruskal과 Prim 알고리즘이 있다. 
+
+### Kruskal's Algorithm 
+
+크루스칼 알고리즘은 탐욕적 (Greedy) 접근법을 사용한다. 가중치가 가장 작은 간선부터 차례대로 선택하면서 ***사이클이 생기지 않도록*** 트리를 만들어나간다. 즉 핵심 아이디어는 <br>
+
+```text
+"항상 가장 비용이 작은 간선을 선택하되, 이미 연결된 노드끼리는 연결하지 않는다." 
+```
+
+```{admonition} Kruskal's Algorithm 
+:class: note 
+
+**알고리즘 과정** 
+1. 모든 간선을 가중치 기준으로 오름차순 정렬 
+2. 가장 작은 간선부터 차례대로 확인 
+    - 두 노드가 서로 다른 집합 (즉, 연결되어있지 않음)이면 Union
+    - 이미 같은 집합이면 Cycle이 생기므로 Skip 
+3. 모든 노드가 연결될 때까지 반복 
+4. 최종적으로 선택된 간선들의 가중치 합이 MST의 비용 
+```
+
+위의 알고리즘에서 cycle 판별을 구현할때, 앞서 배운 서로소 집합 (disjoint set) 구조를 이용한다. 즉, 이전에 배운 Union-Find 알고리즘을 사용하여 cycle을 판별하면 된다. 
+
+**예시** 
+
+<img src="../../assets/img/graph/4.png" width="500px">
+
+위의 그래프에서 MST를 구해보자. 먼저 MST는 트리 자료 구조인데, 트리 자료 구조는 노드의 개수가 N개일 때, 항상 간선의 개수가 N-1개임을 알아야한다. 
+
+**Step 1**
+<img src="../../assets/img/graph/5.png" width="500px">
+
+간선 정보들을 모은 리스트를 간선 비용에 대하여 오름차순으로 정리한다. 
+
+**Step 2**
+<img src="../../assets/img/graph/6.png" width="500px">
+
+가장 짧은 간선을 처리한다. (3, 4)가 선택되고 이것을 집합에 포함하면 된다. 다시 말해 노드 3과 노드 4에 대해서 union함수를 실행하여 동일한 집합에 속하도록 만든다. 
+
+**Step 3**
+<img src="../../assets/img/graph/7.png" width="500px">
+
+그 다음 가장 짧은 간선을 처리한다. (4, 7)가 선택되고 이것을 집합에 포함하면 된다. 노드 4과 노드 7는 같은 집합에 속해있는지 확인하고 같은 집합에 속해있지 않기 때문에, union함수를 호출한다. 
+
+**Step 4**
+<img src="../../assets/img/graph/8.png" width="500px">
+
+그 다음 가장 짧은 간선을 처리한다. (4, 6)가 선택한다. 노드 4과 노드 6는 같은 집합에 속해있는지 확인하고 같은 집합에 속해있지 않기 때문에, union함수를 호출한다. 
+
+**Step 4**
+<img src="../../assets/img/graph/9.png" width="500px">
+
+그 다음 가장 짧은 간선을 처리한다. (6, 7)가 선택한다. 노드 6과 노드 7는 이미 같은 집합에 속해있으므로 union함수를 호출하지 않아 신장 트리에 포함하지 않는다. 그림에서 처리된 간선만 파란색 점선으로 표시된다. 
+
+**Step 5**
+<img src="../../assets/img/graph/10.png" width="500px">
+
+그 다음 가장 짧은 간선을 처리한다. (1, 2)가 선택한다. 노드 1과 노드 2는 같은 집합에 속해있는지 확인하고 같은 집합에 속해있지 않기 때문에, union함수를 호출한다. 
+
+**Step 6**
+<img src="../../assets/img/graph/11.png" width="500px">
+
+그 다음 가장 짧은 간선을 처리한다. (2, 6)가 선택한다. 노드 2과 노드 6는 같은 집합에 속해있는지 확인하고 같은 집합에 속해있지 않기 때문에, union함수를 호출한다. 
+
+**Step 7**
+<img src="../../assets/img/graph/12.png" width="500px">
+
+그 다음 가장 짧은 간선을 처리한다. (2, 3)가 선택한다.  노드 2과 노드 3는 이미 같은 집합에 속해있으므로 union함수를 호출하지 않아 신장 트리에 포함하지 않는다. 
+
+**Step 8**
+<img src="../../assets/img/graph/13.png" width="500px">
+
+그 다음 가장 짧은 간선을 처리한다. (5, 6)가 선택한다.  노드 5과 노드 6는 같은 집합에 속해있는지 확인하고 같은 집합에 속해있지 않기 때문에, union함수를 호출한다. 
+
+**Step 9**
+<img src="../../assets/img/graph/14.png" width="500px">
+
+그 다음 가장 짧은 간선을 처리한다. (1, 5)가 선택한다.  노드 1과 노드 5는 이미 같은 집합에 속해있으므로 union함수를 호출하지 않아 신장 트리에 포함하지 않는다. 
+
+결과적으로 아래와 같은 MST를 찾을 수 있으며, 최소 신장 트리에 포함되어 있는 간선의 비용만 모두 더하면 그 값이 최종 비용에 해당한다. 
+
+<img src="../../assets/img/graph/15.png" width="500px">
+
+### Code and Time Complexity 
+
+다음은 Kruskal's Algorithm의 소스 코드 및 시간 복잡도이다. 
+````{admonition} code of Kruskal's Algorithm 
+:class: dropdown 
+
+```{code-block} python 
+# Kruskal's Algorithm (Union-Find 이용)
+from typing import List, Tuple
+
+def find(parent, x):
+    if parent[x] != x:
+        parent[x] = find(parent, parent[x])
+    return parent[x]
+
+def union(parent, rank, a, b):
+    rootA, rootB = find(parent, a), find(parent, b)
+    if rootA == rootB:
+        return False
+    if rank[rootA] < rank[rootB]:
+        parent[rootA] = rootB
+    elif rank[rootA] > rank[rootB]:
+        parent[rootB] = rootA
+    else:
+        parent[rootB] = rootA
+        rank[rootA] += 1
+    return True
+
+def kruskal(n: int, edges: List[Tuple[int, int, int]]) -> int:
+    # edges: (비용, 노드1, 노드2)
+    edges.sort(key=lambda x: x[0])  # 1️⃣ 간선 정렬
+    parent = [i for i in range(n)]
+    rank = [0] * n
+    total_cost = 0
+
+    for cost, a, b in edges:         # 2️⃣ 간선 하나씩 확인
+        if union(parent, rank, a, b): # 3️⃣ 사이클 없으면 포함
+            total_cost += cost
+
+    return total_cost
+```
+````
+
+```{list-table} Kruskal's Algorithm 시간 복잡도 
+:widths: 20 45 
+:header-rows: 1
+
+* - 단계 
+  - 복잡도 
+* - 간선 정렬 
+  - O(E logE)
+* - Union-Find 연산 
+  - O (E $\alpha$(V)) ~ O(E)
+* - 총합 
+  - O(E logE)
+```
+
+````{admonition} Summary for MST 
+:class: important 
+
+- MST (Minimum Spanning Tree): 간선 비용의 합이 최소가 되는 Spanning Tree (cycle이 없으며, 모든 노드를 포함하는 트리)
+- 크루스칼 알고리즘: "간선을 정렬하고, Cycle이 생기지 않게 하나씩 추가하는 Greedy 방식의 MST 알고리즘이다. 
+  - 트리 자료 구조는 노드의 개수가 N개일 때, 항상 간선의 개수가 N-1개이다. 
+  - 시간 복잡도는 O(E logE)이며, 서로소 집합 구조를 활용하여 union-find 함수로 구현한다. 
+````
+
+## 위상 정렬 (Topology Sort)
+
+위상 정렬 (Topology Sort)은 정렬 알고리즘의 일종으로 ***방향 그래프의 모든 노드를 '방향성에 거스르지 않도록 순서대로 나열'하는 것*** 이다. 예를 들어, 대학 교과목에서 선수 과목이 있을 때, 차례대로 들어야하는 과목들의 나열하는 예시가 있다. 

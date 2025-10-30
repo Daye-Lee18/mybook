@@ -515,7 +515,12 @@ document.write(`
 <h3>nonlocal<a class="headerlink" href="#nonlocal" title="Link to this heading">#</a></h3>
 <p>특징</p>
 <ul class="simple">
-<li><p>중첩 함수(inner function)안에서 <em><strong>바로 한 단계 바깥 함수의 변수</strong></em> 를 수정하고 싶을 때 사용</p></li>
+<li><p>중첩 함수(inner function)안에서 <em><strong>바로 한 단계 바깥 함수의 변수</strong></em> 를 수정하고 싶을 때 사용</p>
+<ul>
+<li><p>mutable 객체: 내용을 수정 (modify)할때는 불필요, 재할당 (reassign)시에는 키워드 필요</p></li>
+<li><p>immutable 객체: 항상 필요</p></li>
+</ul>
+</li>
 <li><p>global과 마찬가지로, 해당 keyword없이 outer function과 동일한 변수이름을 가진 변수를 생성하는 경우, 새로운 지역 변수가 만들어져서, outer function의 변수에는 영향을 미치지 않는다.</p></li>
 </ul>
 <div class="pst-scrollable-table-container"><table class="table" id="id5">
