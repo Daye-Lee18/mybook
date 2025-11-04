@@ -467,6 +467,81 @@ def kruskal(n: int, edges: List[Tuple[int, int, int]]) -> int:
 
 [Leetcode 1584](https://leetcode.com/problems/min-cost-to-connect-all-points/description/?envType=problem-list-v2&envId=minimum-spanning-tree)
 
+````{admonition} solution
+:class: dropdown 
+
+```{code-block} python
+from typing import List 
+
+class Node:
+    def __init__(self, y, x, num):
+        self.y = y 
+        self.x = x
+        self.num = num
+
+    def __repr__(self):
+        return f"Node {self.num}"
+
+class Solution:
+    def minCostConnectPoints(self, points: List[List[int]]) -> int:
+        n = len(points)
+        nodes = []
+
+        for idx in range(n):
+            cur_node = Node(points[idx][0], points[idx][1], idx)
+            nodes.append(cur_node)
+
+        edges = []
+        for idx in range(n):
+            for j in range(idx+1, n):
+                cost = abs(nodes[idx].y-nodes[j].y) + abs(nodes[idx].x - nodes[j].x)
+                edges.append((cost, nodes[idx].num, nodes[j].num))
+
+        # sort the edges 
+        edges.sort(key=lambda x : x[0])
+        parent = [i for i in range(n)]
+        rank = [0]*n 
+        total_cost = 0
+
+        for cost, a, b in edges:
+            if union(parent, rank, a, b):
+                total_cost += cost 
+
+        return total_cost
+    
+def find(parent, node):
+    if parent[node] == node:
+        return node 
+    
+    parent[node] = find(parent, parent[node]) # compression 
+    return parent[node]
+
+def union(parent, rank, a, b):
+    rootA = find(parent, a); rootB = find(parent, b)
+    if rootA == rootB:
+        return False # cycle 존재 
+
+    if rank[rootA] == rank[rootB]:
+        rank[rootA] += 1 
+        parent[rootB] = rootA 
+    elif rank[rootA] > rank[rootB]:
+        parent[rootB] = rootA 
+    else:
+        parent[rootA] = rootB
+
+    return True 
+
+
+if __name__ == "__main__":
+    # points = [[0,0],[2,2],[3,10],[5,2],[7,0]] # 20 
+    points = [[3,12],[-2,5],[-4,1]] # 20 
+    sol = Solution()
+    print(sol.minCostConnectPoints(points))
+```
+````
+
+#### Find Critical and Pseudo-Critical Edges in MST 
+
 [Leetcode 1489](https://leetcode.com/problems/find-critical-and-pseudo-critical-edges-in-minimum-spanning-tree/description/?envType=problem-list-v2&envId=minimum-spanning-tree)
 
 ## 위상 정렬 (Topological Sort)

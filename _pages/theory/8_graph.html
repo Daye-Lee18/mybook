@@ -384,6 +384,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#code-and-time-complexity">Code and Time Complexity</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mst">MST 예시 문제</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#min-cost-to-connect-all-points">Min Cost to Connect All Points</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#find-critical-and-pseudo-critical-edges-in-mst">Find Critical and Pseudo-Critical Edges in MST</a></li>
 </ul>
 </li>
 </ul>
@@ -869,6 +870,80 @@ union(1,5) → 5의 높이 낮으므로 5를 1 밑으로
 <section id="min-cost-to-connect-all-points">
 <h4>Min Cost to Connect All Points<a class="headerlink" href="#min-cost-to-connect-all-points" title="Link to this heading">#</a></h4>
 <p><a class="reference external" href="https://leetcode.com/problems/min-cost-to-connect-all-points/description/?envType=problem-list-v2&amp;amp;envId=minimum-spanning-tree">Leetcode 1584</a></p>
+<div class="dropdown admonition">
+<p class="admonition-title">solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span> 
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Node</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num</span> <span class="o">=</span> <span class="n">num</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Node </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">num</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">minCostConnectPoints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+        <span class="n">nodes</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">cur_node</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">idx</span><span class="p">)</span>
+            <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cur_node</span><span class="p">)</span>
+
+        <span class="n">edges</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+                <span class="n">cost</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">y</span><span class="o">-</span><span class="n">nodes</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">nodes</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+                <span class="n">edges</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">cost</span><span class="p">,</span> <span class="n">nodes</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">num</span><span class="p">,</span> <span class="n">nodes</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">num</span><span class="p">))</span>
+
+        <span class="c1"># sort the edges </span>
+        <span class="n">edges</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">parent</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+        <span class="n">rank</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">n</span> 
+        <span class="n">total_cost</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">cost</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">union</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+                <span class="n">total_cost</span> <span class="o">+=</span> <span class="n">cost</span> 
+
+        <span class="k">return</span> <span class="n">total_cost</span>
+    
+<span class="k">def</span><span class="w"> </span><span class="nf">find</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">parent</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">==</span> <span class="n">node</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">node</span> 
+    
+    <span class="n">parent</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">parent</span><span class="p">[</span><span class="n">node</span><span class="p">])</span> <span class="c1"># compression </span>
+    <span class="k">return</span> <span class="n">parent</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">union</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="n">rootA</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span> <span class="n">rootB</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">rootA</span> <span class="o">==</span> <span class="n">rootB</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span> <span class="c1"># cycle 존재 </span>
+
+    <span class="k">if</span> <span class="n">rank</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span> <span class="o">==</span> <span class="n">rank</span><span class="p">[</span><span class="n">rootB</span><span class="p">]:</span>
+        <span class="n">rank</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span> 
+        <span class="n">parent</span><span class="p">[</span><span class="n">rootB</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootA</span> 
+    <span class="k">elif</span> <span class="n">rank</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">rank</span><span class="p">[</span><span class="n">rootB</span><span class="p">]:</span>
+        <span class="n">parent</span><span class="p">[</span><span class="n">rootB</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootA</span> 
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">parent</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span> <span class="o">=</span> <span class="n">rootB</span>
+
+    <span class="k">return</span> <span class="kc">True</span> 
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c1"># points = [[0,0],[2,2],[3,10],[5,2],[7,0]] # 20 </span>
+    <span class="n">points</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">3</span><span class="p">,</span><span class="mi">12</span><span class="p">],[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">],[</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">]]</span> <span class="c1"># 20 </span>
+    <span class="n">sol</span> <span class="o">=</span> <span class="n">Solution</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">minCostConnectPoints</span><span class="p">(</span><span class="n">points</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="find-critical-and-pseudo-critical-edges-in-mst">
+<h4>Find Critical and Pseudo-Critical Edges in MST<a class="headerlink" href="#find-critical-and-pseudo-critical-edges-in-mst" title="Link to this heading">#</a></h4>
 <p><a class="reference external" href="https://leetcode.com/problems/find-critical-and-pseudo-critical-edges-in-minimum-spanning-tree/description/?envType=problem-list-v2&amp;amp;envId=minimum-spanning-tree">Leetcode 1489</a></p>
 </section>
 </section>
@@ -1066,6 +1141,7 @@ union(1,5) → 5의 높이 낮으므로 5를 1 밑으로
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#code-and-time-complexity">Code and Time Complexity</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mst">MST 예시 문제</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#min-cost-to-connect-all-points">Min Cost to Connect All Points</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#find-critical-and-pseudo-critical-edges-in-mst">Find Critical and Pseudo-Critical Edges in MST</a></li>
 </ul>
 </li>
 </ul>
