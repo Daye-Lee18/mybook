@@ -910,6 +910,23 @@ union(1,5) → 5의 높이 낮으므로 5를 1 밑으로
 -&gt; 사이클이 존재하면, 진입차수가 0인 노드가 더 이상 남지 않게 되어 정렬을 완료할 수 없다.</p></li>
 </ol>
 <p><strong>예시</strong></p>
+<a class="reference internal image-reference" href="../../_images/164.png"><img alt="../../_images/164.png" src="../../_images/164.png" style="width: 500px;" />
+</a>
+<p><strong>Step 1</strong>
+<a class="reference internal" href="../../_images/173.png"><img alt="../../_images/173.png" src="../../_images/173.png" style="width: 500px;" /></a></p>
+<p>간선을 돌면서, 진입 차수들을 계산하고 진입 차수가 0인 노드를 queue에 집어넣는다.</p>
+<p><strong>Step 2</strong>
+<a class="reference internal" href="../../_images/183.png"><img alt="../../_images/183.png" src="../../_images/183.png" style="width: 500px;" /></a></p>
+<p>1을 큐에서 꺼내고 결과에 추가한다 (result=[1]). 노드 1과 연결된 2, 3 노드의 진입 차수를 각각 1씩 감소한다. 노드 2와 노드 3의 진입 차수가 0이 되었으므로 큐에 추가한다.</p>
+<p><strong>Step 3</strong>
+<a class="reference internal" href="../../_images/193.png"><img alt="../../_images/193.png" src="../../_images/193.png" style="width: 500px;" /></a></p>
+<p>2를 큐에서 꺼내고 결과에 추가한다. (result=[1, 2]). 노드 2와 연결된 노드 4의 진입 차수를 1씩 감소한다. 진입 차수가 0이 된 노드가 없으니 다음 스텝을 진행한다.</p>
+<p><strong>Step 4</strong>
+<a class="reference internal" href="../../_images/202.png"><img alt="../../_images/202.png" src="../../_images/202.png" style="width: 500px;" /></a></p>
+<p>3을 큐에서 꺼내고 결과에 추가한다. (result=[1, 2, 3]). 노드 3과 연결된 노드 4의 진입 차수를 1씩 감소한다. 진입 차수가 0이된 노드 4를 큐에 추가한다.</p>
+<p><strong>Step 5</strong>
+<a class="reference internal" href="../../_images/218.png"><img alt="../../_images/218.png" src="../../_images/218.png" style="width: 500px;" /></a></p>
+<p>4를 큐에서 꺼내고 결과에 추가한다. (result=[1, 2, 3, 4]). 노드 4와 연결된 노드가 없으니 건너뛴다. 큐가 비었으므로 result를 반환한다.</p>
 <section id="id3">
 <h3>위상 정렬 알고리즘 및 시간 복잡도<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
@@ -947,6 +964,21 @@ union(1,5) → 5의 높이 낮으므로 5를 1 밑으로
 <p>시간 복잡도: O(V+E)
 모든 노드와 간선을 한번씩만 탐색</p>
 <p>정리하자면, 위상 정렬은 사이클이 없는 <em><strong>방향 그래프 (DAG)</strong></em> 에서, 간선의 방향을 거스르지 않게 노드를 나열하는 정렬 알고리즘 이다. 주요 개념으로 진입 차수, 큐가 있고, BFS기반인 Kahn’s Algorithm을 통해 구현한다. 시간 복잡도는 O(V +E)이다. 만약 진행 과정 중 진입 차수가 0인 노드가 더 이상 없을 때 남은 노드가 존재한다면 사이클이 존재함을 검출할 수 있다.</p>
+<p>위상 정렬은 다음 상황에서 사용할 수 있다.</p>
+<ol class="arabic simple">
+<li><p>과목 선수 조건: A과목을 듣기 전에 B과목을 들어야함.</p></li>
+<li><p>작업 스케줄링: 어떤 작업은 다른 작업이 끝나야 시작 가능</p></li>
+<li><p>컴파일 순서 결정: 어떤 모듈이 다른 모듈보다 먼저 컴파일이 되어야 함</p></li>
+<li><p>빌드 시스템 (예: Makefile): 파일 간 의존성 분석 및 빌드 순서 결정</p></li>
+</ol>
+<div class="dropdown admonition">
+<p class="admonition-title">summary</p>
+<ul class="simple">
+<li><p>위상 정렬은 사이클이 없는 방향 그래프 (DAG)에서, 간선의 방향을 거스르지 않게 노드를 나열하는 정렬 알고리즘이다.</p></li>
+<li><p>Kahn’s Algorithm을 이용해 구현할 수 있으며, 시간 복잡도는 O(K+E)이다.</p></li>
+<li><p>사이클 검출: 진입 차수 0인 노드가 더 이상 없을 때 남은 노드가 존재하면, 사이클이 있는 것이다.</p></li>
+</ul>
+</div>
 </section>
 </section>
 </section>
