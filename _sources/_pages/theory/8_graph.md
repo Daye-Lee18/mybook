@@ -398,7 +398,8 @@ Spanning Tree란 ***하나의 그래프가 있을 때 모든 노드를 포함하
 
 ### Code and Time Complexity 
 
-다음은 Kruskal's Algorithm의 소스 코드 및 시간 복잡도이다. 
+다음은 Kruskal's Algorithm의 소스 코드 및 시간 복잡도이다. 아래 코드를 보면 list.sort()방식을 사용한느데, min-heap을 써도 되는지 궁금할 수 있다. 보통 list의 sort를 사용하고, min-heap이 유리한 경우에는 간선이 스트리밍으로 들어오거나 한 번에 다 만들기 어려운 상황(외부 입력/온라인 처리)이나  “가장 싼 간선부터 일부만” 처리하며 중간에 조기 종료가 확실한 특수 케이스 때 사용한다. 그 외 일반 코테/LeetCode 환경에선 그냥 정렬이 간단하고 빠른 편이다.
+
 ````{admonition} code of Kruskal's Algorithm 
 :class: dropdown 
 
@@ -582,27 +583,29 @@ if __name__ == "__main__":
 
 <img src="../../assets/img/graph/16.png" width="500px">
 
-**Step 1**
+위의 그래프에 대하여 위상 정렬을 해보자. 
+
+**Step 1** <br>
 <img src="../../assets/img/graph/17.png" width="500px">
 
 간선을 돌면서, 진입 차수들을 계산하고 진입 차수가 0인 노드를 queue에 집어넣는다. 
 
-**Step 2**
+**Step 2** <br>
 <img src="../../assets/img/graph/18.png" width="500px">
 
 1을 큐에서 꺼내고 결과에 추가한다 (result=[1]). 노드 1과 연결된 2, 3 노드의 진입 차수를 각각 1씩 감소한다. 노드 2와 노드 3의 진입 차수가 0이 되었으므로 큐에 추가한다. 
 
-**Step 3**
+**Step 3** <br>
 <img src="../../assets/img/graph/19.png" width="500px">
 
 2를 큐에서 꺼내고 결과에 추가한다. (result=[1, 2]). 노드 2와 연결된 노드 4의 진입 차수를 1씩 감소한다. 진입 차수가 0이 된 노드가 없으니 다음 스텝을 진행한다. 
 
-**Step 4**
+**Step 4** <br>
 <img src="../../assets/img/graph/20.png" width="500px">
 
 3을 큐에서 꺼내고 결과에 추가한다. (result=[1, 2, 3]). 노드 3과 연결된 노드 4의 진입 차수를 1씩 감소한다. 진입 차수가 0이된 노드 4를 큐에 추가한다. 
 
-**Step 5**
+**Step 5** <br>
 <img src="../../assets/img/graph/21.png" width="500px">
 
 4를 큐에서 꺼내고 결과에 추가한다. (result=[1, 2, 3, 4]). 노드 4와 연결된 노드가 없으니 건너뛴다. 큐가 비었으므로 result를 반환한다. 
