@@ -25,6 +25,7 @@ parts:
   - file: _pages/theory/7_binarysearch
   - file: _pages/theory/8_graph
   - file: _pages/theory/9_greedy
+  - file: _pages/theory/10_prefix
 
 
 - caption: 실습
