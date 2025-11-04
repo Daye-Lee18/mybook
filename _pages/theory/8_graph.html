@@ -410,7 +410,8 @@ document.write(`
 <section id="disjoint-set">
 <h2>서로소 집합 (Disjoint Set)<a class="headerlink" href="#disjoint-set" title="Link to this heading">#</a></h2>
 <p>수학에서 <em><strong>서로소 집합</strong></em> <font size='2'>Disjoint Sets</font>이란 공통 원소가 없는 두 집합을 의미한다.</p>
-<p><img alt="1" src="../../_images/119.png" /></p>
+<a class="reference internal image-reference" href="../../_images/119.png"><img alt="../../_images/119.png" src="../../_images/119.png" style="width: 500px;" />
+</a>
 <section id="id1">
 <h3>서로소 집합 자료구조<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
 <p>서로소 집합 자료구조란 <em><strong>서로소 부분 집합들로 나누어진 원소들의 데이터를 처리하기 위한 자료구조</strong></em> 이다. “union”과 “find” 2개의 연산으로 조작할 수 있다. 서로소 집합에서 “find”연산은 특정한 원소가 속한 집합이 어떤 집합인지 알려주는 연산, “union”연산은 합집합으로 2개의 원소가 포함된 집합을 하나의 집합으로 합치는 연산이다.</p>
@@ -749,38 +750,38 @@ union(1,5) → 5의 높이 낮으므로 5를 1 밑으로
 </ol>
 </div>
 <p>위의 알고리즘에서 cycle 판별을 구현할때, 앞서 배운 서로소 집합 (disjoint set) 구조를 이용한다. 즉, 이전에 배운 Union-Find 알고리즘을 사용하여 cycle을 판별하면 된다.</p>
-<p><strong>예시</strong></p>
+<p><strong>예시</strong> <br></p>
 <a class="reference internal image-reference" href="../../_images/48.png"><img alt="../../_images/48.png" src="../../_images/48.png" style="width: 500px;" />
 </a>
 <p>위의 그래프에서 MST를 구해보자. 먼저 MST는 트리 자료 구조인데, 트리 자료 구조는 노드의 개수가 N개일 때, 항상 간선의 개수가 N-1개임을 알아야한다.</p>
-<p><strong>Step 1</strong>
+<p><strong>Step 1</strong><br>
 <a class="reference internal" href="../../_images/58.png"><img alt="../../_images/58.png" src="../../_images/58.png" style="width: 500px;" /></a></p>
 <p>간선 정보들을 모은 리스트를 간선 비용에 대하여 오름차순으로 정리한다.</p>
-<p><strong>Step 2</strong>
+<p><strong>Step 2</strong><br>
 <a class="reference internal" href="../../_images/67.png"><img alt="../../_images/67.png" src="../../_images/67.png" style="width: 500px;" /></a></p>
 <p>가장 짧은 간선을 처리한다. (3, 4)가 선택되고 이것을 집합에 포함하면 된다. 다시 말해 노드 3과 노드 4에 대해서 union함수를 실행하여 동일한 집합에 속하도록 만든다.</p>
-<p><strong>Step 3</strong>
+<p><strong>Step 3</strong><br>
 <a class="reference internal" href="../../_images/77.png"><img alt="../../_images/77.png" src="../../_images/77.png" style="width: 500px;" /></a></p>
 <p>그 다음 가장 짧은 간선을 처리한다. (4, 7)가 선택되고 이것을 집합에 포함하면 된다. 노드 4과 노드 7는 같은 집합에 속해있는지 확인하고 같은 집합에 속해있지 않기 때문에, union함수를 호출한다.</p>
-<p><strong>Step 4</strong>
+<p><strong>Step 4</strong><br>
 <a class="reference internal" href="../../_images/85.png"><img alt="../../_images/85.png" src="../../_images/85.png" style="width: 500px;" /></a></p>
 <p>그 다음 가장 짧은 간선을 처리한다. (4, 6)가 선택한다. 노드 4과 노드 6는 같은 집합에 속해있는지 확인하고 같은 집합에 속해있지 않기 때문에, union함수를 호출한다.</p>
-<p><strong>Step 4</strong>
+<p><strong>Step 4</strong><br>
 <a class="reference internal" href="../../_images/94.png"><img alt="../../_images/94.png" src="../../_images/94.png" style="width: 500px;" /></a></p>
 <p>그 다음 가장 짧은 간선을 처리한다. (6, 7)가 선택한다. 노드 6과 노드 7는 이미 같은 집합에 속해있으므로 union함수를 호출하지 않아 신장 트리에 포함하지 않는다. 그림에서 처리된 간선만 파란색 점선으로 표시된다.</p>
-<p><strong>Step 5</strong>
+<p><strong>Step 5</strong><br>
 <a class="reference internal" href="../../_images/104.png"><img alt="../../_images/104.png" src="../../_images/104.png" style="width: 500px;" /></a></p>
 <p>그 다음 가장 짧은 간선을 처리한다. (1, 2)가 선택한다. 노드 1과 노드 2는 같은 집합에 속해있는지 확인하고 같은 집합에 속해있지 않기 때문에, union함수를 호출한다.</p>
-<p><strong>Step 6</strong>
+<p><strong>Step 6</strong><br>
 <a class="reference internal" href="../../_images/1110.png"><img alt="../../_images/1110.png" src="../../_images/1110.png" style="width: 500px;" /></a></p>
 <p>그 다음 가장 짧은 간선을 처리한다. (2, 6)가 선택한다. 노드 2과 노드 6는 같은 집합에 속해있는지 확인하고 같은 집합에 속해있지 않기 때문에, union함수를 호출한다.</p>
-<p><strong>Step 7</strong>
+<p><strong>Step 7</strong><br>
 <a class="reference internal" href="../../_images/124.png"><img alt="../../_images/124.png" src="../../_images/124.png" style="width: 500px;" /></a></p>
 <p>그 다음 가장 짧은 간선을 처리한다. (2, 3)가 선택한다.  노드 2과 노드 3는 이미 같은 집합에 속해있으므로 union함수를 호출하지 않아 신장 트리에 포함하지 않는다.</p>
-<p><strong>Step 8</strong>
+<p><strong>Step 8</strong><br>
 <a class="reference internal" href="../../_images/134.png"><img alt="../../_images/134.png" src="../../_images/134.png" style="width: 500px;" /></a></p>
 <p>그 다음 가장 짧은 간선을 처리한다. (5, 6)가 선택한다.  노드 5과 노드 6는 같은 집합에 속해있는지 확인하고 같은 집합에 속해있지 않기 때문에, union함수를 호출한다.</p>
-<p><strong>Step 9</strong>
+<p><strong>Step 9</strong><br>
 <a class="reference internal" href="../../_images/144.png"><img alt="../../_images/144.png" src="../../_images/144.png" style="width: 500px;" /></a></p>
 <p>그 다음 가장 짧은 간선을 처리한다. (1, 5)가 선택한다.  노드 1과 노드 5는 이미 같은 집합에 속해있으므로 union함수를 호출하지 않아 신장 트리에 포함하지 않는다.</p>
 <p>결과적으로 아래와 같은 MST를 찾을 수 있으며, 최소 신장 트리에 포함되어 있는 간선의 비용만 모두 더하면 그 값이 최종 비용에 해당한다.</p>

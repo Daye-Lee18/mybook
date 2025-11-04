@@ -20,7 +20,7 @@ DFS/BFS와 최단 경로에서 다른 내용은 모두 그래프 알고리즘의
 
 수학에서 ***서로소 집합*** <font size='2'>Disjoint Sets</font>이란 공통 원소가 없는 두 집합을 의미한다. 
 
-![1](../../assets/img/graph/1.png)
+<img src="../../assets/img/graph/1.png" width="500px">
 
 ### 서로소 집합 자료구조 
 
@@ -336,58 +336,58 @@ Spanning Tree란 ***하나의 그래프가 있을 때 모든 노드를 포함하
 
 위의 알고리즘에서 cycle 판별을 구현할때, 앞서 배운 서로소 집합 (disjoint set) 구조를 이용한다. 즉, 이전에 배운 Union-Find 알고리즘을 사용하여 cycle을 판별하면 된다. 
 
-**예시** 
+**예시** <br>
 
 <img src="../../assets/img/graph/4.png" width="500px">
 
 위의 그래프에서 MST를 구해보자. 먼저 MST는 트리 자료 구조인데, 트리 자료 구조는 노드의 개수가 N개일 때, 항상 간선의 개수가 N-1개임을 알아야한다. 
 
-**Step 1**
+**Step 1**<br>
 <img src="../../assets/img/graph/5.png" width="500px">
 
 간선 정보들을 모은 리스트를 간선 비용에 대하여 오름차순으로 정리한다. 
 
-**Step 2**
+**Step 2**<br>
 <img src="../../assets/img/graph/6.png" width="500px">
 
 가장 짧은 간선을 처리한다. (3, 4)가 선택되고 이것을 집합에 포함하면 된다. 다시 말해 노드 3과 노드 4에 대해서 union함수를 실행하여 동일한 집합에 속하도록 만든다. 
 
-**Step 3**
+**Step 3**<br>
 <img src="../../assets/img/graph/7.png" width="500px">
 
 그 다음 가장 짧은 간선을 처리한다. (4, 7)가 선택되고 이것을 집합에 포함하면 된다. 노드 4과 노드 7는 같은 집합에 속해있는지 확인하고 같은 집합에 속해있지 않기 때문에, union함수를 호출한다. 
 
-**Step 4**
+**Step 4**<br>
 <img src="../../assets/img/graph/8.png" width="500px">
 
 그 다음 가장 짧은 간선을 처리한다. (4, 6)가 선택한다. 노드 4과 노드 6는 같은 집합에 속해있는지 확인하고 같은 집합에 속해있지 않기 때문에, union함수를 호출한다. 
 
-**Step 4**
+**Step 4**<br>
 <img src="../../assets/img/graph/9.png" width="500px">
 
 그 다음 가장 짧은 간선을 처리한다. (6, 7)가 선택한다. 노드 6과 노드 7는 이미 같은 집합에 속해있으므로 union함수를 호출하지 않아 신장 트리에 포함하지 않는다. 그림에서 처리된 간선만 파란색 점선으로 표시된다. 
 
-**Step 5**
+**Step 5**<br>
 <img src="../../assets/img/graph/10.png" width="500px">
 
 그 다음 가장 짧은 간선을 처리한다. (1, 2)가 선택한다. 노드 1과 노드 2는 같은 집합에 속해있는지 확인하고 같은 집합에 속해있지 않기 때문에, union함수를 호출한다. 
 
-**Step 6**
+**Step 6**<br>
 <img src="../../assets/img/graph/11.png" width="500px">
 
 그 다음 가장 짧은 간선을 처리한다. (2, 6)가 선택한다. 노드 2과 노드 6는 같은 집합에 속해있는지 확인하고 같은 집합에 속해있지 않기 때문에, union함수를 호출한다. 
 
-**Step 7**
+**Step 7**<br>
 <img src="../../assets/img/graph/12.png" width="500px">
 
 그 다음 가장 짧은 간선을 처리한다. (2, 3)가 선택한다.  노드 2과 노드 3는 이미 같은 집합에 속해있으므로 union함수를 호출하지 않아 신장 트리에 포함하지 않는다. 
 
-**Step 8**
+**Step 8**<br>
 <img src="../../assets/img/graph/13.png" width="500px">
 
 그 다음 가장 짧은 간선을 처리한다. (5, 6)가 선택한다.  노드 5과 노드 6는 같은 집합에 속해있는지 확인하고 같은 집합에 속해있지 않기 때문에, union함수를 호출한다. 
 
-**Step 9**
+**Step 9**<br>
 <img src="../../assets/img/graph/14.png" width="500px">
 
 그 다음 가장 짧은 간선을 처리한다. (1, 5)가 선택한다.  노드 1과 노드 5는 이미 같은 집합에 속해있으므로 union함수를 호출하지 않아 신장 트리에 포함하지 않는다. 
