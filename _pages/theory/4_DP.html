@@ -205,7 +205,7 @@
 <li class="toctree-l1"><a class="reference internal" href="7_binarysearch.html">Lecture 7-1. Binary Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="8_graph.html">Lecture 8-1. Graph Algorithm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="9_greedy.html">Lecture 9-1. Greedy</a></li>
-<li class="toctree-l1"><a class="reference internal" href="10_prefix.html">Lecture: Prefix Sum (누적 합)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10_prefix.html">Lecture 10-1. Prefix Sum (누적 합)</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">실습</span></p>
 <ul class="nav bd-sidenav">
@@ -213,7 +213,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../practice/2_DFS_BFSPS.html">Lecture 2-2. DFS/BFS 실습</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../practice/3_backtrackingPS.html">Lecture 3-2. Backtracking 실습</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../practice/4_DPPS.html">Lecture 4-2. DP 실습</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../practice/5_shortest_pathPS.html">Lecture 5-2. Shortest Path 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/5_shortest_pathPS.html">Lecture 5-2. Shortest Path &amp; Heap</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">시험</span></p>
 <ul class="nav bd-sidenav">
@@ -1076,7 +1076,15 @@ document.write(`
 </ol>
 <ul class="simple">
 <li><p>정렬된 리스트 arr에서 x가 들어갈 가장 왼쪽 인덱스를 반환.</p></li>
-<li><p>즉, x 이상의 원소가 처음 나타나는 위치</p></li>
+<li><p>즉, <em><strong>x 이상의 원소가 처음 나타나는 위치</strong></em>, 정렬을 유지하면서 넣을 수 있는 곳</p></li>
+<li><p>만약, arr=[1,2,3]이고 num=10이면, returned idx는 3임. 즉, idx는 0~len(arr)가 될 수 있으므로 처리 잘 해야함.</p></li>
+<li><p>사용 예시:</p>
+<ol class="arabic simple">
+<li><p>정렬 리스트에서 lower bound (하한값) 찾을 때</p></li>
+<li><p>중복 원소가 있는 경우, num의 첫 등장 위치가 필요할 때</p></li>
+<li><p>정렬 삽입 시 오름차순 유지할 때</p></li>
+</ol>
+</li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">bisect</span>
 

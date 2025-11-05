@@ -1039,8 +1039,16 @@ union(1,5) → 5의 높이 낮으므로 5를 1 밑으로
 </pre></div>
 </div>
 </div>
-<p>시간 복잡도: O(V+E)
-모든 노드와 간선을 한번씩만 탐색</p>
+<p>시간 복잡도: O(V+E) -&gt; 모든 노드와 간선을 한번씩만 탐색</p>
+<p>위의 코드에서 이중 loop으로 착각할 수 있지만, 모든 정점은 popleft()에서 한번, 그리고 각 간선도 존재할때만 1번씩 방문하여 O(V) + O(E) 이다. 즉, for nxt in graph[cur] 는 정점마다 무조건 반복되는 것이 아니라 각 간선이 존재할 때만 수행됨. 즉, 모든 간선과 모든 정점을 방문하는 것이 항상 같이 일어나는 것은 아니다.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">while</span> <span class="n">q</span><span class="p">:</span>                     <span class="c1"># 각 정점은 최대 한 번만 큐에서 pop</span>
+    <span class="n">cur</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">nxt</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">[</span><span class="n">cur</span><span class="p">]:</span>   <span class="c1"># cur에서 나가는 간선들만 순회 (총합 = E)</span>
+        <span class="n">indegree</span><span class="p">[</span><span class="n">nxt</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">indegree</span><span class="p">[</span><span class="n">nxt</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nxt</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>정리하자면, 위상 정렬은 사이클이 없는 <em><strong>방향 그래프 (DAG)</strong></em> 에서, 간선의 방향을 거스르지 않게 노드를 나열하는 정렬 알고리즘 이다. 주요 개념으로 진입 차수, 큐가 있고, BFS기반인 Kahn’s Algorithm을 통해 구현한다. 시간 복잡도는 O(V +E)이다. 만약 진행 과정 중 진입 차수가 0인 노드가 더 이상 없을 때 남은 노드가 존재한다면 사이클이 존재함을 검출할 수 있다.</p>
 <p>위상 정렬은 다음 상황에서 사용할 수 있다.</p>
 <ol class="arabic simple">

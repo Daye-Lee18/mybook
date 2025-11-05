@@ -615,7 +615,12 @@ class Solution:
 
 1. bisect_left(arr, x)
 - 정렬된 리스트 arr에서 x가 들어갈 가장 왼쪽 인덱스를 반환. 
-- 즉, x 이상의 원소가 처음 나타나는 위치 
+- 즉, ***x 이상의 원소가 처음 나타나는 위치***, 정렬을 유지하면서 넣을 수 있는 곳
+- 만약, arr=[1,2,3]이고 num=10이면, returned idx는 3임. 즉, idx는 0~len(arr)가 될 수 있으므로 처리 잘 해야함. 
+- 사용 예시:
+    1. 정렬 리스트에서 lower bound (하한값) 찾을 때
+    2. 중복 원소가 있는 경우, num의 첫 등장 위치가 필요할 때
+    3. 정렬 삽입 시 오름차순 유지할 때
 
 ```{code-block} python 
 import bisect

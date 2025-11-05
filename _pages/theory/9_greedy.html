@@ -64,7 +64,7 @@
     <link rel="icon" href="../../_static/favicon.png"/>
     <link rel="index" title="색인" href="../../genindex.html" />
     <link rel="search" title="검색" href="../../search.html" />
-    <link rel="next" title="Lecture: Prefix Sum (누적 합)" href="10_prefix.html" />
+    <link rel="next" title="Lecture 10-1. Prefix Sum (누적 합)" href="10_prefix.html" />
     <link rel="prev" title="Lecture 8-1. Graph Algorithm" href="8_graph.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ko"/>
@@ -203,7 +203,7 @@
 <li class="toctree-l1"><a class="reference internal" href="7_binarysearch.html">Lecture 7-1. Binary Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="8_graph.html">Lecture 8-1. Graph Algorithm</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Lecture 9-1. Greedy</a></li>
-<li class="toctree-l1"><a class="reference internal" href="10_prefix.html">Lecture: Prefix Sum (누적 합)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10_prefix.html">Lecture 10-1. Prefix Sum (누적 합)</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">실습</span></p>
 <ul class="nav bd-sidenav">
@@ -211,7 +211,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../practice/2_DFS_BFSPS.html">Lecture 2-2. DFS/BFS 실습</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../practice/3_backtrackingPS.html">Lecture 3-2. Backtracking 실습</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../practice/4_DPPS.html">Lecture 4-2. DP 실습</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../practice/5_shortest_pathPS.html">Lecture 5-2. Shortest Path 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/5_shortest_pathPS.html">Lecture 5-2. Shortest Path &amp; Heap</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">시험</span></p>
 <ul class="nav bd-sidenav">
@@ -366,9 +366,8 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">그리디 알고리즘의 정당성</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">실전 문제</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#assign-cookies">Assign Cookies</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#array-partition">Array Partition</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#can-place-flowers">Can Place Flowers</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">체육복</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">조이스틱</a></li>
 </ul>
 </li>
 </ul>
@@ -438,17 +437,42 @@ document.write(`
 </section>
 <section id="id2">
 <h2>실전 문제<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<section id="assign-cookies">
-<h3>Assign Cookies<a class="headerlink" href="#assign-cookies" title="Link to this heading">#</a></h3>
-<p><a class="reference external" href="https://leetcode.com/problems/assign-cookies/description/?envType=problem-list-v2&amp;amp;envId=greedy">문제 링크</a></p>
+<section id="id3">
+<h3>체육복<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p><a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/lessons/42862">문제 링크</a></p>
+<div class="dropdown admonition">
+<p class="admonition-title">solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">solution</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">lost</span><span class="p">,</span> <span class="n">reserve</span><span class="p">):</span>
+    <span class="n">lost</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">lost</span><span class="p">)</span>
+    <span class="n">reserve</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">reserve</span><span class="p">)</span>
+
+    <span class="c1"># 1) 겹치는 학생 먼저 제거</span>
+    <span class="n">overlap</span> <span class="o">=</span> <span class="n">lost</span> <span class="o">&amp;</span> <span class="n">reserve</span>
+    <span class="n">lost</span> <span class="o">-=</span> <span class="n">overlap</span>
+    <span class="n">reserve</span> <span class="o">-=</span> <span class="n">overlap</span>
+
+    <span class="c1"># 2) 여벌 학생이 왼쪽 -&gt; 오른쪽 순으로 빌려줌 (가까운 곳 우선)</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">reserve</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">r</span> <span class="o">-</span> <span class="mi">1</span> <span class="ow">in</span> <span class="n">lost</span><span class="p">:</span>
+            <span class="n">lost</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">r</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">r</span> <span class="o">+</span> <span class="mi">1</span> <span class="ow">in</span> <span class="n">lost</span><span class="p">:</span>
+            <span class="n">lost</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">r</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># 3) 가능한 최대 인원</span>
+    <span class="k">return</span> <span class="n">n</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">lost</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 </section>
-<section id="array-partition">
-<h3>Array Partition<a class="headerlink" href="#array-partition" title="Link to this heading">#</a></h3>
-<p><a class="reference external" href="https://leetcode.com/problems/array-partition/description/?envType=problem-list-v2&amp;amp;envId=greedy">문제 링크</a></p>
-</section>
-<section id="can-place-flowers">
-<h3>Can Place Flowers<a class="headerlink" href="#can-place-flowers" title="Link to this heading">#</a></h3>
-<p><a class="reference external" href="https://leetcode.com/problems/can-place-flowers/description/?envType=problem-list-v2&amp;amp;envId=greedy">문제 링크</a></p>
+<section id="id4">
+<h3>조이스틱<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p><a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/lessons/42860">문제 링크</a></p>
+<div class="dropdown admonition">
+<p class="admonition-title">solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
 </section>
 </section>
 </section>
@@ -497,7 +521,7 @@ document.write(`
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">다음</p>
-        <p class="prev-next-title">Lecture: Prefix Sum (누적 합)</p>
+        <p class="prev-next-title">Lecture 10-1. Prefix Sum (누적 합)</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -519,9 +543,8 @@ document.write(`
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">그리디 알고리즘의 정당성</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">실전 문제</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#assign-cookies">Assign Cookies</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#array-partition">Array Partition</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#can-place-flowers">Can Place Flowers</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">체육복</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">조이스틱</a></li>
 </ul>
 </li>
 </ul>

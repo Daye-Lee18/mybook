@@ -53,9 +53,65 @@ def get_max_road():
         heapq.heappop(roads)
 ```
 
-다음 [문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/42628) / LeetCode 295 / Baekjoon 7662 이중 우선순위큐에서 lazy deletion을 연습할 수 있다. 
+다음 [프로그래머스 문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/42628) / (LeetCode 295)[https://leetcode.com/problems/find-median-from-data-stream/description/] / Baekjoon 7662 이중 우선순위큐에서 lazy deletion을 연습할 수 있다. 
 
-````{admonition} solution for lazy deletion 
+````{admonition} 인덱스를 통한 풀이 
+:class: dropdown 
+
+삽입 순서를 ID로 지정한 후, 실시간 deleted 리스트 인덱스를 ID로 하여 lazy deletion 표시 배열 사용. 
+
+```{code-block} python 
+import heapq
+
+def solution(operations):
+    queue_b = []
+    queue_s = []
+    deleted = [0]*len(operations)
+
+    for i, op in enumerate(operations): 
+        cm, d = op.split()
+        num = int(d)
+
+        if cm == "I": 
+            heapq.heappush(queue_b, (-num, -i))  # max heap
+            heapq.heappush(queue_s, (num, i))   # min heap
+
+        elif cm == "D" and num == 1:
+            while queue_b:
+                deleted_n, j = heapq.heappop(queue_b)
+                if deleted[abs(j)] != 1: 
+                    deleted[abs(j)] = 1
+                    break
+
+        elif cm == "D" and num == -1:
+            while queue_s:
+                deleted_n, j = heapq.heappop(queue_s)
+                if deleted[j] != 1: 
+                    deleted[j] = 1
+                    break
+
+    max_v = None
+    while queue_b:
+        val, j = heapq.heappop(queue_b)
+        if deleted[abs(j)] == 0:
+            max_v = -val
+            break
+
+    min_v = None
+    while queue_s:
+        val, j = heapq.heappop(queue_s)
+        if deleted[j] == 0:
+            min_v = val
+            break
+
+    if max_v is None or min_v is None:
+        return [0, 0]
+    else:
+        return [max_v, min_v]
+```
+````
+
+````{admonition} 객체 공유를 이용한 풀이 
 :class: dropdown 
 
 ````{code-block} python 
@@ -126,6 +182,8 @@ def solution(operations):
 # print(solution(operations))
 
 ````
+
+위의 두 방식 중에서 대부분 온라인 저지에서는 시간이 보틀넥이기 때문에, index를 활용한 deleted list를 이용하는 방식이 베스트 선택이다. 
 `````
 
 ````{admonition} class comparison for heap
