@@ -398,7 +398,7 @@ Spanning Tree란 ***하나의 그래프가 있을 때 모든 노드를 포함하
 
 ### Code and Time Complexity 
 
-다음은 Kruskal's Algorithm의 소스 코드 및 시간 복잡도이다. 아래 코드를 보면 list.sort()방식을 사용한느데, min-heap을 써도 되는지 궁금할 수 있다. 보통 list의 sort를 사용하고, min-heap이 유리한 경우에는 간선이 스트리밍으로 들어오거나 한 번에 다 만들기 어려운 상황(외부 입력/온라인 처리)이나  “가장 싼 간선부터 일부만” 처리하며 중간에 조기 종료가 확실한 특수 케이스 때 사용한다. 그 외 일반 코테/LeetCode 환경에선 그냥 정렬이 간단하고 빠른 편이다.
+다음은 Kruskal's Algorithm의 소스 코드 및 시간 복잡도이다. 아래 코드를 보면 list.sort()방식을 사용하는데, min-heap을 써도 되는지 궁금할 수 있다. 보통 list의 sort를 사용하고, min-heap이 유리한 경우에는 간선이 스트리밍으로 들어오거나 한 번에 다 만들기 어려운 상황(외부 입력/온라인 처리)이나  “가장 싼 간선부터 일부만” 처리하며 중간에 조기 종료가 확실한 특수 케이스 때 사용한다. 그 외 일반 코테/LeetCode 환경에선 그냥 정렬이 간단하고 빠른 편이다.
 
 ````{admonition} code of Kruskal's Algorithm 
 :class: dropdown 

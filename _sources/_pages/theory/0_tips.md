@@ -71,3 +71,9 @@ Python: 프레임 오버헤드 큼(+ 기본 재귀 제한 ≈ **1000**). 재귀 
 3. 디버깅 
    1. 시간 초과 시: 입력 방식, 자료구조, 알고리즘 복잡도 재확인 
    2. 틀렸습니다 시: 정리해둔 에지 케이스를 넣어서 로컬에서 재현해보기 
+
+
+문제 모음집 
+
+1. [프로그래머스 고득점 Kit](https://school.programmers.co.kr/learn/challenges?tab=algorithm_practice_kit)
+2. 코드 트리 삼성 기출 문제 
