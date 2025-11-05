@@ -68,14 +68,42 @@ print(count)
 
 ## 실전 문제 
 
-### Assign Cookies 
+### 체육복 
 
-[문제 링크](https://leetcode.com/problems/assign-cookies/description/?envType=problem-list-v2&envId=greedy)
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/42862)
 
-### Array Partition 
+````{admonition} solution
+:class: dropdown 
 
-[문제 링크](https://leetcode.com/problems/array-partition/description/?envType=problem-list-v2&envId=greedy)
+```{code-block} python
+def solution(n, lost, reserve):
+    lost = set(lost)
+    reserve = set(reserve)
 
-### Can Place Flowers 
+    # 1) 겹치는 학생 먼저 제거
+    overlap = lost & reserve
+    lost -= overlap
+    reserve -= overlap
 
-[문제 링크](https://leetcode.com/problems/can-place-flowers/description/?envType=problem-list-v2&envId=greedy)
+    # 2) 여벌 학생이 왼쪽 -> 오른쪽 순으로 빌려줌 (가까운 곳 우선)
+    for r in sorted(reserve):
+        if r - 1 in lost:
+            lost.remove(r - 1)
+        elif r + 1 in lost:
+            lost.remove(r + 1)
+
+    # 3) 가능한 최대 인원
+    return n - len(lost)
+```
+````
+
+### 조이스틱 
+
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/42860)
+
+````{admonition} solution 
+:class: dropdown 
+
+```{code-block} python
+```
+````
