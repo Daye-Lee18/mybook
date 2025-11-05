@@ -214,8 +214,56 @@ heapq.heappush(roads, Road(i-1, i, length, lamp_pos[i-1]))
 ```
 ````
 
-````{admonition} doubly linked list 
+`````{admonition} doubly linked list 
 :class: dropdown 
 
-보통 doubly linked list 는 pointer를 사용하여 연결하지만 "찾기" 기능에 있어서 최대 O(N) time complexity가 소요되는 단점이 있다. 이와 달리 prev_lamp_id와 next_lamp_id의 두 리스트를 만들어서 각 가로등의 ID를 인덱스로 하여 이전 가로등과 다음 가로등의 ID를 저장한다. 이는 가로등들을 위치 순서에 따라 이중 연결 리스트처럼 관리하기 위함이며, 가로등 제거 시 양옆의 가로등을 O(1)에 찾는데 사용된다. 
+보통 doubly linked list 는 pointer를 사용하여 연결하지만 "삽입/삭제" 기능에 있어서 최대 O(N) time complexity가 소요되는 단점이 있다. 이와 달리 prev_lamp_id와 next_lamp_id의 두 리스트를 만들어서 각 가로등의 ID를 인덱스로 하여 이전 가로등과 다음 가로등의 ID를 저장한다. 이는 가로등들을 위치 순서에 따라 이중 연결 리스트처럼 관리하기 위함이며, 가로등 제거 시 양옆의 가로등을 O(1)에 찾는데 사용된다. 
+
+```python
+prev = [-1, 0, 1, 2]
+next = [1, 2, 3, -1]
+```
+
+위의 코드에서 i번째 노드 삭제는:
+```python
+prev[next[i]] = prev[i]
+next[prev[i]] = next[i]
+```
+삭제 연산이 O(1)으로 줄어든다. 즉, linked list를 "배열로 구현하면" 사실상 매우 빠른 연결 리스트가 된다. 
+
+````{admonition} DLL implementation with array 
+:class: dropdown 
+
+```{code-block} python 
+MAX = int(1e9)
+prev = [-1] * MAX 
+next = [-1] * MAX 
+value = [None] * MAX 
+
+# head = some index 
+# insert x after cur 
+def insert(cur, x):
+    next[x] = next[cur]
+    prev[x] = cur 
+
+    # NOTE: next node의 prev에 접근할때 
+    if next[cur] != -1: # linked list의 last가 아닌 경우, 
+        prev[next[cur]] = x 
+
+    next[cur] = x 
+
+def delete(x):
+    if prev[x] != -1:
+        next[prev[x]] = next[x] 
+    if next[x] != -1:
+        prev[next[x]] = prev[x]
+```
 ````
+
+
+해당 방식을 사용하여 빠르게 풀 수 있는 문제들을 아래에 적어놓았다. 
+
+- [LRU Cache 최적 구현]
+- [BOJ 5397 키로거]
+- [BOJ 1406 에디터]
+`````
