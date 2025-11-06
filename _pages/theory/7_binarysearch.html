@@ -764,46 +764,40 @@ document.write(`
 <span class="k">class</span><span class="w"> </span><span class="nc">TreeNode</span><span class="p">:</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">=</span> <span class="n">val</span> 
-        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;TreeNode(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="si">}</span><span class="s2">)&quot;</span>
-    
-<span class="c1"># a = TreeNode(3) </span>
-<span class="c1"># print(a)</span>
-<span class="c1"># print(f&quot;{a}&quot;)</span>
-
-<span class="c1"># Step 2: 각 노드별 자식 리스트 생성 </span>
-<span class="n">children</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">[],</span>          <span class="c1"># 0번은 사용 안 함</span>
-    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>      <span class="c1"># 1의 자식은 2, 3</span>
-    <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>      <span class="c1"># 2의 자식은 4, 5</span>
-    <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span>      <span class="c1"># 3의 자식은 6, 7</span>
-    <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>  <span class="c1"># 나머지는 리프 노드</span>
-<span class="p">]</span>
-
-<span class="c1"># Step 3: 실제 객체 트리 구성 </span>
+     
 <span class="k">def</span><span class="w"> </span><span class="nf">build_tree_from_children</span><span class="p">(</span><span class="n">children</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="c1"># 모든 노드 객체 미리 생성</span>
     <span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">TreeNode</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">children</span><span class="p">))]</span>
-    
+
     <span class="c1"># 부모-자식 연결</span>
     <span class="k">for</span> <span class="n">parent</span><span class="p">,</span> <span class="n">child_list</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">children</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">parent</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">continue</span>
+            <span class="k">continue</span> 
         <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">child_list</span><span class="p">:</span>
             <span class="n">nodes</span><span class="p">[</span><span class="n">parent</span><span class="p">]</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">c</span><span class="p">])</span>
     
     <span class="k">return</span> <span class="n">nodes</span><span class="p">[</span><span class="n">root</span><span class="p">]</span>
 
-<span class="n">root</span> <span class="o">=</span> <span class="n">build_tree_from_children</span><span class="p">(</span><span class="n">children</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
 <span class="c1"># 출력 확인 (preorder DFS)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">print_tree</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  &quot;</span> <span class="o">*</span> <span class="n">depth</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">val</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">*</span> <span class="n">depth</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">val</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
-        <span class="n">print_tree</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">print_tree</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">depth</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
 
-<span class="n">print_tree</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c1"># 각 노드별 자식 리스트 존재하는 경우, TreeNode만들기 </span>
+    <span class="n">children</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">[],</span>
+        <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span>
+        <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+    <span class="p">]</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">build_tree_from_children</span><span class="p">(</span><span class="n">children</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">print_tree</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

@@ -400,51 +400,44 @@ print("children:", ch)    # children[1]=[2,3], children[2]=[4,5], ...
 :class: dropdown 
 
 ```{code-block} python 
-
 # Step 1: 노드 클래스 정의
 class TreeNode:
     def __init__(self, val):
         self.val = val 
-        self.children = [] 
+        self.children = []
     def __repr__(self):
         return f"TreeNode({self.val})"
-    
-# a = TreeNode(3) 
-# print(a)
-# print(f"{a}")
-
-# Step 2: 각 노드별 자식 리스트 생성 
-children = [
-    [],          # 0번은 사용 안 함
-    [2, 3],      # 1의 자식은 2, 3
-    [4, 5],      # 2의 자식은 4, 5
-    [6, 7],      # 3의 자식은 6, 7
-    [], [], [], []  # 나머지는 리프 노드
-]
-
-# Step 3: 실제 객체 트리 구성 
+     
 def build_tree_from_children(children, root=1):
     # 모든 노드 객체 미리 생성
     nodes = [None] + [TreeNode(i) for i in range(1, len(children))]
-    
+
     # 부모-자식 연결
     for parent, child_list in enumerate(children):
         if parent == 0:
-            continue
+            continue 
         for c in child_list:
             nodes[parent].children.append(nodes[c])
     
     return nodes[root]
 
-root = build_tree_from_children(children, root=1)
-
 # 출력 확인 (preorder DFS)
 def print_tree(node, depth=0):
-    print("  " * depth + str(node.val))
+    print(" "* depth + str(node.val))
     for c in node.children:
-        print_tree(c, depth + 1)
+        print_tree(c, depth+1)
 
-print_tree(root)
+if __name__ == "__main__":
+    # 각 노드별 자식 리스트 존재하는 경우, TreeNode만들기 
+    children = [
+        [],
+        [2, 3],
+        [4, 5],
+        [6, 7],
+        [], [], [], []
+    ]
+    root = build_tree_from_children(children, root=1)
+    print_tree(root)
 ```
 ````
 ## 이진 탐색 트리 
