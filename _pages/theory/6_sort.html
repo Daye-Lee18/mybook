@@ -205,7 +205,7 @@
 <li class="toctree-l1"><a class="reference internal" href="7_binarysearch.html">Lecture 7-1. Binary Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="8_graph.html">Lecture 8-1. Graph Algorithm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="9_greedy.html">Lecture 9-1. Greedy</a></li>
-<li class="toctree-l1"><a class="reference internal" href="10_prefix.html">Lecture: Prefix Sum (누적 합)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10_prefix.html">Lecture 10-1. Prefix Sum (누적 합)</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">실습</span></p>
 <ul class="nav bd-sidenav">
@@ -213,7 +213,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../practice/2_DFS_BFSPS.html">Lecture 2-2. DFS/BFS 실습</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../practice/3_backtrackingPS.html">Lecture 3-2. Backtracking 실습</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../practice/4_DPPS.html">Lecture 4-2. DP 실습</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../practice/5_shortest_pathPS.html">Lecture 5-2. Shortest Path 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/5_shortest_pathPS.html">Lecture 5-2. Shortest Path &amp; Heap</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">시험</span></p>
 <ul class="nav bd-sidenav">
@@ -449,13 +449,13 @@ document.write(`
 <tr class="row-even"><td><p>start</p></td>
 <td><p>시작인덱스</p></td>
 <td><p>0</p></td>
-<td><p>-1</p></td>
+<td><p>len(arr) -1</p></td>
 <td><p>포함됨</p></td>
 </tr>
 <tr class="row-odd"><td><p>end</p></td>
 <td><p>끝인덱스</p></td>
 <td><p>len(arr)</p></td>
-<td><p>-(len(arr)+1)</p></td>
+<td><p>-1</p></td>
 <td><p>포함안됨</p></td>
 </tr>
 <tr class="row-even"><td><p>step</p></td>
@@ -467,6 +467,7 @@ document.write(`
 </tbody>
 </table>
 </div>
+<p>위의 테이블에서 볼 수 있듯이, start와 end가 생략되어있는 경우 step의 부호에 따라서 default로 지정되는 값이 상이하다.</p>
 <ul class="simple">
 <li><p>핵식 개념 정리</p>
 <ul>
@@ -483,16 +484,23 @@ document.write(`
 </ul>
 <p>슬라이싱의 예시를 이용하여, 실제 어떻게 동작하는지 알아보자</p>
 <div class="toggle docutils container">
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span> <span class="c1"># 인덱스 3 이전까지 오른쪽으로 1씩 이동하여 슬라이싱, 결과 [5, 7, 9]</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:])</span> <span class="c1"># -3부터 끝까지 오른쪽으로 1씩 이동하여 슬라이싱, 결과 [2, 4, 8]</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span> <span class="c1"># 0부터 인덱스 -3 이전까지 오른쪽으로 1씩 이동하여 슬라이싱, 결과 [5, 7, 9, 0, 3, 1, 6]</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="c1"># 0부터 -3이전까지 왼쪽으로 1씩 이동하여 슬라이싱, 결과 [8, 4]</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span> <span class="c1"># 0부터 -3이전까지 왼쪽으로 2씩 이동하여 슬라이싱, 결과 [8]</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">[:</span><span class="o">-</span><span class="mi">5</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span> <span class="c1"># 0부터 -3이전까지 왼쪽으로 2씩 이동하여 슬라이싱, 결과 [8 ,2]</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">[:</span><span class="mi">3</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="c1"># 0부터 3이전까지 왼쪽으로 1씩 이동하여 슬라이싱, [8, 4, 2, 6, 1, 3]</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="c1"># step의 방향과 start end의 방향이 다름. </span>
+<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
+<span class="c1"># = print(arr[0:3:1])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:])</span> 
+<span class="c1"># = print(arr[-3:len(arr):1])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">])</span>
+<span class="c1"># = print(arr[0:-3:1]), step이 기본적으로 1이므로 생략된 start는 0 </span>
+<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> 
+<span class="c1"># print(arr[len(arr)-1:-3:-1])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span> 
+<span class="c1"># print(arr[len(arr)-1:-3:-2])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">[:</span><span class="o">-</span><span class="mi">5</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span> 
+<span class="c1"># print(arr[len(arr)-1:-5:-2])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">[:</span><span class="mi">3</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> 
+<span class="c1"># print(arr[len(arr)-1:3:-1])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="c1"># Start -&gt; end 방향과 step의 방향이 다름. 빈 리스트 출력 </span>
 </pre></div>
 </div>
 </div>

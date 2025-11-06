@@ -213,7 +213,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../practice/2_DFS_BFSPS.html">Lecture 2-2. DFS/BFS 실습</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../practice/3_backtrackingPS.html">Lecture 3-2. Backtracking 실습</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../practice/4_DPPS.html">Lecture 4-2. DP 실습</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../practice/5_shortest_pathPS.html">Lecture 5-2. Shortest Path 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/5_shortest_pathPS.html">Lecture 5-2. Shortest Path &amp; Heap</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">시험</span></p>
 <ul class="nav bd-sidenav">
@@ -460,11 +460,11 @@ document.write(`
 <h2>Prefix Sum을 왜 쓰는가? 구간합<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
 <p>어떤 구간의 합을 구해야할 때, 매번 for문을 돌면 <span class="math notranslate nohighlight">\(O(N)\)</span>이 걸린다. 하지만 prefix sum을 미리 계산하면 한 번의 뺄셈으로 구간 합을 <span class="math notranslate nohighlight">\(O(1)\)</span>에 계산 가능하다.</p>
 <p>구간 합 공식은 다음과 같다. <br></p>
-<p>배열 인덱스가 0부터 시작한다고 할 때, (i, j)의 구간합은
-$<span class="math notranslate nohighlight">\(
+<p>배열 인덱스가 0부터 시작한다고 할 때, (i, j)의 구간합은</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}$$
 \sum(i, j) = prefix[j] - prefix[i-1]
-\)</span><span class="math notranslate nohighlight">\(
-단, \)</span>i=0<span class="math notranslate nohighlight">\(일 때는 단순히 \)</span>\text{prefix}[j]$.</p>
+$$\\단, $i=0$일 때는 단순히 $\text{prefix}[j]$.\end{aligned}\end{align} \]</div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">50</span><span class="p">]</span>
 
 <span class="c1"># 1. prefix sum 배열 만들기</span>
