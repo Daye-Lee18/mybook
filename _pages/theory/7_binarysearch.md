@@ -358,37 +358,43 @@ print("children:", ch)    # children[1]=[2,3], children[2]=[4,5], ...
 - 재귀 한도 걱정 없고, 사이클도 자연스럽게 막음. 
 
 ```{code-block} python
-def root_tree_bfs(n, edges, root):
-    g = [[] for _ in range(n + 1)]
-    for a, b in edges:
-        g[a].append(b); g[b].append(a)
+'''
+edges to children, parents list 
+'''
 
-    parent   = [-1] * (n + 1)
-    children = [[] for _ in range(n + 1)]
+from typing import List, Tuple 
+from collections import deque 
 
-    from collections import deque
+def edges_to_parent_children_list(N:int, edges: List[int], root=1) -> Tuple[List, List]:
+    parent = [-1] * (N+1)
+    children = [[] for _ in range(N+1)]
+    graph = [[] for _ in range(N+1)]
+
+    for edge in edges:
+        graph[edge[0]].append(edge[1])
+        graph[edge[1]].append(edge[0])
+
     q = deque([root])
-    parent[root] = 0
-
+    parent[root] = root  # 방문 처리 필수 
     while q:
-        u = q.popleft()
-        for v in g[u]:
-            if parent[v] != -1:        # 이미 방문, visited 사용하지 않고 parent정보로 알 수 있음. 
-                continue
-            parent[v] = u
-            children[u].append(v)
-            q.append(v)
+        cur_val = q.popleft()
 
-    return parent, children
+        for nxt_node in graph[cur_val]:
+            if parent[nxt_node] != -1: # already visited 
+                continue 
+            parent[nxt_node] = cur_val 
+            children[cur_val].append(nxt_node)
+            q.append(nxt_node)
+    return parent, children 
+
 
 n = 7
 edges = [(1,2),(1,3),(2,4),(2,5),(3,6),(3,7)]
 root = 1
 
-p, ch = root_tree_dfs(n, edges, root)
+p, ch = edges_to_parent_children_list(n, edges)
 print("parent:", p)       # parent[1]=0, parent[2]=1, parent[3]=1, ...
 print("children:", ch)    # children[1]=[2,3], children[2]=[4,5], ...
-
 ```
 ````
 
@@ -396,51 +402,44 @@ print("children:", ch)    # children[1]=[2,3], children[2]=[4,5], ...
 :class: dropdown 
 
 ```{code-block} python 
-
 # Step 1: 노드 클래스 정의
 class TreeNode:
     def __init__(self, val):
         self.val = val 
-        self.children = [] 
+        self.children = []
     def __repr__(self):
         return f"TreeNode({self.val})"
-    
-# a = TreeNode(3) 
-# print(a)
-# print(f"{a}")
-
-# Step 2: 각 노드별 자식 리스트 생성 
-children = [
-    [],          # 0번은 사용 안 함
-    [2, 3],      # 1의 자식은 2, 3
-    [4, 5],      # 2의 자식은 4, 5
-    [6, 7],      # 3의 자식은 6, 7
-    [], [], [], []  # 나머지는 리프 노드
-]
-
-# Step 3: 실제 객체 트리 구성 
+     
 def build_tree_from_children(children, root=1):
     # 모든 노드 객체 미리 생성
     nodes = [None] + [TreeNode(i) for i in range(1, len(children))]
-    
+
     # 부모-자식 연결
     for parent, child_list in enumerate(children):
         if parent == 0:
-            continue
+            continue 
         for c in child_list:
             nodes[parent].children.append(nodes[c])
     
     return nodes[root]
 
-root = build_tree_from_children(children, root=1)
-
 # 출력 확인 (preorder DFS)
 def print_tree(node, depth=0):
-    print("  " * depth + str(node.val))
+    print(" "* depth + str(node.val))
     for c in node.children:
-        print_tree(c, depth + 1)
+        print_tree(c, depth+1)
 
-print_tree(root)
+if __name__ == "__main__":
+    # 각 노드별 자식 리스트 존재하는 경우, TreeNode만들기 
+    children = [
+        [],
+        [2, 3],
+        [4, 5],
+        [6, 7],
+        [], [], [], []
+    ]
+    root = build_tree_from_children(children, root=1)
+    print_tree(root)
 ```
 ````
 ## 이진 탐색 트리 

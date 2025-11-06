@@ -26,6 +26,7 @@ parts:
   - file: _pages/theory/8_graph
   - file: _pages/theory/9_greedy
   - file: _pages/theory/10_prefix
+  - file: _pages/theory/11_LinkedList
 
 
 - caption: 실습
