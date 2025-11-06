@@ -984,7 +984,8 @@ union(1,5) → 5의 높이 낮으므로 5를 1 밑으로
 <li><p>큐에서 노드를 꺼내며 결과 리스트에 추가한다. -&gt; 그리고 그 노드와 연결된 노드의 진입 차수를 -1 낮춘다. (그 노드와 연결된 간선을 제거한다)</p></li>
 <li><p>새롭게 진입 차수가 0이 된 노드를 큐에 넣는다.</p></li>
 <li><p>큐가 빌때까지 3~4를 반복한다.
--&gt; 사이클이 존재하면, 진입차수가 0인 노드가 더 이상 남지 않게 되어 정렬을 완료할 수 없다.</p></li>
+-&gt; 큐가 비었는데, 아직 방문하지 않은 노드가 남아있다 → <em><strong>사이클 존재</strong></em>
+-&gt; 사이클 속에 있는 노드들은 서로 연결되어 있기 때문에 그 중 어느 노드도 진입차수(indegree)가 0이 될 수 없음.</p></li>
 </ol>
 <p><strong>예시</strong></p>
 <a class="reference internal image-reference" href="../../_images/164.png"><img alt="../../_images/164.png" src="../../_images/164.png" style="width: 500px;" />
