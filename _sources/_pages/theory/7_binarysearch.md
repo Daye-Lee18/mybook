@@ -358,39 +358,41 @@ print("children:", ch)    # children[1]=[2,3], children[2]=[4,5], ...
 - 재귀 한도 걱정 없고, 사이클도 자연스럽게 막음. 
 
 ```{code-block} python
-"""
-edges to parent, list 
-"""
+'''
+edges to children, parents list 
+'''
 
+from typing import List, Tuple 
 from collections import deque 
 
-def edges_to_tree_list(N, root, edges):
-    parent = [-1] * (N+1) # 1-indexed tree 
+def edges_to_parent_children_list(N:int, edges: List[int], root=1) -> Tuple[List, List]:
+    parent = [-1] * (N+1)
     children = [[] for _ in range(N+1)]
     graph = [[] for _ in range(N+1)]
-    # draw a graph 
+
     for edge in edges:
         graph[edge[0]].append(edge[1])
         graph[edge[1]].append(edge[0])
 
-    # build a tree 
     q = deque([root])
+    parent[root] = root  # 방문 처리 필수 
     while q:
-        cur_node = q.popleft()
+        cur_val = q.popleft()
 
-        for nxt_node in graph[cur_node]:
-            if parent[nxt_node] != -1: # 이미 방문, visited 사용하지 않고 알 수 있음 
+        for nxt_node in graph[cur_val]:
+            if parent[nxt_node] != -1: # already visited 
                 continue 
-            parent[nxt_node] = cur_node 
-            children[cur_node].append(nxt_node)
+            parent[nxt_node] = cur_val 
+            children[cur_val].append(nxt_node)
             q.append(nxt_node)
-    return parent, children
+    return parent, children 
+
 
 n = 7
 edges = [(1,2),(1,3),(2,4),(2,5),(3,6),(3,7)]
 root = 1
 
-p, ch = edges_to_tree_list(n, root, edges)
+p, ch = edges_to_parent_children_list(n, edges)
 print("parent:", p)       # parent[1]=0, parent[2]=1, parent[3]=1, ...
 print("children:", ch)    # children[1]=[2,3], children[2]=[4,5], ...
 ```
