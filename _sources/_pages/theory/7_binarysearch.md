@@ -358,37 +358,41 @@ print("children:", ch)    # children[1]=[2,3], children[2]=[4,5], ...
 - 재귀 한도 걱정 없고, 사이클도 자연스럽게 막음. 
 
 ```{code-block} python
-def root_tree_bfs(n, edges, root):
-    g = [[] for _ in range(n + 1)]
-    for a, b in edges:
-        g[a].append(b); g[b].append(a)
+"""
+edges to parent, list 
+"""
 
-    parent   = [-1] * (n + 1)
-    children = [[] for _ in range(n + 1)]
+from collections import deque 
 
-    from collections import deque
+def edges_to_tree_list(N, root, edges):
+    parent = [-1] * (N+1) # 1-indexed tree 
+    children = [[] for _ in range(N+1)]
+    graph = [[] for _ in range(N+1)]
+    # draw a graph 
+    for edge in edges:
+        graph[edge[0]].append(edge[1])
+        graph[edge[1]].append(edge[0])
+
+    # build a tree 
     q = deque([root])
-    parent[root] = 0
-
     while q:
-        u = q.popleft()
-        for v in g[u]:
-            if parent[v] != -1:        # 이미 방문, visited 사용하지 않고 parent정보로 알 수 있음. 
-                continue
-            parent[v] = u
-            children[u].append(v)
-            q.append(v)
+        cur_node = q.popleft()
 
+        for nxt_node in graph[cur_node]:
+            if parent[nxt_node] != -1: # 이미 방문, visited 사용하지 않고 알 수 있음 
+                continue 
+            parent[nxt_node] = cur_node 
+            children[cur_node].append(nxt_node)
+            q.append(nxt_node)
     return parent, children
 
 n = 7
 edges = [(1,2),(1,3),(2,4),(2,5),(3,6),(3,7)]
 root = 1
 
-p, ch = root_tree_dfs(n, edges, root)
+p, ch = edges_to_tree_list(n, root, edges)
 print("parent:", p)       # parent[1]=0, parent[2]=1, parent[3]=1, ...
 print("children:", ch)    # children[1]=[2,3], children[2]=[4,5], ...
-
 ```
 ````
 
