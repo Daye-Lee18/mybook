@@ -204,6 +204,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../theory/8_graph.html">Lecture 8-1. Graph Algorithm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../theory/9_greedy.html">Lecture 9-1. Greedy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../theory/10_prefix.html">Lecture 10-1. Prefix Sum (누적 합)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/11_LinkedList.html">Lecture 11-1. Linked List</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">실습</span></p>
 <ul class="current nav bd-sidenav">
@@ -404,6 +405,20 @@ document.write(`
 </ul>
 <section id="id1">
 <h2>가로등 설치<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<div class="dropdown admonition">
+<p class="admonition-title">전역변수</p>
+<p>어떤 전역 변수를 사용할 것인지, 정리한후, 전역 변수를 한번에 INIT 해놓는다.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 전역 변수 선언</span>
+<span class="n">N</span><span class="p">,</span> <span class="n">M</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+<span class="n">lamp_pos</span> <span class="o">=</span> <span class="kc">None</span>       <span class="c1"># 각 가로등의 위치 (ID -&gt; 위치)</span>
+<span class="n">next_lamp_id</span> <span class="o">=</span> <span class="kc">None</span>   <span class="c1"># 각 가로등의 다음 가로등 ID (이중 연결 리스트 구현)</span>
+<span class="n">prev_lamp_id</span> <span class="o">=</span> <span class="kc">None</span>   <span class="c1"># 각 가로등의 이전 가로등 ID (이중 연결 리스트 구현)</span>
+<span class="n">roads</span> <span class="o">=</span> <span class="p">[]</span>            <span class="c1"># 도로 정보를 저장할 최대 힙</span>
+<span class="n">lamp_pos_min_heap</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># 가로등 위치를 저장할 최소 힙 (가장 왼쪽 가로등 탐색용)</span>
+<span class="n">lamp_pos_max_heap</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># 가로등 위치를 저장할 최대 힙 (가장 오른쪽 가로등 탐색용)</span>
+</pre></div>
+</div>
+</div>
 <div class="dropdown admonition">
 <p class="admonition-title">Lazy Deletion</p>
 <p><em><strong>지연 갱신(Lazy Deletion)</strong></em> 이란, 힙에서 특정 원소를 찾아 삭제할때 바로 삭제하지 않고 오래된 정보를 그냥 두되, 힙에서 원소를 꺼낼 때마다 “이 정보가 현재 유효한가?”를 검사하는 것이다. 즉, 해당 문제에서 가로등이 제거되면, 그와 관련된 도로나 위치 정보가 힙에 여전히 남아있게 되는데, 힙에서 특정 원소를 찾아 삭제하는 것이 비효율적이므로 힙에서 꺼낼 때 정보가 유효한지 확인하는 것이다. 유효하지 않다면 버리고 다음 원소를 꺼내는 방식으로 처리하면, 전체적인 효율성을 유지하면서 로직을 간단하게 만들 수 있다.</p>
@@ -622,6 +637,19 @@ document.write(`
 <li><p>[BOJ 5397 키로거]</p></li>
 <li><p>[BOJ 1406 에디터]</p></li>
 </ul>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">좌/우 전역값 동기화</p>
+<p>이론상 전역 변수로 끝값을 정리하면서 “삭제 때만 갱신”하는 것으로 코드를 구현할 수 있다. 이런 방식은 힙 사용때보다 메모리 사용량을 줄일 수 있지만, 업데이트 순서가 미묘하게 어긋나거나 버그가 하나만 생겨도 전역 끝값이 틀어질 수 있다. 전역 캐시는 모든 변화 경로를 100% 누락 없이 갱신해야 하는 부채가 생깁니다(연속 삭제, 경계 근처 혼합 연산, 예외 입력 등). 하지만 <em><strong>힙+지연검증</strong></em> 은 질의 시점에 항상 자기 교정을 하므로, 누락이 끼어도 pop하면서 복구돼요.
+→ “가능은 하지만 유지비가 큰 전역 캐시” vs “조금 더 구조화된 힙 기반”의 선택 문제입니다.</p>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">ceiling</p>
+<p>중간 좌표 계산에서 천장(ceil)인 경우에, 아래 코드를 사용한다.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">new_pos</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">st_pos</span> <span class="o">+</span> <span class="p">(</span><span class="n">road</span><span class="o">.</span><span class="n">length</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+</pre></div>
+</div>
+<p>2로 나누어 round()를 적용하면 파이썬에서는 ‘은행가 반올림(0.5를 짝수로)이라 4.5 -&gt; 4, 5.5-&gt;6 같은 예외가 생긴다. 문제에서는 ceiling 을 요구하므로 위의 코드를 사용해야한다.</p>
 </div>
 </section>
 </section>

@@ -19,6 +19,10 @@ kernelspec:
 - Prefix(접두)의 의미를 이해한다.  
 - 누적 합 배열(Prefix Sum Array)을 직접 구현한다.  
 - 누적 합을 활용해 구간 합(range sum)을 빠르게 계산한다.  
+- 2차원 누적 합 (Integral Image)의 정의와 구축 공식을 이해한다. 
+- 직사각형 영역 합을 $O(1)$에 질의하는 방법을 익힌다. 
+- Prefix XOR의 성질 (결합/교화/자기소거)을 이해하고, 구간 XOR/사각형 XOR 질의를 구현한다. 
+- 해시맵을 이용해 "합/XOR이 특정 값이 되도록 하는 구간 개수"를 $O(N)$에 세는 패턴을 익힌다. 
 
 
 ## Prefix란?
@@ -106,21 +110,36 @@ Range Sum [1,3] = 90
 따라서, 원소 [2, 5]번째까지의 누적합은 인덱스 [1, 4]까지의 누적합이고 따라서, prefix[5]-prefix[2]로 계산하면 된다. 
 
 ```{code-block} python
-data = [10, 20, 30, 40, 50]
-n = len(data)
-prefix = [0] * (n + 1) # prefix[0] = data[0] is not needed 
+arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
-for i in range(1, n + 1):
-    prefix[i] = prefix[i-1] + data[i-1]
+def prefix_sum(arr):
+    prefix = [0] * (len(arr)+1)
 
-# 구간 [2, 5]의 합 = prefix[5] - prefix[1]
-print(prefix)
-print("Sum(2,5) =", prefix[5] - prefix[1])
+    for i in range(1, len(arr)+1):
+        prefix[i] = arr[i-1] + prefix[i-1]
+
+    return prefix 
+
+def Sum(prefix_arr, a, b):
+    # a, b: index 
+    '''
+    [a, b] 모두 포함되어야하므로, 
+    prefix_arr[b+1] = b 포함 
+    prefix_arr[a] = a 전까지 더함 
+    '''
+    return prefix_arr[b+1] - prefix_arr[a]
+
+prefix_arr = prefix_sum(arr)
+a=1; b=3
+print(f"Arr: {arr}")
+print(f"Prefix: {prefix_arr}")
+print(f"Sum from {a} to {b} is {Sum(prefix_arr, a, b)}")
 ```
 출력:
 ```bash
-[0, 10, 30, 60, 100, 150]
-Sum(2,5) = 140
+Arr: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+Prefix: [0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55]
+Sum from 1 to 3 is 9
 ```
 ````
 
@@ -144,9 +163,22 @@ Sum(2,5) = 140
 - 고급 문제(누적 XOR, 구간 평균, DP 전처리)에서도 자주 등장
 ````
 
-### 2D Prefix Sum 
+## 2D Prefix Sum 
 
-### Prefix XOR 응용 
+1D에서 누적 합을 미리 구해 구간 합을 빠르게 계산하듯, 2D에서도 누적 합 테이블을 만들면 ***임의의 직사각형 영역의 합*** 을 한 번에 구할 수 있다. 컴퓨터 비전에서는 적분 영상(Integral Image)로도 불린다. 
+
+### 패딩 (1-based) 정의
+
+크게 헷갈리지 않도록 행/열 모두 1칸씩 0을 패딩해 P를 만든다. 
+- 원본 행렬: A[1...H][1...W]
+- 누적 합: P[0..H][0..W], 경계는 0 
+
+$$
+P[y][x] = A[y][x] + P[y-1][x] + P[y][x-1] - P[y-1][x-1]
+$$
+
+
+## Prefix XOR 응용 
 
 ## 연습 문제 
 
