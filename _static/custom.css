@@ -19,8 +19,17 @@ a:hover { text-decoration: underline; }
 }
 
 /* 표(테이블) 넘침 방지 */
-table { display: block; overflow-x: auto; }
+/* table { display: block; overflow-x: auto; } */
 
+table th, table td {
+  text-align: center;
+}
+
+table {
+  width: 100% !important;
+  margin-left: auto;
+  margin-right: auto;
+}
 /* 히어로(인트로) 섹션 여백 예쁘게 */
 .intro-hero {
   margin: 1.2rem 0 1.6rem;
