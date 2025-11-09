@@ -291,12 +291,98 @@ BST is a short term of (1) is a tree is designed for searching a data quickly. T
 
 ### Q11. Graph Algorithm 
 
+A graph consists of vertices and edges. Especially we learned about (1), where no common element exists in both two sets. It is also called as (2). Two core operations for this data structure is (3) and (4), the former one is to search the parent or root of the node and the latter one is to join the two sets. 
 
 ````{admonition} A11
 :class: dropdown 
 
+(1) Disjoint sets <br>
+(2) Union-Find Data Structure<br>
+(3) Find <br>
+(4) Union<br>
+````
+
+### Q12. Kruskal's Algorithm  
+
+Kruskal's algorithm is an algorithm to find out (1) in a graph. It is a type of (2) algorithm since the algorithm picks what appears to be the best options at the moment. We learned about the algorithm in the class. Descibe the algorithm steps.
+
+````{admonition} A12
+:class: dropdown 
+
+(1) MST (Minimum Spanning Tree) <br>
+(2) Greedy <br>
+(3) 
+3-1. Sort the edges in ascending order 
+3-2. Pop the minimum weight edge
+3-3. Add the weight to the total cost if there is no cycle after adding the edge to the current MST 
+3-4. Repeat the 3-2 and 3-3 steps until there is no nodes unvisited 
+````
+### Q13. Topological Sort 
+
+Topological sort is a sort algorithm, only can be used under the (1). (1) is a tree with directed edges. (2) is a way to solve this topological sort problem, using indegree concepts. Indegree is (3). If there is a node with indegree 0, the node can be thought as a (4) of the result sorted array. This algorithm can be used to detect a cycle in a graph. When we run the algorithm and encounter the situation where (5), then we can tell there is a cycle in the graph. Time complexity for this algorithm is (6), where V is the number of vertices and E is the number of edges. 
+
+Give me at least 3 examples of topological sorts in real life. (7) 
+
+
+````{admonition} A13
+:class: dropdown 
+
+(1) Directed Acyclic Graph (DAG) <br>
+(2) Kahn's Algorithm <br>
+(3) the number of edges pointing to the node <br> 
+(4) starting node <br>
+(5) there is no nodes with indegree 0 but are still nodes unvisited <br>
+(6) O(V+E) <br>
+(7) 1. Prerequisites subjects 2. Compilation of files 3. Waiting Queues <br>
+````
+
+### Q14. Topological Sort Code 
+
+Fill in the blanks (blank(1), blank(2), ...etc) to make the code work. 
+
+```python 
+from typing import List 
+from collections import deque 
+
+def topological_sort(N: int, edges:List[int]):
+    '''
+    N: the number of nodes 
+    edges: edges in the graph 
+    Note that the graph is 1-indexed. 
+    '''
+
+    indegree = [0] * (N+1)
+    graph = [[] for _ in range(N+1)]
+
+    for edge in edges: # edge[0]: starting point, edge[1]: end point 
+        graph[edge[0]].append(edge[1])
+        graph[edge[1]].append(edge[0])
+        indegree[blank(1)] += 1 
+
+    q = deque([node for node in range(1, N+1) if blank(2)])
+    result = []
+    while q:
+        cur_node = q.popleft()
+        result.append(cur_node)
+
+        for nxt_node in graph[cur_node]:
+            indegree[nxt_node] -= 1
+            if blank(3):
+                q.append(nxt_node)
+
+    return blank(4)
+```
+````{admonition} A14
+:class: dropdown 
+
+blank(1): edge[1] <br>
+blank(2): indegree[node] == 0 <br>
+blank(3): indegree[nxt_node] == 0 <br>
+blank(4): result <br>
 
 ````
+
+### Q15. Prefix Sum 
 
 ## Problem solving problems 
 
@@ -395,5 +481,4 @@ if __name__ == "__main__":
     print(root_to_list(root))
 ```
 ````
-
-### Q2. 
+### Q2. Greedy 

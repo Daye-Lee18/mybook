@@ -43,6 +43,8 @@ html:
     <div style="font-size:0.9em">
       본 자료의 무단 복제·배포를 금합니다. © {{ config.author }}
     </div>
+  extra_css:
+    - _static/custom.css
 
 # 다크/라이트 자동 전환
 sphinx:
@@ -81,6 +83,8 @@ launch_buttons:
 # 확장 플러그인 (아래 2절에서 설치)
 parse:
   myst_enable_extensions:
+    - dollarmath
+    - amsmath
     - colon_fence
     - deflist
     - dollarmath
