@@ -42,23 +42,30 @@ kernelspec:
 
 이렇게 “앞에서부터 누적된 합”을 담은 새로운 배열을 **Prefix Sum Array**라고 부른다.
 
+|문제 유형| 예시 |
+|---|---|
+| 1D 누적 합| 구간 합, 평균 구하기|
+| 2D 누적 합 | 영역의 합 (e.g. 이미지 누적 밝기)|
+| Prefix XOR | XOR 구간 연산 문제 | 
+| Prefix Min/Max | 부분 최솟값, 최댓값 추적 |
+| 문자열 Prefix | 접두사 비교, KMP 전처리 | 
 
-### Prefix Sum 배열 구하기
+## 1D Prefix Sum
+
 ````{admonition} 기본 소스 코드 
 :class: dropdown
 
 ```python
-# 기본 배열
 data = [1, 2, 3, 4, 5]
 
-# prefix_sum[i]: data[0] ~ data[i]까지의 합 (i is included)
-prefix_sum = [0] * len(data)
-prefix_sum[0] = data[0] # INIT 
+n= len(data)
+px = [0]*n
 
-for i in range(1, len(data)):
-    prefix_sum[i] = prefix_sum[i-1] + data[i]
+# px[i]: data[0] ~ data[i]까지의 함 (i is included)
+for i in range(n):
+    px[i] = px[i-1] + data[i]
 
-print("Prefix Sum:", prefix_sum)
+print("Prefix Sum:", px)
 ```
 출력: 
 ```bash
@@ -66,21 +73,33 @@ Prefix Sum: [1, 3, 6, 10, 15]
 ```
 ````
 
-위의 코드에서는 prefix[i] = sum[i-1] + A[i]로 계산하였다. 하지만 이 방식은 추가적으로 초기화 코드라인이 필요하기 때문에, 아래와 같은 방식으로 prefix sum array를 계산한다. 
+위의 코드에서는 prefix[i] = sum[i-1] + A[i]로 계산하였다. 하지만 보통은 아래와 같은 방식으로 prefix sum array를 계산한다. 문제 풀이 시에는 계산을 단순하게 하기 위해 보통 prefix 배열을 길이 N+1로 만들고, prefix[0] = 0으로 초기화한다. 즉, prefix[0]이 없는 경우, 
 
+arr[0]~arr[3] 구간합 = px[3]
+arr[1]~arr[3] 구간합 = px[3] - px[0]
+
+으로 prefix[0]이 arr[0]을 포함하고 있어 인덱스 계산이 번거롭게 달라져 계산 실수할 수 있다. 
+
+<img src="../../assets/img/prefix/8.png" width="500px">
+
+따라서 위의 그림처럼 prefix[0]= 0을 포함하여 일관성있게 1-indexed problems에서 [i:j]구간합을 prefix[j+1]-prefix[i]로 계산할 수 있게 코드를 구현한다. 여기서 1-indexed problems 
+
+````{prf:definition}
+
+- P[0] = 0, P[i+1] = P[i] + A[i] (배열 A는 0-based) <br>
+- 구간합: sum(a...b) = P[b+1] - P[a] (1-indexed problem a, b포함) 
+````
 
 ````{admonition} Prefix 배열의 첫 번째 원소를 0으로 두기 
 :class: dropdown
 
 문제 풀이 시에는 계산을 단순하게 하기 위해 보통 prefix 배열을 길이 N+1로 만들고, prefix[0] = 0으로 초기화한다. 
-즉, ***prefix[i]에는 인덱스 [0, i-1]까지의 누적합 = 원소 [1, i] 번째 (1-based) 누적합*** 이 저장된다. 
+즉, ***prefix[i]에는 인덱스 [0, i-1]까지의 누적합*** 이 저장된다. 
 
 - prefix[1] = prefix[0] + data[0] → data[0]까지의 합
 - prefix[2] = prefix[1] + data[1] → data[0] + data[1]까지의 합
 - ... 
 - prefix[i] = data[0]부터 data[i-1]까지의 합
-
-따라서, 원소 [2, 5]번째까지의 누적합은 인덱스 [1, 4]까지의 누적합이고 따라서, prefix[5]-prefix[2]로 계산하면 된다. 
 
 ```{code-block} python
 arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -93,7 +112,7 @@ def prefix_sum(arr):
 
     return prefix 
 
-def Sum(prefix_arr, a, b):
+def range_sum(prefix_arr, a, b):
     # a, b: index 
     '''
     [a, b] 모두 포함되어야하므로, 
@@ -106,7 +125,7 @@ prefix_arr = prefix_sum(arr)
 a=1; b=3
 print(f"Arr: {arr}")
 print(f"Prefix: {prefix_arr}")
-print(f"Sum from {a} to {b} is {Sum(prefix_arr, a, b)}")
+print(f"Sum from {a} to {b} is {range_sum(prefix_arr, a, b)}")
 ```
 출력:
 ```bash
@@ -128,8 +147,6 @@ Sum from 1 to 3 is 9
 prefix[i] = \sum_{k=0}^{i-1} A[k]
 \end{gather*}
 
-위에서 구간합 sum(1:4) (4는 포함)을 구할때 sum(0:4)-sum(0:0)이므로 prefix(4+1)-prefix(0+1) 으로 계산하면 된다. 
-
 구간 합 공식은 다음과 같다. <br>
 
 배열 인덱스가 0부터 시작한다고 하고 0-based array에서 preifx[0]=0, len(prefix)= N+1인 prefix array를 이용한 (i, j)의 구간합은 아래와 같다. 
@@ -137,29 +154,20 @@ prefix[i] = \sum_{k=0}^{i-1} A[k]
 \begin{align*}
 \sum(i, j) = prefix[j+1] - prefix[i] 
 \\
-단, $i=0$일 때는 단순히 prefix[j]
+단, i=0일 때는 단순히 \;prefix[j]
 \end{align*}
 
 
 
-## 실전 예시 
-
-|문제 유형| 예시 |
-|---|---|
-| 1D 누적 합| 구간 합, 평균 구하기|
-| 2D 누적 합 | 영역의 합 (e.g. 이미지 누적 밝기)|
-| Prefix XOR | XOR 구간 연산 문제 | 
-| Prefix Min/Max | 부분 최솟값, 최댓값 추적 |
-| 문자열 Prefix | 접두사 비교, KMP 전처리 | 
-
 ````{admonition} Summary
 :class: important 
 
-"Prefix sum은 계산의 중복을 없애는 가장 간단한 전처리 기법이다."
+"Prefix sum"
 
-- Prefix Sum은 누적 합 배열로, 반복 계산을 한 번의 뺄셈으로 줄여줌
-- 한 번 계산해두면, 구간 합을 $O(1)$에 처리 가능
-- 고급 문제(누적 XOR, 구간 평균, DP 전처리)에서도 자주 등장
+- 정의: 누적 합 배열로, 반복 계산을 한 번의 뺄셈을 줄여준다. 
+    - 한 번 계산해두면, 구간 합을 $O(1)$에 처리 가능
+- prefix_sum[j] = prefix_sum[j-1] + data[j-1]
+- 1-indexed problem에서, range_sum[i:j] = prefix_sum[j+1] - prefix_sum[i]
 ````
 
 ## 2D Prefix Sum 
@@ -190,7 +198,7 @@ prefix[i] = \sum_{k=0}^{i-1} A[k]
 <img src="../../assets/img/prefix/5.png" widths="500px">
 
 \begin{align*}
-P[y][x] = A[y][x] + P[y-1][x] + P[y][x-1] - P[y-1][x-1]
+P[y][x] = P[y-1][x] + P[y][x-1] - P[y-1][x-1] + A[y-1][x-1]
 \end{align*}
 
 ````{admonition} Prefix P array for 2D matrix source code 
@@ -217,7 +225,13 @@ print(build_prefix_sum(A))
 
 위와같이 prefix sum matrix을 구한후에 특정 영역의 직사각형 합을 구하는 경우에 여러번 다른 구간을 계산할때도 O(1) 시간 복잡도로 구할 수 있다. 
 
-<img src="../../assets/img/prefix/6.png" widths="500px">
+\begin{align*}
+\sum_{(y1, x1,y2, x2)} = prefix[y2][x2] - prefix[y1-1][x2] - prefix[y2][x1-1] + prefix[y1-1][x1-1]
+\end{align*}
+
+외우기 쉬운 방법은, 시작점인 (y1, x1)이 inclusive 사각형의 덧셈 뺄셈을 할 때 y1-1과 x1-1과 관련된 사각형을 더하고 빼주는 것이다. 
+
+<img src="../../assets/img/prefix/6.png" width="500px">
 
 `````{admonition} prefix example 1 
 :class: dropdown 
@@ -256,8 +270,8 @@ def build_prefix2d(A: List[List[int]]) -> List[List[int]]:
     
     return P 
 
-# 1-bssed inclusive rectangle array 
-def rect_sum(P: List[List[int]], y1:int, x1:int, y2: int, x2:int) -> int:
+# 1-based inclusive rectangle array 
+def rect_sum(P: List[List[int]], y1:int, x1:int, y2: int, x2:int) -> int: 
     return P[y2][x2] - P[y1-1][x2] - P[y2][x1-1] + P[y1-1][x1-1]
 
 
@@ -268,15 +282,62 @@ print(rect_sum(P, 2, 2, 3, 4)) # 43
 ````
 `````
 
+````{prf:definition}
+
+2D Prefix Sum <br>
+
+정의: A는 0-based (크기 HxW) <br>
+누적합: P는 (H+1) x (W+1) 크기. <br>
+구축식 (0-based A 배열 기준): P[y+1][x+1]=P[y+1][x]+P[y][x+1]−P[y][x]+A[y][x] <br>
+구간합: Sum(y1, x1, y2, x2) = P[y2][x2] - P[y1-1][x2] - P[y2][x1-1] + P[y1-1][x1-1](1-indexed problem 두 좌표 포함)
+````
 ### 실전 문제 
 
 [Baekjoon 11660](https://www.acmicpc.net/problem/11660)
 
-<!-- ````{admonition} solution
+````{admonition} solution
 :class: dropdown 
 
+```python
 
-```` -->
+import sys 
+
+input = sys.stdin.readline
+
+N, Q = map(int, input().split())
+data = []
+
+def create_prefix_sum(data):
+    global px 
+    n = len(data)
+    px = [[0]*(n+1) for _ in range(n+1)]
+
+    for y in range(1, n+1):
+        for x in range(1, n+1):
+            px[y][x] = px[y-1][x] + px[y][x-1] - px[y-1][x-1] + data[y-1][x-1]
+    
+
+def rect_sum(y1, x1, y2, x2):
+    '''
+    1-indexed inclusive sum 
+    '''
+    return px[y2][x2] - px[y1-1][x2] - px[y2][x1-1] + px[y1-1][x1-1]
+
+if __name__ == "__main__":
+    for _ in range(N):
+        data.append(list(map(int, input().split())))
+
+    create_prefix_sum(data) # global prefix array 생성 
+
+    for _ in range(Q):
+        x1, y1, x2, y2 = map(int, input().split())
+        '''
+        구하고 싶은 것: 1-indexed 
+        '''
+        print(rect_sum(x1, y1, x2, y2))
+        # print(rect_sum(y1-1, x1-1, y2-1, x2-1))
+```
+````
 
 ````{admonition} 2D prefix range sum tip 
 :class: tip
@@ -284,7 +345,7 @@ print(rect_sum(P, 2, 2, 3, 4)) # 43
 문제는 보통 (1-based)로 들어오므로 `P`를 (H+1)×(W+1)로 두고 경계 0을 고정하는 습관을 들이자. 0-based로 억지로 처리하면 경계 조건이 더 번거롭다.
 ````
 
-## Prefix XOR
+## 1D Prefix XOR
 
 ### XOR 
 
@@ -390,17 +451,17 @@ XOR의 자기소거 특징에 의해, 공통 부분이 모두 사라진다. 따�
 따라서 구간 (i, j)의 XOR은 다음과 같이 구할 수 있다. 
 
 \begin{align*}
-XOR(i..j) = px[j]^px[i-1]
+XOR(i..j) = px[j] \; \hat{\ } \; px[i-1]
 \end{align*}
 
-즉, prefix XORd은 앞에서부터 XOR 값을 저장해두고 중복되는 앞부분을 XOR로 지워서 구간 XOR를 빠르게 구하는 방법이다. 
+즉, prefix XOR은 앞에서부터 XOR 값을 저장해두고 중복되는 앞부분을 XOR로 지워서 구간 XOR를 빠르게 구하는 방법이다. 
 시간 복잡도는 전처리때 O(N)이 걸리고 각 질문마다 O(1)으로 딱 한 번 계산하기 때문에 속도가 빠르다. 
 
 
 **예시 문제** <br>
 
 ```text
-배열 a = [3, 8, 2, 6]에서 (2, 4)의 XOR은?
+배열 a = [3, 8, 2, 6]에서 1-indexed (2, 4)의 XOR은?
 
 - P = [0, 3, 11, 9, 15] (편의상 앞에 0패딩)
 - 답: P[4] ^ P[1] = 15 ^ 3 = 12 
@@ -426,21 +487,21 @@ XOR(i..j) = px[j]^px[i-1]
 ```{code-block} python 
 from typing import List 
 
+a = [3, 3, 8, 2, 6]
+
 def build_prefix_xor(a: List[int]) -> List[int]:
-    n = len(a) 
-    px = [0] * (n+1)
-    for i in range(1, n+1):
+    px = [0] * (len(a)+1)
+
+    for i in range(1, len(a)+1):
         px[i] = px[i-1] ^ a[i-1]
+
     return px 
 
-def range_xor(px:List[int], i:int, j:int) -> int:
-    # 1-based inclusive 
-    return px[j] ^ px[i-1]
+def range_xor(px: List[int], i:int, j:int) -> int:
+    return px[j]^px[i-1]
 
-# quick self-test
-arr = [3,8,2,6]
-px = build_prefix_xor(arr)
-print(range_xor(px, 2, 4)) # 12
+px = build_prefix_xor(a)
+print(range_xor(px, 1, 3)) # 8
 ```
 ````
 ## 2D Prefix XOR 
@@ -453,32 +514,60 @@ print(range_xor(px, 2, 4)) # 12
 PX[y][x] = A[y][x] \;\hat{\ }\; PX[y-1][x] \;\hat{\ }\; PX[y][x-1] \;\hat{\ }\; PX[y-1][x-1]
 \end{align*}
 
-아래 예시 문제를 보자. 
+또한 구간 XOR은 아래 그림과 같이 계산가능하다. 
 
-XOR이 K인 부분 배열의 개수를 구하고 싶다. 
+<img src="../../assets/img/prefix/9.png" width="500px">
 
-즉, px[j] ^ px[i-1] = K ↔ px[i-1] = px[j] ^ K
+\begin{algin*}
+RectXOR(y_1,x_1,y_2,x_2)
+= PX[y_2][x_2] \;\hat{\ }\; PX[y_1-1][x_2] \;\hat{\ }\; PX[y_2][x_1-1] \;\hat{\ }\; PX[y_1-1][x_1-1].
+\end{align*}
 
-````{admonition} solution
+```{admonition} tip 
+:class: note
+
+각 셀의 기여 횟수의 **짝/홀**만이 중요하고, 중복되면 XOR에서 상쇄된다(자기소거). 따라서 포함-배제의 부호 대신 "짝수번 등장 → 0, 홀수번 등장 → 남음" 패턴이 그대로 작동한다.
+```
+
+````{admonition} Source code for 2D Prefix XOR 
 :class: dropdown 
 
-```python
-from collections import defaultdict
+```{code-block} python
+from typing import List
 
 
-def count_subarrays_xor_k(a, K):
-    ans = 0
-    freq = defaultdict(int)
-    freq[0] = 1
-    running = 0
-    for x in a:
-        running ^= x
-        ans += freq[running ^ K]
-        freq[running] += 1
-    return ans
+def build_prefix2d_xor(A: List[List[int]]):
+    H, W = len(A), len(A[0])
+    PX = [[0]*(W+1) for _ in range(H+1)]
+    for y in range(1, H+1):
+        for x in range(1, W+1):
+            PX[y][x] = (
+                A[y-1][x-1]
+                ^ PX[y-1][x]
+                ^ PX[y][x-1]
+                ^ PX[y-1][x-1]
+                )
+    return PX
 
-# quick test
-print(count_subarrays_xor_k([4,2,2,6,4], 6)) # 4
+
+# 1-based inclusive rectangle XOR
+def rect_xor(PX: List[List[int]], y1: int, x1: int, y2: int, x2: int) -> int:
+    return (
+        PX[y2][x2]
+        ^ PX[y1-1][x2]
+        ^ PX[y2][x1-1]
+        ^ PX[y1-1][x1-1]
+        )
+
+
+# quick self-test
+A = [
+[1,2,3,4],
+[5,6,7,8],
+[9,10,11,12],
+]
+PX = build_prefix2d_xor(A)
+print(rect_xor(PX, 2,2, 3,4))
 ```
 ````
 
@@ -490,16 +579,52 @@ print(count_subarrays_xor_k([4,2,2,6,4], 6)) # 4
 - 개수 세기(맵): 한 번의 스캔 $O(N)$, 공간 $O(U)$ (서로 다른 prefix 값의 수)
 ````
 
+## 문자열 Prefix 
+
 ## 연습 문제 
+
+### 합이 K인 부분 배열의 개수
+
+[Leetcode 560](https://leetcode.com/problems/subarray-sum-equals-k/description/)
+
+````{admonition} solution 
+:class: dropdown 
+
+prefix[i] = a[1]+...+a[i]라 할 때, prefix[j] - prefix[i-1] = K ↔ prefix[i-1] = prefix[j] - K. 따라서 현재 prefix 값을 키로 저장하며 진행하면 전체 $O(N)$에 정답을 센다.
+
+```{code-block} python
+from collections import defaultdict 
+from typing import List 
+
+class Solution:
+    def subarraySum(self, nums: List[int], K: int) -> int:
+
+        ans = 0
+        freq = defaultdict(int)
+        freq[0] = 1 # prefix==0 초기 상태 
+
+        running = 0
+        for x in nums:
+            # prefix[i] = prefix[j+1] - K
+            running += x 
+            ans += freq[running - K]
+            freq[running] += 1 
+
+        return ans 
+
+nums = [1, 1, 1]; K=2 
+sol = Solution()
+print(sol.subarraySum(nums, K))
+
+```
+````
+
+### XOR Queries of a Subarray
+[LeetCode 1310](https://leetcode.com/problems/xor-queries-of-a-subarray/description/)
+
 
 ### 구간 합 구하기 4 
 [Baekjoon 11659]
 
 ### 구간 합 구하기 5 
 [Baekjoon 11660]
-
-### Subarray Sum Equals K
-[LeetCode 560]
-
-### XOR Queries of a Subarray
-[LeetCode 1310]

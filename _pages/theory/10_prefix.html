@@ -34,6 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/proof.css?v=b4b7a797" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8127ecf8" />
   
@@ -368,29 +369,29 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">학습 목표</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prefix">Prefix란?</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prefix-sum">Prefix Sum 배열 구하기</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Prefix Sum을 왜 쓰는가? 구간합</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prefix">Prefix란?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#d-prefix-sum">1D Prefix Sum</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prefix-sum">Prefix Sum을 왜 쓰는가? 구간합</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">실전 예시</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#d-prefix-sum">2D Prefix Sum</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">2D Prefix Sum</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#based">패딩 (1-based) 정의</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">실전 문제</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">실전 문제</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prefix-xor">Prefix XOR</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#d-prefix-xor">1D Prefix XOR</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xor">XOR</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">XOR 성질</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Prefix XOR</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">XOR 성질</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prefix-xor">Prefix XOR</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#d-prefix-xor">2D Prefix XOR</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">2D Prefix XOR</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">문자열 Prefix</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">연습 문제</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#k">합이 K인 부분 배열의 개수</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xor-queries-of-a-subarray">XOR Queries of a Subarray</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">구간 합 구하기 4</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">구간 합 구하기 5</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#subarray-sum-equals-k">Subarray Sum Equals K</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xor-queries-of-a-subarray">XOR Queries of a Subarray</a></li>
 </ul>
 </li>
 </ul>
@@ -452,97 +453,6 @@ document.write(`
 </table>
 </div>
 <p>이렇게 “앞에서부터 누적된 합”을 담은 새로운 배열을 <strong>Prefix Sum Array</strong>라고 부른다.</p>
-<section id="prefix-sum">
-<h3>Prefix Sum 배열 구하기<a class="headerlink" href="#prefix-sum" title="Link to this heading">#</a></h3>
-<div class="dropdown admonition">
-<p class="admonition-title">기본 소스 코드</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 기본 배열</span>
-<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
-
-<span class="c1"># prefix_sum[i]: data[0] ~ data[i]까지의 합 (i is included)</span>
-<span class="n">prefix_sum</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-<span class="n">prefix_sum</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># INIT </span>
-
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
-    <span class="n">prefix_sum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">prefix_sum</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Prefix Sum:&quot;</span><span class="p">,</span> <span class="n">prefix_sum</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>출력:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prefix<span class="w"> </span>Sum:<span class="w"> </span><span class="o">[</span><span class="m">1</span>,<span class="w"> </span><span class="m">3</span>,<span class="w"> </span><span class="m">6</span>,<span class="w"> </span><span class="m">10</span>,<span class="w"> </span><span class="m">15</span><span class="o">]</span>
-</pre></div>
-</div>
-</div>
-<p>위의 코드에서는 prefix[i] = sum[i-1] + A[i]로 계산하였다. 하지만 이 방식은 추가적으로 초기화 코드라인이 필요하기 때문에, 아래와 같은 방식으로 prefix sum array를 계산한다.</p>
-<div class="dropdown admonition">
-<p class="admonition-title">Prefix 배열의 첫 번째 원소를 0으로 두기</p>
-<p>문제 풀이 시에는 계산을 단순하게 하기 위해 보통 prefix 배열을 길이 N+1로 만들고, prefix[0] = 0으로 초기화한다.
-즉, <em><strong>prefix[i]에는 인덱스 [0, i-1]까지의 누적합 = 원소 [1, i] 번째 (1-based) 누적합</strong></em> 이 저장된다.</p>
-<ul class="simple">
-<li><p>prefix[1] = prefix[0] + data[0] → data[0]까지의 합</p></li>
-<li><p>prefix[2] = prefix[1] + data[1] → data[0] + data[1]까지의 합</p></li>
-<li><p>…</p></li>
-<li><p>prefix[i] = data[0]부터 data[i-1]까지의 합</p></li>
-</ul>
-<p>따라서, 원소 [2, 5]번째까지의 누적합은 인덱스 [1, 4]까지의 누적합이고 따라서, prefix[5]-prefix[2]로 계산하면 된다.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">prefix_sum</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
-    <span class="n">prefix</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
-        <span class="n">prefix</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">prefix</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-    <span class="k">return</span> <span class="n">prefix</span> 
-
-<span class="k">def</span><span class="w"> </span><span class="nf">Sum</span><span class="p">(</span><span class="n">prefix_arr</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-    <span class="c1"># a, b: index </span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    [a, b] 모두 포함되어야하므로, </span>
-<span class="sd">    prefix_arr[b+1] = b 포함 </span>
-<span class="sd">    prefix_arr[a] = a 전까지 더함 </span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">return</span> <span class="n">prefix_arr</span><span class="p">[</span><span class="n">b</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">prefix_arr</span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
-
-<span class="n">prefix_arr</span> <span class="o">=</span> <span class="n">prefix_sum</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
-<span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span> <span class="n">b</span><span class="o">=</span><span class="mi">3</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Arr: </span><span class="si">{</span><span class="n">arr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Prefix: </span><span class="si">{</span><span class="n">prefix_arr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sum from </span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s2"> is </span><span class="si">{</span><span class="n">Sum</span><span class="p">(</span><span class="n">prefix_arr</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>출력:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Arr:<span class="w"> </span><span class="o">[</span><span class="m">1</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">3</span>,<span class="w"> </span><span class="m">4</span>,<span class="w"> </span><span class="m">5</span>,<span class="w"> </span><span class="m">6</span>,<span class="w"> </span><span class="m">7</span>,<span class="w"> </span><span class="m">8</span>,<span class="w"> </span><span class="m">9</span>,<span class="w"> </span><span class="m">10</span><span class="o">]</span>
-Prefix:<span class="w"> </span><span class="o">[</span><span class="m">0</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">3</span>,<span class="w"> </span><span class="m">6</span>,<span class="w"> </span><span class="m">10</span>,<span class="w"> </span><span class="m">15</span>,<span class="w"> </span><span class="m">21</span>,<span class="w"> </span><span class="m">28</span>,<span class="w"> </span><span class="m">36</span>,<span class="w"> </span><span class="m">45</span>,<span class="w"> </span><span class="m">55</span><span class="o">]</span>
-Sum<span class="w"> </span>from<span class="w"> </span><span class="m">1</span><span class="w"> </span>to<span class="w"> </span><span class="m">3</span><span class="w"> </span>is<span class="w"> </span><span class="m">9</span>
-</pre></div>
-</div>
-</div>
-</section>
-<section id="id2">
-<h3>Prefix Sum을 왜 쓰는가? 구간합<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
-<p>어떤 구간의 합을 구해야할 때, 매번 for문을 돌면 <span class="math notranslate nohighlight">\(O(N)\)</span>이 걸린다. 하지만 prefix sum을 미리 계산하면 한 번의 뺄셈으로 구간 합을 <span class="math notranslate nohighlight">\(O(1)\)</span>에 계산 가능하다.</p>
-<p>아래 예시를 보자.</p>
-<a class="reference internal image-reference" href="../../_images/219.png"><img alt="../../_images/219.png" src="../../_images/219.png" style="width: 500px;" />
-</a>
-<div class="amsmath math notranslate nohighlight">
-\[\begin{gather*}
-prefix[i] = \sum_{k=0}^{i-1} A[k]
-\end{gather*}\]</div>
-<p>위에서 구간합 sum(1:4) (4는 포함)을 구할때 sum(0:4)-sum(0:0)이므로 prefix(4+1)-prefix(0+1) 으로 계산하면 된다.</p>
-<p>구간 합 공식은 다음과 같다. <br></p>
-<p>배열 인덱스가 0부터 시작한다고 하고 0-based array에서 preifx[0]=0, len(prefix)= N+1인 prefix array를 이용한 (i, j)의 구간합은 아래와 같다.</p>
-<div class="amsmath math notranslate nohighlight">
-\[\begin{align*}
-\sum(i, j) = prefix[j+1] - prefix[i] 
-\\
-단, $i=0$일 때는 단순히 prefix[j]
-\end{align*}\]</div>
-</section>
-</section>
-<section id="id3">
-<h2>실전 예시<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
 <tr class="row-odd"><th class="head"><p>문제 유형</p></th>
@@ -568,18 +478,121 @@ prefix[i] = \sum_{k=0}^{i-1} A[k]
 </tbody>
 </table>
 </div>
+</section>
+<section id="d-prefix-sum">
+<h2>1D Prefix Sum<a class="headerlink" href="#d-prefix-sum" title="Link to this heading">#</a></h2>
+<div class="dropdown admonition">
+<p class="admonition-title">기본 소스 코드</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+
+<span class="n">n</span><span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">px</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">n</span>
+
+<span class="c1"># px[i]: data[0] ~ data[i]까지의 함 (i is included)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="n">px</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">px</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Prefix Sum:&quot;</span><span class="p">,</span> <span class="n">px</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>출력:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Prefix<span class="w"> </span>Sum:<span class="w"> </span><span class="o">[</span><span class="m">1</span>,<span class="w"> </span><span class="m">3</span>,<span class="w"> </span><span class="m">6</span>,<span class="w"> </span><span class="m">10</span>,<span class="w"> </span><span class="m">15</span><span class="o">]</span>
+</pre></div>
+</div>
+</div>
+<p>위의 코드에서는 prefix[i] = sum[i-1] + A[i]로 계산하였다. 하지만 보통은 아래와 같은 방식으로 prefix sum array를 계산한다. 문제 풀이 시에는 계산을 단순하게 하기 위해 보통 prefix 배열을 길이 N+1로 만들고, prefix[0] = 0으로 초기화한다. 즉, prefix[0]이 없는 경우,</p>
+<p>arr[0]~arr[3] 구간합 = px[3]
+arr[1]~arr[3] 구간합 = px[3] - px[0]</p>
+<p>으로 prefix[0]이 arr[0]을 포함하고 있어 인덱스 계산이 번거롭게 달라져 계산 실수할 수 있다.</p>
+<a class="reference internal image-reference" href="../../_images/86.png"><img alt="../../_images/86.png" src="../../_images/86.png" style="width: 500px;" />
+</a>
+<p>따라서 위의 그림처럼 prefix[0]= 0을 포함하여 일관성있게 1-indexed problems에서 [i:j]구간합을 prefix[j+1]-prefix[i]로 계산할 수 있게 코드를 구현한다. 여기서 1-indexed problems</p>
+<div class="proof definition admonition" id="definition-0">
+<p class="admonition-title"><span class="caption-number">정의 1 </span></p>
+<section class="definition-content" id="proof-content">
+<ul class="simple">
+<li><p>P[0] = 0, P[i+1] = P[i] + A[i] (배열 A는 0-based) <br></p></li>
+<li><p>구간합: sum(a…b) = P[b+1] - P[a] (1-indexed problem a, b포함)</p></li>
+</ul>
+</section>
+</div><div class="dropdown admonition">
+<p class="admonition-title">Prefix 배열의 첫 번째 원소를 0으로 두기</p>
+<p>문제 풀이 시에는 계산을 단순하게 하기 위해 보통 prefix 배열을 길이 N+1로 만들고, prefix[0] = 0으로 초기화한다.
+즉, <em><strong>prefix[i]에는 인덱스 [0, i-1]까지의 누적합</strong></em> 이 저장된다.</p>
+<ul class="simple">
+<li><p>prefix[1] = prefix[0] + data[0] → data[0]까지의 합</p></li>
+<li><p>prefix[2] = prefix[1] + data[1] → data[0] + data[1]까지의 합</p></li>
+<li><p>…</p></li>
+<li><p>prefix[i] = data[0]부터 data[i-1]까지의 합</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">prefix_sum</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+    <span class="n">prefix</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">prefix</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">prefix</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">prefix</span> 
+
+<span class="k">def</span><span class="w"> </span><span class="nf">range_sum</span><span class="p">(</span><span class="n">prefix_arr</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="c1"># a, b: index </span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    [a, b] 모두 포함되어야하므로, </span>
+<span class="sd">    prefix_arr[b+1] = b 포함 </span>
+<span class="sd">    prefix_arr[a] = a 전까지 더함 </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">prefix_arr</span><span class="p">[</span><span class="n">b</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">prefix_arr</span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+
+<span class="n">prefix_arr</span> <span class="o">=</span> <span class="n">prefix_sum</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+<span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span> <span class="n">b</span><span class="o">=</span><span class="mi">3</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Arr: </span><span class="si">{</span><span class="n">arr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Prefix: </span><span class="si">{</span><span class="n">prefix_arr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sum from </span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s2"> is </span><span class="si">{</span><span class="n">range_sum</span><span class="p">(</span><span class="n">prefix_arr</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>출력:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Arr:<span class="w"> </span><span class="o">[</span><span class="m">1</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">3</span>,<span class="w"> </span><span class="m">4</span>,<span class="w"> </span><span class="m">5</span>,<span class="w"> </span><span class="m">6</span>,<span class="w"> </span><span class="m">7</span>,<span class="w"> </span><span class="m">8</span>,<span class="w"> </span><span class="m">9</span>,<span class="w"> </span><span class="m">10</span><span class="o">]</span>
+Prefix:<span class="w"> </span><span class="o">[</span><span class="m">0</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">3</span>,<span class="w"> </span><span class="m">6</span>,<span class="w"> </span><span class="m">10</span>,<span class="w"> </span><span class="m">15</span>,<span class="w"> </span><span class="m">21</span>,<span class="w"> </span><span class="m">28</span>,<span class="w"> </span><span class="m">36</span>,<span class="w"> </span><span class="m">45</span>,<span class="w"> </span><span class="m">55</span><span class="o">]</span>
+Sum<span class="w"> </span>from<span class="w"> </span><span class="m">1</span><span class="w"> </span>to<span class="w"> </span><span class="m">3</span><span class="w"> </span>is<span class="w"> </span><span class="m">9</span>
+</pre></div>
+</div>
+</div>
+<section id="prefix-sum">
+<h3>Prefix Sum을 왜 쓰는가? 구간합<a class="headerlink" href="#prefix-sum" title="Link to this heading">#</a></h3>
+<p>어떤 구간의 합을 구해야할 때, 매번 for문을 돌면 <span class="math notranslate nohighlight">\(O(N)\)</span>이 걸린다. 하지만 prefix sum을 미리 계산하면 한 번의 뺄셈으로 구간 합을 <span class="math notranslate nohighlight">\(O(1)\)</span>에 계산 가능하다.</p>
+<p>아래 예시를 보자.</p>
+<a class="reference internal image-reference" href="../../_images/219.png"><img alt="../../_images/219.png" src="../../_images/219.png" style="width: 500px;" />
+</a>
+<div class="amsmath math notranslate nohighlight">
+\[\begin{gather*}
+prefix[i] = \sum_{k=0}^{i-1} A[k]
+\end{gather*}\]</div>
+<p>구간 합 공식은 다음과 같다. <br></p>
+<p>배열 인덱스가 0부터 시작한다고 하고 0-based array에서 preifx[0]=0, len(prefix)= N+1인 prefix array를 이용한 (i, j)의 구간합은 아래와 같다.</p>
+<div class="amsmath math notranslate nohighlight">
+\[\begin{align*}
+\sum(i, j) = prefix[j+1] - prefix[i] 
+\\
+단, i=0일 때는 단순히 \;prefix[j]
+\end{align*}\]</div>
 <div class="important admonition">
 <p class="admonition-title">Summary</p>
-<p>“Prefix sum은 계산의 중복을 없애는 가장 간단한 전처리 기법이다.”</p>
+<p>“Prefix sum”</p>
 <ul class="simple">
-<li><p>Prefix Sum은 누적 합 배열로, 반복 계산을 한 번의 뺄셈으로 줄여줌</p></li>
+<li><p>정의: 누적 합 배열로, 반복 계산을 한 번의 뺄셈을 줄여준다.</p>
+<ul>
 <li><p>한 번 계산해두면, 구간 합을 <span class="math notranslate nohighlight">\(O(1)\)</span>에 처리 가능</p></li>
-<li><p>고급 문제(누적 XOR, 구간 평균, DP 전처리)에서도 자주 등장</p></li>
+</ul>
+</li>
+<li><p>prefix_sum[j] = prefix_sum[j-1] + data[j-1]</p></li>
+<li><p>1-indexed problem에서, range_sum[i:j] = prefix_sum[j+1] - prefix_sum[i]</p></li>
 </ul>
 </div>
 </section>
-<section id="d-prefix-sum">
-<h2>2D Prefix Sum<a class="headerlink" href="#d-prefix-sum" title="Link to this heading">#</a></h2>
+</section>
+<section id="id2">
+<h2>2D Prefix Sum<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
 <p>1D에서 누적 합을 미리 구해 구간 합을 빠르게 계산하듯, 2D에서도 누적 합 테이블을 만들면 <em><strong>임의의 직사각형 영역의 합</strong></em> 을 한 번에 구할 수 있다. 컴퓨터 비전에서는 적분 영상(Integral Image)로도 불린다.</p>
 <section id="based">
 <h3>패딩 (1-based) 정의<a class="headerlink" href="#based" title="Link to this heading">#</a></h3>
@@ -598,7 +611,7 @@ prefix[i] = \sum_{k=0}^{i-1} A[k]
 <img alt="../../_images/59.png" src="../../_images/59.png" />
 <div class="amsmath math notranslate nohighlight">
 \[\begin{align*}
-P[y][x] = A[y][x] + P[y-1][x] + P[y][x-1] - P[y-1][x-1]
+P[y][x] = P[y-1][x] + P[y][x-1] - P[y-1][x-1] + A[y-1][x-1]
 \end{align*}\]</div>
 <div class="dropdown admonition">
 <p class="admonition-title">Prefix P array for 2D matrix source code</p>
@@ -621,7 +634,13 @@ P[y][x] = A[y][x] + P[y-1][x] + P[y][x-1] - P[y-1][x-1]
 </div>
 </div>
 <p>위와같이 prefix sum matrix을 구한후에 특정 영역의 직사각형 합을 구하는 경우에 여러번 다른 구간을 계산할때도 O(1) 시간 복잡도로 구할 수 있다.</p>
-<img alt="../../_images/68.png" src="../../_images/68.png" />
+<div class="amsmath math notranslate nohighlight">
+\[\begin{align*}
+\sum_{(y1, x1,y2, x2)} = prefix[y2][x2] - prefix[y1-1][x2] - prefix[y2][x1-1] + prefix[y1-1][x1-1]
+\end{align*}\]</div>
+<p>외우기 쉬운 방법은, 시작점인 (y1, x1)이 inclusive 사각형의 덧셈 뺄셈을 할 때 y1-1과 x1-1과 관련된 사각형을 더하고 빼주는 것이다.</p>
+<a class="reference internal image-reference" href="../../_images/68.png"><img alt="../../_images/68.png" src="../../_images/68.png" style="width: 500px;" />
+</a>
 <div class="dropdown admonition">
 <p class="admonition-title">prefix example 1</p>
 <p><strong>예시 문제</strong><br></p>
@@ -656,8 +675,8 @@ A =
     
     <span class="k">return</span> <span class="n">P</span> 
 
-<span class="c1"># 1-bssed inclusive rectangle array </span>
-<span class="k">def</span><span class="w"> </span><span class="nf">rect_sum</span><span class="p">(</span><span class="n">P</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">y1</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">x1</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">y2</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">x2</span><span class="p">:</span><span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="c1"># 1-based inclusive rectangle array </span>
+<span class="k">def</span><span class="w"> </span><span class="nf">rect_sum</span><span class="p">(</span><span class="n">P</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">y1</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">x1</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">y2</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">x2</span><span class="p">:</span><span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span> 
     <span class="k">return</span> <span class="n">P</span><span class="p">[</span><span class="n">y2</span><span class="p">][</span><span class="n">x2</span><span class="p">]</span> <span class="o">-</span> <span class="n">P</span><span class="p">[</span><span class="n">y1</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">x2</span><span class="p">]</span> <span class="o">-</span> <span class="n">P</span><span class="p">[</span><span class="n">y2</span><span class="p">][</span><span class="n">x1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">P</span><span class="p">[</span><span class="n">y1</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">x1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
 
@@ -667,23 +686,69 @@ A =
 </div>
 </div>
 </div>
+<div class="proof definition admonition" id="definition-1">
+<p class="admonition-title"><span class="caption-number">정의 2 </span></p>
+<section class="definition-content" id="proof-content">
+<p>2D Prefix Sum <br></p>
+<p>정의: A는 0-based (크기 HxW) <br>
+누적합: P는 (H+1) x (W+1) 크기. <br>
+구축식 (0-based A 배열 기준): P[y+1][x+1]=P[y+1][x]+P[y][x+1]−P[y][x]+A[y][x] <br>
+구간합: Sum(y1, x1, y2, x2) = P[y2][x2] - P[y1-1][x2] - P[y2][x1-1] + P[y1-1][x1-1](1-indexed problem 두 좌표 포함)</p>
 </section>
-<section id="id4">
-<h3>실전 문제<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+</div></section>
+<section id="id3">
+<h3>실전 문제<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
 <p><a class="reference external" href="https://www.acmicpc.net/problem/11660">Baekjoon 11660</a></p>
-<!-- ````{admonition} solution
-:class: dropdown 
+<div class="dropdown admonition">
+<p class="admonition-title">solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span> 
 
+<span class="nb">input</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span>
 
-```` -->
+<span class="n">N</span><span class="p">,</span> <span class="n">Q</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">create_prefix_sum</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">px</span> 
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">px</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+
+    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">px</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">px</span><span class="p">[</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">+</span> <span class="n">px</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">px</span><span class="p">[</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">data</span><span class="p">[</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    
+
+<span class="k">def</span><span class="w"> </span><span class="nf">rect_sum</span><span class="p">(</span><span class="n">y1</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">x2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    1-indexed inclusive sum </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">px</span><span class="p">[</span><span class="n">y2</span><span class="p">][</span><span class="n">x2</span><span class="p">]</span> <span class="o">-</span> <span class="n">px</span><span class="p">[</span><span class="n">y1</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">x2</span><span class="p">]</span> <span class="o">-</span> <span class="n">px</span><span class="p">[</span><span class="n">y2</span><span class="p">][</span><span class="n">x1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">px</span><span class="p">[</span><span class="n">y1</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">x1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())))</span>
+
+    <span class="n">create_prefix_sum</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="c1"># global prefix array 생성 </span>
+
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Q</span><span class="p">):</span>
+        <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        구하고 싶은 것: 1-indexed </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">rect_sum</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">))</span>
+        <span class="c1"># print(rect_sum(y1-1, x1-1, y2-1, x2-1))</span>
+</pre></div>
+</div>
+</div>
 <div class="tip admonition">
 <p class="admonition-title">2D prefix range sum tip</p>
 <p>문제는 보통 (1-based)로 들어오므로 <code class="docutils literal notranslate"><span class="pre">P</span></code>를 (H+1)×(W+1)로 두고 경계 0을 고정하는 습관을 들이자. 0-based로 억지로 처리하면 경계 조건이 더 번거롭다.</p>
 </div>
 </section>
 </section>
-<section id="prefix-xor">
-<h2>Prefix XOR<a class="headerlink" href="#prefix-xor" title="Link to this heading">#</a></h2>
+<section id="d-prefix-xor">
+<h2>1D Prefix XOR<a class="headerlink" href="#d-prefix-xor" title="Link to this heading">#</a></h2>
 <section id="xor">
 <h3>XOR<a class="headerlink" href="#xor" title="Link to this heading">#</a></h3>
 <p>XOR (Exclusive OR) 은 <em><strong>두 값의 비트가 서로 다르면 1, 같으면 0</strong></em>을 만드는 비트 연산이다.</p>
@@ -748,8 +813,8 @@ message = cipher ^ key (되돌림 가능!)
 </div>
 <p>마지막으로 2D/1D 구간 XOR 질의에서 구간 합처럼 구간 XOR을 O(1)으로 계산할 수 있다.</p>
 </section>
-<section id="id5">
-<h3>XOR 성질<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<section id="id4">
+<h3>XOR 성질<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
 <div class="pst-scrollable-table-container"><table class="full-width-table table table-center" id="id12">
 <caption><span class="caption-number">표 27 </span><span class="caption-text">XOR의 중요한 성질</span><a class="headerlink" href="#id12" title="Link to this table">#</a></caption>
 <thead>
@@ -776,8 +841,8 @@ message = cipher ^ key (되돌림 가능!)
 </div>
 <p>가장 중요한 성질은 <em><strong>XOR은 중복된 값을 없앤다</strong></em> 는 것이다. 이 성질을 이용하여 prefix XOR 배열을 만들 수 있다.</p>
 </section>
-<section id="id6">
-<h3>Prefix XOR<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<section id="prefix-xor">
+<h3>Prefix XOR<a class="headerlink" href="#prefix-xor" title="Link to this heading">#</a></h3>
 <p>아래와 같은 배열이 있을 때,</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>a = [3, 8, 2, 6]
 </pre></div>
@@ -811,12 +876,12 @@ px[i-1] = a[1] ^ a[2] ^ ... ^ a[i-1]
 <p>따라서 구간 (i, j)의 XOR은 다음과 같이 구할 수 있다.</p>
 <div class="amsmath math notranslate nohighlight">
 \[\begin{align*}
-XOR(i..j) = px[j]^px[i-1]
+XOR(i..j) = px[j] \; \hat{\ } \; px[i-1]
 \end{align*}\]</div>
-<p>즉, prefix XORd은 앞에서부터 XOR 값을 저장해두고 중복되는 앞부분을 XOR로 지워서 구간 XOR를 빠르게 구하는 방법이다.
+<p>즉, prefix XOR은 앞에서부터 XOR 값을 저장해두고 중복되는 앞부분을 XOR로 지워서 구간 XOR를 빠르게 구하는 방법이다.
 시간 복잡도는 전처리때 O(N)이 걸리고 각 질문마다 O(1)으로 딱 한 번 계산하기 때문에 속도가 빠르다.</p>
 <p><strong>예시 문제</strong> <br></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>배열 a = [3, 8, 2, 6]에서 (2, 4)의 XOR은?
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>배열 a = [3, 8, 2, 6]에서 1-indexed (2, 4)의 XOR은?
 
 - P = [0, 3, 11, 9, 15] (편의상 앞에 0패딩)
 - 답: P[4] ^ P[1] = 15 ^ 3 = 12 
@@ -840,55 +905,82 @@ XOR(i..j) = px[j]^px[i-1]
 <p class="admonition-title">Source code for prefix XOR</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span> 
 
+<span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+
 <span class="k">def</span><span class="w"> </span><span class="nf">build_prefix_xor</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> 
-    <span class="n">px</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">px</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
         <span class="n">px</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">px</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">^</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
     <span class="k">return</span> <span class="n">px</span> 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">range_xor</span><span class="p">(</span><span class="n">px</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">i</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span><span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-    <span class="c1"># 1-based inclusive </span>
-    <span class="k">return</span> <span class="n">px</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">^</span> <span class="n">px</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">range_xor</span><span class="p">(</span><span class="n">px</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">i</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span><span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">px</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">^</span><span class="n">px</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
-<span class="c1"># quick self-test</span>
-<span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">]</span>
-<span class="n">px</span> <span class="o">=</span> <span class="n">build_prefix_xor</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">range_xor</span><span class="p">(</span><span class="n">px</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span> <span class="c1"># 12</span>
+<span class="n">px</span> <span class="o">=</span> <span class="n">build_prefix_xor</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">range_xor</span><span class="p">(</span><span class="n">px</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span> <span class="c1"># 8</span>
 </pre></div>
 </div>
 </div>
 </section>
 </section>
-<section id="d-prefix-xor">
-<h2>2D Prefix XOR<a class="headerlink" href="#d-prefix-xor" title="Link to this heading">#</a></h2>
+<section id="id5">
+<h2>2D Prefix XOR<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
 <img alt="../../_images/78.png" src="../../_images/78.png" />
 <p>위의 그림을 보면, 1-based XOR array에서 (0,0) ~ (i, j) 까지 구간 XOR을 계산하려면 prefix sum을 계산할 때와 비슷하게 계산가능하다. 다만 이경우에는 모두 ‘^’로 처리해주면된다. 그림을 잘 살펴보면 구간 XOR에서 총 4개의 구간을 XOR 연산 시켜줬을 경우 모든 구간이 <em><strong>홀수번</strong></em> 만 반복되어 정확히 한번에 계산가능하다.</p>
 <div class="amsmath math notranslate nohighlight">
 \[\begin{align*}
 PX[y][x] = A[y][x] \;\hat{\ }\; PX[y-1][x] \;\hat{\ }\; PX[y][x-1] \;\hat{\ }\; PX[y-1][x-1]
 \end{align*}\]</div>
-<p>아래 예시 문제를 보자.</p>
-<p>XOR이 K인 부분 배열의 개수를 구하고 싶다.</p>
-<p>즉, px[j] ^ px[i-1] = K ↔ px[i-1] = px[j] ^ K</p>
+<p>또한 구간 XOR은 아래 그림과 같이 계산가능하다.</p>
+<a class="reference internal image-reference" href="../../_images/95.png"><img alt="../../_images/95.png" src="../../_images/95.png" style="width: 500px;" />
+</a>
+<p>\begin{algin*}
+RectXOR(y_1,x_1,y_2,x_2)
+= PX[y_2][x_2] ;\hat{\ }; PX[y_1-1][x_2] ;\hat{\ }; PX[y_2][x_1-1] ;\hat{\ }; PX[y_1-1][x_1-1].
+\end{align*}</p>
+<div class="note admonition">
+<p class="admonition-title">tip</p>
+<p>각 셀의 기여 횟수의 <strong>짝/홀</strong>만이 중요하고, 중복되면 XOR에서 상쇄된다(자기소거). 따라서 포함-배제의 부호 대신 “짝수번 등장 → 0, 홀수번 등장 → 남음” 패턴이 그대로 작동한다.</p>
+</div>
 <div class="dropdown admonition">
-<p class="admonition-title">solution</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+<p class="admonition-title">Source code for 2D Prefix XOR</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">count_subarrays_xor_k</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">K</span><span class="p">):</span>
-    <span class="n">ans</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">freq</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-    <span class="n">freq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="n">running</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">a</span><span class="p">:</span>
-        <span class="n">running</span> <span class="o">^=</span> <span class="n">x</span>
-        <span class="n">ans</span> <span class="o">+=</span> <span class="n">freq</span><span class="p">[</span><span class="n">running</span> <span class="o">^</span> <span class="n">K</span><span class="p">]</span>
-        <span class="n">freq</span><span class="p">[</span><span class="n">running</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="k">return</span> <span class="n">ans</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">build_prefix2d_xor</span><span class="p">(</span><span class="n">A</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]):</span>
+    <span class="n">H</span><span class="p">,</span> <span class="n">W</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">A</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">PX</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">W</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">H</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">H</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">W</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">PX</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">A</span><span class="p">[</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="o">^</span> <span class="n">PX</span><span class="p">[</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
+                <span class="o">^</span> <span class="n">PX</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="o">^</span> <span class="n">PX</span><span class="p">[</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="p">)</span>
+    <span class="k">return</span> <span class="n">PX</span>
 
-<span class="c1"># quick test</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">count_subarrays_xor_k</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="mi">6</span><span class="p">))</span> <span class="c1"># 4</span>
+
+<span class="c1"># 1-based inclusive rectangle XOR</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">rect_xor</span><span class="p">(</span><span class="n">PX</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">y1</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">x1</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y2</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">x2</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">PX</span><span class="p">[</span><span class="n">y2</span><span class="p">][</span><span class="n">x2</span><span class="p">]</span>
+        <span class="o">^</span> <span class="n">PX</span><span class="p">[</span><span class="n">y1</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">x2</span><span class="p">]</span>
+        <span class="o">^</span> <span class="n">PX</span><span class="p">[</span><span class="n">y2</span><span class="p">][</span><span class="n">x1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="o">^</span> <span class="n">PX</span><span class="p">[</span><span class="n">y1</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">x1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="p">)</span>
+
+
+<span class="c1"># quick self-test</span>
+<span class="n">A</span> <span class="o">=</span> <span class="p">[</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span>
+<span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">],</span>
+<span class="p">[</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">],</span>
+<span class="p">]</span>
+<span class="n">PX</span> <span class="o">=</span> <span class="n">build_prefix2d_xor</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">rect_xor</span><span class="p">(</span><span class="n">PX</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -901,8 +993,47 @@ PX[y][x] = A[y][x] \;\hat{\ }\; PX[y-1][x] \;\hat{\ }\; PX[y][x-1] \;\hat{\ }\; 
 </ul>
 </div>
 </section>
+<section id="id6">
+<h2>문자열 Prefix<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
+</section>
 <section id="id7">
 <h2>연습 문제<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
+<section id="k">
+<h3>합이 K인 부분 배열의 개수<a class="headerlink" href="#k" title="Link to this heading">#</a></h3>
+<p><a class="reference external" href="https://leetcode.com/problems/subarray-sum-equals-k/description/">Leetcode 560</a></p>
+<div class="dropdown admonition">
+<p class="admonition-title">solution</p>
+<p>prefix[i] = a[1]+…+a[i]라 할 때, prefix[j] - prefix[i-1] = K ↔ prefix[i-1] = prefix[j] - K. 따라서 현재 prefix 값을 키로 저장하며 진행하면 전체 <span class="math notranslate nohighlight">\(O(N)\)</span>에 정답을 센다.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span> 
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span> 
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">subarraySum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nums</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">K</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+
+        <span class="n">ans</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">freq</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">freq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># prefix==0 초기 상태 </span>
+
+        <span class="n">running</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">nums</span><span class="p">:</span>
+            <span class="c1"># prefix[i] = prefix[j+1] - K</span>
+            <span class="n">running</span> <span class="o">+=</span> <span class="n">x</span> 
+            <span class="n">ans</span> <span class="o">+=</span> <span class="n">freq</span><span class="p">[</span><span class="n">running</span> <span class="o">-</span> <span class="n">K</span><span class="p">]</span>
+            <span class="n">freq</span><span class="p">[</span><span class="n">running</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span> 
+
+        <span class="k">return</span> <span class="n">ans</span> 
+
+<span class="n">nums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">];</span> <span class="n">K</span><span class="o">=</span><span class="mi">2</span> 
+<span class="n">sol</span> <span class="o">=</span> <span class="n">Solution</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">subarraySum</span><span class="p">(</span><span class="n">nums</span><span class="p">,</span> <span class="n">K</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="xor-queries-of-a-subarray">
+<h3>XOR Queries of a Subarray<a class="headerlink" href="#xor-queries-of-a-subarray" title="Link to this heading">#</a></h3>
+<p><a class="reference external" href="https://leetcode.com/problems/xor-queries-of-a-subarray/description/">LeetCode 1310</a></p>
+</section>
 <section id="id8">
 <h3>구간 합 구하기 4<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
 <p>[Baekjoon 11659]</p>
@@ -910,14 +1041,6 @@ PX[y][x] = A[y][x] \;\hat{\ }\; PX[y-1][x] \;\hat{\ }\; PX[y][x-1] \;\hat{\ }\; 
 <section id="id9">
 <h3>구간 합 구하기 5<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
 <p>[Baekjoon 11660]</p>
-</section>
-<section id="subarray-sum-equals-k">
-<h3>Subarray Sum Equals K<a class="headerlink" href="#subarray-sum-equals-k" title="Link to this heading">#</a></h3>
-<p>[LeetCode 560]</p>
-</section>
-<section id="xor-queries-of-a-subarray">
-<h3>XOR Queries of a Subarray<a class="headerlink" href="#xor-queries-of-a-subarray" title="Link to this heading">#</a></h3>
-<p>[LeetCode 1310]</p>
 </section>
 </section>
 </section>
@@ -987,29 +1110,29 @@ PX[y][x] = A[y][x] \;\hat{\ }\; PX[y-1][x] \;\hat{\ }\; PX[y][x-1] \;\hat{\ }\; 
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">학습 목표</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prefix">Prefix란?</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prefix-sum">Prefix Sum 배열 구하기</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Prefix Sum을 왜 쓰는가? 구간합</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prefix">Prefix란?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#d-prefix-sum">1D Prefix Sum</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prefix-sum">Prefix Sum을 왜 쓰는가? 구간합</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">실전 예시</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#d-prefix-sum">2D Prefix Sum</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">2D Prefix Sum</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#based">패딩 (1-based) 정의</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">실전 문제</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">실전 문제</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prefix-xor">Prefix XOR</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#d-prefix-xor">1D Prefix XOR</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xor">XOR</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">XOR 성질</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Prefix XOR</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">XOR 성질</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prefix-xor">Prefix XOR</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#d-prefix-xor">2D Prefix XOR</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">2D Prefix XOR</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">문자열 Prefix</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">연습 문제</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#k">합이 K인 부분 배열의 개수</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xor-queries-of-a-subarray">XOR Queries of a Subarray</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">구간 합 구하기 4</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">구간 합 구하기 5</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#subarray-sum-equals-k">Subarray Sum Equals K</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xor-queries-of-a-subarray">XOR Queries of a Subarray</a></li>
 </ul>
 </li>
 </ul>
