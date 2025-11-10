@@ -48,17 +48,16 @@ kernelspec:
 :class: dropdown
 
 ```python
-# 기본 배열
 data = [1, 2, 3, 4, 5]
 
-# prefix_sum[i]: data[0] ~ data[i]까지의 합 (i is included)
-prefix_sum = [0] * len(data)
-prefix_sum[0] = data[0] # INIT 
+n= len(data)
+px = [0]*n
 
-for i in range(1, len(data)):
-    prefix_sum[i] = prefix_sum[i-1] + data[i]
+# px[i]: data[0] ~ data[i]까지의 함 (i is included)
+for i in range(n):
+    px[i] = px[i-1] + data[i]
 
-print("Prefix Sum:", prefix_sum)
+print("Prefix Sum:", px)
 ```
 출력: 
 ```bash
@@ -66,21 +65,27 @@ Prefix Sum: [1, 3, 6, 10, 15]
 ```
 ````
 
-위의 코드에서는 prefix[i] = sum[i-1] + A[i]로 계산하였다. 하지만 이 방식은 추가적으로 초기화 코드라인이 필요하기 때문에, 아래와 같은 방식으로 prefix sum array를 계산한다. 
+위의 코드에서는 prefix[i] = sum[i-1] + A[i]로 계산하였다. 하지만 보통은 아래와 같은 방식으로 prefix sum array를 계산한다. 문제 풀이 시에는 계산을 단순하게 하기 위해 보통 prefix 배열을 길이 N+1로 만들고, prefix[0] = 0으로 초기화한다. 즉, prefix[0]이 없는 경우, 
 
+arr[0]~arr[3] 구간합 = px[3]
+arr[1]~arr[3] 구간합 = px[3] - px[0]
+
+으로 prefix[0]이 arr[0]을 포함하고 있어 인덱스 계산이 번거롭게 달라져 계산 실수할 수 있다. 
+
+<img src="../../assets/img/prefix/8.png" width="500px">
+
+따라서 위의 그림처럼 prefix[0]= 0을 포함하여 일관성있게 0-based에서 [i:j]구간합을 prefix[j+1]-prefix[i]로 계산할 수 있게 코드를 구현한다.
 
 ````{admonition} Prefix 배열의 첫 번째 원소를 0으로 두기 
 :class: dropdown
 
 문제 풀이 시에는 계산을 단순하게 하기 위해 보통 prefix 배열을 길이 N+1로 만들고, prefix[0] = 0으로 초기화한다. 
-즉, ***prefix[i]에는 인덱스 [0, i-1]까지의 누적합 = 원소 [1, i] 번째 (1-based) 누적합*** 이 저장된다. 
+즉, ***prefix[i]에는 인덱스 [0, i-1]까지의 누적합*** 이 저장된다. 
 
 - prefix[1] = prefix[0] + data[0] → data[0]까지의 합
 - prefix[2] = prefix[1] + data[1] → data[0] + data[1]까지의 합
 - ... 
 - prefix[i] = data[0]부터 data[i-1]까지의 합
-
-따라서, 원소 [2, 5]번째까지의 누적합은 인덱스 [1, 4]까지의 누적합이고 따라서, prefix[5]-prefix[2]로 계산하면 된다. 
 
 ```{code-block} python
 arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -93,7 +98,7 @@ def prefix_sum(arr):
 
     return prefix 
 
-def Sum(prefix_arr, a, b):
+def range_sum(prefix_arr, a, b):
     # a, b: index 
     '''
     [a, b] 모두 포함되어야하므로, 
@@ -106,7 +111,7 @@ prefix_arr = prefix_sum(arr)
 a=1; b=3
 print(f"Arr: {arr}")
 print(f"Prefix: {prefix_arr}")
-print(f"Sum from {a} to {b} is {Sum(prefix_arr, a, b)}")
+print(f"Sum from {a} to {b} is {range_sum(prefix_arr, a, b)}")
 ```
 출력:
 ```bash
@@ -128,8 +133,6 @@ Sum from 1 to 3 is 9
 prefix[i] = \sum_{k=0}^{i-1} A[k]
 \end{gather*}
 
-위에서 구간합 sum(1:4) (4는 포함)을 구할때 sum(0:4)-sum(0:0)이므로 prefix(4+1)-prefix(0+1) 으로 계산하면 된다. 
-
 구간 합 공식은 다음과 같다. <br>
 
 배열 인덱스가 0부터 시작한다고 하고 0-based array에서 preifx[0]=0, len(prefix)= N+1인 prefix array를 이용한 (i, j)의 구간합은 아래와 같다. 
@@ -137,7 +140,7 @@ prefix[i] = \sum_{k=0}^{i-1} A[k]
 \begin{align*}
 \sum(i, j) = prefix[j+1] - prefix[i] 
 \\
-단, $i=0$일 때는 단순히 prefix[j]
+단, i=0일 때는 단순히 \;prefix[j]
 \end{align*}
 
 
@@ -155,11 +158,12 @@ prefix[i] = \sum_{k=0}^{i-1} A[k]
 ````{admonition} Summary
 :class: important 
 
-"Prefix sum은 계산의 중복을 없애는 가장 간단한 전처리 기법이다."
+"Prefix sum"
 
-- Prefix Sum은 누적 합 배열로, 반복 계산을 한 번의 뺄셈으로 줄여줌
-- 한 번 계산해두면, 구간 합을 $O(1)$에 처리 가능
-- 고급 문제(누적 XOR, 구간 평균, DP 전처리)에서도 자주 등장
+- 정의: 누적 합 배열로, 반복 계산을 한 번의 뺄셈을 줄여준다. 
+    - 한 번 계산해두면, 구간 합을 $O(1)$에 처리 가능
+- prefix_sum[j] = prefix_sum[j-1] + data[j-1]
+- range_sum[i:j] = prefix_sum[j+1] - prefix_sum[i]
 ````
 
 ## 2D Prefix Sum 
@@ -190,7 +194,7 @@ prefix[i] = \sum_{k=0}^{i-1} A[k]
 <img src="../../assets/img/prefix/5.png" widths="500px">
 
 \begin{align*}
-P[y][x] = A[y][x] + P[y-1][x] + P[y][x-1] - P[y-1][x-1]
+P[y][x] = P[y-1][x] + P[y][x-1] - P[y-1][x-1] + A[y-1][x-1]
 \end{align*}
 
 ````{admonition} Prefix P array for 2D matrix source code 
@@ -489,6 +493,8 @@ print(count_subarrays_xor_k([4,2,2,6,4], 6)) # 4
 - 질의: 1D/2D 모두 $O(1)$
 - 개수 세기(맵): 한 번의 스캔 $O(N)$, 공간 $O(U)$ (서로 다른 prefix 값의 수)
 ````
+
+## 문자열 Prefix 
 
 ## 연습 문제 
 
