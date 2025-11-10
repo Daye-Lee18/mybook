@@ -104,6 +104,51 @@ def solution(n, lost, reserve):
 ````{admonition} solution 
 :class: dropdown 
 
+**Idea** <br>
+1. 세로 비용과 가로 비용을 따로 계산한다. 
+2. 세로 비용: 
+    - 각 문자에 대해 'A'에서 올라가는 것과 'A'->'Z'식으로 내려가는 것 중 MIN값 
+3. 가로 비용: 
+    - 기본적으로 오른쪽으로 쭉 가면 n-1 번 (문자열 길이 n)
+    - 중간에 연속된 'A'구간을 만나면, 되돌아갔다가 반대쪽으로 우회하면 더 적을 수 있음. 
+    - 인덱스 i에서 시작해, i 뒤의 연속 'A' 끝 지점을 j라고 할 때(즉, [i+1..j-1]가 전부 'A'):
+    - 가로 이동 후보는 세 가지를 비교해 최소값을 갱신해.
+        - 그냥 직진: n-1
+        - 오른쪽 갔다가 (0->1->2->..) 왼쪽으로 돌아가서 + 오른쪽 우회: 2*i + (n - j)
+        - 왼쪽으로 갔다가(n-1->n-2->) 오늘쪽으로 우회 +  우회: i + 2*(n - j)
+    - 연속된 A부분을 최대한 건너뛰어야하고, 커서를 되돌아가는 경우가 오히려 더 적게 이동할 때가 있어서 이 공식을 사용 
+
 ```{code-block} python
+def solution(name: str) -> int:
+    n = len(name)
+
+    # 1) 세로(↑↓) 비용
+    vertical = 0
+    for c in name:
+        diff = ord(c) - ord('A')
+        vertical += min(diff, 26 - diff)
+
+    # 2) 가로(←→) 최소 이동
+    move = n - 1  # 기본 직진
+    for i in range(n):
+        j = i + 1
+        # 연속된 'A' 구간을 스킵
+        while j < n and name[j] == 'A':
+            j += 1
+        # 세 가지 경로 중 최소
+        move = min(
+            move,
+            2 * i + (n - j),     # 왼쪽으로 되돌아 + 오른쪽 우회
+            i + 2 * (n - j)      # 오른쪽 갔다가 + 왼쪽 되돌아 우회
+        )
+
+    return vertical + move
+
 ```
 ````
+
+### 큰 수 만들기 
+
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/42883)
+
+

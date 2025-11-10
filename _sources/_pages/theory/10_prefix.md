@@ -407,7 +407,7 @@ XOR(i..j) = px[j]^px[i-1]
 ```
 
 ````{admonition} XOR 정리
-:class: dropdown 
+:class: note
 **XOR 성질 복습** <br>
 - 교환/결합: a ^ b = b ^ a, (a^b) ^ c = a ^ (b^c)
 - 자기 소거: a ^ a =0, 
@@ -443,11 +443,56 @@ px = build_prefix_xor(arr)
 print(range_xor(px, 2, 4)) # 12
 ```
 ````
+## 2D Prefix XOR 
+
+<img src="../../assets/img/prefix/7.png" widths="500px">
+
+위의 그림을 보면, 1-based XOR array에서 (0,0) ~ (i, j) 까지 구간 XOR을 계산하려면 prefix sum을 계산할 때와 비슷하게 계산가능하다. 다만 이경우에는 모두 '^'로 처리해주면된다. 그림을 잘 살펴보면 구간 XOR에서 총 4개의 구간을 XOR 연산 시켜줬을 경우 모든 구간이 ***홀수번*** 만 반복되어 정확히 한번에 계산가능하다. 
+
+\begin{align*}
+PX[y][x] = A[y][x] \;\hat{\ }\; PX[y-1][x] \;\hat{\ }\; PX[y][x-1] \;\hat{\ }\; PX[y-1][x-1]
+\end{align*}
+
+아래 예시 문제를 보자. 
+
+XOR이 K인 부분 배열의 개수를 구하고 싶다. 
+
+즉, px[j] ^ px[i-1] = K ↔ px[i-1] = px[j] ^ K
+
+````{admonition} solution
+:class: dropdown 
+
+```python
+from collections import defaultdict
+
+
+def count_subarrays_xor_k(a, K):
+    ans = 0
+    freq = defaultdict(int)
+    freq[0] = 1
+    running = 0
+    for x in a:
+        running ^= x
+        ans += freq[running ^ K]
+        freq[running] += 1
+    return ans
+
+# quick test
+print(count_subarrays_xor_k([4,2,2,6,4], 6)) # 4
+```
+````
+
+````{admonition} Summary 
+:class: tip 
+
+- 누적 합/ XOR 전처리: 1D는 $O(N)$, 2D는 $O(HW)$
+- 질의: 1D/2D 모두 $O(1)$
+- 개수 세기(맵): 한 번의 스캔 $O(N)$, 공간 $O(U)$ (서로 다른 prefix 값의 수)
+````
 
 ## 연습 문제 
 
 ### 구간 합 구하기 4 
-
 [Baekjoon 11659]
 
 ### 구간 합 구하기 5 

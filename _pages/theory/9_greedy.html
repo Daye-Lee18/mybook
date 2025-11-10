@@ -35,7 +35,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=9c59b310" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8127ecf8" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
@@ -369,6 +369,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">실전 문제</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">체육복</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">조이스틱</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">큰 수 만들기</a></li>
 </ul>
 </li>
 </ul>
@@ -470,10 +471,61 @@ document.write(`
 <p><a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/lessons/42860">문제 링크</a></p>
 <div class="dropdown admonition">
 <p class="admonition-title">solution</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<p><strong>Idea</strong> <br></p>
+<ol class="arabic simple">
+<li><p>세로 비용과 가로 비용을 따로 계산한다.</p></li>
+<li><p>세로 비용:</p>
+<ul class="simple">
+<li><p>각 문자에 대해 ‘A’에서 올라가는 것과 ‘A’-&gt;’Z’식으로 내려가는 것 중 MIN값</p></li>
+</ul>
+</li>
+<li><p>가로 비용:</p>
+<ul class="simple">
+<li><p>기본적으로 오른쪽으로 쭉 가면 n-1 번 (문자열 길이 n)</p></li>
+<li><p>중간에 연속된 ‘A’구간을 만나면, 되돌아갔다가 반대쪽으로 우회하면 더 적을 수 있음.</p></li>
+<li><p>인덱스 i에서 시작해, i 뒤의 연속 ‘A’ 끝 지점을 j라고 할 때(즉, [i+1..j-1]가 전부 ‘A’):</p></li>
+<li><p>가로 이동 후보는 세 가지를 비교해 최소값을 갱신해.</p>
+<ul>
+<li><p>그냥 직진: n-1</p></li>
+<li><p>오른쪽 갔다가 (0-&gt;1-&gt;2-&gt;..) 왼쪽으로 돌아가서 + 오른쪽 우회: 2*i + (n - j)</p></li>
+<li><p>왼쪽으로 갔다가(n-1-&gt;n-2-&gt;) 오늘쪽으로 우회 +  우회: i + 2*(n - j)</p></li>
+</ul>
+</li>
+<li><p>연속된 A부분을 최대한 건너뛰어야하고, 커서를 되돌아가는 경우가 오히려 더 적게 이동할 때가 있어서 이 공식을 사용</p></li>
+</ul>
+</li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">solution</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="c1"># 1) 세로(↑↓) 비용</span>
+    <span class="n">vertical</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="nb">ord</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">-</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">)</span>
+        <span class="n">vertical</span> <span class="o">+=</span> <span class="nb">min</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="mi">26</span> <span class="o">-</span> <span class="n">diff</span><span class="p">)</span>
+
+    <span class="c1"># 2) 가로(←→) 최소 이동</span>
+    <span class="n">move</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c1"># 기본 직진</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="c1"># 연속된 &#39;A&#39; 구간을 스킵</span>
+        <span class="k">while</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="ow">and</span> <span class="n">name</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;A&#39;</span><span class="p">:</span>
+            <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="c1"># 세 가지 경로 중 최소</span>
+        <span class="n">move</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+            <span class="n">move</span><span class="p">,</span>
+            <span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">j</span><span class="p">),</span>     <span class="c1"># 왼쪽으로 되돌아 + 오른쪽 우회</span>
+            <span class="n">i</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">j</span><span class="p">)</span>      <span class="c1"># 오른쪽 갔다가 + 왼쪽 되돌아 우회</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">vertical</span> <span class="o">+</span> <span class="n">move</span>
 </pre></div>
 </div>
 </div>
+</section>
+<section id="id5">
+<h3>큰 수 만들기<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<p><a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/lessons/42883">문제 링크</a></p>
 </section>
 </section>
 </section>
@@ -546,6 +598,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">실전 문제</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">체육복</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">조이스틱</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">큰 수 만들기</a></li>
 </ul>
 </li>
 </ul>
