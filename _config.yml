@@ -72,6 +72,7 @@ sphinx:
     - sphinx_design        # 카드/그리드/버튼 등
     - sphinx_togglebutton  # 접기/펼치기
     - sphinx_copybutton    # 코드복사 버튼
+    - sphinx_proof 
   
 
 # 실행/Colab 버튼
