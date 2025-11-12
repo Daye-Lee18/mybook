@@ -12,3 +12,13 @@ print(input_data)
 ```
 
 sys 라이브러리를 사용할때는 입력 후 엔터<font size='2'>Enter</font>가 줄 바꿈 기호로 입력되는데, 이 공백 문자를 제거하려면 rstrip()함수를 사용해야한다. 
+
+또한, 다른 .txt 파일에 저장된 테스트 케이스를 불러오고 싶은 경우 다음 코드를 이용하면 된다. 
+
+```python
+import sys 
+
+sys.stdin = open('input.txt')
+
+n, m = map(int, input().split())
+```
