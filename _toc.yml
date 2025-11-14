@@ -41,4 +41,5 @@ parts:
 - caption: 시험 
   chapters:
   - file: _pages/exams/midterm_student
+  - file: _pages/exams/final_student
 
