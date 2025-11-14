@@ -314,6 +314,8 @@ A graph consists of vertices and edges. In particular, we learned about (1) data
 
 Kruskal's algorithm is an algorithm used to find out (1) in a graph. It is a (2) algorithm because it always selects the locally optimal choice (the smallest available edge) at each step. We learned about the algorithm in the class. Describe the algorithm steps below. (3) 
 
+Note) Problem Q12-(3) is worth 8 points in total, and you must include at least four core words.
+
 ````{admonition} A12
 :class: dropdown 
 
