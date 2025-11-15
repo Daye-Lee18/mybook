@@ -582,6 +582,9 @@ document.write(`
 <section id="to-root">
 <h3>트리 생성 코드: 리스트 to root<a class="headerlink" href="#to-root" title="Link to this heading">#</a></h3>
 <p>온라인 코딩 문제를 풀다보면, 디버깅이 필요하다. 하지만, 구현해야하는 함수가 tree의 root을 argument로 받는 경우에 트리 자체를 손수 만드는 것은 시간이 걸린다. 따라서, <code class="docutils literal notranslate"><span class="pre">build_tree(list)</span></code>를 만들면, list 자료형을 받아 손 쉽게 트리로 만드는 코드를 사용하여 디버깅을 빠르게 할 수 있다. 또한, 이렇게 생성된 트리를 출력하여 확인하는 것도 어려우므로 이 트리를 다시 리스트로 바꾸는 <code class="docutils literal notranslate"><span class="pre">tree_to_list(TreeNode)</span></code> 함수를 만들면 편하다. 다음은, 해당 helper 함수를 나타낸다.</p>
+<p>:Note:
+아래함수에서 조건이 <code class="docutils literal notranslate"><span class="pre">arr[idx]</span></code>가 아니라 <code class="docutils literal notranslate"><span class="pre">arr[idx]</span> <span class="pre">!=</span> <span class="pre">None</span></code>인데, 이는 <code class="docutils literal notranslate"><span class="pre">arr[idx]</span></code>만 사용하는 경우 값이 0 일때 None이 되기 때문에 <code class="docutils literal notranslate"><span class="pre">arr[idx]!=None</span></code>일때 node number가 0인 TreeNode를 만들어주는 것이 중요하다.</p>
+<p>또한, <code class="docutils literal notranslate"><span class="pre">while</span> <span class="pre">res</span> <span class="pre">and</span> <span class="pre">not</span> <span class="pre">res[-1]:</span></code> 이라고 하면 res[-1] 가 0일때도 삭제되어서 안되므로 <code class="docutils literal notranslate"><span class="pre">while</span> <span class="pre">res</span> <span class="pre">and</span> <span class="pre">res[-1]</span> <span class="pre">==</span> <span class="pre">None</span></code>이라고 명시해줘야한다.</p>
 <div class="dropdown admonition">
 <p class="admonition-title">helper function for Tree</p>
 <div class="literal-block-wrapper docutils container" id="id9">

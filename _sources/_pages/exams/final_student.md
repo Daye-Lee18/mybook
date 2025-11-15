@@ -697,12 +697,12 @@ def build_tree(arr) -> Optional[Node]:
     while idx < len(arr):
         cur_node = q.popleft()
 
-        if idx < len(arr) and arr[idx]:
+        if idx < len(arr) and arr[idx] != None:
             cur_node.left = Node(arr[idx])
             q.append(cur_node.left)
         idx += 1 
         
-        if idx < len(arr) and arr[idx]:
+        if idx < len(arr) and arr[idx] != None:
             cur_node.right = Node(arr[idx])
             q.append(cur_node.right)
         idx += 1 
@@ -727,7 +727,8 @@ def root_to_list(root:Node) -> List[int]:
         q.append(cur_node.right)
     
     # trim trailing 
-    while res and not res[-1]:
+    # while res and not res[-1]: 이라고 하면 res[-1] 가 0일때도 삭제되어서 안됨. 
+    while res and res[-1] == None:
         res.pop()
     return res 
 
