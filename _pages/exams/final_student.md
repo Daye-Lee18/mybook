@@ -121,11 +121,11 @@ print(arr[::2][::-1])
 :class: dropdown 
 
 (1) arr[0:3:1] <br>
-(2) arr[-3:10:1] <br> 
-(3) arr[0:-3:1]<br>
-(4) arr[9:-3:-1] == arr[9:7:-1] <br>
-(5) arr[9:-3:-2] == arr[9:7:-2] <br>
-(6) arr[9:-5:-2] == arr[9:5:-2] <br>
+(2) arr[-3:10:1] == arr[7:10:1] <br> 
+(3) arr[0:-3:1] == arr[0:7:1] <br>
+(4) arr[9:-3:-1] <br>
+(5) arr[9:-3:-2]  <br>
+(6) arr[9:-5:-2] <br>
 (7) arr[9:3:-1] <br>
 (8) arr[0:3:1] <br>
 (9) arr[9:-1:-1]<br>
@@ -134,7 +134,7 @@ print(arr[::2][::-1])
 (12) arr[5:-1:-2] <br>
 (13) arr[-100:10:5] == arr[0:10:5] <br>
 (14) arr[9:-1:-1][0:10:2] <br>
-(15) arr[0:10:2][4:-1:-1] == arr[0:10:2][4::-1] <br>
+(15) arr[0:10:2][4:-1:-1] <br>
 ```
 
 ### Q6. List slicing 2 
@@ -313,6 +313,8 @@ A graph consists of vertices and edges. In particular, we learned about (1) data
 ### Q12. Kruskal's Algorithm  
 
 Kruskal's algorithm is an algorithm used to find out (1) in a graph. It is a (2) algorithm because it always selects the locally optimal choice (the smallest available edge) at each step. We learned about the algorithm in the class. Describe the algorithm steps below. (3) 
+
+Note) Problem Q12-(3) is worth 8 points in total, and you must include at least four core words.
 
 ````{admonition} A12
 :class: dropdown 
@@ -695,12 +697,12 @@ def build_tree(arr) -> Optional[Node]:
     while idx < len(arr):
         cur_node = q.popleft()
 
-        if idx < len(arr) and arr[idx]:
+        if idx < len(arr) and arr[idx] != None:
             cur_node.left = Node(arr[idx])
             q.append(cur_node.left)
         idx += 1 
         
-        if idx < len(arr) and arr[idx]:
+        if idx < len(arr) and arr[idx] != None:
             cur_node.right = Node(arr[idx])
             q.append(cur_node.right)
         idx += 1 
@@ -725,7 +727,8 @@ def root_to_list(root:Node) -> List[int]:
         q.append(cur_node.right)
     
     # trim trailing 
-    while res and not res[-1]:
+    # while res and not res[-1]: 이라고 하면 res[-1] 가 0일때도 삭제되어서 안됨. 
+    while res and res[-1] == None:
         res.pop()
     return res 
 
