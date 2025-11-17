@@ -200,7 +200,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../theory/3_backtracking.html">Lecture 3-1. Backtracking</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../theory/4_DP.html">Lecture 4-1. Dynamic Programming</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../theory/5_shortest_path.html">Lecture 5-1. Shortest Path</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../theory/6_sort.html">Lecture 6-1. 정렬</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/6_sort.html">Lecture 6-1. Sorting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../theory/7_binarysearch.html">Lecture 7-1. Binary Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../theory/8_graph.html">Lecture 8-1. Graph Algorithm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../theory/9_greedy.html">Lecture 9-1. Greedy</a></li>
@@ -418,6 +418,8 @@ document.write(`
 <span class="n">roads</span> <span class="o">=</span> <span class="p">[]</span>            <span class="c1"># 도로 정보를 저장할 최대 힙</span>
 <span class="n">lamp_pos_min_heap</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># 가로등 위치를 저장할 최소 힙 (가장 왼쪽 가로등 탐색용)</span>
 <span class="n">lamp_pos_max_heap</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># 가로등 위치를 저장할 최대 힙 (가장 오른쪽 가로등 탐색용)</span>
+
+<span class="n">참고로</span><span class="p">,</span> <span class="err">`</span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="err">`</span><span class="n">은</span> <span class="n">함수</span> <span class="n">내부가</span> <span class="n">아니라</span> <span class="n">전역</span> <span class="n">스코프안에</span> <span class="n">있는</span> <span class="n">조건문이라</span> <span class="n">전역</span> <span class="n">스코프</span> <span class="p">(</span><span class="k">global</span> <span class="n">scope</span><span class="p">)</span><span class="n">에</span> <span class="n">해당한다</span><span class="o">.</span> <span class="n">따라서</span><span class="p">,</span> <span class="n">이</span> <span class="n">안에서</span> <span class="err">`</span><span class="k">global</span><span class="err">`</span><span class="n">을</span> <span class="n">사용하면</span> <span class="n">문법</span> <span class="n">오류가</span> <span class="n">난다</span><span class="o">.</span> 
 </pre></div>
 </div>
 </div>
@@ -427,6 +429,7 @@ document.write(`
 <p>dijkstra algorithm의 개선된 코드 버전에서 현재 꺼낸 노드로 가는 비용이 최소가 아니면 skip하는 로직과 동일하다.</p>
 <p>해당 문제에서는 <code class="docutils literal notranslate"><span class="pre">lamp_pos</span></code> 리스트에 각 가로등의 ID를 인덱스로 하여 위치 (pos)를 저장한다. 따라서 O(1)시간에 특정 가로등의 위치를 조회할 수 있다. 가로등이 제거되면 해당 위치를 -1와 같은 무효한 값으로 표시하여 ‘지연 갱신’에 사용된다.</p>
 <p>예를 들어, 두 가로등 사이에 다른 가로등이 추가되거나 제거되었다면, 해당 정보를 “실시간으로” 우선 lamp_pos에서 추가하거나 제거한다. 그러나 heapq에 있는 정보는 그대로 두고 나중에 실제로 있는지는 계속 실시간 업데이트가 되는 <code class="docutils literal notranslate"><span class="pre">lamp_pos</span></code>에서 확인하는 것이다.</p>
+<p>즉, 실시간으로 업데이트 되는 정보 <code class="docutils literal notranslate"><span class="pre">lamp_pos</span></code>, <code class="docutils literal notranslate"><span class="pre">prev</span></code>, <code class="docutils literal notranslate"><span class="pre">next</span></code>이고 지연되는 것은 priority queue 즉 <code class="docutils literal notranslate"><span class="pre">road_q</span></code>, <code class="docutils literal notranslate"><span class="pre">left_q</span></code>, <code class="docutils literal notranslate"><span class="pre">right_q</span></code>와 같은 정보이다.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">heapq</span> 
 
 <span class="n">roads</span> <span class="o">=</span> <span class="p">[]</span>
@@ -652,6 +655,191 @@ document.write(`
 </pre></div>
 </div>
 <p>2로 나누어 round()를 적용하면 파이썬에서는 ‘은행가 반올림(0.5를 짝수로)이라 4.5 -&gt; 4, 5.5-&gt;6 같은 예외가 생긴다. 문제에서는 ceiling 을 요구하므로 위의 코드를 사용해야한다.</p>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span> 
+<span class="kn">import</span><span class="w"> </span><span class="nn">heapq</span> 
+
+<span class="nb">input</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span>
+<span class="c1"># sys.stdin = open(&#39;Input.txt&#39;)</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">INIT:</span>
+
+<span class="sd">1) road_q = </span>
+<span class="sd">2) left_q = </span>
+<span class="sd">3) right_q = </span>
+<span class="sd">4) prev = </span>
+<span class="sd">5) next = </span>
+<span class="sd">6) N = length of the road </span>
+<span class="sd">7) lamps_pos = </span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Road</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">start_pos</span><span class="p">,</span> <span class="n">end_pos</span><span class="p">,</span> <span class="n">left_num</span><span class="p">,</span> <span class="n">right_num</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="n">length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_pos</span> <span class="o">=</span> <span class="n">start_pos</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">end_pos</span> <span class="o">=</span> <span class="n">end_pos</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">left_num</span> <span class="o">=</span> <span class="n">left_num</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">right_num</span> <span class="o">=</span> <span class="n">right_num</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">length</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_pos</span> <span class="o">&lt;</span> <span class="n">other</span><span class="o">.</span><span class="n">start_pos</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">&gt;</span> <span class="n">other</span><span class="o">.</span><span class="n">length</span> 
+
+<span class="k">def</span><span class="w"> </span><span class="nf">check</span><span class="p">(</span><span class="n">light_nums</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+    <span class="n">poses</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">pos</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="n">left_pos</span><span class="p">,</span> <span class="n">right_pos</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">poses</span><span class="p">):</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="n">right_pos</span> <span class="o">-</span> <span class="n">left_pos</span> 
+        <span class="n">left_num</span> <span class="o">=</span> <span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span> 
+        <span class="n">right_num</span> <span class="o">=</span> <span class="n">left_num</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="c1"># Road 안에 __lt__로 length에 대해서 max_heap, left_pos에 대해서 min_heap으로 heapq에서 &quot;정렬&quot;되도록 해놓음. </span>
+        <span class="n">heapq</span><span class="o">.</span><span class="n">heappush</span><span class="p">(</span><span class="n">road_q</span><span class="p">,</span> <span class="n">Road</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">left_pos</span><span class="p">,</span> <span class="n">right_pos</span><span class="p">,</span> <span class="n">left_num</span><span class="p">,</span> <span class="n">right_num</span><span class="p">))</span>
+        <span class="n">heapq</span><span class="o">.</span><span class="n">heappush</span><span class="p">(</span><span class="n">left_q</span><span class="p">,</span> <span class="p">(</span><span class="n">left_pos</span><span class="p">,</span> <span class="n">left_num</span><span class="p">))</span>
+        <span class="n">heapq</span><span class="o">.</span><span class="n">heappush</span><span class="p">(</span><span class="n">right_q</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="n">left_pos</span><span class="p">,</span> <span class="n">left_num</span><span class="p">))</span>
+        <span class="n">lamps_pos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">left_pos</span><span class="p">)</span>
+        <span class="n">prev</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">left_num</span><span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="n">left_num</span> <span class="o">!=</span> <span class="mi">1</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="nb">next</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">right_num</span><span class="p">)</span> 
+    
+    <span class="c1"># 맨 마지막 노드 </span>
+    <span class="n">heapq</span><span class="o">.</span><span class="n">heappush</span><span class="p">(</span><span class="n">left_q</span><span class="p">,</span> <span class="p">(</span><span class="n">right_pos</span><span class="p">,</span> <span class="n">right_num</span><span class="p">))</span>
+    <span class="n">heapq</span><span class="o">.</span><span class="n">heappush</span><span class="p">(</span><span class="n">right_q</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="n">right_pos</span><span class="p">,</span> <span class="n">right_num</span><span class="p">))</span>
+    <span class="n">prev</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">right_num</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="nb">next</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">lamps_pos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">right_pos</span><span class="p">)</span>
+
+ 
+<span class="k">def</span><span class="w"> </span><span class="nf">valid_check</span><span class="p">(</span><span class="n">cur_road</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    현재 두 가로등 사이의 정보(cur_road)가 정확한지, 아니면 old한 정보인지 check </span>
+<span class="sd">    항상 맞는 정보: prev, next, lamps_pos(불변)</span>
+<span class="sd">    아직 업데이트 안되어 있는 정보: road_q, left_q, right_q </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">length</span> <span class="o">=</span> <span class="n">cur_road</span><span class="o">.</span><span class="n">length</span> 
+    <span class="n">left_pos</span> <span class="o">=</span> <span class="n">cur_road</span><span class="o">.</span><span class="n">start_pos</span> 
+    <span class="n">right_pos</span> <span class="o">=</span> <span class="n">cur_road</span><span class="o">.</span><span class="n">end_pos</span> 
+    <span class="n">left_num</span> <span class="o">=</span> <span class="n">cur_road</span><span class="o">.</span><span class="n">left_num</span> 
+    <span class="n">right_num</span> <span class="o">=</span> <span class="n">cur_road</span><span class="o">.</span><span class="n">right_num</span> 
+
+    <span class="k">if</span> <span class="n">lamps_pos</span><span class="p">[</span><span class="n">left_num</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">lamps_pos</span><span class="p">[</span><span class="n">right_num</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="c1"># 둘 중 하나가 이미 제거된 가로등 </span>
+        <span class="k">return</span> <span class="kc">False</span> 
+    <span class="k">if</span> <span class="n">length</span> <span class="o">==</span> <span class="nb">abs</span><span class="p">(</span><span class="n">left_pos</span> <span class="o">-</span> <span class="n">lamps_pos</span><span class="p">[</span><span class="nb">next</span><span class="p">[</span><span class="n">left_num</span><span class="p">]]):</span>
+        <span class="k">return</span> <span class="kc">True</span> 
+
+<span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    인접 가로등 사이에 추가</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># lazy deletion </span>
+    <span class="n">to_be_broken_road</span> <span class="o">=</span> <span class="kc">None</span> 
+    <span class="k">while</span> <span class="n">road_q</span><span class="p">:</span>
+        <span class="n">cur_road</span> <span class="o">=</span> <span class="n">road_q</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">valid_check</span><span class="p">(</span><span class="n">cur_road</span><span class="p">):</span>
+            <span class="c1"># 추가될 기존 길은 road_q에서 삭제 되어야한다. </span>
+            <span class="n">to_be_broken_road</span> <span class="o">=</span> <span class="n">heapq</span><span class="o">.</span><span class="n">heappop</span><span class="p">(</span><span class="n">road_q</span><span class="p">)</span>
+            <span class="k">break</span> 
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">heapq</span><span class="o">.</span><span class="n">heappop</span><span class="p">(</span><span class="n">road_q</span><span class="p">)</span>
+    
+    <span class="c1"># 추가 </span>
+    <span class="n">left_pos</span> <span class="o">=</span> <span class="n">to_be_broken_road</span><span class="o">.</span><span class="n">start_pos</span>
+    <span class="n">right_pos</span>  <span class="o">=</span> <span class="n">to_be_broken_road</span><span class="o">.</span><span class="n">end_pos</span>
+    <span class="n">left_lamp_num</span> <span class="o">=</span> <span class="n">to_be_broken_road</span><span class="o">.</span><span class="n">left_num</span>
+    <span class="n">right_lamp_num</span> <span class="o">=</span> <span class="n">to_be_broken_road</span><span class="o">.</span><span class="n">right_num</span>
+
+    <span class="n">new_pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">left_pos</span> <span class="o">+</span> <span class="n">right_pos</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span> 
+    <span class="n">new_lamp_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">prev</span><span class="p">)</span>
+    <span class="n">heapq</span><span class="o">.</span><span class="n">heappush</span><span class="p">(</span><span class="n">road_q</span><span class="p">,</span> <span class="n">Road</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">new_pos</span><span class="o">-</span><span class="n">left_pos</span><span class="p">),</span> <span class="n">left_pos</span><span class="p">,</span> <span class="n">new_pos</span><span class="p">,</span> <span class="n">left_lamp_num</span><span class="p">,</span> <span class="n">new_lamp_num</span><span class="p">))</span> <span class="c1"># length, start_pos, end_pos, left_num, right_num</span>
+    <span class="n">heapq</span><span class="o">.</span><span class="n">heappush</span><span class="p">(</span><span class="n">road_q</span><span class="p">,</span> <span class="n">Road</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">right_pos</span><span class="o">-</span><span class="n">new_pos</span><span class="p">),</span> <span class="n">new_pos</span><span class="p">,</span> <span class="n">right_pos</span><span class="p">,</span> <span class="n">new_lamp_num</span><span class="p">,</span> <span class="n">right_lamp_num</span><span class="p">))</span>
+    <span class="n">heapq</span><span class="o">.</span><span class="n">heappush</span><span class="p">(</span><span class="n">left_q</span><span class="p">,</span> <span class="p">(</span><span class="n">new_pos</span><span class="p">,</span> <span class="n">new_lamp_num</span><span class="p">))</span>
+    <span class="n">heapq</span><span class="o">.</span><span class="n">heappush</span><span class="p">(</span><span class="n">right_q</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="n">new_pos</span><span class="p">,</span> <span class="n">new_lamp_num</span><span class="p">))</span>
+    <span class="n">prev</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">left_lamp_num</span><span class="p">)</span>
+    <span class="nb">next</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">right_lamp_num</span><span class="p">)</span>
+    <span class="n">prev</span><span class="p">[</span><span class="n">right_lamp_num</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_lamp_num</span>
+    <span class="nb">next</span><span class="p">[</span><span class="n">left_lamp_num</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_lamp_num</span>
+
+    <span class="n">lamps_pos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_pos</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">remove</span><span class="p">(</span><span class="n">removed_lamp_num</span><span class="p">):</span>
+    <span class="c1"># 가장 자리 노드가 아닌 중간 노드를 제거하는 경우는, 두 개의 길이 삭제 (lazy deletion)될 것이고</span>
+    <span class="c1"># 길이 하나 더 추가되어야함. </span>
+    <span class="k">if</span> <span class="n">prev</span><span class="p">[</span><span class="n">removed_lamp_num</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="nb">next</span><span class="p">[</span><span class="n">removed_lamp_num</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">lamps_pos</span><span class="p">[</span><span class="n">prev</span><span class="p">[</span><span class="n">removed_lamp_num</span><span class="p">]]</span><span class="o">-</span><span class="n">lamps_pos</span><span class="p">[</span><span class="nb">next</span><span class="p">[</span><span class="n">removed_lamp_num</span><span class="p">]])</span>
+        <span class="n">heapq</span><span class="o">.</span><span class="n">heappush</span><span class="p">(</span><span class="n">road_q</span><span class="p">,</span> <span class="n">Road</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">lamps_pos</span><span class="p">[</span><span class="n">prev</span><span class="p">[</span><span class="n">removed_lamp_num</span><span class="p">]],</span> <span class="n">lamps_pos</span><span class="p">[</span><span class="nb">next</span><span class="p">[</span><span class="n">removed_lamp_num</span><span class="p">]],</span> <span class="n">prev</span><span class="p">[</span><span class="n">removed_lamp_num</span><span class="p">],</span> <span class="nb">next</span><span class="p">[</span><span class="n">removed_lamp_num</span><span class="p">]))</span>
+
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    가장 자리 노드가 삭제되면 road_q는 그대로이고, left_q와 right_q도 후에 lazy deletion으로 삭제될 예정이라</span>
+<span class="sd">    해줄 것이 없음, 다만 현재의 정보를 정확히 lamps_pos, prev, next에 저장</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># doubly linked list </span>
+    <span class="k">if</span> <span class="n">prev</span><span class="p">[</span><span class="n">removed_lamp_num</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="nb">next</span><span class="p">[</span><span class="n">prev</span><span class="p">[</span><span class="n">removed_lamp_num</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">next</span><span class="p">[</span><span class="n">removed_lamp_num</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">next</span><span class="p">[</span><span class="n">removed_lamp_num</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">prev</span><span class="p">[</span><span class="nb">next</span><span class="p">[</span><span class="n">removed_lamp_num</span><span class="p">]]</span> <span class="o">=</span> <span class="n">prev</span><span class="p">[</span><span class="n">removed_lamp_num</span><span class="p">]</span>
+    <span class="c1"># 현재 가로등에 대한 정보 전부 제거 </span>
+    <span class="n">lamps_pos</span><span class="p">[</span><span class="n">removed_lamp_num</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> 
+    <span class="n">prev</span><span class="p">[</span><span class="n">removed_lamp_num</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="nb">next</span><span class="p">[</span><span class="n">removed_lamp_num</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> 
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_max_from_left</span><span class="p">():</span>
+    <span class="k">while</span> <span class="n">left_q</span><span class="p">:</span> <span class="c1"># (pos, num)</span>
+        <span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">num</span><span class="p">)</span> <span class="o">=</span> <span class="n">left_q</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">lamps_pos</span><span class="p">[</span><span class="n">num</span><span class="p">]</span> <span class="o">!=</span> <span class="n">pos</span><span class="p">:</span> <span class="c1"># invalid </span>
+            <span class="n">heapq</span><span class="o">.</span><span class="n">heappop</span><span class="p">(</span><span class="n">left_q</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">break</span> 
+    <span class="k">return</span> <span class="n">pos</span> <span class="o">-</span> <span class="mi">1</span> <span class="c1"># r계산 </span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_max_from_right</span><span class="p">():</span>
+    <span class="n">dis</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">right_q</span><span class="p">:</span>
+        <span class="p">(</span><span class="n">dis</span><span class="p">,</span> <span class="n">num</span><span class="p">)</span> <span class="o">=</span> <span class="n">right_q</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">dis</span> <span class="o">=</span> <span class="n">dis</span><span class="o">*-</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="n">lamps_pos</span><span class="p">[</span><span class="n">num</span><span class="p">]</span> <span class="o">!=</span> <span class="n">dis</span><span class="p">:</span> <span class="c1"># max_heap 이라서 -1 를 곱해줘야함. </span>
+            <span class="n">heapq</span><span class="o">.</span><span class="n">heappop</span><span class="p">(</span><span class="n">right_q</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">break</span> 
+    <span class="k">return</span> <span class="n">N</span><span class="o">-</span><span class="n">dis</span>  <span class="c1"># pos는 이미 음수, r 계산 </span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_max_from_roads</span><span class="p">():</span>
+    <span class="k">while</span> <span class="n">road_q</span><span class="p">:</span>
+        <span class="n">cur_road</span> <span class="o">=</span> <span class="n">road_q</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">valid_check</span><span class="p">(</span><span class="n">cur_road</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">cur_road</span><span class="o">.</span><span class="n">length</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">heapq</span><span class="o">.</span><span class="n">heappop</span><span class="p">(</span><span class="n">road_q</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate</span><span class="p">():</span>
+    <span class="n">side_r</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">get_max_from_left</span><span class="p">(),</span> <span class="n">get_max_from_right</span><span class="p">())</span>
+    <span class="n">middle_r</span> <span class="o">=</span> <span class="n">get_max_from_roads</span><span class="p">()</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="nb">max</span><span class="p">(</span><span class="n">side_r</span><span class="p">,</span> <span class="n">middle_r</span><span class="p">))</span>
+
+<span class="n">lamps_pos</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">road_q</span> <span class="o">=</span> <span class="p">[]</span> 
+<span class="n">left_q</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">right_q</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">prev</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="c1"># 아무것도 없으면 -1 </span>
+<span class="nb">next</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> 
+<span class="n">N</span> <span class="o">=</span> <span class="mi">0</span> 
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">())</span>
+    
+    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">Q</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+        <span class="k">if</span> <span class="n">order</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">100</span><span class="p">:</span>
+            <span class="n">N</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> 
+            <span class="n">check</span><span class="p">(</span><span class="n">order</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">order</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span>
+        <span class="k">elif</span> <span class="n">order</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="n">add</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">order</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">300</span><span class="p">:</span>
+            <span class="n">remove</span><span class="p">(</span><span class="n">order</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># 400 </span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">calculate</span><span class="p">())</span>
+</pre></div>
+</div>
 </div>
 </section>
 </section>

@@ -200,7 +200,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../theory/3_backtracking.html">Lecture 3-1. Backtracking</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../theory/4_DP.html">Lecture 4-1. Dynamic Programming</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../theory/5_shortest_path.html">Lecture 5-1. Shortest Path</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../theory/6_sort.html">Lecture 6-1. 정렬</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/6_sort.html">Lecture 6-1. Sorting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../theory/7_binarysearch.html">Lecture 7-1. Binary Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../theory/8_graph.html">Lecture 8-1. Graph Algorithm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../theory/9_greedy.html">Lecture 9-1. Greedy</a></li>
@@ -374,10 +374,7 @@ document.write(`
 <p>이진 탐색 문제처럼 입력 데이터가 많거나, 탐색 범위가 매우 넓은 편의 경우 input()함수를 사용하면 오히려 동작 속도가 느려서 시간  초과로 오답 판정을 받을 수 있다. 이처럼 입력 데이터가 많은 문제는 sys 라이브러리의 readline()함수를 이용하면 된다.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span> 
 
-<span class="c1"># 하나의 문자열 데이터 입력받기 </span>
-<span class="n">input_data</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">input_data</span><span class="p">)</span>
+<span class="nb">input</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span>
 </pre></div>
 </div>
 <p>sys 라이브러리를 사용할때는 입력 후 엔터<font size='2'>Enter</font>가 줄 바꿈 기호로 입력되는데, 이 공백 문자를 제거하려면 rstrip()함수를 사용해야한다.</p>

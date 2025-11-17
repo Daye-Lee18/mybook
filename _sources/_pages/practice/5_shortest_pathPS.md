@@ -40,6 +40,8 @@ prev_lamp_id = None   # 각 가로등의 이전 가로등 ID (이중 연결 리�
 roads = []            # 도로 정보를 저장할 최대 힙
 lamp_pos_min_heap = [] # 가로등 위치를 저장할 최소 힙 (가장 왼쪽 가로등 탐색용)
 lamp_pos_max_heap = [] # 가로등 위치를 저장할 최대 힙 (가장 오른쪽 가로등 탐색용)
+
+참고로, `if __name__ == "__main__"`은 함수 내부가 아니라 전역 스코프안에 있는 조건문이라 전역 스코프 (global scope)에 해당한다. 따라서, 이 안에서 `global`을 사용하면 문법 오류가 난다. 
 ```
 ````
 `````{admonition} Lazy Deletion
@@ -52,6 +54,8 @@ dijkstra algorithm의 개선된 코드 버전에서 현재 꺼낸 노드로 가�
 해당 문제에서는 `lamp_pos` 리스트에 각 가로등의 ID를 인덱스로 하여 위치 (pos)를 저장한다. 따라서 O(1)시간에 특정 가로등의 위치를 조회할 수 있다. 가로등이 제거되면 해당 위치를 -1와 같은 무효한 값으로 표시하여 '지연 갱신'에 사용된다. 
 
 예를 들어, 두 가로등 사이에 다른 가로등이 추가되거나 제거되었다면, 해당 정보를 "실시간으로" 우선 lamp_pos에서 추가하거나 제거한다. 그러나 heapq에 있는 정보는 그대로 두고 나중에 실제로 있는지는 계속 실시간 업데이트가 되는 `lamp_pos`에서 확인하는 것이다. 
+
+즉, 실시간으로 업데이트 되는 정보 `lamp_pos`, `prev`, `next`이고 지연되는 것은 priority queue 즉 `road_q`, `left_q`, `right_q`와 같은 정보이다. 
 
 ```{code-block} python
 import heapq 
@@ -301,4 +305,191 @@ new_pos = root.st_pos + (road.length + 1 ) // 2
 ```
 
 2로 나누어 round()를 적용하면 파이썬에서는 '은행가 반올림(0.5를 짝수로)이라 4.5 -> 4, 5.5->6 같은 예외가 생긴다. 문제에서는 ceiling 을 요구하므로 위의 코드를 사용해야한다. 
+````
+
+````{admonition} solution
+:class: dropdown 
+
+```{code-block} python
+import sys 
+import heapq 
+
+input = sys.stdin.readline
+# sys.stdin = open('Input.txt')
+
+'''
+INIT:
+
+1) road_q = 
+2) left_q = 
+3) right_q = 
+4) prev = 
+5) next = 
+6) N = length of the road 
+7) lamps_pos = 
+'''
+
+class Road:
+    def __init__(self, length, start_pos, end_pos, left_num, right_num):
+        self.length = length
+        self.start_pos = start_pos 
+        self.end_pos = end_pos 
+        self.left_num = left_num 
+        self.right_num = right_num
+
+    def __lt__(self, other):
+        if self.length == other.length:
+            return self.start_pos < other.start_pos
+        return self.length > other.length 
+
+def check(light_nums, pos):
+    poses = zip(pos[:-1], pos[1:])
+    for idx, (left_pos, right_pos) in enumerate(poses):
+        length = right_pos - left_pos 
+        left_num = idx + 1 
+        right_num = left_num + 1
+        # Road 안에 __lt__로 length에 대해서 max_heap, left_pos에 대해서 min_heap으로 heapq에서 "정렬"되도록 해놓음. 
+        heapq.heappush(road_q, Road(length, left_pos, right_pos, left_num, right_num))
+        heapq.heappush(left_q, (left_pos, left_num))
+        heapq.heappush(right_q, (-left_pos, left_num))
+        lamps_pos.append(left_pos)
+        prev.append(left_num-1 if left_num != 1 else -1)
+        next.append(right_num) 
+    
+    # 맨 마지막 노드 
+    heapq.heappush(left_q, (right_pos, right_num))
+    heapq.heappush(right_q, (-right_pos, right_num))
+    prev.append(right_num-1)
+    next.append(-1)
+    lamps_pos.append(right_pos)
+
+ 
+def valid_check(cur_road):
+    '''
+    현재 두 가로등 사이의 정보(cur_road)가 정확한지, 아니면 old한 정보인지 check 
+    항상 맞는 정보: prev, next, lamps_pos(불변)
+    아직 업데이트 안되어 있는 정보: road_q, left_q, right_q 
+    '''
+    length = cur_road.length 
+    left_pos = cur_road.start_pos 
+    right_pos = cur_road.end_pos 
+    left_num = cur_road.left_num 
+    right_num = cur_road.right_num 
+
+    if lamps_pos[left_num] == -1 or lamps_pos[right_num] == -1: # 둘 중 하나가 이미 제거된 가로등 
+        return False 
+    if length == abs(left_pos - lamps_pos[next[left_num]]):
+        return True 
+
+def add():
+    '''
+    인접 가로등 사이에 추가
+    '''
+    # lazy deletion 
+    to_be_broken_road = None 
+    while road_q:
+        cur_road = road_q[0]
+        if valid_check(cur_road):
+            # 추가될 기존 길은 road_q에서 삭제 되어야한다. 
+            to_be_broken_road = heapq.heappop(road_q)
+            break 
+        else:
+            heapq.heappop(road_q)
+    
+    # 추가 
+    left_pos = to_be_broken_road.start_pos
+    right_pos  = to_be_broken_road.end_pos
+    left_lamp_num = to_be_broken_road.left_num
+    right_lamp_num = to_be_broken_road.right_num
+
+    new_pos = (left_pos + right_pos + 1) // 2 
+    new_lamp_num = len(prev)
+    heapq.heappush(road_q, Road(abs(new_pos-left_pos), left_pos, new_pos, left_lamp_num, new_lamp_num)) # length, start_pos, end_pos, left_num, right_num
+    heapq.heappush(road_q, Road(abs(right_pos-new_pos), new_pos, right_pos, new_lamp_num, right_lamp_num))
+    heapq.heappush(left_q, (new_pos, new_lamp_num))
+    heapq.heappush(right_q, (-new_pos, new_lamp_num))
+    prev.append(left_lamp_num)
+    next.append(right_lamp_num)
+    prev[right_lamp_num] = new_lamp_num
+    next[left_lamp_num] = new_lamp_num
+
+    lamps_pos.append(new_pos)
+
+def remove(removed_lamp_num):
+    # 가장 자리 노드가 아닌 중간 노드를 제거하는 경우는, 두 개의 길이 삭제 (lazy deletion)될 것이고
+    # 길이 하나 더 추가되어야함. 
+    if prev[removed_lamp_num] != -1 and next[removed_lamp_num] != -1:
+        length = abs(lamps_pos[prev[removed_lamp_num]]-lamps_pos[next[removed_lamp_num]])
+        heapq.heappush(road_q, Road(length, lamps_pos[prev[removed_lamp_num]], lamps_pos[next[removed_lamp_num]], prev[removed_lamp_num], next[removed_lamp_num]))
+
+    '''
+    가장 자리 노드가 삭제되면 road_q는 그대로이고, left_q와 right_q도 후에 lazy deletion으로 삭제될 예정이라
+    해줄 것이 없음, 다만 현재의 정보를 정확히 lamps_pos, prev, next에 저장
+    '''
+    # doubly linked list 
+    if prev[removed_lamp_num] != -1:
+        next[prev[removed_lamp_num]] = next[removed_lamp_num]
+    if next[removed_lamp_num] != -1:
+        prev[next[removed_lamp_num]] = prev[removed_lamp_num]
+    # 현재 가로등에 대한 정보 전부 제거 
+    lamps_pos[removed_lamp_num] = -1 
+    prev[removed_lamp_num] = -1
+    next[removed_lamp_num] = -1 
+
+def get_max_from_left():
+    while left_q: # (pos, num)
+        (pos, num) = left_q[0]
+        if lamps_pos[num] != pos: # invalid 
+            heapq.heappop(left_q)
+        else:
+            break 
+    return pos - 1 # r계산 
+
+def get_max_from_right():
+    dis = 0
+    while right_q:
+        (dis, num) = right_q[0]
+        dis = dis*-1
+        if lamps_pos[num] != dis: # max_heap 이라서 -1 를 곱해줘야함. 
+            heapq.heappop(right_q)
+        else:
+            break 
+    return N-dis  # pos는 이미 음수, r 계산 
+
+def get_max_from_roads():
+    while road_q:
+        cur_road = road_q[0]
+        if valid_check(cur_road):
+            return cur_road.length / 2
+        else:
+            heapq.heappop(road_q)
+
+def calculate():
+    side_r = max(get_max_from_left(), get_max_from_right())
+    middle_r = get_max_from_roads()
+    return int(2*max(side_r, middle_r))
+
+lamps_pos = [0]
+road_q = [] 
+left_q = []
+right_q = []
+prev = [-1]# 아무것도 없으면 -1 
+next = [-1] 
+N = 0 
+
+if __name__ == "__main__":
+    Q = int(input())
+    
+    for idx in range(1, Q+1):
+        order = list(map(int, input().split()))
+        if order[0] == 100:
+            N = order[1] 
+            check(order[1], order[3:])
+        elif order[0] == 200:
+            add()
+        elif order[0] == 300:
+            remove(order[1])
+        else:  # 400 
+            print(calculate())
+```
 ````

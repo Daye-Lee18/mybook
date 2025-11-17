@@ -5,10 +5,7 @@
 ```python
 import sys 
 
-# 하나의 문자열 데이터 입력받기 
-input_data = sys.readline().rstrip()
-
-print(input_data)
+input = sys.stdin.readline
 ```
 
 sys 라이브러리를 사용할때는 입력 후 엔터<font size='2'>Enter</font>가 줄 바꿈 기호로 입력되는데, 이 공백 문자를 제거하려면 rstrip()함수를 사용해야한다. 
