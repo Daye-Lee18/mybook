@@ -67,7 +67,7 @@
     <link rel="icon" href="../../_static/favicon.png"/>
     <link rel="index" title="색인" href="../../genindex.html" />
     <link rel="search" title="검색" href="../../search.html" />
-    <link rel="next" title="Lecture 6-1. 정렬" href="6_sort.html" />
+    <link rel="next" title="Lecture 6-1. Sorting" href="6_sort.html" />
     <link rel="prev" title="Lecture 4-1. Dynamic Programming" href="4_DP.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ko"/>
@@ -202,7 +202,7 @@
 <li class="toctree-l1"><a class="reference internal" href="3_backtracking.html">Lecture 3-1. Backtracking</a></li>
 <li class="toctree-l1"><a class="reference internal" href="4_DP.html">Lecture 4-1. Dynamic Programming</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Lecture 5-1. Shortest Path</a></li>
-<li class="toctree-l1"><a class="reference internal" href="6_sort.html">Lecture 6-1. 정렬</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6_sort.html">Lecture 6-1. Sorting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="7_binarysearch.html">Lecture 7-1. Binary Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="8_graph.html">Lecture 8-1. Graph Algorithm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="9_greedy.html">Lecture 9-1. Greedy</a></li>
@@ -420,6 +420,10 @@ document.write(`
 <li><p>All Integer Edge Weight</p></li>
 </ol>
 </div>
+<div class="attention admonition">
+<p class="admonition-title">Why no negative edge weight?</p>
+<p>다익스트라는 “현재까지 찾은 경로가 항상 최단이다”라는 가정을 사용한다. 하지만 음수 간선이 있으면, “나중에 더 짧은 경로가 등장할 가능성”이 생긴다. 이러면 이미 확정한 값이 틀릴 수 있기 때문에 알고리즘이 깨진다.</p>
+</div>
 <p>Dijkstra Algorithm는 다음과 같은 원리를 따른다.</p>
 <ol class="arabic simple">
 <li><p>출발 노드를 설정한다.</p></li>
@@ -430,6 +434,10 @@ document.write(`
 </ol>
 <p>위의 Step 2)에서 최단 거리 테이블은 “각 노드에 대한 현재까지의 최단 거리” 정보를 저장한다. 또한 매번 현재 처리하고 있는 노드를 기준으로 주변 간선을 확인한다. 나중에 현재 처리하고 있는 노드와 인접한 노드로 도달하는 더 짧은 경로를 찾으면 “더 짧은 경로도 있었네? 이제부터는 이 경로가 제일 짧은 경로야”라고 판단하는 것이다. 따라서 “방문하지 않은 노드 중에서 현재 최단 거리가 가장 짧은 노드를 확인”해 그 노드에 대하여 4) 과정을 수행한다는 점에서 그리디 알고리즘으로 볼 수 있다.</p>
 <p>다익스트라 알고리즘을 구현할 때 느리지만 구현하기 쉬운 방법이 있고 구현하기 까다롭지만 빠르게 동작하는 방법이 있는데, 코딩 시험을 위해서 두 번째 방법을 당연히 숙지하고 있어야한다.</p>
+<div class="attention admonition">
+<p class="admonition-title">방문했다는 건 어떤 기준으로 정하는 지? 아직 모든 경로를 다 본 것이 아닌데 왜 고정하는가?</p>
+<p>다익스트라에서 방문(=최단 거리 확정)은 “남아 있는 후보 중에서 제일 짧은 거리”를 가진 정점이다. 음수 간선이 없다면, 이 정점으로 가는 더 짧은 길이 나올 수 없기 때문에 고정해도 안전하다.</p>
+</div>
 <section id="id1">
 <h3>Dijkstra Algorithm 예시<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
 <p>다음과 같은 그래프가 있을 때, 1번 노드에서 다른 모든 노드로 가는 최단 경로를 구하는 문제를 생각해보자. 출발 노드는 1이라 가정한다. 즉, 1번 노드에서 다른 모든 노드로 가는 최단 거리를 계산할 것이다. 최단 경로 테이블을 보면, “<strong>초기 상태에서는 다른 모든 노드로 가는 최단 거리</strong>”를 “INF”로 초기화한다. 즉, 테이블의 각 값은
@@ -1376,7 +1384,7 @@ document.write(`
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">다음</p>
-        <p class="prev-next-title">Lecture 6-1. 정렬</p>
+        <p class="prev-next-title">Lecture 6-1. Sorting</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

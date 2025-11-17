@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Lecture 6-1. 정렬 &#8212; 말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업</title>
+    <title>Lecture 6-1. Sorting &#8212; 말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업</title>
   
   
   
@@ -202,7 +202,7 @@
 <li class="toctree-l1"><a class="reference internal" href="3_backtracking.html">Lecture 3-1. Backtracking</a></li>
 <li class="toctree-l1"><a class="reference internal" href="4_DP.html">Lecture 4-1. Dynamic Programming</a></li>
 <li class="toctree-l1"><a class="reference internal" href="5_shortest_path.html">Lecture 5-1. Shortest Path</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Lecture 6-1. 정렬</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Lecture 6-1. Sorting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="7_binarysearch.html">Lecture 7-1. Binary Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="8_graph.html">Lecture 8-1. Graph Algorithm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="9_greedy.html">Lecture 9-1. Greedy</a></li>
@@ -359,7 +359,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Lecture 6-1. 정렬</h1>
+    <h1>Lecture 6-1. Sorting</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -415,8 +415,8 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="lecture-6-1">
-<h1>Lecture 6-1. 정렬<a class="headerlink" href="#lecture-6-1" title="Link to this heading">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="lecture-6-1-sorting">
+<h1>Lecture 6-1. Sorting<a class="headerlink" href="#lecture-6-1-sorting" title="Link to this heading">#</a></h1>
 <p>정렬 (Sorting)이란 데이터를 특정한 기준에 따라서 순서대로 나열하는 것을 말한다. 정렬 알고리즘으로 데이터를 정렬하면 이후에 배울 이진 탐색 (Binary Search)이 가능해진다. 이번 수업에서는 총 4가지 정렬 (선택 정렬, 삽입 정렬, 퀵 정렬, 계수 정렬)에 대해서 배운다. 이 장에서 다루는 예제는 모두 <strong>오름차순 (Increasing order)</strong> 정렬을 수행한다고 가정한다. 내림차순 정렬은 리스트의 원소를 뒤집는 (Reverse) 메서드를 제공하기 때문에 그 방법을 사용하여 O(N) 시간 복잡도로 만들 수 있다.</p>
 <div class="dropdown admonition">
 <p class="admonition-title">Reversing ways in Python</p>
@@ -527,6 +527,18 @@ arr[-100 : 100 : 5]
 </pre></div>
 </div>
 </div>
+</div>
+<div class="attention admonition">
+<p class="admonition-title">왜 정렬 알고리즘이 이렇게 많은가? 하나만 있으면 되는 거 아닌가?</p>
+<p>상황마다 중요한 기준이 다르기 때문이다.</p>
+<ul class="simple">
+<li><p>데이터가 거의 정렬되어 있는지</p></li>
+<li><p>메모리가 어느 정도 있는지</p></li>
+<li><p>안정성이 필요한지</p></li>
+<li><p>평균 속도가 중요한지, 최악의 속도가 중요한지</p></li>
+</ul>
+<p>이런 조건이 다 다르기 때문에 여러 알고리즘들이 존재한다.</p>
+<p>예를 들어, 버블/삽입 정렬은 데이터가 거의 정렬된 경우 평균 시간 복잡도 O(NlogN)을 가진 퀵 정렬보다 빠를 수 있다.</p>
 </div>
 <section id="selection-sort">
 <h2>선택 정렬 (Selection Sort)<a class="headerlink" href="#selection-sort" title="Link to this heading">#</a></h2>
@@ -866,6 +878,11 @@ arr[-100 : 100 : 5]
 <p>일반적으로 컴퓨터 과학에서 log의 의미는 밑이 2인 로그를 의미한다. 즉, <span class="math notranslate nohighlight">\(log_{2}N\)</span>을 의미하며 데이터의 개수 1000일 때, <span class="math notranslate nohighlight">\(log_{2}N\)</span>는 10 정도이다. 즉, N=1000일 때 10은 상대적으로 매우 작은 수이다. 데이터의 개수가 많을 수록 차이는 매우 극명하게 드러난다.</p>
 <p>다만, 퀵 정렬의 시간 복잡도에 대하여 한 가지 기억해둘 점이 있다. 바로 평균적으로 시간 복잡도가 O(NlogN)이지만 최악의 경우 시간 복잡도가 O(<span class="math notranslate nohighlight">\(N^2\)</span>)라는 것이다. 데이터가 무작위로 입력되는 경우 퀵 정렬은 빠르게 동작할 확률이 높다. 하지만, 우리가 사용한 방법처럼 리스트의 가장 왼쪽 데이터를 피벗으로 삼을 때, ‘이미 데이터가 정렬되어 있는 경우’에는 매우 느리게 동작한다. 즉, 삽입 정렬은 이미 데이터가 정렬되어 있는 겨웅에는 매우 빠르게 동작하고, 퀵 정렬은 그와 반대이다.</p>
 <p>실제로 파이썬에서 기본 정렬 라이브러리를 이용하면 O(NlogN)을 보장해주기 때문에 크게 걱정하지 않아도 된다.</p>
+<div class="attention admonition">
+<p class="admonition-title">퀵 정렬은 왜 최악의 경우 O(<span class="math notranslate nohighlight">\(N^2\)</span>)가 되는가?</p>
+<p>피벗을 기준으로 좌우로 나누는 과정에서 “균등하게” 나눠져야 NlogN이 된다.
+하지만 이미 정렬된 배열처럼 피벗이 계속 한쪽에만 치우치면 분할이 비효율적으로 이루어져 O(<span class="math notranslate nohighlight">\(N^2\)</span>)이 된다.</p>
+</div>
 </section>
 </section>
 <section id="merge-sort">
@@ -944,6 +961,10 @@ arr[-100 : 100 : 5]
 </ul>
 </li>
 </ol>
+<div class="attention admonition">
+<p class="admonition-title">안정적인 정렬 (stable sort)란?</p>
+<p>안정적인 정렬은 “값이 같은 원소끼리는 원래 순서를 그대로 유지하는 정렬”을 말한다. 예를 들어 “성적이 같은 학생끼리는 기존의 번호 순서가 유지된다” 같은 상황에서 중요하다. 데이터의 의미나 우선순위가 여러 개일 때 매우 유용하다.</p>
+</div>
 <section id="source-code">
 <h3>병합 정렬 source code 및 시간 복잡도<a class="headerlink" href="#source-code" title="Link to this heading">#</a></h3>
 </section>
