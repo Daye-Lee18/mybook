@@ -898,179 +898,217 @@ document.write(`
 <div class="dropdown admonition">
 <p class="admonition-title">solution</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">heapq</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">heapq</span> 
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span> 
 
-<span class="c1"># 채점 태스크(Task) 정보를 저장하는 클래스입니다.</span>
+<span class="c1"># -----------------------------</span>
+<span class="c1"># 데이터 구조 공간 복잡도</span>
+<span class="c1"># -----------------------------</span>
+<span class="c1"># domain_pqs           : 도메인별 우선순위 큐, 전체 Task 수 ≤ Q → O(Q)</span>
+<span class="c1"># domain_judge_history : 도메인 ≤ 300개 → O(1)</span>
+<span class="c1"># resting_judger_ids   : 최대 N개 → O(N)</span>
+<span class="c1"># judging_domains      : 최대 300개 → O(1)</span>
+<span class="c1"># judgers              : N+1 크기 배열 → O(N)</span>
+<span class="c1"># waiting_urls         : 대기 URL ≤ Q → O(Q)</span>
+<span class="c1">#</span>
+<span class="c1"># 전체 공간 복잡도: O(N + Q)</span>
+<span class="c1"># -----------------------------</span>
+
+
 <span class="k">class</span><span class="w"> </span><span class="nc">Task</span><span class="p">:</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request_time</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">priority</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># URL에서 도메인과 문제 ID를 분리합니다.</span>
-        <span class="n">domain</span><span class="p">,</span> <span class="n">pid_str</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Task 객체 1개 공간: O(1) (URL 길이가 상수 19니까 O(1))&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request_time</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">priority</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">domain</span><span class="p">,</span> <span class="n">pid_str</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">request_time</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">request_time</span>  <span class="c1"># 채점 요청이 들어온 시간</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>              <span class="c1"># 채점이 시작된 시간 (아직 시작 안됐으면 -1)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">priority</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">priority</span>          <span class="c1"># 채점 우선순위</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">url</span>                    <span class="c1"># 전체 URL</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">domain</span>              <span class="c1"># 도메인</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">problem_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pid_str</span><span class="p">)</span>    <span class="c1"># 문제 ID</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_time</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">request_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">priority</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">priority</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">url</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">domain</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">problem_id</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pid_str</span><span class="p">)</span>
 
-    <span class="c1"># 우선순위 큐(heapq)에서 태스크들을 비교하기 위한 메서드입니다.</span>
-    <span class="c1"># 1. 우선순위(priority) 번호가 낮을수록 우선순위가 높습니다.</span>
-    <span class="c1"># 2. 우선순위가 같다면, 요청 시간(request_time)이 빠를수록 우선순위가 높습니다.</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;Task&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;비교 연산: O(1)&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">priority</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">priority</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">priority</span> <span class="o">&lt;</span> <span class="n">other</span><span class="o">.</span><span class="n">priority</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_time</span> <span class="o">&lt;</span> <span class="n">other</span><span class="o">.</span><span class="n">request_time</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">priority</span> <span class="o">&lt;</span> <span class="n">other</span><span class="o">.</span><span class="n">priority</span> 
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_time</span> <span class="o">&lt;</span> <span class="n">other</span><span class="o">.</span><span class="n">request_time</span> 
 
-<span class="c1"># 각 도메인의 채점 기록(History)을 저장하는 클래스입니다.</span>
+
 <span class="k">class</span><span class="w"> </span><span class="nc">History</span><span class="p">:</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_time</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">end_time</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">start_time</span> <span class="c1"># 채점 시작 시간</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">end_time</span>     <span class="c1"># 채점 종료 시간</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;History 객체 1개 공간: O(1)&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_time</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">end_time</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span><span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">start_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">end_time</span>
 
-    <span class="c1"># 현재 시간이 채점 가능한 시간인지 확인합니다.</span>
-    <span class="c1"># (start + 3 * gap) 보다 현재 시간이 크거나 같아야 채점 가능합니다.</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_valid_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cur_time</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="n">gap</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">gap</span> <span class="o">&lt;=</span> <span class="n">cur_time</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;단순 연산: O(1)&quot;&quot;&quot;</span>
+        <span class="n">gap</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> 
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">gap</span> <span class="o">&lt;=</span> <span class="n">cur_time</span> 
+    
 
-<span class="c1"># --- 전역 변수 선언 ---</span>
-
-<span class="c1"># 총 채점기 수</span>
+<span class="c1"># 전역 데이터 구조</span>
 <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
-
-<span class="c1"># Key: 도메인(str), Value: 해당 도메인의 채점 대기 태스크들이 담긴 우선순위 큐(list[Task])</span>
-<span class="c1"># 각 도메인별로 대기 큐를 관리합니다.</span>
-<span class="n">domain_pqs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Task</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-
-<span class="c1"># Key: 도메인(str), Value: 해당 도메인의 마지막 채점 기록(History)</span>
+<span class="n">domain_pqs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Task</span><span class="p">]]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
 <span class="n">domain_judge_history</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">History</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-
-<span class="c1"># 쉬고 있는 채점기들의 ID가 담긴 최소 힙.</span>
-<span class="c1"># 가장 번호가 작은 채점기를 빠르게 찾기 위해 사용합니다.</span>
 <span class="n">resting_judger_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-
-<span class="c1"># 현재 채점 중인 도메인들의 집합. 중복 채점을 방지하기 위해 사용합니다.</span>
 <span class="n">judging_domains</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-
-<span class="c1"># 채점기 배열. judgers[i]는 i번 채점기가 채점 중인 Task 객체를 저장합니다. (쉬고 있으면 None)</span>
 <span class="n">judgers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Task</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-
-<span class="c1"># 채점 대기 큐에 있는 모든 URL의 집합.</span>
-<span class="n">waiting_urls</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+<span class="n">waiting_urls</span> <span class="p">:</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
 
+<span class="c1"># ----------------------------------------------------------</span>
 <span class="c1"># 명령어 100: 채점기 준비</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">process_100</span><span class="p">(</span><span class="n">n_</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="k">global</span> <span class="n">n</span><span class="p">,</span> <span class="n">resting_judger_ids</span><span class="p">,</span> <span class="n">judgers</span>
+<span class="c1"># ----------------------------------------------------------</span>
+<span class="c1"># 시간 복잡도:</span>
+<span class="c1">#   resting_judger_ids 초기화: O(N)</span>
+<span class="c1">#   judgers 초기화: O(N)</span>
+<span class="c1">#   process_200 호출: O(log Q)</span>
+<span class="c1"># 전체 → O(N)</span>
+<span class="c1">#</span>
+<span class="c1"># 공간 복잡도: O(N) (리스트 초기화)</span>
+<span class="c1"># ----------------------------------------------------------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">process_100</span><span class="p">(</span><span class="n">n_</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">global</span> <span class="n">n</span><span class="p">,</span> <span class="n">resting_judger_ids</span><span class="p">,</span> <span class="n">judgers</span> 
 
     <span class="n">n</span> <span class="o">=</span> <span class="n">n_</span>
-    <span class="c1"># 1번부터 N번까지의 채점기를 모두 쉬는 상태로 초기화합니다.</span>
-    <span class="n">resting_judger_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
-    <span class="n">judgers</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">resting_judger_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>  <span class="c1"># O(N)</span>
+    <span class="n">judgers</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>                         <span class="c1"># O(N)</span>
 
-    <span class="c1"># 초기 채점 요청(t=0, p=1)을 처리합니다.</span>
-    <span class="n">process_200</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">)</span>
+    <span class="n">process_200</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="n">u</span><span class="p">)</span>                       <span class="c1"># O(log Q)</span>
 
+
+<span class="c1"># ----------------------------------------------------------</span>
 <span class="c1"># 명령어 200: 채점 요청 추가</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">process_200</span><span class="p">(</span><span class="n">t</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="k">global</span> <span class="n">waiting_urls</span><span class="p">,</span> <span class="n">domain_pqs</span>
+<span class="c1"># ----------------------------------------------------------</span>
+<span class="c1"># 시간 복잡도:</span>
+<span class="c1">#   u in waiting_urls (set membership): O(1)</span>
+<span class="c1">#   Task 생성: O(1)</span>
+<span class="c1">#   heapq.heappush: O(log Q)</span>
+<span class="c1">#   waiting_urls.add: O(1)</span>
+<span class="c1"># 전체 → O(log Q)</span>
+<span class="c1">#</span>
+<span class="c1"># 공간 복잡도: O(1) (Task 1개 추가 → 전체적으로 O(Q) 안에 포함)</span>
+<span class="c1"># ----------------------------------------------------------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">process_200</span><span class="p">(</span><span class="n">t</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">global</span> <span class="n">waiting_urls</span><span class="p">,</span> <span class="n">domain_pqs</span> 
 
-    <span class="c1"># 이미 대기 큐에 동일한 URL이 있다면 요청을 무시합니다.</span>
-    <span class="k">if</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">waiting_urls</span><span class="p">:</span>
-        <span class="k">return</span>
-
-    <span class="c1"># Task 객체를 생성하고, 해당 도메인의 우선순위 큐에 추가합니다.</span>
-    <span class="n">task</span> <span class="o">=</span> <span class="n">Task</span><span class="p">(</span><span class="n">request_time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">priority</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="n">u</span><span class="p">)</span>
-    <span class="n">heapq</span><span class="o">.</span><span class="n">heappush</span><span class="p">(</span><span class="n">domain_pqs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span> <span class="p">[]),</span> <span class="n">task</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">waiting_urls</span><span class="p">:</span>    <span class="c1"># O(1)</span>
+        <span class="k">return</span> 
     
-    <span class="c1"># 대기 큐에 URL을 추가하여 중복을 기록합니다.</span>
-    <span class="n">waiting_urls</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+    <span class="n">task</span> <span class="o">=</span> <span class="n">Task</span><span class="p">(</span><span class="n">request_time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">priority</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="n">u</span><span class="p">)</span>  <span class="c1"># O(1)</span>
+    <span class="n">heapq</span><span class="o">.</span><span class="n">heappush</span><span class="p">(</span><span class="n">domain_pqs</span><span class="p">[</span><span class="n">task</span><span class="o">.</span><span class="n">domain</span><span class="p">],</span> <span class="n">task</span><span class="p">)</span>   <span class="c1"># O(log Q)</span>
+    <span class="n">waiting_urls</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>                             <span class="c1"># O(1)</span>
 
-<span class="c1"># 특정 도메인이 현재 채점 가능한지 확인하는 헬퍼 함수</span>
+
+<span class="c1"># ----------------------------------------------------------</span>
+<span class="c1"># 도메인 채점 가능 여부 확인</span>
+<span class="c1"># ----------------------------------------------------------</span>
+<span class="c1"># 시간 복잡도: O(1)</span>
+<span class="c1"># 공간 복잡도: O(1)</span>
+<span class="c1"># ----------------------------------------------------------</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">is_domain_judgeable</span><span class="p">(</span><span class="n">cur_time</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">domain</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="k">global</span> <span class="n">judging_domains</span><span class="p">,</span> <span class="n">domain_judge_history</span>
 
-    <span class="c1"># 조건 1: 해당 도메인이 현재 다른 채점기에서 채점 중이면 불가능합니다.</span>
-    <span class="k">if</span> <span class="n">domain</span> <span class="ow">in</span> <span class="n">judging_domains</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">domain</span> <span class="ow">in</span> <span class="n">judging_domains</span><span class="p">:</span>           <span class="c1"># O(1)</span>
+        <span class="k">return</span> <span class="kc">False</span> 
 
-    <span class="c1"># 조건 2: 해당 도메인의 마지막 채점 기록을 확인하여 유예 기간인지 확인합니다.</span>
-    <span class="n">history</span><span class="p">:</span> <span class="n">History</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">domain_judge_history</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">domain</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">history</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">history</span><span class="o">.</span><span class="n">is_valid_time</span><span class="p">(</span><span class="n">cur_time</span><span class="p">):</span>
-        <span class="k">return</span> <span class="kc">False</span>
+    <span class="n">history</span><span class="p">:</span> <span class="n">History</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">domain_judge_history</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">domain</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>  <span class="c1"># O(1)</span>
+    <span class="k">if</span> <span class="n">history</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">history</span><span class="o">.</span><span class="n">is_valid_time</span><span class="p">(</span><span class="n">cur_time</span><span class="p">):</span>               <span class="c1"># O(1)</span>
+        <span class="k">return</span> <span class="kc">False</span> 
+    
+    <span class="k">return</span> <span class="kc">True</span> 
 
-    <span class="k">return</span> <span class="kc">True</span>
 
+<span class="c1"># ----------------------------------------------------------</span>
 <span class="c1"># 명령어 300: 채점 시도</span>
+<span class="c1"># ----------------------------------------------------------</span>
+<span class="c1"># 시간 복잡도:</span>
+<span class="c1">#   쉬는 채점기 체크: O(1)</span>
+<span class="c1">#   모든 도메인 순회: D ≤ 300 → O(300) = O(1)</span>
+<span class="c1">#   각 도메인 pq[0] 접근: O(1)</span>
+<span class="c1">#   비교 연산: O(1)</span>
+<span class="c1">#   heappop(resting_judger_ids): O(log N)</span>
+<span class="c1">#   heappop(domain_pqs[domain]): O(log Q)</span>
+<span class="c1">#   set/dict 업데이트: O(1)</span>
+<span class="c1">#</span>
+<span class="c1"># 전체 → O(log N + log Q)</span>
+<span class="c1">#</span>
+<span class="c1"># 공간 복잡도: O(1)</span>
+<span class="c1"># ----------------------------------------------------------</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">process_300</span><span class="p">(</span><span class="n">t</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="k">global</span> <span class="n">resting_judger_ids</span><span class="p">,</span> <span class="n">domain_pqs</span><span class="p">,</span> <span class="n">judging_domains</span><span class="p">,</span> <span class="n">judgers</span><span class="p">,</span> <span class="n">waiting_urls</span>
 
-    <span class="c1"># 쉬고 있는 채점기가 없으면 채점을 시작할 수 없습니다.</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">resting_judger_ids</span><span class="p">:</span>
-        <span class="k">return</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">resting_judger_ids</span><span class="p">:</span>  <span class="c1"># O(1)</span>
+        <span class="k">return</span> 
+    
+    <span class="n">best_task</span><span class="p">:</span> <span class="n">Task</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span> 
 
-    <span class="c1"># 채점할 최적의 태스크를 찾습니다.</span>
-    <span class="n">best_task</span><span class="p">:</span> <span class="n">Task</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">domain</span><span class="p">,</span> <span class="n">pq</span> <span class="ow">in</span> <span class="n">domain_pqs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>   <span class="c1"># O(300) = O(1)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">pq</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">is_domain_judgeable</span><span class="p">(</span><span class="n">cur_time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="n">domain</span><span class="p">):</span>  
+            <span class="k">continue</span> 
 
-    <span class="c1"># 모든 도메인의 대기 큐를 확인합니다.</span>
-    <span class="k">for</span> <span class="n">domain</span><span class="p">,</span> <span class="n">pq</span> <span class="ow">in</span> <span class="n">domain_pqs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="c1"># 해당 도메인에 대기 중인 태스크가 없거나, 현재 채점 불가능한 도메인이면 건너뜁니다.</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">pq</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">is_domain_judgeable</span><span class="p">(</span><span class="n">cur_time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="n">domain</span><span class="p">):</span>
-            <span class="k">continue</span>
+        <span class="n">current_task</span> <span class="o">=</span> <span class="n">pq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>                <span class="c1"># O(1)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">best_task</span> <span class="ow">or</span> <span class="n">current_task</span> <span class="o">&lt;</span> <span class="n">best_task</span><span class="p">:</span>  <span class="c1"># O(1)</span>
+            <span class="n">best_task</span> <span class="o">=</span> <span class="n">current_task</span> 
 
-        <span class="c1"># 현재 도메인의 가장 우선순위 높은 태스크를 가져옵니다.</span>
-        <span class="n">current_task</span> <span class="o">=</span> <span class="n">pq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        
-        <span class="c1"># 지금까지 찾은 최적의 태스크보다 우선순위가 높으면 교체합니다.</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">best_task</span> <span class="ow">or</span> <span class="n">current_task</span> <span class="o">&lt;</span> <span class="n">best_task</span><span class="p">:</span>
-            <span class="n">best_task</span> <span class="o">=</span> <span class="n">current_task</span>
-
-    <span class="c1"># 채점 가능한 태스크가 없는 경우 함수를 종료합니다.</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">best_task</span><span class="p">:</span>
-        <span class="k">return</span>
+        <span class="k">return</span> 
+    
+    <span class="n">j_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">heapq</span><span class="o">.</span><span class="n">heappop</span><span class="p">(</span><span class="n">resting_judger_ids</span><span class="p">)</span>     <span class="c1"># O(log N)</span>
+    <span class="n">best_task</span><span class="o">.</span><span class="n">start_time</span> <span class="o">=</span> <span class="n">t</span> 
 
-    <span class="c1"># --- 채점 시작 처리 ---</span>
-    <span class="c1"># 가장 번호가 작은 쉬는 채점기를 배정합니다.</span>
-    <span class="n">j_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">heapq</span><span class="o">.</span><span class="n">heappop</span><span class="p">(</span><span class="n">resting_judger_ids</span><span class="p">)</span>
-    <span class="n">best_task</span><span class="o">.</span><span class="n">start_time</span> <span class="o">=</span> <span class="n">t</span>
+    <span class="n">heapq</span><span class="o">.</span><span class="n">heappop</span><span class="p">(</span><span class="n">domain_pqs</span><span class="p">[</span><span class="n">best_task</span><span class="o">.</span><span class="n">domain</span><span class="p">])</span>       <span class="c1"># O(log Q)</span>
+    <span class="n">judging_domains</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">best_task</span><span class="o">.</span><span class="n">domain</span><span class="p">)</span>             <span class="c1"># O(1)</span>
+    <span class="n">judgers</span><span class="p">[</span><span class="n">j_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">best_task</span>                         <span class="c1"># O(1)</span>
+    <span class="n">waiting_urls</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">best_task</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>                <span class="c1"># O(1)</span>
 
-    <span class="c1"># 배정된 태스크를 해당 도메인의 대기 큐에서 제거합니다.</span>
-    <span class="n">heapq</span><span class="o">.</span><span class="n">heappop</span><span class="p">(</span><span class="n">domain_pqs</span><span class="p">[</span><span class="n">best_task</span><span class="o">.</span><span class="n">domain</span><span class="p">])</span>
-    <span class="c1"># 도메인을 &#39;채점 중&#39; 상태로 변경합니다.</span>
-    <span class="n">judging_domains</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">best_task</span><span class="o">.</span><span class="n">domain</span><span class="p">)</span>
-    <span class="c1"># 채점기 배열에 현재 채점하는 태스크를 기록합니다.</span>
-    <span class="n">judgers</span><span class="p">[</span><span class="n">j_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">best_task</span>
-    <span class="c1"># 전체 대기 큐에서 URL을 제거합니다.</span>
-    <span class="n">waiting_urls</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">best_task</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
 
+<span class="c1"># ----------------------------------------------------------</span>
 <span class="c1"># 명령어 400: 채점 종료</span>
+<span class="c1"># ----------------------------------------------------------</span>
+<span class="c1"># 시간 복잡도:</span>
+<span class="c1">#   task 조회: O(1)</span>
+<span class="c1">#   History 생성 및 dict 기록: O(1)</span>
+<span class="c1">#   heapq.heappush(resting_judger_ids): O(log N)</span>
+<span class="c1">#   set.remove + 배열 저장: O(1)</span>
+<span class="c1">#</span>
+<span class="c1"># 전체 → O(log N)</span>
+<span class="c1">#</span>
+<span class="c1"># 공간 복잡도: O(1)  (History 1개 추가 → 전체 O(Q)에 포함)</span>
+<span class="c1"># ----------------------------------------------------------</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">process_400</span><span class="p">(</span><span class="n">t</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">j_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="k">global</span> <span class="n">judgers</span><span class="p">,</span> <span class="n">domain_judge_history</span><span class="p">,</span> <span class="n">resting_judger_ids</span><span class="p">,</span> <span class="n">judging_domains</span>
 
-    <span class="c1"># 해당 채점기가 채점 중이 아니었다면 무시합니다.</span>
-    <span class="n">task</span><span class="p">:</span> <span class="n">Task</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">judgers</span><span class="p">[</span><span class="n">j_id</span><span class="p">]</span>
+    <span class="n">task</span><span class="p">:</span> <span class="n">Task</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">judgers</span><span class="p">[</span><span class="n">j_id</span><span class="p">]</span>       <span class="c1"># O(1)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">task</span><span class="p">:</span>
         <span class="k">return</span>
 
-    <span class="c1"># 채점 기록을 History 객체로 만들어 저장/갱신합니다.</span>
-    <span class="n">domain_judge_history</span><span class="p">[</span><span class="n">task</span><span class="o">.</span><span class="n">domain</span><span class="p">]</span> <span class="o">=</span> <span class="n">History</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="n">task</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">domain_judge_history</span><span class="p">[</span><span class="n">task</span><span class="o">.</span><span class="n">domain</span><span class="p">]</span> <span class="o">=</span> <span class="n">History</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="n">task</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">t</span><span class="p">)</span>  <span class="c1"># O(1)</span>
     
-    <span class="c1"># 채점기를 다시 쉬는 상태로 만듭니다.</span>
-    <span class="n">heapq</span><span class="o">.</span><span class="n">heappush</span><span class="p">(</span><span class="n">resting_judger_ids</span><span class="p">,</span> <span class="n">j_id</span><span class="p">)</span>
-    <span class="n">judging_domains</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">domain</span><span class="p">)</span>
-    <span class="n">judgers</span><span class="p">[</span><span class="n">j_id</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">heapq</span><span class="o">.</span><span class="n">heappush</span><span class="p">(</span><span class="n">resting_judger_ids</span><span class="p">,</span> <span class="n">j_id</span><span class="p">)</span>    <span class="c1"># O(log N)</span>
+    <span class="n">judging_domains</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">domain</span><span class="p">)</span>          <span class="c1"># O(1)</span>
+    <span class="n">judgers</span><span class="p">[</span><span class="n">j_id</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>                         <span class="c1"># O(1)</span>
 
-<span class="c1"># 명령어 500: 채점 대기 큐 조회</span>
+
+<span class="c1"># ----------------------------------------------------------</span>
+<span class="c1"># 명령어 500: 대기 큐 조회</span>
+<span class="c1"># ----------------------------------------------------------</span>
+<span class="c1"># 시간 복잡도: O(1)</span>
+<span class="c1"># 공간 복잡도: O(1)</span>
+<span class="c1"># ----------------------------------------------------------</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">process_500</span><span class="p">(</span><span class="n">t</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="k">global</span> <span class="n">waiting_urls</span>
-    
-    <span class="c1"># waiting_urls 집합의 크기가 곧 대기 큐에 있는 태스크의 수입니다.</span>
-    <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">waiting_urls</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">waiting_urls</span><span class="p">))</span>  <span class="c1"># O(1)</span>
 
-<span class="c1"># --- 메인 실행 로직 ---</span>
+
+<span class="c1"># ------------------ 메인 실행 ------------------</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">전체 시간 복잡도: O(Q(logN + logQ))</span>
+<span class="sd">전체 공간 복잡도: O(N+Q)</span>
+<span class="sd">&#39;&#39;&#39;</span>
 <span class="n">q</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">())</span>
 <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
-    <span class="c1"># 입력을 받아 명령 코드에 따라 적절한 함수를 호출합니다.</span>
     <span class="n">query</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
     <span class="n">cmd</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">query</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
@@ -1084,6 +1122,7 @@ document.write(`
         <span class="n">process_400</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">query</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">j_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">query</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
     <span class="k">elif</span> <span class="n">cmd</span> <span class="o">==</span> <span class="mi">500</span><span class="p">:</span>
         <span class="n">process_500</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">query</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
 </pre></div>
 </div>
 </div>

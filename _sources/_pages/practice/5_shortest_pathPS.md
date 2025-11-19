@@ -555,179 +555,217 @@ class History:
 
 ```{code-block} python
 import sys
-import heapq
+import heapq 
+from collections import defaultdict 
 
-# 채점 태스크(Task) 정보를 저장하는 클래스입니다.
+# -----------------------------
+# 데이터 구조 공간 복잡도
+# -----------------------------
+# domain_pqs           : 도메인별 우선순위 큐, 전체 Task 수 ≤ Q → O(Q)
+# domain_judge_history : 도메인 ≤ 300개 → O(1)
+# resting_judger_ids   : 최대 N개 → O(N)
+# judging_domains      : 최대 300개 → O(1)
+# judgers              : N+1 크기 배열 → O(N)
+# waiting_urls         : 대기 URL ≤ Q → O(Q)
+#
+# 전체 공간 복잡도: O(N + Q)
+# -----------------------------
+
+
 class Task:
-    def __init__(self, request_time: int, priority: int, url: str) -> None:
-        # URL에서 도메인과 문제 ID를 분리합니다.
-        domain, pid_str = url.split("/")
+    """Task 객체 1개 공간: O(1) (URL 길이가 상수 19니까 O(1))"""
+    def __init__(self, request_time: int, priority: int, url:str) -> None:
+        domain, pid_str = url.split('/')
 
-        self.request_time: int = request_time  # 채점 요청이 들어온 시간
-        self.start_time: int = -1              # 채점이 시작된 시간 (아직 시작 안됐으면 -1)
-        self.priority: int = priority          # 채점 우선순위
-        self.url: str = url                    # 전체 URL
-        self.domain: str = domain              # 도메인
-        self.problem_id: int = int(pid_str)    # 문제 ID
+        self.request_time: int = request_time
+        self.start_time: int = -1 
+        self.priority: int = priority 
+        self.url: str = url 
+        self.domain: str = domain 
+        self.problem_id : int = int(pid_str)
 
-    # 우선순위 큐(heapq)에서 태스크들을 비교하기 위한 메서드입니다.
-    # 1. 우선순위(priority) 번호가 낮을수록 우선순위가 높습니다.
-    # 2. 우선순위가 같다면, 요청 시간(request_time)이 빠를수록 우선순위가 높습니다.
     def __lt__(self, other: "Task") -> bool:
+        """비교 연산: O(1)"""
         if self.priority != other.priority:
-            return self.priority < other.priority
-        return self.request_time < other.request_time
+            return self.priority < other.priority 
+        return self.request_time < other.request_time 
 
-# 각 도메인의 채점 기록(History)을 저장하는 클래스입니다.
+
 class History:
-    def __init__(self, start_time: int, end_time: int) -> None:
-        self.start_time: int = start_time # 채점 시작 시간
-        self.end_time: int = end_time     # 채점 종료 시간
+    """History 객체 1개 공간: O(1)"""
+    def __init__(self, start_time: int, end_time: int)-> None:
+        self.start_time: int = start_time
+        self.end_time: int = end_time
 
-    # 현재 시간이 채점 가능한 시간인지 확인합니다.
-    # (start + 3 * gap) 보다 현재 시간이 크거나 같아야 채점 가능합니다.
     def is_valid_time(self, cur_time: int) -> bool:
-        gap: int = self.end_time - self.start_time
-        return self.start_time + 3 * gap <= cur_time
+        """단순 연산: O(1)"""
+        gap: int = self.end_time - self.start_time 
+        return self.start_time + 3 * gap <= cur_time 
+    
 
-# --- 전역 변수 선언 ---
-
-# 총 채점기 수
+# 전역 데이터 구조
 n: int = 0
-
-# Key: 도메인(str), Value: 해당 도메인의 채점 대기 태스크들이 담긴 우선순위 큐(list[Task])
-# 각 도메인별로 대기 큐를 관리합니다.
-domain_pqs: dict[str, list[Task]] = dict()
-
-# Key: 도메인(str), Value: 해당 도메인의 마지막 채점 기록(History)
+domain_pqs: dict[str, list[Task]] = defaultdict(list)
 domain_judge_history: dict[str, History] = dict()
-
-# 쉬고 있는 채점기들의 ID가 담긴 최소 힙.
-# 가장 번호가 작은 채점기를 빠르게 찾기 위해 사용합니다.
 resting_judger_ids: list[int] = []
-
-# 현재 채점 중인 도메인들의 집합. 중복 채점을 방지하기 위해 사용합니다.
 judging_domains: set[str] = set()
-
-# 채점기 배열. judgers[i]는 i번 채점기가 채점 중인 Task 객체를 저장합니다. (쉬고 있으면 None)
 judgers: list[Task | None] = []
-
-# 채점 대기 큐에 있는 모든 URL의 집합.
-waiting_urls: set[str] = set()
+waiting_urls :set[str] = set()
 
 
+# ----------------------------------------------------------
 # 명령어 100: 채점기 준비
-def process_100(n_: int, u: str) -> None:
-    global n, resting_judger_ids, judgers
+# ----------------------------------------------------------
+# 시간 복잡도:
+#   resting_judger_ids 초기화: O(N)
+#   judgers 초기화: O(N)
+#   process_200 호출: O(log Q)
+# 전체 → O(N)
+#
+# 공간 복잡도: O(N) (리스트 초기화)
+# ----------------------------------------------------------
+def process_100(n_: int, u:str) -> None:
+    global n, resting_judger_ids, judgers 
 
     n = n_
-    # 1번부터 N번까지의 채점기를 모두 쉬는 상태로 초기화합니다.
-    resting_judger_ids = [i for i in range(1, n + 1)]
-    judgers = [None] * (n + 1)
+    resting_judger_ids = [i for i in range(1, n+1)]  # O(N)
+    judgers = [None] * (n+1)                         # O(N)
 
-    # 초기 채점 요청(t=0, p=1)을 처리합니다.
-    process_200(t=0, p=1, u=u)
+    process_200(t=0, p=1, u=u)                       # O(log Q)
 
+
+# ----------------------------------------------------------
 # 명령어 200: 채점 요청 추가
-def process_200(t: int, p: int, u: str) -> None:
-    global waiting_urls, domain_pqs
+# ----------------------------------------------------------
+# 시간 복잡도:
+#   u in waiting_urls (set membership): O(1)
+#   Task 생성: O(1)
+#   heapq.heappush: O(log Q)
+#   waiting_urls.add: O(1)
+# 전체 → O(log Q)
+#
+# 공간 복잡도: O(1) (Task 1개 추가 → 전체적으로 O(Q) 안에 포함)
+# ----------------------------------------------------------
+def process_200(t:int, p: int, u: str) -> None:
+    global waiting_urls, domain_pqs 
 
-    # 이미 대기 큐에 동일한 URL이 있다면 요청을 무시합니다.
-    if u in waiting_urls:
-        return
-
-    # Task 객체를 생성하고, 해당 도메인의 우선순위 큐에 추가합니다.
-    task = Task(request_time=t, priority=p, url=u)
-    heapq.heappush(domain_pqs.setdefault(task.domain, []), task)
+    if u in waiting_urls:    # O(1)
+        return 
     
-    # 대기 큐에 URL을 추가하여 중복을 기록합니다.
-    waiting_urls.add(u)
+    task = Task(request_time=t, priority=p, url=u)  # O(1)
+    heapq.heappush(domain_pqs[task.domain], task)   # O(log Q)
+    waiting_urls.add(u)                             # O(1)
 
-# 특정 도메인이 현재 채점 가능한지 확인하는 헬퍼 함수
+
+# ----------------------------------------------------------
+# 도메인 채점 가능 여부 확인
+# ----------------------------------------------------------
+# 시간 복잡도: O(1)
+# 공간 복잡도: O(1)
+# ----------------------------------------------------------
 def is_domain_judgeable(cur_time: int, domain: str) -> bool:
     global judging_domains, domain_judge_history
 
-    # 조건 1: 해당 도메인이 현재 다른 채점기에서 채점 중이면 불가능합니다.
-    if domain in judging_domains:
-        return False
+    if domain in judging_domains:           # O(1)
+        return False 
 
-    # 조건 2: 해당 도메인의 마지막 채점 기록을 확인하여 유예 기간인지 확인합니다.
-    history: History | None = domain_judge_history.get(domain, None)
-    if history and not history.is_valid_time(cur_time):
-        return False
+    history: History | None = domain_judge_history.get(domain, None)  # O(1)
+    if history and not history.is_valid_time(cur_time):               # O(1)
+        return False 
+    
+    return True 
 
-    return True
 
+# ----------------------------------------------------------
 # 명령어 300: 채점 시도
+# ----------------------------------------------------------
+# 시간 복잡도:
+#   쉬는 채점기 체크: O(1)
+#   모든 도메인 순회: D ≤ 300 → O(300) = O(1)
+#   각 도메인 pq[0] 접근: O(1)
+#   비교 연산: O(1)
+#   heappop(resting_judger_ids): O(log N)
+#   heappop(domain_pqs[domain]): O(log Q)
+#   set/dict 업데이트: O(1)
+#
+# 전체 → O(log N + log Q)
+#
+# 공간 복잡도: O(1)
+# ----------------------------------------------------------
 def process_300(t: int) -> None:
     global resting_judger_ids, domain_pqs, judging_domains, judgers, waiting_urls
 
-    # 쉬고 있는 채점기가 없으면 채점을 시작할 수 없습니다.
-    if not resting_judger_ids:
-        return
+    if not resting_judger_ids:  # O(1)
+        return 
+    
+    best_task: Task | None = None 
 
-    # 채점할 최적의 태스크를 찾습니다.
-    best_task: Task | None = None
+    for domain, pq in domain_pqs.items():   # O(300) = O(1)
+        if not pq or not is_domain_judgeable(cur_time=t, domain=domain):  
+            continue 
 
-    # 모든 도메인의 대기 큐를 확인합니다.
-    for domain, pq in domain_pqs.items():
-        # 해당 도메인에 대기 중인 태스크가 없거나, 현재 채점 불가능한 도메인이면 건너뜁니다.
-        if not pq or not is_domain_judgeable(cur_time=t, domain=domain):
-            continue
+        current_task = pq[0]                # O(1)
+        if not best_task or current_task < best_task:  # O(1)
+            best_task = current_task 
 
-        # 현재 도메인의 가장 우선순위 높은 태스크를 가져옵니다.
-        current_task = pq[0]
-        
-        # 지금까지 찾은 최적의 태스크보다 우선순위가 높으면 교체합니다.
-        if not best_task or current_task < best_task:
-            best_task = current_task
-
-    # 채점 가능한 태스크가 없는 경우 함수를 종료합니다.
     if not best_task:
-        return
+        return 
+    
+    j_id: int = heapq.heappop(resting_judger_ids)     # O(log N)
+    best_task.start_time = t 
 
-    # --- 채점 시작 처리 ---
-    # 가장 번호가 작은 쉬는 채점기를 배정합니다.
-    j_id: int = heapq.heappop(resting_judger_ids)
-    best_task.start_time = t
+    heapq.heappop(domain_pqs[best_task.domain])       # O(log Q)
+    judging_domains.add(best_task.domain)             # O(1)
+    judgers[j_id] = best_task                         # O(1)
+    waiting_urls.remove(best_task.url)                # O(1)
 
-    # 배정된 태스크를 해당 도메인의 대기 큐에서 제거합니다.
-    heapq.heappop(domain_pqs[best_task.domain])
-    # 도메인을 '채점 중' 상태로 변경합니다.
-    judging_domains.add(best_task.domain)
-    # 채점기 배열에 현재 채점하는 태스크를 기록합니다.
-    judgers[j_id] = best_task
-    # 전체 대기 큐에서 URL을 제거합니다.
-    waiting_urls.remove(best_task.url)
 
+# ----------------------------------------------------------
 # 명령어 400: 채점 종료
+# ----------------------------------------------------------
+# 시간 복잡도:
+#   task 조회: O(1)
+#   History 생성 및 dict 기록: O(1)
+#   heapq.heappush(resting_judger_ids): O(log N)
+#   set.remove + 배열 저장: O(1)
+#
+# 전체 → O(log N)
+#
+# 공간 복잡도: O(1)  (History 1개 추가 → 전체 O(Q)에 포함)
+# ----------------------------------------------------------
 def process_400(t: int, j_id: int) -> None:
     global judgers, domain_judge_history, resting_judger_ids, judging_domains
 
-    # 해당 채점기가 채점 중이 아니었다면 무시합니다.
-    task: Task | None = judgers[j_id]
+    task: Task | None = judgers[j_id]       # O(1)
     if not task:
         return
 
-    # 채점 기록을 History 객체로 만들어 저장/갱신합니다.
-    domain_judge_history[task.domain] = History(start_time=task.start_time, end_time=t)
+    domain_judge_history[task.domain] = History(start_time=task.start_time, end_time=t)  # O(1)
     
-    # 채점기를 다시 쉬는 상태로 만듭니다.
-    heapq.heappush(resting_judger_ids, j_id)
-    judging_domains.remove(task.domain)
-    judgers[j_id] = None
+    heapq.heappush(resting_judger_ids, j_id)    # O(log N)
+    judging_domains.remove(task.domain)          # O(1)
+    judgers[j_id] = None                         # O(1)
 
-# 명령어 500: 채점 대기 큐 조회
+
+# ----------------------------------------------------------
+# 명령어 500: 대기 큐 조회
+# ----------------------------------------------------------
+# 시간 복잡도: O(1)
+# 공간 복잡도: O(1)
+# ----------------------------------------------------------
 def process_500(t: int) -> None:
     global waiting_urls
-    
-    # waiting_urls 집합의 크기가 곧 대기 큐에 있는 태스크의 수입니다.
-    print(len(waiting_urls))
+    print(len(waiting_urls))  # O(1)
 
-# --- 메인 실행 로직 ---
+
+# ------------------ 메인 실행 ------------------
+
+'''
+전체 시간 복잡도: O(Q(logN + logQ))
+전체 공간 복잡도: O(N+Q)
+'''
 q = int(input())
 for _ in range(q):
-    # 입력을 받아 명령 코드에 따라 적절한 함수를 호출합니다.
     query: list[str] = input().split()
     cmd: int = int(query[0])
 
@@ -741,6 +779,7 @@ for _ in range(q):
         process_400(t=int(query[1]), j_id=int(query[2]))
     elif cmd == 500:
         process_500(t=int(query[1]))
+
 
 ```
 ````
