@@ -368,6 +368,7 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">가로등 설치</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">코드 트리 채점기</a></li>
 </ul>
             </nav>
         </div>
@@ -418,10 +419,9 @@ document.write(`
 <span class="n">roads</span> <span class="o">=</span> <span class="p">[]</span>            <span class="c1"># 도로 정보를 저장할 최대 힙</span>
 <span class="n">lamp_pos_min_heap</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># 가로등 위치를 저장할 최소 힙 (가장 왼쪽 가로등 탐색용)</span>
 <span class="n">lamp_pos_max_heap</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># 가로등 위치를 저장할 최대 힙 (가장 오른쪽 가로등 탐색용)</span>
-
-<span class="n">참고로</span><span class="p">,</span> <span class="err">`</span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="err">`</span><span class="n">은</span> <span class="n">함수</span> <span class="n">내부가</span> <span class="n">아니라</span> <span class="n">전역</span> <span class="n">스코프안에</span> <span class="n">있는</span> <span class="n">조건문이라</span> <span class="n">전역</span> <span class="n">스코프</span> <span class="p">(</span><span class="k">global</span> <span class="n">scope</span><span class="p">)</span><span class="n">에</span> <span class="n">해당한다</span><span class="o">.</span> <span class="n">따라서</span><span class="p">,</span> <span class="n">이</span> <span class="n">안에서</span> <span class="err">`</span><span class="k">global</span><span class="err">`</span><span class="n">을</span> <span class="n">사용하면</span> <span class="n">문법</span> <span class="n">오류가</span> <span class="n">난다</span><span class="o">.</span> 
 </pre></div>
 </div>
+<p>참고로, <code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">__name__</span> <span class="pre">==</span> <span class="pre">&quot;__main__&quot;</span></code>은 함수 내부가 아니라 전역 스코프안에 있는 조건문이라 전역 스코프 (global scope)에 해당한다. 따라서, 이 안에서 <code class="docutils literal notranslate"><span class="pre">global</span></code>을 사용하면 문법 오류가 난다.</p>
 </div>
 <div class="dropdown admonition">
 <p class="admonition-title">Lazy Deletion</p>
@@ -842,6 +842,57 @@ document.write(`
 </div>
 </div>
 </section>
+<section id="id2">
+<h2>코드 트리 채점기<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p>이런 문제를 푸는 경우, 각 문제의 요구 사항을 만족시키기 위해서는 <em><strong>(1) 각 정보의 특성에 맞는 효율적인 자료구조</strong></em> 를 설계하고, 각 명령어에 따른 <em><strong>(2) 상태 변화를 누락 없이 처리</strong></em> 하는 것이 중요하다.</p>
+<div class="dropdown admonition">
+<p class="admonition-title">필요한 자료구조</p>
+<p>문제를 풀때 wating_urls을 priority queue로 해서, Task를 하나씩 뽑아내는 것을 생각하기 쉽다. 이때 문제는, 현재 들어온 url이 waiting_urls에 있는지 확인하려면, 다 뺐다가 다시 넣어야한다. 따라서, waiting_urls은 검색을 O(1)으로 용이하게 하도록 set[str]으로 만든다. 그렇다면, 우선순위가 가장 높은 Task를 구할때는 domain_pqs: dict[str, list[Task]] 로 각 도메인별로 가장 우선순위가 높은 맨 앞의 Task하나씩 비교해서 보면 된다. 문제의 contraints를 보면 서로 다른 도메인수는 최대 300이라고 했기 때문에, 이렇게 하는것이 시간 복잡도상 가장 효율적이게 된다.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">waiting_urls:</span> <span class="pre">set[str]</span></code>: 채점 대기 큐에 있는 Task들의 url들을 저장하는 집합(set). 특정 url이 큐에 있는지 평균 O(1) 시간 복잡도로 빠르게 확인하기 위해 사용한다.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">domain_pqs:</span> <span class="pre">dict[str,</span> <span class="pre">list[Task]]</span></code>: 각 도메인별로 채점 대기 중인 Task들을 저장하는 우선순위 큐. 파이썬의 heapq 모듈을 사용한다. 도메인별로 list가 연결되어있고, 이 리스트가 우선순위큐로 Task들을 저장한다.</p>
+<ul>
+<li><p>key는 ‘도메인(domain)’, value는 해당 도메인의 Task들을 담은 우선순위 큐(최소 힙)이다.</p></li>
+<li><p>Task의 우선순위(우선순위 번호가 작을 수록, 요청 시간이 빠를수록 높음)에 따라 자동으로 정렬되므로, 각 도메인에서 가장 우선순위 높은 Task를 O(1)로 찾을 수 있다.</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">resting_judger_ids:</span> <span class="pre">list[int]</span></code>: 쉬고 있는 채점기의 ID들을 저장하는 최소 힙. 가장 번호가 작은 채점기를 빠르게 찾기 위해 사용한다.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">judgers:</span> <span class="pre">list[Task</span> <span class="pre">|</span> <span class="pre">None]</span></code>: 각 채점기가 현재 어떤 Task를 채점 중인지 저장하는 배열. judger[i]는 i번 채점기가 채점 중인 Task 객체를 가리키거나, 쉬고 있다면 None을 저장한다.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">domain_judge_history:</span> <span class="pre">dict[str,</span> <span class="pre">History]</span></code>: 각 도메인의 가장 최근 채점 기록(시작 시간, 종료 시간)을 저장하는 딕셔너리. 채점 유예 기간을 계산하는데 사용한다.</p></li>
+</ul>
+<p>또한, Task정보와 채점 기록 정보를 편리하게 다루기 위한 클래스들을 정의한다.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 채점 태스크(Task) 정보를 저장하는 클래스입니다.</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Task</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request_time</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">priority</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
+        <span class="n">domain</span><span class="p">,</span> <span class="n">pid_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_time</span> <span class="o">=</span> <span class="n">request_time</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">priority</span> <span class="o">=</span> <span class="n">priority</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">domain</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">problem_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pid_str</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> 
+        
+    
+    <span class="c1"># 우선순위 비교를 위한 __lt__ 메서드 </span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;Task&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">priority</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">priority</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">priority</span> <span class="o">&lt;</span> <span class="n">other</span><span class="o">.</span><span class="n">priority</span> 
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_time</span> <span class="o">&lt;</span> <span class="n">other</span><span class="o">.</span><span class="n">request_time</span>
+
+<span class="c1"># 각 도메인의 채점 기록(History)을 저장하는 클래스입니다.</span>
+<span class="c1"># domain_judge_history: dict[str, History]에서 value에 사용될 예정 </span>
+<span class="k">class</span><span class="w"> </span><span class="nc">History</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_time</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">end_time</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">start_time</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">end_time</span> 
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_valid_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cur_time</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="n">gap</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> 
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="o">+</span> <span class="mi">3</span><span class="o">*</span><span class="n">gap</span> <span class="o">&lt;=</span> <span class="n">cur_time</span> 
+</pre></div>
+</div>
+</div>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -909,6 +960,7 @@ document.write(`
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">가로등 설치</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">코드 트리 채점기</a></li>
 </ul>
   </nav></div>
 
