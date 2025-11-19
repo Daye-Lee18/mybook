@@ -529,6 +529,9 @@ class Task:
         
     
     # 우선순위 비교를 위한 __lt__ 메서드 
+    '''
+    "Task"라고 표시한 이유: __lt__가 클래스 내부에 있을 때 아직 정의되지 않은 Task 타입을 참조하기 위해 "전방 선언(Forward Reference)"으로 문자열을 사용한 것. 즉 문자열을 '타입 힌트'로 쓰면 python이 나중에 실제 그걸 클래스 이름으로 다시 해석한다. 
+    '''
     def __lt__(self, other: "Task") -> bool:
         if self.priority != other.priority:
             return self.priority < other.priority 
@@ -544,5 +547,200 @@ class History:
     def is_valid_time(self, cur_time: int) -> bool:
         gap: int = self.end_time - self.start_time 
         return self.start_time + 3*gap <= cur_time 
+```
+````
+
+````{admonition} solution
+:class: dropdown 
+
+```{code-block} python
+import sys
+import heapq
+
+# 채점 태스크(Task) 정보를 저장하는 클래스입니다.
+class Task:
+    def __init__(self, request_time: int, priority: int, url: str) -> None:
+        # URL에서 도메인과 문제 ID를 분리합니다.
+        domain, pid_str = url.split("/")
+
+        self.request_time: int = request_time  # 채점 요청이 들어온 시간
+        self.start_time: int = -1              # 채점이 시작된 시간 (아직 시작 안됐으면 -1)
+        self.priority: int = priority          # 채점 우선순위
+        self.url: str = url                    # 전체 URL
+        self.domain: str = domain              # 도메인
+        self.problem_id: int = int(pid_str)    # 문제 ID
+
+    # 우선순위 큐(heapq)에서 태스크들을 비교하기 위한 메서드입니다.
+    # 1. 우선순위(priority) 번호가 낮을수록 우선순위가 높습니다.
+    # 2. 우선순위가 같다면, 요청 시간(request_time)이 빠를수록 우선순위가 높습니다.
+    def __lt__(self, other: "Task") -> bool:
+        if self.priority != other.priority:
+            return self.priority < other.priority
+        return self.request_time < other.request_time
+
+# 각 도메인의 채점 기록(History)을 저장하는 클래스입니다.
+class History:
+    def __init__(self, start_time: int, end_time: int) -> None:
+        self.start_time: int = start_time # 채점 시작 시간
+        self.end_time: int = end_time     # 채점 종료 시간
+
+    # 현재 시간이 채점 가능한 시간인지 확인합니다.
+    # (start + 3 * gap) 보다 현재 시간이 크거나 같아야 채점 가능합니다.
+    def is_valid_time(self, cur_time: int) -> bool:
+        gap: int = self.end_time - self.start_time
+        return self.start_time + 3 * gap <= cur_time
+
+# --- 전역 변수 선언 ---
+
+# 총 채점기 수
+n: int = 0
+
+# Key: 도메인(str), Value: 해당 도메인의 채점 대기 태스크들이 담긴 우선순위 큐(list[Task])
+# 각 도메인별로 대기 큐를 관리합니다.
+domain_pqs: dict[str, list[Task]] = dict()
+
+# Key: 도메인(str), Value: 해당 도메인의 마지막 채점 기록(History)
+domain_judge_history: dict[str, History] = dict()
+
+# 쉬고 있는 채점기들의 ID가 담긴 최소 힙.
+# 가장 번호가 작은 채점기를 빠르게 찾기 위해 사용합니다.
+resting_judger_ids: list[int] = []
+
+# 현재 채점 중인 도메인들의 집합. 중복 채점을 방지하기 위해 사용합니다.
+judging_domains: set[str] = set()
+
+# 채점기 배열. judgers[i]는 i번 채점기가 채점 중인 Task 객체를 저장합니다. (쉬고 있으면 None)
+judgers: list[Task | None] = []
+
+# 채점 대기 큐에 있는 모든 URL의 집합.
+waiting_urls: set[str] = set()
+
+
+# 명령어 100: 채점기 준비
+def process_100(n_: int, u: str) -> None:
+    global n, resting_judger_ids, judgers
+
+    n = n_
+    # 1번부터 N번까지의 채점기를 모두 쉬는 상태로 초기화합니다.
+    resting_judger_ids = [i for i in range(1, n + 1)]
+    judgers = [None] * (n + 1)
+
+    # 초기 채점 요청(t=0, p=1)을 처리합니다.
+    process_200(t=0, p=1, u=u)
+
+# 명령어 200: 채점 요청 추가
+def process_200(t: int, p: int, u: str) -> None:
+    global waiting_urls, domain_pqs
+
+    # 이미 대기 큐에 동일한 URL이 있다면 요청을 무시합니다.
+    if u in waiting_urls:
+        return
+
+    # Task 객체를 생성하고, 해당 도메인의 우선순위 큐에 추가합니다.
+    task = Task(request_time=t, priority=p, url=u)
+    heapq.heappush(domain_pqs.setdefault(task.domain, []), task)
+    
+    # 대기 큐에 URL을 추가하여 중복을 기록합니다.
+    waiting_urls.add(u)
+
+# 특정 도메인이 현재 채점 가능한지 확인하는 헬퍼 함수
+def is_domain_judgeable(cur_time: int, domain: str) -> bool:
+    global judging_domains, domain_judge_history
+
+    # 조건 1: 해당 도메인이 현재 다른 채점기에서 채점 중이면 불가능합니다.
+    if domain in judging_domains:
+        return False
+
+    # 조건 2: 해당 도메인의 마지막 채점 기록을 확인하여 유예 기간인지 확인합니다.
+    history: History | None = domain_judge_history.get(domain, None)
+    if history and not history.is_valid_time(cur_time):
+        return False
+
+    return True
+
+# 명령어 300: 채점 시도
+def process_300(t: int) -> None:
+    global resting_judger_ids, domain_pqs, judging_domains, judgers, waiting_urls
+
+    # 쉬고 있는 채점기가 없으면 채점을 시작할 수 없습니다.
+    if not resting_judger_ids:
+        return
+
+    # 채점할 최적의 태스크를 찾습니다.
+    best_task: Task | None = None
+
+    # 모든 도메인의 대기 큐를 확인합니다.
+    for domain, pq in domain_pqs.items():
+        # 해당 도메인에 대기 중인 태스크가 없거나, 현재 채점 불가능한 도메인이면 건너뜁니다.
+        if not pq or not is_domain_judgeable(cur_time=t, domain=domain):
+            continue
+
+        # 현재 도메인의 가장 우선순위 높은 태스크를 가져옵니다.
+        current_task = pq[0]
+        
+        # 지금까지 찾은 최적의 태스크보다 우선순위가 높으면 교체합니다.
+        if not best_task or current_task < best_task:
+            best_task = current_task
+
+    # 채점 가능한 태스크가 없는 경우 함수를 종료합니다.
+    if not best_task:
+        return
+
+    # --- 채점 시작 처리 ---
+    # 가장 번호가 작은 쉬는 채점기를 배정합니다.
+    j_id: int = heapq.heappop(resting_judger_ids)
+    best_task.start_time = t
+
+    # 배정된 태스크를 해당 도메인의 대기 큐에서 제거합니다.
+    heapq.heappop(domain_pqs[best_task.domain])
+    # 도메인을 '채점 중' 상태로 변경합니다.
+    judging_domains.add(best_task.domain)
+    # 채점기 배열에 현재 채점하는 태스크를 기록합니다.
+    judgers[j_id] = best_task
+    # 전체 대기 큐에서 URL을 제거합니다.
+    waiting_urls.remove(best_task.url)
+
+# 명령어 400: 채점 종료
+def process_400(t: int, j_id: int) -> None:
+    global judgers, domain_judge_history, resting_judger_ids, judging_domains
+
+    # 해당 채점기가 채점 중이 아니었다면 무시합니다.
+    task: Task | None = judgers[j_id]
+    if not task:
+        return
+
+    # 채점 기록을 History 객체로 만들어 저장/갱신합니다.
+    domain_judge_history[task.domain] = History(start_time=task.start_time, end_time=t)
+    
+    # 채점기를 다시 쉬는 상태로 만듭니다.
+    heapq.heappush(resting_judger_ids, j_id)
+    judging_domains.remove(task.domain)
+    judgers[j_id] = None
+
+# 명령어 500: 채점 대기 큐 조회
+def process_500(t: int) -> None:
+    global waiting_urls
+    
+    # waiting_urls 집합의 크기가 곧 대기 큐에 있는 태스크의 수입니다.
+    print(len(waiting_urls))
+
+# --- 메인 실행 로직 ---
+q = int(input())
+for _ in range(q):
+    # 입력을 받아 명령 코드에 따라 적절한 함수를 호출합니다.
+    query: list[str] = input().split()
+    cmd: int = int(query[0])
+
+    if cmd == 100:
+        process_100(n_=int(query[1]), u=query[2])
+    elif cmd == 200:
+        process_200(t=int(query[1]), p=int(query[2]), u=query[3])
+    elif cmd == 300:
+        process_300(t=int(query[1]))
+    elif cmd == 400:
+        process_400(t=int(query[1]), j_id=int(query[2]))
+    elif cmd == 500:
+        process_500(t=int(query[1]))
+
 ```
 ````
