@@ -18,6 +18,8 @@ kernelspec:
 - [1번: 프로그래머스 블록 이동하기](https://school.programmers.co.kr/learn/courses/30/lessons/60063)
 - [2번: 코드트리 고대 문명 유적 탐사](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/ancient-ruin-exploration/description)
 - [3번: AI 로봇 청소기](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/ai-robot/description)
+- [4번: 메두사와 전사들](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/medusa-and-warriors/description)
+- [미지의 공간 탈출](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/escape-unknown-space/description)
   
 ## 1번: 블록 이동하기  
 

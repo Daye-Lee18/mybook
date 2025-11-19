@@ -5,7 +5,7 @@
 - [2번: 코드트리 코드트리 갬빗](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/codetrees-gambit/description)
 - [3번: 코드트리 미생물 연구](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/microbial-research/description)
 - [4번: 코드트리 민트초코 우유](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/mint-choco-milk/description)
-- [5번: 코드트리 메두사와 전사들](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/medusa-and-warriors/description)
+
 
 ## 1번: 마법의 숲 탐색 문제 풀이 BFS
 
