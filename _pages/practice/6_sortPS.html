@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Lecture 3-2. Backtracking 실습 &#8212; 말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업</title>
+    <title>Lecture 6-2. Sorting &#8212; 말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업</title>
   
   
   
@@ -60,13 +60,13 @@
     <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '_pages/practice/3_backtrackingPS';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_pages/practice/6_sortPS';</script>
     <script src="https://unpkg.com/jupyterquiz@1.1.8/dist/jupyterquiz.min.js"></script>
     <link rel="icon" href="../../_static/favicon.png"/>
     <link rel="index" title="색인" href="../../genindex.html" />
     <link rel="search" title="검색" href="../../search.html" />
-    <link rel="next" title="Lecture 4-2. DP 실습" href="4_DPPS.html" />
-    <link rel="prev" title="Lecture 2-2. DFS/BFS 실습" href="2_DFS_BFSPS.html" />
+    <link rel="next" title="Lecture 11-2. Linked List" href="11_linked_listPS.html" />
+    <link rel="prev" title="Lecture 5-2. Shortest Path &amp; Heap" href="5_shortest_pathPS.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ko"/>
   </head>
@@ -211,10 +211,10 @@
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="1_implementationPS.html">Lecture 1-2. 구현 실습</a></li>
 <li class="toctree-l1"><a class="reference internal" href="2_DFS_BFSPS.html">Lecture 2-2. DFS/BFS 실습</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Lecture 3-2. Backtracking 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_backtrackingPS.html">Lecture 3-2. Backtracking 실습</a></li>
 <li class="toctree-l1"><a class="reference internal" href="4_DPPS.html">Lecture 4-2. DP 실습</a></li>
 <li class="toctree-l1"><a class="reference internal" href="5_shortest_pathPS.html">Lecture 5-2. Shortest Path &amp; Heap</a></li>
-<li class="toctree-l1"><a class="reference internal" href="6_sortPS.html">Lecture 6-2. Sorting</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Lecture 6-2. Sorting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="11_linked_listPS.html">Lecture 11-2. Linked List</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">시험</span></p>
@@ -275,7 +275,7 @@
       
       
       
-      <li><a href="../../_sources/_pages/practice/3_backtrackingPS.md" target="_blank"
+      <li><a href="../../_sources/_pages/practice/6_sortPS.md" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="소스 파일 다운로드"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -357,7 +357,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Lecture 3-2. Backtracking 실습</h1>
+    <h1>Lecture 6-2. Sorting</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -371,17 +371,12 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="lecture-3-2-backtracking">
-<h1>Lecture 3-2. Backtracking 실습<a class="headerlink" href="#lecture-3-2-backtracking" title="Link to this heading">#</a></h1>
-<p>예시 문제 링크</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="lecture-6-2-sorting">
+<h1>Lecture 6-2. Sorting<a class="headerlink" href="#lecture-6-2-sorting" title="Link to this heading">#</a></h1>
+<p>예시 문제</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/odd-chess2/description">술래잡기 체스</a></p></li>
-<li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/woodstick-fraud/description">윷놀이 사기단</a></p></li>
-<li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/vaccine-for-virus/description">바이러스 백신</a></p></li>
-<li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/min-of-hospital-distance/description">병원 거리 최소화</a></p></li>
-<li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/debugging/description">디버깅</a></p></li>
-<li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/debugging/description">이상한 체스</a></p></li>
-<li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/arrange-operator/description">연산자 배치하기</a></p></li>
+<li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/codetree-omakase/description">코드트리 오마카세</a></p></li>
+<li></li>
 </ul>
 </section>
 
@@ -416,20 +411,20 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="2_DFS_BFSPS.html"
+       href="5_shortest_pathPS.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">이전</p>
-        <p class="prev-next-title">Lecture 2-2. DFS/BFS 실습</p>
+        <p class="prev-next-title">Lecture 5-2. Shortest Path &amp; Heap</p>
       </div>
     </a>
     <a class="right-next"
-       href="4_DPPS.html"
+       href="11_linked_listPS.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">다음</p>
-        <p class="prev-next-title">Lecture 4-2. DP 실습</p>
+        <p class="prev-next-title">Lecture 11-2. Linked List</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
