@@ -65,7 +65,7 @@
     <link rel="icon" href="../../_static/favicon.png"/>
     <link rel="index" title="색인" href="../../genindex.html" />
     <link rel="search" title="검색" href="../../search.html" />
-    <link rel="next" title="Midterm" href="../exams/midterm_student.html" />
+    <link rel="next" title="Lecture 11-2. Linked List" href="11_linked_listPS.html" />
     <link rel="prev" title="Lecture 4-2. DP 실습" href="4_DPPS.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ko"/>
@@ -214,6 +214,7 @@
 <li class="toctree-l1"><a class="reference internal" href="3_backtrackingPS.html">Lecture 3-2. Backtracking 실습</a></li>
 <li class="toctree-l1"><a class="reference internal" href="4_DPPS.html">Lecture 4-2. DP 실습</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Lecture 5-2. Shortest Path &amp; Heap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11_linked_listPS.html">Lecture 11-2. Linked List</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">시험</span></p>
 <ul class="nav bd-sidenav">
@@ -369,6 +370,7 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">가로등 설치</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">코드 트리 채점기</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">코드 트리 투어</a></li>
 </ul>
             </nav>
         </div>
@@ -1127,6 +1129,278 @@ document.write(`
 </div>
 </div>
 </section>
+<section id="id3">
+<h2>코드 트리 투어<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<p>구현 문제의 경우, 실수할 수 있는 부분은 여러개의 command 중 하나를 하고 다른 command를 할 경우 그 다음 상황에 영향을 미치는 것이 있는 지 미리 체크해야한다. 이번 문제의 경우 새로 변한 start_id에 대해 이후에 command <code class="docutils literal notranslate"><span class="pre">200</span></code>이 나오는 경우에 새로운 <code class="docutils literal notranslate"><span class="pre">start_id</span></code>에 대하여 Trip의 cost등을 계산해야하므로 이를 global variable로 관리해주는 것이 포인트였다.</p>
+<div class="dropdown admonition">
+<p class="admonition-title">explanation</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">여행 상품의 출발지는 통일: 0번 도시 </span>
+<span class="sd">간선에 음수가 없으므로 dijkstra algorithm사용 가능. </span>
+
+<span class="sd">0. 필요한 자료 구조 </span>
+<span class="sd">- `trip_lists`: pq, Trip class를 priority에 맞게 보관 </span>
+<span class="sd">- class Trip: __lt__(), get_benefit(), </span>
+<span class="sd">- shortest_path: dict[int(id), list[int] (cost to the dest_id)]</span>
+<span class="sd">- graph: adjacency_list: list[list[int]], 각 노드와 연결된 node정보 저장 </span>
+
+<span class="sd">1. 코드트리 랜드 건설</span>
+<span class="sd">- 도시의 수 n, 간선의 수 m, 간성 정보 (도시 i,도시 j, 가중치)</span>
+<span class="sd">- 자기자신 연결, 두 도시 간의 여러 간선 가능 </span>
+<span class="sd">- start_node가 0인 shortest_path INIT </span>
+<span class="sd">- graph 초기화 </span>
+
+<span class="sd">2. 여행 상품 생성 </span>
+<span class="sd">- 관리 목록: (id, revenue_id, dest_id) 여행 상품을 추가하고 관리 목록에 추가 </span>
+<span class="sd">    - 데이터 구조: priority queue로 O(log(30,000)) = O(10)  </span>
+<span class="sd">    - id: 여행상품 고유 식별자 </span>
+<span class="sd">    - revenue_id : 여행사가 얻게되는 매출 </span>
+<span class="sd">    - start_id: 이 상품의 출발지 </span>
+<span class="sd">    - dest_id :이 상품의 도착지 </span>
+<span class="sd">    - cost : revenue_id - shortest_path (출발지 ~ 도착지 최단거리)</span>
+<span class="sd">- 해당 명령은 최대 30,000번 주어진다.</span>
+<span class="sd">- class Trip 생성으로 해당 데이터 관리 필요 </span>
+<span class="sd">    - __lt__ 함수 : pq에 들어갈나 &lt;, &gt;를 계산할때 비교 함수 생성 </span>
+<span class="sd">    - get_benefit 함수: Start_id가 바뀜에 cost가 변해서, 변할때 그 차이를 계산해주는 함수 생성 </span>
+
+
+<span class="sd">3. 여행 상품 취소 </span>
+<span class="sd">- 여행 상품 고유 식별자 id에 해당하는 여행 상품 존재하면 관리 목록에서 삭제 </span>
+<span class="sd">    - 찾기: O(1) -&gt; dict로 id에 따른 상품을 관리할 수 있음 </span>
+<span class="sd">        - list로 관리하면 어떤 id가 있을 지도 모르는데, 메모리 비용이 많이 든다. </span>
+<span class="sd">        - id는 30,000보다 작으므로 근데 어차피 여행 상품 넣는 것을 30000으로 하니까 오히려 list의 indexf로 관리하는게 더 나을 수도 있겠음. </span>
+<span class="sd">        - dictionary는 key가 맞는지 일일이 확인해야하잖아. </span>
+<span class="sd">    - 삭제: O(1) </span>
+<span class="sd">    - 삭제 이후, 관리 목록 pq 는 lazy deletion을 진행해야함. (즉, id_trip_pq는 바로 관리하고, 4번 판매할때, 이게 유효한지, id_trip_pq를 통해서 확인)</span>
+<span class="sd">- 해당 명령은 최대 30,000번 주어진다. ~ 3*1e4</span>
+
+<span class="sd">4. 최적 여행 상품 판매 </span>
+<span class="sd">- 판매 가능 상품이 없으면 -1 출력후 상품 제거 x </span>
+<span class="sd">- 판매 가능 상품 있으면 해당 상품 id 출력후 상품 제거 </span>
+<span class="sd">- 해당 명령은 최대 30,000번 주어진다. ~ O(10)*30000 ~ 3*1e5</span>
+
+<span class="sd">- 판매 불가 상품 </span>
+<span class="sd">    - 출발지로부터 dest_id까지 도달하는 것이 불가능 </span>
+<span class="sd">        - 이건 넣을때부터 알 수 있는 건데...아 근데 넣을때 빼버리면 나중에 출발지 변경할때 또 달라질 수 있어서 그때그때 검사하는 게 좋음 </span>
+<span class="sd">        - Trip class의 cost가 MAX값이면 도달 불가능확인 가능 </span>
+<span class="sd">        - O(1)</span>
+<span class="sd">    - cost_id가 revenue_id보다 커서 여행사가 이득을 얻을 수 없는 상황, 이득이 0인 경우도 팔 수 있음 </span>
+<span class="sd">        - revenue_id - cost_id &lt; 0 이면 팔 수 없음 </span>
+<span class="sd">        - O(1) </span>
+<span class="sd">- 관리 목록에서 조건에 맞는 최적 상품 선택 및 판매 </span>
+<span class="sd">    - 조건: </span>
+<span class="sd">        - 이득 [revenue - cost]가 최대인 상품 : cost = 출발지로부터 id 상품의 도착지 dest_id까지 도달하기 위한 최단 거리 </span>
+<span class="sd">        - 이득이 동일하면 id가 가장 작은 상품 선택 </span>
+<span class="sd">        - NOTE: </span>
+<span class="sd">        ---&gt; 이 조건들을 생각해보면, get_benefit()을 통해 나온 이득이 음수인 경우, 그 뒤를 보지 않아도 다 팔리지 못할 상품들이므로 팔 수 있는 상품이 없다고 생각하면 됨. </span>
+<span class="sd">        ----&gt; 따라서, 맨 처음 pq에 있는 상품의 이득이 &gt;=0인 경우, 그것을 팔면 된다.</span>
+<span class="sd">    - 판매 불가 조건 </span>
+<span class="sd">        - 위 참고 </span>
+<span class="sd">    - 판매 가능 상품 중 가장 우선순위가 높은 상품을 1개 판매하고, 이 상품의 id를 출력한 뒤 관리 목록에서 제거 (logQ)</span>
+<span class="sd">        -관리 목록: priority queue </span>
+
+<span class="sd">Algorithm </span>
+<span class="sd">1-1. pq에서 맨 위의 Task를 뽑는다. (아직 제거x) (이득이 최대이고, id가 가장 작은 상품 순으로 뽑힘.)</span>
+<span class="sd">2-1. 이미 3.에 의해 삭제된 여행 상품인지 확인한다. (O(1))</span>
+<span class="sd">2-2. 존재하는 상품이면, 판매 불가 상품인지 확인한다. (O(1))</span>
+<span class="sd">3-1. 위의 조건을 만족하면, id를 출력한 뒤 관리 목록에서 제거한다. (log30000 ~ 10)</span>
+<span class="sd">3-3. pq의 모든 상품을 다 돌았는데도 불구하고, 판매가능한 상품이 없으면, -1를 출력하고, 관리 목록에서 제거하지 않는다. </span>
+
+
+<span class="sd">5. 여행 상품의 출발지 변경 </span>
+<span class="sd">- 여행 상품의 출발지를 전부 s로 변경 -&gt; 변경 이후에 각 상품의 cost_id가 변경될 수 있음에 유의 </span>
+<span class="sd">- NOTE: `trip_lists`의 모든 Trip에 대해서 start_id와 cost를 변경해서 pq안에서 정렬이 바뀔 수 있도록 해야한다. </span>
+<span class="sd">    - 새로 삽입될 때 비교를 해서 넣고, 해당 class안의 variable들을 바꿨다고 우선순위가 변할 것 같지 않음 </span>
+<span class="sd">    - 새로 만들때 log(30000) = O(10)</span>
+<span class="sd">    - 새로 만들고 기존 변수명에 다시 복사하는 방식을 사용해야함. global 및 [:] 슬라이싱사용. </span>
+<span class="sd">- 출발지가 바뀌는 경우, cost를 쉽게 계산하는 법 </span>
+<span class="sd">    - dijkstra는 greedy algorithm으로 O(E)로 계산 가능 : 이걸로 최대 15번이니까 15*O(Elog(V))</span>
+<span class="sd">    - floyd warshall algorithm은 한번에 2D matrix 계산 O(N^3)이 걸림 </span>
+<span class="sd">- NOTE: 새로 변한 start_id에 대해 이후에 command `200`이 나오는 경우에 새로운 `start_id`에 대하여 Trip의 cost등을 계산해야하므로 이를 global variable로 관리해준다. </span>
+
+<span class="sd">- 해당 명령은 최대 15번 주어진다. 0&lt;=s&lt;=n-1 인데, n은 최대 2000개지만, s는 15번만 바뀐다. </span>
+<span class="sd">- s가 바뀌면 그에 따른 최단거리도 달라진다. -&gt; Trip의 cost , start_id 가 변해야함. </span>
+<span class="sd">- shortest_distance: dict[int, list[int]] 를 저장하는 데이터 구조 필요 -&gt; Trip의 cost는 shortest_distance[start_id][dest_id]로 저장 </span>
+<span class="sd">- Dijkstra algorithm을 최대 15번 진행한다고 하면, O(15*(2000+10000)* log(2000)) = 1.3 * 1e6</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span> 
+<span class="nb">print</span><span class="p">(</span><span class="mi">12000</span><span class="o">*</span><span class="mi">15</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2000</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">solution</p>
+<p>만약 풀리지 않는 test case가 있다면 각 cmd마다 print를 해서 어느 부분이 틀렸는지 검토해보자.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span> 
+<span class="kn">import</span><span class="w"> </span><span class="nn">heapq</span> 
+
+<span class="nb">input</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span>
+<span class="c1"># sys.stdin = open(&#39;Input.txt&#39;)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">graph_init</span><span class="p">(</span><span class="n">num_edges</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">edges</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+    <span class="k">global</span> <span class="n">graph</span> 
+    <span class="k">for</span> <span class="n">idx_2</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">edges</span><span class="p">),</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="c1"># print(idx)</span>
+        <span class="n">node1</span><span class="p">,</span> <span class="n">node2</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">edges</span><span class="p">[</span><span class="n">idx_2</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">edges</span><span class="p">[</span><span class="n">idx_2</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">edges</span><span class="p">[</span><span class="n">idx_2</span><span class="p">]</span>
+        <span class="c1"># 자기자신 연결인 경우는 한번만 그래프에 추가 </span>
+        <span class="n">graph</span><span class="p">[</span><span class="n">node1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">weight</span><span class="p">,</span> <span class="n">node2</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">node1</span> <span class="o">!=</span> <span class="n">node2</span><span class="p">:</span>
+            <span class="n">graph</span><span class="p">[</span><span class="n">node2</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">weight</span><span class="p">,</span> <span class="n">node1</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">dijkstra</span><span class="p">(</span><span class="n">start_node</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">shortest_path</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">N</span>
+    <span class="c1"># shortest_path: dict[int, list] INIT </span>
+    <span class="n">shortest_path</span><span class="p">[</span><span class="n">start_node</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">MAX</span><span class="p">]</span><span class="o">*</span> <span class="n">N</span>
+    <span class="n">shortest_path</span><span class="p">[</span><span class="n">start_node</span><span class="p">][</span><span class="n">start_node</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># INIT at start_node </span>
+    <span class="n">q</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="n">start_node</span><span class="p">)]</span> <span class="c1"># (dis, start_node)</span>
+
+    <span class="k">while</span> <span class="n">q</span><span class="p">:</span>
+        <span class="n">cur_dis</span><span class="p">,</span> <span class="n">cur_node</span> <span class="o">=</span>  <span class="n">heapq</span><span class="o">.</span><span class="n">heappop</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="c1"># min_heap on the first dis element </span>
+
+        <span class="c1"># 1. is already visited?</span>
+        <span class="k">if</span> <span class="n">cur_dis</span> <span class="o">&gt;</span> <span class="n">shortest_path</span><span class="p">[</span><span class="n">start_node</span><span class="p">][</span><span class="n">cur_node</span><span class="p">]:</span>
+            <span class="k">continue</span> 
+        
+        <span class="c1"># 2. explore next nodes in the graph</span>
+        <span class="k">for</span> <span class="n">weight</span><span class="p">,</span> <span class="n">nxt_node</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">[</span><span class="n">cur_node</span><span class="p">]:</span>
+            <span class="n">dis</span> <span class="o">=</span> <span class="n">cur_dis</span> <span class="o">+</span> <span class="n">weight</span>
+            <span class="k">if</span>  <span class="n">dis</span> <span class="o">&lt;</span> <span class="n">shortest_path</span><span class="p">[</span><span class="n">start_node</span><span class="p">][</span><span class="n">nxt_node</span><span class="p">]:</span>
+                <span class="n">shortest_path</span><span class="p">[</span><span class="n">start_node</span><span class="p">][</span><span class="n">nxt_node</span><span class="p">]</span> <span class="o">=</span> <span class="n">dis</span> 
+                <span class="n">heapq</span><span class="o">.</span><span class="n">heappush</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="p">(</span><span class="n">dis</span><span class="p">,</span> <span class="n">nxt_node</span><span class="p">))</span>
+    <span class="c1"># print(shortest_path)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">process_400</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">global</span> <span class="n">trip_pq</span>
+
+    <span class="k">while</span> <span class="n">trip_pq</span><span class="p">:</span>
+        <span class="n">cur_trip</span> <span class="o">=</span> <span class="n">trip_pq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># 이미 cmd[0]== 300에 의해 삭제된 여행 상품인지 확인</span>
+        <span class="c1"># lazy deletion  </span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">exist_trip_id</span><span class="p">[</span><span class="n">cur_trip</span><span class="o">.</span><span class="n">id</span><span class="p">]:</span>
+            <span class="n">heapq</span><span class="o">.</span><span class="n">heappop</span><span class="p">(</span><span class="n">trip_pq</span><span class="p">)</span>
+            <span class="k">continue</span> 
+
+        <span class="c1"># 존재하는 상품이면, 판매 불가 상품인지 확인 </span>
+        <span class="k">if</span> <span class="n">cur_trip</span><span class="o">.</span><span class="n">get_cost</span><span class="p">()</span> <span class="o">==</span> <span class="n">MAX</span> <span class="ow">or</span> <span class="n">cur_trip</span><span class="o">.</span><span class="n">get_benefit</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">return</span> 
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># 위의 조건을 다 만족하면, id를 출력한 뒤 관리 목록에서 제거 </span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">cur_trip</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="n">heapq</span><span class="o">.</span><span class="n">heappop</span><span class="p">(</span><span class="n">trip_pq</span><span class="p">)</span>
+            <span class="c1"># NOTE: 해당 관리 목록에서 삭제해줘야함!!</span>
+            <span class="n">exist_trip_id</span><span class="p">[</span><span class="n">cur_trip</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">return</span> 
+    
+    <span class="c1"># trip_pq에 아무원소도 없을 경우 </span>
+    <span class="nb">print</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+        
+<span class="c1"># --------------- 전역 스코프 </span>
+<span class="n">Q</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">())</span>
+
+<span class="c1"># 데이터 구조 INIT </span>
+<span class="n">MAX</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1e9</span><span class="p">)</span>
+<span class="n">shortest_path</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<span class="n">trip_pq</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="s2">&quot;Trip&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span> 
+<span class="n">exist_trip_id</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">cur_start_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="c1"># graph 는 아래서 </span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Trip</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">revenue</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">dest_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">start_id</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="nb">id</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">revenue</span> <span class="o">=</span> <span class="n">revenue</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">dest_id</span> <span class="o">=</span> <span class="n">dest_id</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_id</span> <span class="o">=</span> <span class="n">start_id</span> <span class="c1"># 변할 수 있음. </span>
+        <span class="c1"># self.cost = MAX  # start 와 dest을 알면 shortest_path에 바로 접근해서 알 수 있고, 아래 get_benefit() 함수에서 그걸 구현해놓음. </span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="n">my_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_benefit</span><span class="p">()</span>
+        <span class="n">other_b</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">get_benefit</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">my_b</span> <span class="o">==</span> <span class="n">other_b</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">&lt;</span> <span class="n">other</span><span class="o">.</span><span class="n">id</span> 
+        <span class="k">return</span> <span class="n">my_b</span> <span class="o">&gt;</span> <span class="n">other_b</span> 
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_benefit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c1"># Revenue - current_cost </span>
+        <span class="k">global</span> <span class="n">shortest_path</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_id</span> <span class="ow">in</span> <span class="n">shortest_path</span> 
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">revenue</span> <span class="o">-</span> <span class="n">shortest_path</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">start_id</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">dest_id</span><span class="p">]</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">global</span> <span class="n">shortest_path</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_id</span> <span class="ow">in</span> <span class="n">shortest_path</span> 
+        <span class="k">return</span> <span class="n">shortest_path</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">start_id</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">dest_id</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Trip(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">)&quot;</span>
+    
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Q</span><span class="p">):</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+    <span class="c1"># if cmd == [300, 3]:</span>
+    <span class="c1">#     print(&#39;a&#39;)</span>
+    <span class="k">if</span> <span class="n">cmd</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">100</span><span class="p">:</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="n">cmd</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span> <span class="n">M</span><span class="o">=</span><span class="n">cmd</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">graph</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+        <span class="n">exist_trip_id</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="mi">30001</span>
+        <span class="n">graph_init</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">cmd</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span> <span class="c1"># m, [node1, end1, weight1,... ]</span>
+        <span class="c1"># print(graph)</span>
+        <span class="n">dijkstra</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># start node= 0 </span>
+        <span class="c1"># print(shortest_path)</span>
+
+    <span class="k">elif</span> <span class="n">cmd</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+        <span class="n">heapq</span><span class="o">.</span><span class="n">heappush</span><span class="p">(</span><span class="n">trip_pq</span><span class="p">,</span> <span class="n">Trip</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">cmd</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">revenue</span><span class="o">=</span><span class="n">cmd</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">dest_id</span><span class="o">=</span><span class="n">cmd</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">start_id</span><span class="o">=</span><span class="n">cur_start_id</span><span class="p">))</span>
+        <span class="n">exist_trip_id</span><span class="p">[</span><span class="n">cmd</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># 해당 여행이 존재 </span>
+        <span class="c1"># print(f&quot;Add Trip {cmd[1]}&quot;)</span>
+        <span class="c1"># print(f&quot;  trip_pq: {trip_pq}&quot;)</span>
+        <span class="c1"># print(f&quot;  exist_trip: {exist_trip_id[cmd[1]]}&quot;)</span>
+
+    <span class="k">elif</span> <span class="n">cmd</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">300</span><span class="p">:</span>
+        <span class="n">cur_id</span> <span class="o">=</span> <span class="n">cmd</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">exist_trip_id</span><span class="p">[</span><span class="n">cur_id</span><span class="p">]:</span> <span class="c1"># 존재하면 </span>
+            <span class="n">exist_trip_id</span><span class="p">[</span><span class="n">cur_id</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span> 
+
+        <span class="c1"># print(f&quot;Delete Trip {cur_id}&quot;)</span>
+        <span class="c1"># print(f&quot;  trip_pq: {trip_pq}&quot;)</span>
+        <span class="c1"># print(f&quot;  exist_trip: {exist_trip_id[cur_id]}&quot;)</span>
+
+
+    <span class="c1"># 최적의 여행 상품 판매 </span>
+    <span class="k">elif</span> <span class="n">cmd</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">400</span><span class="p">:</span>
+        <span class="c1"># print(f&quot;여행 상품 판매&quot;)</span>
+        <span class="n">process_400</span><span class="p">()</span>
+        <span class="c1"># print(f&quot;  trip_pq: {trip_pq}&quot;)</span>
+
+
+
+    <span class="c1"># 여행 상품의 출발지 변경 </span>
+    <span class="k">else</span><span class="p">:</span> <span class="c1"># cmd[0] == 500:</span>
+        <span class="c1"># print(f&quot;-------출발지 변경&quot;)</span>
+        <span class="c1"># print(f&quot;before: {trip_pq}&quot;)</span>
+        <span class="c1">##### global로 start_id 를 변경해줘야 나중에 200으로 들어왔을 때, 해당 start_id에 대해 task가 정렬됨. </span>
+        <span class="n">cur_start_id</span> <span class="o">=</span> <span class="n">cmd</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">new_trip_pq</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># 1. 새로운 출발점에 대한 shortest_path 계산 먼저 해야 cost 계산에 의해 heapq에서 정렬됨. </span>
+        <span class="n">dijkstra</span><span class="p">(</span><span class="n">cur_start_id</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">cur_trip</span> <span class="ow">in</span> <span class="n">trip_pq</span><span class="p">:</span>
+            <span class="c1"># 여기서도 lazy deletion해준다. </span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">exist_trip_id</span><span class="p">[</span><span class="n">cur_trip</span><span class="o">.</span><span class="n">id</span><span class="p">]:</span>
+                <span class="k">continue</span> 
+            <span class="n">cur_trip</span><span class="o">.</span><span class="n">start_id</span> <span class="o">=</span> <span class="n">cur_start_id</span>
+            <span class="n">heapq</span><span class="o">.</span><span class="n">heappush</span><span class="p">(</span><span class="n">new_trip_pq</span><span class="p">,</span> <span class="n">cur_trip</span><span class="p">)</span>
+
+        <span class="n">trip_pq</span> <span class="o">=</span> <span class="n">new_trip_pq</span><span class="p">[:]</span>
+        <span class="c1"># debug </span>
+        <span class="c1"># print(f&quot;start node {cur_start_id}: {trip_pq}&quot;)</span>
+        <span class="c1"># print([exist_trip_id[cur_trip.id] for cur_trip in trip_pq])</span>
+        <span class="c1"># print(f&quot;-------출발지 변경 끝&quot;)</span>
+</pre></div>
+</div>
+</div>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -1169,11 +1443,11 @@ document.write(`
       </div>
     </a>
     <a class="right-next"
-       href="../exams/midterm_student.html"
+       href="11_linked_listPS.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">다음</p>
-        <p class="prev-next-title">Midterm</p>
+        <p class="prev-next-title">Lecture 11-2. Linked List</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1195,6 +1469,7 @@ document.write(`
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">가로등 설치</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">코드 트리 채점기</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">코드 트리 투어</a></li>
 </ul>
   </nav></div>
 

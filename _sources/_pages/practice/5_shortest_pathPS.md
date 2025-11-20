@@ -783,3 +783,280 @@ for _ in range(q):
 
 ```
 ````
+
+## 코드 트리 투어 
+
+구현 문제의 경우, 실수할 수 있는 부분은 여러개의 command 중 하나를 하고 다른 command를 할 경우 그 다음 상황에 영향을 미치는 것이 있는 지 미리 체크해야한다. 이번 문제의 경우 새로 변한 start_id에 대해 이후에 command `200`이 나오는 경우에 새로운 `start_id`에 대하여 Trip의 cost등을 계산해야하므로 이를 global variable로 관리해주는 것이 포인트였다. 
+
+````{admonition} explanation 
+:class: dropdown 
+
+```{code-block} python
+'''
+여행 상품의 출발지는 통일: 0번 도시 
+간선에 음수가 없으므로 dijkstra algorithm사용 가능. 
+
+0. 필요한 자료 구조 
+- `trip_lists`: pq, Trip class를 priority에 맞게 보관 
+- class Trip: __lt__(), get_benefit(), 
+- shortest_path: dict[int(id), list[int] (cost to the dest_id)]
+- graph: adjacency_list: list[list[int]], 각 노드와 연결된 node정보 저장 
+
+1. 코드트리 랜드 건설
+- 도시의 수 n, 간선의 수 m, 간성 정보 (도시 i,도시 j, 가중치)
+- 자기자신 연결, 두 도시 간의 여러 간선 가능 
+- start_node가 0인 shortest_path INIT 
+- graph 초기화 
+
+2. 여행 상품 생성 
+- 관리 목록: (id, revenue_id, dest_id) 여행 상품을 추가하고 관리 목록에 추가 
+    - 데이터 구조: priority queue로 O(log(30,000)) = O(10)  
+    - id: 여행상품 고유 식별자 
+    - revenue_id : 여행사가 얻게되는 매출 
+    - start_id: 이 상품의 출발지 
+    - dest_id :이 상품의 도착지 
+    - cost : revenue_id - shortest_path (출발지 ~ 도착지 최단거리)
+- 해당 명령은 최대 30,000번 주어진다.
+- class Trip 생성으로 해당 데이터 관리 필요 
+    - __lt__ 함수 : pq에 들어갈나 <, >를 계산할때 비교 함수 생성 
+    - get_benefit 함수: Start_id가 바뀜에 cost가 변해서, 변할때 그 차이를 계산해주는 함수 생성 
+
+
+3. 여행 상품 취소 
+- 여행 상품 고유 식별자 id에 해당하는 여행 상품 존재하면 관리 목록에서 삭제 
+    - 찾기: O(1) -> dict로 id에 따른 상품을 관리할 수 있음 
+        - list로 관리하면 어떤 id가 있을 지도 모르는데, 메모리 비용이 많이 든다. 
+        - id는 30,000보다 작으므로 근데 어차피 여행 상품 넣는 것을 30000으로 하니까 오히려 list의 indexf로 관리하는게 더 나을 수도 있겠음. 
+        - dictionary는 key가 맞는지 일일이 확인해야하잖아. 
+    - 삭제: O(1) 
+    - 삭제 이후, 관리 목록 pq 는 lazy deletion을 진행해야함. (즉, id_trip_pq는 바로 관리하고, 4번 판매할때, 이게 유효한지, id_trip_pq를 통해서 확인)
+- 해당 명령은 최대 30,000번 주어진다. ~ 3*1e4
+
+4. 최적 여행 상품 판매 
+- 판매 가능 상품이 없으면 -1 출력후 상품 제거 x 
+- 판매 가능 상품 있으면 해당 상품 id 출력후 상품 제거 
+- 해당 명령은 최대 30,000번 주어진다. ~ O(10)*30000 ~ 3*1e5
+
+- 판매 불가 상품 
+    - 출발지로부터 dest_id까지 도달하는 것이 불가능 
+        - 이건 넣을때부터 알 수 있는 건데...아 근데 넣을때 빼버리면 나중에 출발지 변경할때 또 달라질 수 있어서 그때그때 검사하는 게 좋음 
+        - Trip class의 cost가 MAX값이면 도달 불가능확인 가능 
+        - O(1)
+    - cost_id가 revenue_id보다 커서 여행사가 이득을 얻을 수 없는 상황, 이득이 0인 경우도 팔 수 있음 
+        - revenue_id - cost_id < 0 이면 팔 수 없음 
+        - O(1) 
+- 관리 목록에서 조건에 맞는 최적 상품 선택 및 판매 
+    - 조건: 
+        - 이득 [revenue - cost]가 최대인 상품 : cost = 출발지로부터 id 상품의 도착지 dest_id까지 도달하기 위한 최단 거리 
+        - 이득이 동일하면 id가 가장 작은 상품 선택 
+        - NOTE: 
+        ---> 이 조건들을 생각해보면, get_benefit()을 통해 나온 이득이 음수인 경우, 그 뒤를 보지 않아도 다 팔리지 못할 상품들이므로 팔 수 있는 상품이 없다고 생각하면 됨. 
+        ----> 따라서, 맨 처음 pq에 있는 상품의 이득이 >=0인 경우, 그것을 팔면 된다.
+    - 판매 불가 조건 
+        - 위 참고 
+    - 판매 가능 상품 중 가장 우선순위가 높은 상품을 1개 판매하고, 이 상품의 id를 출력한 뒤 관리 목록에서 제거 (logQ)
+        -관리 목록: priority queue 
+
+Algorithm 
+1-1. pq에서 맨 위의 Task를 뽑는다. (아직 제거x) (이득이 최대이고, id가 가장 작은 상품 순으로 뽑힘.)
+2-1. 이미 3.에 의해 삭제된 여행 상품인지 확인한다. (O(1))
+2-2. 존재하는 상품이면, 판매 불가 상품인지 확인한다. (O(1))
+3-1. 위의 조건을 만족하면, id를 출력한 뒤 관리 목록에서 제거한다. (log30000 ~ 10)
+3-3. pq의 모든 상품을 다 돌았는데도 불구하고, 판매가능한 상품이 없으면, -1를 출력하고, 관리 목록에서 제거하지 않는다. 
+
+
+5. 여행 상품의 출발지 변경 
+- 여행 상품의 출발지를 전부 s로 변경 -> 변경 이후에 각 상품의 cost_id가 변경될 수 있음에 유의 
+- NOTE: `trip_lists`의 모든 Trip에 대해서 start_id와 cost를 변경해서 pq안에서 정렬이 바뀔 수 있도록 해야한다. 
+    - 새로 삽입될 때 비교를 해서 넣고, 해당 class안의 variable들을 바꿨다고 우선순위가 변할 것 같지 않음 
+    - 새로 만들때 log(30000) = O(10)
+    - 새로 만들고 기존 변수명에 다시 복사하는 방식을 사용해야함. global 및 [:] 슬라이싱사용. 
+- 출발지가 바뀌는 경우, cost를 쉽게 계산하는 법 
+    - dijkstra는 greedy algorithm으로 O(E)로 계산 가능 : 이걸로 최대 15번이니까 15*O(Elog(V))
+    - floyd warshall algorithm은 한번에 2D matrix 계산 O(N^3)이 걸림 
+- NOTE: 새로 변한 start_id에 대해 이후에 command `200`이 나오는 경우에 새로운 `start_id`에 대하여 Trip의 cost등을 계산해야하므로 이를 global variable로 관리해준다. 
+
+- 해당 명령은 최대 15번 주어진다. 0<=s<=n-1 인데, n은 최대 2000개지만, s는 15번만 바뀐다. 
+- s가 바뀌면 그에 따른 최단거리도 달라진다. -> Trip의 cost , start_id 가 변해야함. 
+- shortest_distance: dict[int, list[int]] 를 저장하는 데이터 구조 필요 -> Trip의 cost는 shortest_distance[start_id][dest_id]로 저장 
+- Dijkstra algorithm을 최대 15번 진행한다고 하면, O(15*(2000+10000)* log(2000)) = 1.3 * 1e6
+'''
+import math 
+print(12000*15*math.log(2000))
+```
+````
+
+````{admonition} solution 
+:class: dropdown 
+
+만약 풀리지 않는 test case가 있다면 각 cmd마다 print를 해서 어느 부분이 틀렸는지 검토해보자. 
+
+```{code-block} python 
+import sys 
+import heapq 
+
+input = sys.stdin.readline
+# sys.stdin = open('Input.txt')
+
+def graph_init(num_edges: int, edges: list[int]):
+    global graph 
+    for idx_2 in range(2, len(edges), 3):
+        # print(idx)
+        node1, node2, weight=edges[idx_2-2], edges[idx_2-1], edges[idx_2]
+        # 자기자신 연결인 경우는 한번만 그래프에 추가 
+        graph[node1].append((weight, node2))
+        if node1 != node2:
+            graph[node2].append((weight, node1))
+
+
+def dijkstra(start_node):
+    global shortest_path, graph, N
+    # shortest_path: dict[int, list] INIT 
+    shortest_path[start_node] = [MAX]* N
+    shortest_path[start_node][start_node] = 0 # INIT at start_node 
+    q = [(0, start_node)] # (dis, start_node)
+
+    while q:
+        cur_dis, cur_node =  heapq.heappop(q) # min_heap on the first dis element 
+
+        # 1. is already visited?
+        if cur_dis > shortest_path[start_node][cur_node]:
+            continue 
+        
+        # 2. explore next nodes in the graph
+        for weight, nxt_node in graph[cur_node]:
+            dis = cur_dis + weight
+            if  dis < shortest_path[start_node][nxt_node]:
+                shortest_path[start_node][nxt_node] = dis 
+                heapq.heappush(q, (dis, nxt_node))
+    # print(shortest_path)
+def process_400() -> None:
+    global trip_pq
+
+    while trip_pq:
+        cur_trip = trip_pq[0]
+
+        # 이미 cmd[0]== 300에 의해 삭제된 여행 상품인지 확인
+        # lazy deletion  
+        if not exist_trip_id[cur_trip.id]:
+            heapq.heappop(trip_pq)
+            continue 
+
+        # 존재하는 상품이면, 판매 불가 상품인지 확인 
+        if cur_trip.get_cost() == MAX or cur_trip.get_benefit() < 0:
+            print(-1)
+            return 
+        else:
+            # 위의 조건을 다 만족하면, id를 출력한 뒤 관리 목록에서 제거 
+            print(cur_trip.id)
+            heapq.heappop(trip_pq)
+            # NOTE: 해당 관리 목록에서 삭제해줘야함!!
+            exist_trip_id[cur_trip.id] = False
+            return 
+    
+    # trip_pq에 아무원소도 없을 경우 
+    print(-1)
+
+        
+# --------------- 전역 스코프 
+Q = int(input())
+
+# 데이터 구조 INIT 
+MAX = int(1e9)
+shortest_path: dict[int, list[int]] = dict()
+trip_pq: list["Trip"] = [] 
+exist_trip_id: list[bool] = []
+cur_start_id: int = 0
+
+# graph 는 아래서 
+class Trip:
+    def __init__(self, id:int, revenue: int, dest_id: int, start_id: int=0):
+        self.id = id 
+        self.revenue = revenue 
+        self.dest_id = dest_id 
+        self.start_id = start_id # 변할 수 있음. 
+        # self.cost = MAX  # start 와 dest을 알면 shortest_path에 바로 접근해서 알 수 있고, 아래 get_benefit() 함수에서 그걸 구현해놓음. 
+    
+    def __lt__(self, other):
+        my_b = self.get_benefit()
+        other_b = other.get_benefit()
+        if my_b == other_b:
+            return self.id < other.id 
+        return my_b > other_b 
+    
+    def get_benefit(self): # Revenue - current_cost 
+        global shortest_path
+        assert self.start_id in shortest_path 
+        return self.revenue - shortest_path[self.start_id][self.dest_id]
+    
+    def get_cost(self):
+        global shortest_path
+        assert self.start_id in shortest_path 
+        return shortest_path[self.start_id][self.dest_id]
+
+    def __repr__(self):
+        return f"Trip({self.id})"
+    
+for _ in range(Q):
+    cmd = list(map(int, input().split()))
+    # if cmd == [300, 3]:
+    #     print('a')
+    if cmd[0] == 100:
+        N = cmd[1]; M=cmd[2]
+        graph = [[] for _ in range(N)]
+        exist_trip_id = [False] * 30001
+        graph_init(M, cmd[3:]) # m, [node1, end1, weight1,... ]
+        # print(graph)
+        dijkstra(0) # start node= 0 
+        # print(shortest_path)
+
+    elif cmd[0] == 200:
+        heapq.heappush(trip_pq, Trip(id=cmd[1], revenue=cmd[2], dest_id=cmd[3], start_id=cur_start_id))
+        exist_trip_id[cmd[1]] = True  # 해당 여행이 존재 
+        # print(f"Add Trip {cmd[1]}")
+        # print(f"  trip_pq: {trip_pq}")
+        # print(f"  exist_trip: {exist_trip_id[cmd[1]]}")
+
+    elif cmd[0] == 300:
+        cur_id = cmd[1]
+        if exist_trip_id[cur_id]: # 존재하면 
+            exist_trip_id[cur_id] = False 
+
+        # print(f"Delete Trip {cur_id}")
+        # print(f"  trip_pq: {trip_pq}")
+        # print(f"  exist_trip: {exist_trip_id[cur_id]}")
+
+
+    # 최적의 여행 상품 판매 
+    elif cmd[0] == 400:
+        # print(f"여행 상품 판매")
+        process_400()
+        # print(f"  trip_pq: {trip_pq}")
+
+
+
+    # 여행 상품의 출발지 변경 
+    else: # cmd[0] == 500:
+        # print(f"-------출발지 변경")
+        # print(f"before: {trip_pq}")
+        ##### global로 start_id 를 변경해줘야 나중에 200으로 들어왔을 때, 해당 start_id에 대해 task가 정렬됨. 
+        cur_start_id = cmd[1]
+        new_trip_pq = []
+
+        # 1. 새로운 출발점에 대한 shortest_path 계산 먼저 해야 cost 계산에 의해 heapq에서 정렬됨. 
+        dijkstra(cur_start_id)
+
+        for cur_trip in trip_pq:
+            # 여기서도 lazy deletion해준다. 
+            if not exist_trip_id[cur_trip.id]:
+                continue 
+            cur_trip.start_id = cur_start_id
+            heapq.heappush(new_trip_pq, cur_trip)
+
+        trip_pq = new_trip_pq[:]
+        # debug 
+        # print(f"start node {cur_start_id}: {trip_pq}")
+        # print([exist_trip_id[cur_trip.id] for cur_trip in trip_pq])
+        # print(f"-------출발지 변경 끝")
+```
+````
