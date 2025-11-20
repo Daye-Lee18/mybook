@@ -1060,3 +1060,138 @@ for _ in range(Q):
         # print(f"-------출발지 변경 끝")
 ```
 ````
+
+## 해적 선장 코디 
+
+해당 문제는 제일 우선순위가 높은 1개를 뽑는 것이 아닌, 조건에 맞는 최대 5개의 선박을 고를 수 있다는 것에 있다. 
+
+````{admonition} object sharing 
+:class: dropdown 
+
+파이썬에서는 같은 Object를 List나 dictionary에 저장해두고, 
+dictionary 안의 object안의 variable을 변환해주면, 이를 가지고 있던 List 안의 같은 object도 변해있음을 확인할 수 있다. 
+이는 파이썬이 객체를 sharing하는 기능을 가졌기 때문에 가능하다. 아래 코드로 확인할 수 있다. 
+
+```{code-block} python 
+class Ship:
+    def __init__(self, id: int, p: int, r:int):
+        self.id = id 
+        self.p = p 
+        self.r = r 
+        self.status = 0 
+    def __repr__(self):
+        return f"Ship({self.id} with p {self.p})"
+
+my_ship1 = Ship(1, 2, 3)
+my_ship2 = Ship(2, 3, 4)
+
+ship_list = [my_ship1, my_ship2]
+ship_dict = {
+    my_ship1.id: my_ship1,
+    my_ship2.id: my_ship2
+}
+def change_ship(cur_ship, pw):
+    cur_ship.p = pw 
+
+print(f"Before {ship_list}")
+# change_ship(ship_list[1], 10)
+change_ship(ship_dict[1], 10)
+print(f"After {ship_list}")
+```
+````
+
+````{admonition} copy of a list 
+:class: dropdown 
+
+used_ship을 제거해야하는데 for loop돌고 있는 상황에서 제거하면 길이가 달라져서 안됨.  따라서 copy 를 만들어서 제거해줌 
+즉, 원본에서 제거해도 used_ship_list_copy는 그대로 인지 확인 
+
+```{code-block} python 
+ship1 = Ship(1, 10, 3)
+ship2 = Ship(2, 1, 3)
+cur_t = 10 
+ships_pq = []
+used_ship_list = [ship1, ship2]
+
+used_ship_list_copy = used_ship_list[:]
+for used_ship in used_ship_list_copy:
+    if used_ship.can_change_to_ready_status(cur_t=cur_t):
+        used_ship.reinit()
+        heapq.heappush(ships_pq, used_ship)
+        # used_ship을 제거해야하는데 for loop돌고 있는 상황에서 제거하면 길이가 달라져서 안됨. 
+        # 따라서 copy 를 만들어서 제거해줌 
+        # NOTE: 원본에서 제거해도 used_ship_list_copy는 그대로 인지 확인 
+        used_ship_list.remove(used_ship)
+```
+````
+
+````{admonition} 여러 가지 데이터 구조안의 object 맞춰주기 
+:class: dropdown 
+
+이 문제의 경우 cmd 300에서 power를 바꿔주면, dictionary는 바로 업데이트할 수 있지만, ships_pq나 used_ship에서는 바로 바꾸기 힘들다. 
+
+따라서 lazy evaluation을 진행하는데, 
+문제는 heapq에 push할때 object sharing이 되어 있는 원소를 넣으면 둘은 완전히 동일한 값의 object이기 때문에 ships_pq 가 의도한대로 갱신되지 않는다. 
+
+예를 들어, ship(2, 3, 2)가 pw=13으로 제일 커져서 맨 위로 올라가야한느데, 이미 pq에 있는 ship(2, 3, 2)가 ship(2, 13, 2)로 바뀌고 순위는 변동이 없기 때문에 새로이 ship(2, 13, 2)을 넣어도 원하는대로 순위 변동이 일어나지 않는다. 
+
+따라서, 새로운 기존 Ship 정보를 바꾸지 않고, 새로운 object 생성 후 넣어준 후, dictionary값을 새로운 Ship으로 교체한다. 
+
+그리고 난후, pq나 list에서 정보를 뽑을 때, lazy deletion 만약, 해당 Ship의 power가 바뀌었거나 status가 이미 변했으면, dictionary 값을 통해 삭제하거나 무시한다. 
+
+아래는 dictionary값을 새로운 Ship으로 교체해야함을 알려준다. 기존 값을 바꾸면 두 가지 object가 다르므로 혼란이 온다. 
+
+```{code-block} python 
+
+import heapq 
+
+class Ship:
+    def __init__(self, id:int, p: int, r: int):
+        self.id = id 
+        self.p = p
+        self.r = r 
+        self.used_time = -1 # 사용되었던 시간 
+        self.status = 0 # 대기 0, 재장전 1 
+
+    def __lt__(self, other):
+        if self.status != other.status: 
+            return self.status < other.status # 대기하는 선박의 우선순위가 높음. 
+        if self.p != other.p:
+            return self.p > other.p 
+        return self.id < other.id 
+    
+    def can_change_to_ready_status(self, cur_t: int):
+        # 재정비 시간 r이 지나면 재정비 가능 
+        return cur_t - self.used_time >= self.r 
+    
+    def reinit(self):
+        self.status = 0
+        self.used_time = -1 
+
+ship1 = Ship(1, 10, 3)
+ship2 = Ship(2, 11, 4)
+
+my_dict: dict[int, Ship] = dict()
+my_dict[1] = ship1 
+my_dict[2] = ship2
+
+pq = [ship2]
+
+
+cur_ship = heapq.heappop(pq)
+ship3 = Ship(3, 12, 5)
+# cur_ship = ship3  # 이렇게 하면 변수가 가리키는 것만 바뀌어서 안됨. 
+my_dict[cur_ship.id] = ship3 
+
+print(my_dict)
+
+my_list= []
+
+my_list.append(my_dict[cur_ship.id])
+
+print(my_list[0])
+print(my_dict[cur_ship.id])
+
+
+```
+````
