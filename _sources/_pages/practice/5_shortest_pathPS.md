@@ -1658,7 +1658,10 @@ if __name__ == "__main__":
 
 ### 개구리의 여행 
 
-3D dijkstra algorithm을 사용할 수 있다. 즉, 공간적 위치 뿐만 아니라, (y, x, jump) 현재의 점프력에 따라서도 도착지점까지의 최단 거리 (시간)이 달라지기 때문이다. 따라서, Shortest_path dictionary와 priority queue에 넣는 정보 모두 3D 차원에서 고려, 확인해야한다. 
+1. 3D dijkstra algorithm을 사용할 수 있다. 즉, 공간적 위치 뿐만 아니라, (y, x, jump) 현재의 점프력에 따라서도 도착지점까지의 최단 거리 (시간)이 달라지기 때문이다. 따라서, Shortest_path dictionary와 priority queue에 넣는 정보 모두 3D 차원에서 고려, 확인해야한다. 
+2. 시간 초과가 나는 경우, dijkstra algorithm에서 중간에, Destination에 도달했다면, 빨리 알고리즘을 종료시킴으로써, 해결할 수 있다. (다만 이경우에는 start_node가 동일한 경우 기존에 계산한 것에서 사용하지못하고, 다시 계산해야한다. )
+   - 다익스트라는 ***우선순위 큐에서 pop되는 순간, 그 상태의 거리는 '그 상태로 가는 최단 거리'가 확정*** 이다. 
+   - 나중에 다른 점프력 (d_y, d_x, j2)로 도달하는 경로들이 있을 수 있지만, 그 상태는 (d_y, d_x, j1)보다 더 작은 거리를 가지고 있어야하지만, pop()되어서 나온 것이 j1이면, 그 상태에서 최단 거리를 가지고 있기 때문에 고려하지 않아도 된다. 
 
 ````{admonition} coding and decoding for each state 
 :class: dropdown 
@@ -1699,10 +1702,25 @@ def decodeState(cur_state: int):
 
 ````
 
+````{admonition} Tips for dijkstra alogrithm 
+:class: tip 
+dijkstra priority queue에 (dis, (y, x)) 정보만 들어가면, 같은 위치에서 점프력이 다를때 중복되어 알고리즘이 정확히 움직이는 것을 파악하기 어렵지만, (dis, (y, x, jump))까지 들어가면, 겹치지 않고, 해당 State에 대해 최단 거리를 구할 수 있게 되므로, 굳이, options들을 구할때 점프후까지 고려할 필요가 없다. 
+
+따라서, 위치 정보 이외에도 어떤 정보가 필요한지, 잘 고려하여 해당 정보도 포함하도록 넣어주어야한다. 
+````
+
 ````{admonition} sol1: Time Limit 
 :class: dropdown 
 
 아래는 Time limit이 걸렸으나, 로직 자체는 맞는 것 같다. 시간초과가 나는 부분은 `cal_options()`함수를 호출할 때 부분으로, graph에 갈 공간이 많을 수록 할 수 있는 점프 및 다양한 경로가 존재하게 되어 이를 찾는데 시간초과가 걸리는 것 같다. 
+
+현재 Time Limit이 나는 이유는, 다음에 갈 상태가 점프 후까지 계산을 해서 그런 것 같음. 
+check_ways() 함수는 for loop을 진행하는 함수인데, 점프 옵션 외에 점프력 감소/증가할때도 따지게 되므로, 시간 초과되는 것 같음.
+너무 멀리내다보지 말고, 현재 상황까지만 보도록 코드를 다시 짜보자. 
+
+Tips:  dijkstra priority queue에 (dis, (y, x)) 정보만 들어가면, 같은 위치에서 점프력이 다를때 중복되어 알고리즘이 정확히 움직이는 것을 파악하기 어렵지만, (dis, (y, x, jump))까지 들어가면, 겹치지 않고, 해당 State에 대해 최단 거리를 구할 수 있게 되므로, 굳이, options들을 구할때 점프후까지 고려할 필요가 없다.
+
+
 
 ```{code-block} python 
 import sys 
@@ -1872,6 +1890,195 @@ Q = int(input())
 #             #     # 최초 위치에서는 cur_jump이 1밖에 없음. 
 #             #     continue 
 #             options[cur_y][cur_x][cur_jump] = cal_options(cur_y, cur_x, cur_jump) # options 미리 만들어놓기 
+
+# print(options[6][2][1])
+
+for _ in range(Q):
+    r1, c1, r2, c2 = list(map(int, input().split()))
+    modified_dijkstra(r1, c1, r2, c2)
+```
+````
+
+````{admonition} Solution 
+:class: dropdown 
+
+```{code-block} python 
+import sys 
+import heapq 
+
+# sys.stdin = open('Input.txt')
+input = sys.stdin.readline
+
+class Node:
+    def __init__(self, time: int, y: int, x:int, jump: int):
+        self.time = time 
+        self.y = y
+        self.x = x 
+        self.jump = jump
+        
+    def __repr__(self):
+        return f"({self.y}, {self.x} with jump {self.jump})"
+    
+def modified_dijkstra(s_y:int, s_x:int, d_y:int, d_x: int):
+    global shortest_path, options
+    # if (s_y, s_x) in shortest_path:
+    #     dis = min(shortest_path[(s_y, s_x)][d_y][d_x])
+    #     print(dis if dis != MAX else -1) 
+    #     return 
+    # 해당 시작 노드에서 계산한 shortest_path가 없는 경우 
+    shortest_path[(s_y, s_x)] = [[[MAX] * 6 for _ in range(1+N)] for _ in range(1+N)]
+    shortest_path[(s_y, s_x)][s_y][s_x][1] = 0 
+
+    q = []
+    heapq.heappush(q, (0, (s_y, s_x), 1)) # dis, cur_locs, jump
+    # min_dis = MAX 
+    # visited = set() # options를 위한 방문 처리 셋 
+    while q:
+        cur_dis, cur_locs, cur_jump = heapq.heappop(q)
+        cur_y = cur_locs[0]; cur_x = cur_locs[1]
+
+        # NOTE: 같은 칸이라고 해도 Jump=1, jump5일때 그 이후에 갈 수 있는 다음 칸/비용이 달라지므로 점프력도 포함해야한다. 
+        if cur_dis > shortest_path[(s_y, s_x)][cur_y][cur_x][cur_jump]:
+            continue 
+        
+        if cur_y == d_y and cur_x == d_x:
+            shortest_path[(s_y, s_x)][d_y][d_x][cur_jump] = cur_dis
+            break
+        # backtracking 
+        # print(f'cur_locs: {cur_y}, {cur_x}: {options[cur_y][cur_x][cur_jump]}')
+        
+        # 현재 locs와 현재 점프력에서 nxt_node에는 (edge_weight, 연결된 Node위치, 연결된 Node위치까지 걸리는 점프력) 저장 
+        
+        # if graph[cur_y][cur_x] == '.' and (cur_y, cur_x, cur_jump) not in visited:
+        #     options[cur_y][cur_x][cur_jump] = cal_options(cur_y, cur_x, cur_jump)
+        #     visited.add((cur_y, cur_x, cur_jump))
+
+        for nxt_node in options[cur_y][cur_x][cur_jump]:
+            nxt_jump = nxt_node.jump # 다음 상태에서의 점프력
+            nxt_time = cur_dis + nxt_node.time 
+            
+            if nxt_time < shortest_path[(s_y, s_x)][nxt_node.y][nxt_node.x][nxt_jump]:
+                shortest_path[(s_y, s_x)][nxt_node.y][nxt_node.x][nxt_jump] = nxt_time 
+                heapq.heappush(q, (nxt_time, (nxt_node.y, nxt_node.x), nxt_jump))
+
+    # 결과 출력 
+    min_dis = min(shortest_path[(s_y, s_x)][d_y][d_x])
+    print(min_dis if min_dis != MAX else -1) 
+
+def in_range(y, x):
+    global N
+    return 1 <= y <= N and 1 <= x <= N
+
+def check_ways(cur_y: int, cur_x: int, dy: int, dx: int) -> bool:
+    global graph 
+
+    # condition1, 2 에서 도착 위치의 돌 정보를 확인하므로, 
+    # 시작~끝의 '경로'에만 천적이 있는지 없는지 확인하면 됨. (도착위치는 exclusive)
+
+    # dx나 dy가 0이면 range가 안돌아감. 
+    if dy == 0:
+        # dx방향으로만 검사 
+        dir = -1 if dx < 0 else 1 
+        for x in range(cur_x, cur_x+dx, dir):
+            if '#' == graph[cur_y][x]:
+                return False 
+    elif dx == 0:
+        dir = -1 if dy < 0 else 1 
+        for y in range(cur_y, cur_y+dy, dir):
+            if '#' == graph[y][cur_x]:
+                return False 
+    return True 
+
+def make_jump(weight: int, cur_y: int, cur_x: int, cur_jump: int):
+    global graph 
+
+    DY = [cur_jump, -cur_jump, 0, 0]
+    DX = [0, 0, cur_jump, -cur_jump]
+    
+    cur_options = []
+    for dy, dx in zip(DY, DX):
+        nxt_y = cur_y + dy 
+        nxt_x = cur_x + dx 
+        
+        if in_range(nxt_y, nxt_x):
+            condition1 = graph[nxt_y][nxt_x] == '.' # 도착위치에 돌이 있음
+            condition2 = graph[nxt_y][nxt_x] != 'S' # 도착위치가 미끄러운 돌이 아님 
+            condition3 = graph[nxt_y][nxt_x] != '#' # 도착위치에 천적이 거주 
+            condition4 = check_ways(cur_y, cur_x, dy, dx) # 현재위치에서 경로까지 천적이 살지 않는지 
+            flag = condition1 and condition2 and condition3 and condition4
+            
+            if flag:
+                # NOTE: edge의 정해진 weight에 대한, Node생성, 현재 점프력도 저장 
+                cur_options.append(Node(weight, nxt_y, nxt_x, cur_jump))
+
+    return cur_options
+
+def cal_options(cur_y: int, cur_x: int, cur_jump: int) -> list[Node]:
+    # 현재 위치와 점프력으로 '다음에' 갈 수 있는 (weight, nxt_y, nxt_x)의 정보 수집
+    can_reach = []  
+    # 1) 바로 점프  = 1
+    can_reach += make_jump(weight=1, 
+                           cur_y=cur_y , cur_x=cur_x, cur_jump=cur_jump)
+    
+    # 2) 점프력 증가 후 점프 = k^2 + 1 
+    # NOTE: 점프력을 1올릴 수 있다고 했는데, 이는 만약 1을 올려도 없으면, 제자리에서 또 점프력을 올릴 수 있음 
+    # if 1<= cur_jump <= 4:
+    #     elevated_jump = cur_jump + 1 
+    #     can_reach += make_jump(weight=1+elevated_jump*elevated_jump, 
+    #                            cur_y= cur_y, cur_x=cur_x, cur_jump=elevated_jump)
+    if 1<=cur_jump <= 4:
+        weight = 0
+        for elevated_jump in range(cur_jump+1, 6):
+            # 누적합 
+            weight += (elevated_jump*elevated_jump)
+            # can_reach += make_jump(weight=1+weight,
+            #                        cur_y = cur_y, cur_x = cur_x, cur_jump=elevated_jump)
+            # 점프력을 올리면, 점프력 상승만 하고, Weight 증가 but 그 자리에 가만히 있게 됨. 
+            can_reach.append(Node(time=weight,
+                                  y=cur_y, x=cur_x, jump=elevated_jump))
+
+    # 3) 점프력 감소 후 점프 = 1 + 1 
+    for reduced_jump in range(1, cur_jump):
+        # can_reach += make_jump(weight=1+1, cur_y=cur_y , 
+        #                        cur_x=cur_x, cur_jump=reduced_jump)
+        can_reach.append(Node(time=1,
+                              y=cur_y, x=cur_x, jump=reduced_jump))
+    return can_reach 
+
+
+
+N = int(input())
+MAX = int(1e9)
+#### 필요한 자료구조 
+graph = [[0]*(1+N)]
+for idx in range(1, N+1):
+    graph.append([0])
+    graph[idx] = graph[idx] + list(input())
+
+# print(graph)
+# print(len(graph), len(graph[0]))
+
+# 현재 위치 (tuple)에서 시작할때 각 도착지에 대해서 걸리는 최단 시간에 대한 정보 저장 
+# 3D dijkstra, [y][x][jump]
+shortest_path: dict[tuple, list[list[list[int]]]] = dict()
+# 현재 위치와 점프력으로 '다음에' 갈 수 있는 (weight, nxt_y, nxt_x)의 정보 수집 
+options: list[list[list["Node"]]] # [cur_y][cur_x][jump] -> [(edge weight(걸리는 시간), next_y, next_x, 도달할때 점프력), 저장]
+
+options = [[[[] for _ in range(6)] for _ in range(1+N)] for _ in range(1+N)]
+
+Q = int(input())
+
+# NOTE: 이렇게 다 만들고 풀면, 시간 초과 
+# # 모든 시작 위치에 대해서 
+for cur_y in range(1, N+1):
+    for cur_x in range(1, N+1):
+        for cur_jump in range(1, 6): # jump는 1에서 5까지
+            # 다시 돌아갈 수도 있는거잖아...아닌가?
+            # if cur_y == 1 and cur_x == 1 and cur_jump != 1:
+            #     # 최초 위치에서는 cur_jump이 1밖에 없음. 
+            #     continue 
+            if graph[cur_y][cur_x] == '.':
+                options[cur_y][cur_x][cur_jump] = cal_options(cur_y, cur_x, cur_jump) # options 미리 만들어놓기 
 
 # print(options[6][2][1])
 

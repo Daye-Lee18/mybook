@@ -6,6 +6,8 @@
 import sys 
 
 input = sys.stdin.readline
+
+Q = int(input().strip()) # NOTE: strip()을 사용해야한다. 혹은 rstrip()
 ```
 
 sys 라이브러리를 사용할때는 입력 후 엔터<font size='2'>Enter</font>가 줄 바꿈 기호로 입력되는데, 이 공백 문자를 제거하려면 rstrip()함수를 사용해야한다. 
