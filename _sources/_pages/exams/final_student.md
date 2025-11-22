@@ -786,3 +786,17 @@ sol = Solution()
 print(sol.majorityElement(nums))
 ```
 ````
+
+````{admonition} solution 2 
+:class: dropdown 
+
+```{code-block} python
+from typing import List 
+
+class Solution:
+    def majorityElement(self, nums: List[int]) -> int:
+        nums.sort()
+        mid = (0 + len(nums)) // 2 
+        return nums[mid]
+```
+````

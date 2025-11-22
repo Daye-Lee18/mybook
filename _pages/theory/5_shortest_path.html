@@ -959,6 +959,20 @@ document.write(`
 </pre></div>
 </div>
 </div>
+<div class="attention admonition">
+<p class="admonition-title">Dijkstra Algorithm Time Complexity</p>
+<ol class="arabic simple">
+<li><p>heappop()
+정점의 개수가 V개 이므로, 힙에서 의미있는 heapq.heappop() 연산 횟수는 V번이고, 각 pop연산의 시간 복잡도는 O(logV) 이므로,</p></li>
+</ol>
+<p>pop 전체 비용은 ~ Vlog(V) 이다.</p>
+<ol class="arabic simple" start="2">
+<li><p>heappush()
+현재의 정점 u에서 나가는 간선 (edge)를 볼때마다 새거리 (new distance)를 계산하고 갱신한다. 즉, 간선마다 최대 한 번씩 push가 발생하며, 간선 수 E개이고, push의 한 번 비용은 O(logV)이므로 push 전체 비용이 E*log(V)이다.</p></li>
+<li><p>총 시간 복잡도
+총 O((V+E)logV)인데, 보통 그래프는 E &gt;= V-1 이라서, O(ElogV)라고 언급된다.</p></li>
+</ol>
+</div>
 </section>
 </section>
 <section id="floyd-warshall-algorithm">
