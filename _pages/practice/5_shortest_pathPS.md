@@ -1065,6 +1065,265 @@ for _ in range(Q):
 
 해당 문제는 제일 우선순위가 높은 1개를 뽑는 것이 아닌, 조건에 맞는 최대 5개의 선박을 고를 수 있다는 것에 있다. 
 
+````{admonition} explanation 
+:class: dropdown 
+
+```{code-block} python
+'''
+- '코디'라는 이름의 선장이 `대형 선박` 1개을 침몰시키려고 한다. 
+- 총 T개의 명령 
+- '코디'는 여러척의 공격할 수 있는 선박을 가지고 있다. 
+- 각 명령은 1시간 단위로 실행된다. i번째 명령이 수행된 뒤, 1시간이 지나면 i+1번째 명령이 수행된다. 
+
+
+필요한 자료 구조 
+- class Ship 
+    - __lt__ : sort()에서 key에 사용될 함수 필요 이거 __lt__로 구현해도 되는건가?
+    - __init__: id, 재장전 시간 (r), 공격력 (p), status = 0 
+    - 다른 변수들: 공격에 사용된 시간 (used_time)
+    - 현재 시간이 t인데, abs(used_time - t) >= r이면 status를 0으로 바꾸어야함. 
+- ship_pq: priority queue 최우선 선박순으로 나열
+    - status 
+    - pw
+    - id 
+- id_to_ship_dict: cmd 300때 Id에 따라서 선박에 바로 접근할 수 있도록 함. 
+    - object sharing 필요 (어디에서 해당 object안의 variable값을 바꾸어도 나중에 접근할때도 동일한 값이도록)
+- used_ship_list: 
+    - cmd 400의 맨 위에서 재정비할 ship들이 있는 지 분석 
+
+각 cmd뒤에 다른 cmd를 할 때 영향을 주는 것이 있는 지 확인 
+
+아래의 명령의 순서를 확인했을 때, cmd 400이 들어오기 전에 `ship_lists`는 반드시 정렬되어 있어야한다. 
+
+- 200 -> 200: 지원 요청 (`id_to_ship_dict`와 `ship_lists`에 추가) -> 지원 요청  
+- 200 -> 300: 지원 요청한 후, 함포 교체 `id_to_ship_dict` 에서 object안의 변수 바꾸면 됨. 
+- 200 -> 400: 지원 요청 -> 공격 명령
+    - 공격 명령 전에, sort()안에서 지원 요청때도 다시 sort()가 필요함. 그럼 평균 O(30000log30000) ~ 3 * 1e5 걸림. 
+    - queue:
+        - 지원 요청 200: O(logN)
+        - 공격: 최대 5개인데, O(logN) 을 최대 N개 해야할 수도 있다. 
+        - 교체 후 다시 넣기 : O(logN), lazy check해야함. 나중에 공격전에
+    - sort():
+        - 지원 요청시 삽입 O(1)
+        - 공격: sort()를 진행 NlogN -> 최적의 Ship찾기 (O(1) 이도 마찬가지로 dictionary에 접근하여 list안의 원소를 바꿔준후, 다시 sort()를 하면 NlogN이 된다. 
+
+
+- 300 -> 200: 교체 후 지원 요청 
+    - 교체하고, 하나 추가하면 order가 바뀌어야하는데...? 
+- 300 -> 300: 교체 후 또 교체  
+- 300 -> 400: 교체 후 공격 명령
+    - queue: 문제는 어떤 Ship이 1 -> 100000으로 공격력이 높아졌을 때, 다시 안 넣으면 우선순위 큐 맨 앞에 있지 않아서 다시 넣어야하고
+        - NOTE: 이때 dictionary에 있는 Ship을 교체하면 sort() list안에 있는 객체도 바뀐다.
+        - 다만, 객체의 정보가 바뀐다고 해서 queue안에 정렬순서가 바뀌지는 않게된다. 따라서, 새로운 객체를 다시 삽입 (logN)하고 
+        - NOTE: 만약 공격 명령때 같은 id가 나오면 삭제한다. (logN)
+        - 최대 5개를 뽑아야하지만, 최대 N=3*1e4라고 하면, 5000* NlogN (최대 N개에 대해서 pop을 함, 이 cmd는 최대 5000번이 주어짐)
+            -> 2*1e9 NOTE: 시간초과 
+        - 그러면, 맨 앞의 원소들은 status=0이며, 우선순위가 높은 것으로 하면 5000 * NlogN이 아니라, 5000*5*logN으로 줄어든다. 
+
+    - sort:
+        - 교체를 한후
+        - 400 function안에서 sort()를 진행 NlogN 최대 5000번까지 주어짐. -> N이 최대 3*1e4라고 하면,  2*1e9 NOTE: 시간초과 
+        - 또한 sort()후 각 인덱스에서 최대 N=3*1e4개 중 status가 0인 선박을 찾고 등등 해야함. 
+        -> 더 많이 걸림 
+
+
+- 400 -> 200: 공격 후 지원 요청 
+- 400 -> 300: 공격 후 교체 (공격력만 교체)
+- 400 -> 400: 공격 후 공격 
+    - 생각해보니, 공격을 한 후에는 재점검 시간이 필요해서 다시 공격할 수 없음 
+    - stauts를 재정비 (1)로 바꾸고, 이경우에는 사용할 수 없도록 해야함. 
+        - 이 때, status=1이지만, current_time - 공격시간 >= r 이면 공격 가능함. 
+    - 따러 used_ships을 설정하면 시간 관리도 해야해서 로직이 복잡해짐. 재정비 시간이 지나면 다시 status를 하나하나 바꿔야해서 복잡해짐. 
+    - 공격때 사용한 ship들을 따로 list로 최대 len(5)로 관리하고, 
+    - 공격 때 queue에서 pop한 다음, 다시 Status를 1로 해서 insert한다. 
+    - 다만, 재정비시간이 1인 경우는 다음에 바로 사용할 수 있으며, 
+    - 또 공격이 계속 연달아 있는 경우에 대비하여, status들을 바로 바꿔줘야하는데, 이때 재정비 시간이 지나서 다시 공격할 수 있는 상황에서는 
+        - status로 관리하게 되면 불편한 경우가 있다. 
+    - queue를 __lt__를 
+        - status 
+        - 공격력 , Id 
+    - 공격때 사용된 ships들은 5*5000번 => 최대 3e4개일 수 있는데, 
+        - 이를 하나하나 돌아가면서, 재정비하면 status를 바꾸고 queue에 다시 삽입하면, O(3e4* log(4e4)) ~ 3e5 정도의 시간이 걸린다. 
+    
+
+1. 공격 준비 (100 N id_1 p_1 r_1 id_2 p_2 r_2 ...... id_N p_N r_N)
+- '코디'의 N척의 선박에 사격 준비를 지시 
+- 각 ship은 id, power (공격력, p), 재장전 시간 (r), status (초기는 모두 사격대기)를 가짐 
+    - status: 사격 대기 (INIT, 0) -> 공격 후 재장전 1  (r시간이 경과하면 사격대기로 전환)
+        - lazy check 해야할 것 같음. 
+    - 이를 위한 class Ship 이 필요함 
+
+2. 지원 요청 (200 id p r)
+- 추가 병력을 요청하여 1개의 새로운 선박이 합류됨 
+- 새로 합류한 선반 (status = 사격 대기 0, 선박 번호 id, 공격력 p, 재장선 시간 r)
+- 이 명령은 최대 30,000번까지 주어짐.
+- id_to_ships와 ship_list 두개 다에 삽입 
+
+3. 함포 교체 (300 id pw)
+- 이 명령은 최대 10,000번까지 주어짐. 존재하지 않는 선박 번호 id가 주어지지 않음. 
+- id번의 선박의 함포를 교체 
+    - id번의 선박에 바로 접근할 수 있어야함. 
+    - 문제는 1 <= id <= 1e9, 너무큰데...? memory limit이 128 MB인데, int가 4byte이면 32*10^6개의 밖에 list형성 불가 
+    - 이때 명령의 개수가 최대 50,000개 이므로 dictionary로 저장하면, 2*1e5개 저장, Ship class도 하나당 9 byte라고 하면, 4.5 * 1e5이므로 
+    - 일단 `id_to_ship_dict: dict[int, Ship]`으로 만듦. 
+    - 이때 id를 찾을 때 time complexity는 string이 아니라 int라서 O(1)? 
+- 교체 후 해당 선박의 공격력은 pw가 된다.
+- 교체 된 선박은 바로 ships_lists에 넣어줘야 다음에 바로 공격 명령이 들어와도 사용가능하다. 
+    - 예전 Ships은 lazy check로 나중에 valid check를 할 수 있다. 
+    - dict에 있는 ships안의 정보만 바꾸면, queue안에 같은 id이고 같은 pw를 가진 object가 두 개가 존재하게 된다. 두번 넣었으므로. 
+    - 따라서, 같은 id인지 확인만 해주면 된다. 
+
+4. 공격 명령 (400)
+- 최대 5000번까지 주어짐. 이 부분이 시간 복잡도의 최대 bottle neck일 것 같음. 
+- 사격 대기 (0) 상태인 선박 중 공격력이 가장 높은 선박 최대 5척에 일제 사격을 명령한다. 
+    - 최대 5척이므로 사용가능한 선박의 수가 그것보다 작을 경우에는 더 적을 수도 있다. 
+    - 재장전 중인 선박은 공격에 사용불가 
+        - 해당 선박이 현재 시간이 공격 후 r시간이 지났으면 사격 대기로 바꿀 수 있음. 
+        - 만약 선박의 재장전 시간이 1초이면 1초에 공격했으면 2초때 바로 공격 가능 (즉, 시간 차이 >= r 임.)
+    - 우선순위 
+        - 공격력이 높다. 
+        - 공격력이 같다면, 선박 번호 id가 작은 선박 
+        - 총 피해가 최대가 되도록 선박을 고른다. (피해 = 사격에 참여한 선박들의 공격력 합)
+    - 맨 앞의 5개를 꺼낼 때 sort()이면 O(1)이지만, heapq를 쓰면 O(5logN)시간이 걸림. 
+        - sort(): Tlog(T): 앞에 5개의 원소에 접근 및 마지막에 다시 sort해줄 때 Tlog(T)시간이 걸림 
+            - sort()로 해야할 것 같음. 
+        - heapq: ~ 3 * 1e6 * 2 (제거하고 다시 사격대기로 전환해서 삽입시켜줘야함) 5T(logT)
+- 사격에 참여한 선박들의 공격력 합만큼 대형 함선에 피해를 준다. 
+    - Total_attacked: int = 대형 함선이 가진 피해
+- 사격한 선반은 즉시 재장전에 들어가며, 사격 시점을 포함해 r시간이 경과하면 다시 '사격 대기(0)' 상태로 전환된다. 
+
+- 공격 명령이 떨어지면, 아래의 3개 출력 
+    - '해당 차례'의 총 피해량 
+    - 사격에 참여한 선박 수(최대 5척)
+    - 사격 우선순위에 따른 사격 선박들의 id 
+
+
+Algorithm for 400 
+1-1. 사용한 ship들에 대해 재정비 시간이 만료된 ship들에 대해서 queue에 다시 삽입한다. 
+    - 이때 재정비된 Ships list에서 제거한다. 
+    - status 0, used_time = -1 인 친구들 다시 삽입 
+2-1. queue의 맨 앞에서부터 '최대' 5개를 뽑는다. 
+    - 이번에 사용할 id와 같은 것이 있으면 pass 하면서 최대 5개를 뽑는다. 
+        - 이때는 중복된 object이므로 버린다. 
+    - 교체된 pw와 같은지 id_to_ships에서 정보를 확인하고 같지 않으면 pop -> object sharing이라서 같은지 아닌지 확인안해도됨. 
+        - (어차피 status, pw, id순으로 되어 있기 때문에, 위의 스텝에서 정확히 재정비된 것들을 다시 넣었다면, 맨 앞의 5개가 맞음)
+    -  다음 3개의 정보를 저장하고 출력한다. 
+        - '해당 차례'의 총 피해량 
+        - 사격에 참여한 선박 수(최대 5척)
+        - 사격 우선순위에 따른 사격 선박들의 id 
+3-1. 사용된 함선들은 used_ships에 저장한다. 
+'''
+
+import math 
+
+# 공격 명령이 총 T번 (최대 5*1e4) 일때 우선순위 큐를 사용하면 cmd 4의 시간 복잡도  
+T = 5*1e3
+N = 30000
+# print(T*5 * math.log(T)) # 3 * 1e6
+# print(T * math.log(T))
+# print(N * math.log(N)) # 3 * 1e5
+# print(N*math.log(N) * T)
+print(1e4* math.log(4e4)) # 1 * 1e5
+
+
+# class Ship:
+#     def __init__(self, id: int, p: int, r:int):
+#         self.id = id 
+#         self.p = p 
+#         self.r = r 
+#         self.status = 0 
+#     def __repr__(self):
+#         return f"Ship({self.id} with p {self.p})"
+
+# my_ship1 = Ship(1, 2, 3)
+# my_ship2 = Ship(2, 3, 4)
+
+# ship_list = [my_ship1, my_ship2]
+# ship_dict = {
+#     my_ship1.id: my_ship1,
+#     my_ship2.id: my_ship2
+# }
+# def change_ship(cur_ship, pw):
+#     cur_ship.p = pw 
+
+# print(f"Before {ship_list}")
+# # change_ship(ship_list[1], 10)
+# change_ship(ship_dict[1], 10)
+# print(f"After {ship_list}")
+
+
+import heapq 
+
+class Ship:
+    def __init__(self, id:int, p: int, r: int):
+        self.id = id 
+        self.p = p
+        self.r = r 
+        self.used_time = -1 # 사용되었던 시간 
+        self.status = 0 # 대기 0, 재장전 1 
+
+    def __lt__(self, other):
+        if self.status != other.status: 
+            return self.status < other.status # 대기하는 선박의 우선순위가 높음. 
+        if self.p != other.p:
+            return self.p > other.p 
+        return self.id < other.id 
+    
+    def can_change_to_ready_status(self, cur_t: int):
+        # 재정비 시간 r이 지나면 재정비 가능 
+        return cur_t - self.used_time >= self.r 
+    
+    def reinit(self):
+        self.status = 0
+        self.used_time = -1 
+
+    # def __repr__(self):
+    #     return f"Ship(id: {self.id})(p: {self.p})(r: {self.r})"
+
+# ship1 = Ship(1, 10, 3)
+# ship2 = Ship(2, 1, 3)
+# cur_t = 10 
+# ships_pq = []
+# used_ship_list = [ship1, ship2]
+
+# used_ship_list_copy = used_ship_list[:]
+# for used_ship in used_ship_list_copy:
+#     if used_ship.can_change_to_ready_status(cur_t=cur_t):
+#         used_ship.reinit()
+#         heapq.heappush(ships_pq, used_ship)
+#         # used_ship을 제거해야하는데 for loop돌고 있는 상황에서 제거하면 길이가 달라져서 안됨. 
+#         # 따라서 copy 를 만들어서 제거해줌 
+#         # NOTE: 원본에서 제거해도 used_ship_list_copy는 그대로 인지 확인 
+#         used_ship_list.remove(used_ship)
+
+ship1 = Ship(1, 10, 3)
+ship2 = Ship(2, 11, 4)
+
+my_dict: dict[int, Ship] = dict()
+my_dict[1] = ship1 
+my_dict[2] = ship2
+
+pq = [ship2]
+
+
+cur_ship = heapq.heappop(pq)
+ship3 = Ship(3, 12, 5)
+# cur_ship = ship3  # 이렇게 하면 변수가 가리키는 것만 바뀌어서 안됨. 
+my_dict[cur_ship.id] = ship3 
+
+print(my_dict)
+
+my_list= []
+
+my_list.append(my_dict[cur_ship.id])
+
+print(my_list[0])
+print(my_dict[cur_ship.id])
+
+
+```
+
+````
 ````{admonition} object sharing 
 :class: dropdown 
 
@@ -1195,3 +1454,380 @@ print(my_dict[cur_ship.id])
 
 ```
 ````
+
+````{admonition} solution
+:class: dropdown 
+
+```{code-block} python
+import sys 
+import heapq 
+
+# sys.stdin = open('Input.txt')
+input = sys.stdin.readline 
+
+class Ship:
+    def __init__(self, id:int, p: int, r: int):
+        self.id = id 
+        self.p = p
+        self.r = r 
+        self.used_time = -1 # 사용되었던 시간 
+        self.status = 0 # 대기 0, 재장전 1 
+
+    def set_used_time(self, used_time: int):
+        self.used_time = used_time 
+    def set_status(self, status: int):
+        self.status = status 
+
+    def __lt__(self, other):
+        if self.status != other.status: 
+            return self.status < other.status # 대기하는 선박의 우선순위가 높음. 
+        if self.p != other.p:
+            return self.p > other.p 
+        return self.id < other.id 
+    
+    def can_change_to_ready_status(self, cur_t: int):
+        # 재정비 시간 r이 지나면 재정비 가능 
+        assert self.status == 1 # 이미 사용된 상태여야한다. 
+        return cur_t - self.used_time >= self.r 
+    
+    def reinit(self):
+        self.status = 0
+        self.used_time = -1 
+
+def process_100(N: int, ships_info: list[int]):
+    global ships_pq, ship_id_to_dict
+    for idx in range(2, 3*N, 3):
+        # print(idx)
+        cur_id, cur_pw, cur_r = ships_info[idx-2], ships_info[idx-1], ships_info[idx]
+        cur_ship = Ship(id=cur_id, p=cur_pw, r=cur_r)
+        heapq.heappush(ships_pq, cur_ship) # object sharing 
+        ship_id_to_dict[cur_id] = cur_ship 
+
+def process_200(id: int, p:int, r:int):
+    global ship_id_to_dict, ships_pq 
+    new_ship = Ship(id=id, p=p, r=r)
+    # object sharing 
+    ship_id_to_dict[id] = new_ship # id는 중복되지 않음 
+    heapq.heappush(ships_pq, new_ship)
+
+def process_300(id: int, new_pw: int, cur_t: int):
+    global ship_id_to_dict, ships_pq
+
+    # ship_id_to_dict[id].p = new_pw # object sharing이 되어 있어서 pq안에도 바뀜 
+    # 300 명령 다음에 바로 400하는 경우, 재정렬이 안됨. 즉, 위에서 교체만 한다고해서, 재정렬이 안되기 때문에, 가장 우선순위가 높은 것이 앞에오도록 삽입해줘야함. 
+    # NOTE: 원소를 바로 넣는 것도 object sharing 임. 
+
+    # 교체했으면 dictionary에 있는 것과 현재 heapq로 넣는게 또 같아져버림. 
+    # 우선순위가 제대로 되어있게 하기 위해 새로운 것을 넣어줌. 
+    # NOTE: 이전에 있는 것이 잘못되어 있으면 버려야함. (lazy check)
+    # 근데 이때 바뀔 ship이 사용상태가 0인지 1인지 모름 
+    new_ship = Ship(ship_id_to_dict[id].id, new_pw, ship_id_to_dict[id].r)
+    new_ship.set_status(ship_id_to_dict[id].status)
+    new_ship.set_used_time(ship_id_to_dict[id].used_time)
+    if new_ship.status == 1 and new_ship.can_change_to_ready_status(cur_t):
+        new_ship.reinit()
+
+    if new_ship.status == 0:
+        heapq.heappush(ships_pq, new_ship) # 이것도 object sharing인가? YES 
+    else: # new_ship.status == 1:
+        used_ship_list.append(new_ship) # 추후에 lazy detection 필요 
+
+    ship_id_to_dict[ship_id_to_dict[id].id] = new_ship
+
+def process_400(cur_t):
+    global used_ship_list, ships_pq, ship_id_to_dict
+
+    # 이미 공격한 함선 중, 다시 재정비 할 수 있는 ship들을 ships_pq에 삽입 
+    used_ship_list_copy = used_ship_list[:]
+    for used_ship in used_ship_list_copy:
+        # lazy deletion over cmd 300 
+        if used_ship.status != ship_id_to_dict[used_ship.id].status:
+            # NOTE: 원본에서 제거해도 used_ship_list_copy는 그대로!
+            used_ship_list.remove(used_ship)
+            continue
+        # 이미 300에서 변한 경우에 ship_pq에 넣어줘서 괜찮음. 
+        if used_ship.p != ship_id_to_dict[used_ship.id].p:
+            used_ship_list.remove(used_ship)
+            continue 
+
+            # 
+
+        if used_ship.can_change_to_ready_status(cur_t=cur_t):
+            # if used_ship.id == 6:
+            #     print('a')
+            
+            # NOTE: 만약, used_ship.init()을 먼저 하고 heappush하면, 기존에 heapq에 있던 것도 똑같이 바뀌어서 동일한 값을가진 객체가 들어가므로 새롭게 갱신이 안됨. 
+            new_ship = Ship(used_ship.id, used_ship.p, used_ship.r)
+            # 이렇게 new_ship을 우선순위 큐에 넣으면 dictionay가 가진 Object와 priority_queue가 가진 object가 달라지게됨. 
+            heapq.heappush(ships_pq, new_ship) # 
+            # used_ship.reinit() # dict에서 정보를 바꿔줌. 
+            ship_id_to_dict[used_ship.id] = new_ship
+            # used_ship을 제거해야하는데 for loop돌고 있는 상황에서 제거하면 길이가 달라져서 안됨. 
+            # 따라서 copy 를 만들어서 제거해줌 
+            # NOTE: 원본에서 제거해도 used_ship_list_copy는 그대로!
+            used_ship_list.remove(used_ship)
+
+
+    will_be_used_set = set() # O(1)으로 중복 찾기 위함 
+    will_be_used_list = [] # 우선순위대로 프린트 하기 위함 
+    will_not_be_used = [] # 조건이 안 된 것들을 저장하기 위함 
+    total_pw = 0
+    while ships_pq: # 5개 도달하기 전에 ships_pq가 비어있으면 종료 
+        cur_ship = heapq.heappop(ships_pq)
+
+        # 오래된 것은 버려야함. (lazy check)
+        if ship_id_to_dict[cur_ship.id].p != cur_ship.p:
+            continue 
+
+        if cur_ship.id in will_be_used_set:
+            # 중복된 object이므로 제거되어도 됨. 
+            continue 
+        
+        # 최대 5개인데, 5개 중 맨 뒤에 2개가 이미 사용된 ships일수도 있잖아. 
+        # 하지만 사용하면 바로 빼서 그럴 일은 없을 것 같음. 
+        if cur_ship.status == 1:
+            # 제거하진 않고, 나중에 다시 넣어줌. 
+            will_not_be_used.append(cur_ship)
+
+        
+        # 공격에 들어갈 것. dict에 있는 정보도 바뀌게 됨. 
+        # 이미 ships_pq에서는 사용되면 빠지게 됨. 즉, Ships_pq에는 대기 (status=0) 중인 선박만 존재 # NOTE: cmd 300에서 이미 사용되었던 ship이라도 pq에 들어갈 수 있음. 
+        cur_ship.status = 1 
+        cur_ship.used_time = cur_t
+        used_ship_list.append(cur_ship)
+
+        #
+        total_pw += cur_ship.p 
+        will_be_used_set.add(cur_ship.id)
+        will_be_used_list.append(cur_ship.id)
+        # heapq.heappop(ships_pq)
+
+        # 최대 5개 까지 
+        if len(will_be_used_set) >= 5:
+            break 
+        
+    print(total_pw, len(will_be_used_set), end=' ')
+    for id in will_be_used_list:
+        print(id, end=' ')
+    print()
+    
+
+    ### will_not_be_used를 다시 pq에 넣어줌 
+    for ship in will_not_be_used:
+        heapq.heappush(ships_pq, ship)
+
+#### global scope 
+if __name__ == "__main__":
+    T = int(input())
+    '''
+    필요한 자료 구조
+    '''
+    ships_pq: list[Ship] = [] # priority queue 
+    ship_id_to_dict: dict[int, Ship] = dict()
+    used_ship_list: list[Ship] = []
+
+    for t in range(T):
+        cmd = list(map(int, input().split()))
+
+        if cmd[0] == 100: # INIT 
+            process_100(cmd[1], cmd[2:])
+
+        elif cmd[0] == 200: # 지원 요청 
+            process_200(cmd[1], cmd[2], cmd[3])
+
+        elif cmd[0] == 300: # 함포 교체 
+            id = cmd[1]
+            new_pw = cmd[2]
+            process_300(id, new_pw, t)
+        else: # 400, 공격 명령 
+            process_400(t)
+```
+````
+
+## 개구리의 여행 
+
+````{admonition} sol1: Time Limit 
+:class: dropdown 
+
+3D dijkstra algorithm을 사용할 수 있다. 즉, 공간적 위치 뿐만 아니라, (y, x, jump) 현재의 점프력에 따라서도 도착지점까지의 최단 거리 (시간)이 달라지기 때문이다. 따라서, Shortest_path dictionary와 priority queue에 넣는 정보 모두 3D 차원에서 고려, 확인해야한다. 
+
+아래는 Time limit이 걸렸으나, 로직 자체는 맞는 것 같다. 시간초과가 나는 부분은 `cal_options()`함수를 호출할 때 부분으로, graph에 갈 공간이 많을 수록 할 수 있는 점프 및 다양한 경로가 존재하게 되어 이를 찾는데 시간초과가 걸리는 것 같다. 
+
+```{code-block} python 
+import sys 
+import heapq 
+
+# sys.stdin = open('Input.txt')
+input = sys.stdin.readline
+
+class Node:
+    def __init__(self, time: int, y: int, x:int, jump: int):
+        self.time = time 
+        self.y = y
+        self.x = x 
+        self.jump = jump
+        
+    def __repr__(self):
+        return f"({self.y}, {self.x} with jump {self.jump})"
+    
+def modified_dijkstra(s_y:int, s_x:int, d_y:int, d_x: int):
+    global shortest_path, options
+    if (s_y, s_x) in shortest_path:
+        dis = min(shortest_path[(s_y, s_x)][d_y][d_x])
+        print(dis if dis != MAX else -1) 
+        return 
+    # 해당 시작 노드에서 계산한 shortest_path가 없는 경우 
+    shortest_path[(s_y, s_x)] = [[[MAX] * 6 for _ in range(1+N)] for _ in range(1+N)]
+    shortest_path[(s_y, s_x)][s_y][s_x][1] = 0 
+
+    q = []
+    heapq.heappush(q, (0, (s_y, s_x), 1)) # dis, cur_locs, jump
+    # min_dis = MAX 
+    visited = set() # options를 위한 방문 처리 셋 
+    while q:
+        cur_dis, cur_locs, cur_jump = heapq.heappop(q)
+        cur_y = cur_locs[0]; cur_x = cur_locs[1]
+
+        # NOTE: 같은 칸이라고 해도 Jump=1, jump5일때 그 이후에 갈 수 있는 다음 칸/비용이 달라지므로 점프력도 포함해야한다. 
+        if cur_dis > shortest_path[(s_y, s_x)][cur_y][cur_x][cur_jump]:
+            continue 
+
+        # backtracking 
+        # print(f'cur_locs: {cur_y}, {cur_x}: {options[cur_y][cur_x][cur_jump]}')
+        
+        # 현재 locs와 현재 점프력에서 nxt_node에는 (edge_weight, 연결된 Node위치, 연결된 Node위치까지 걸리는 점프력) 저장 
+        
+        if (cur_y, cur_x, cur_jump) not in visited:
+            options[cur_y][cur_x][cur_jump] = cal_options(cur_y, cur_x, cur_jump)
+            visited.add((cur_y, cur_x, cur_jump))
+
+        for nxt_node in options[cur_y][cur_x][cur_jump]:
+            nxt_jump = nxt_node.jump # 다음 상태에서의 점프력
+            nxt_time = cur_dis + nxt_node.time 
+            
+            if nxt_time < shortest_path[(s_y, s_x)][nxt_node.y][nxt_node.x][nxt_jump]:
+                shortest_path[(s_y, s_x)][nxt_node.y][nxt_node.x][nxt_jump] = nxt_time 
+                heapq.heappush(q, (nxt_time, (nxt_node.y, nxt_node.x), nxt_jump))
+
+    # 결과 출력 
+    min_dis = min(shortest_path[(s_y, s_x)][d_y][d_x])
+    print(min_dis if min_dis != MAX else -1) 
+
+def in_range(y, x):
+    global N
+    return 1 <= y <= N and 1 <= x <= N
+
+def check_ways(cur_y: int, cur_x: int, dy: int, dx: int) -> bool:
+    global graph 
+
+    # condition1, 2 에서 도착 위치의 돌 정보를 확인하므로, 
+    # 시작~끝의 '경로'에만 천적이 있는지 없는지 확인하면 됨. (도착위치는 exclusive)
+
+    # dx나 dy가 0이면 range가 안돌아감. 
+    if dy == 0:
+        # dx방향으로만 검사 
+        dir = -1 if dx < 0 else 1 
+        for x in range(cur_x, cur_x+dx, dir):
+            if '#' == graph[cur_y][x]:
+                return False 
+    elif dx == 0:
+        dir = -1 if dy < 0 else 1 
+        for y in range(cur_y, cur_y+dy, dir):
+            if '#' == graph[y][cur_x]:
+                return False 
+    return True 
+
+def make_jump(weight: int, cur_y: int, cur_x: int, cur_jump: int):
+    global graph 
+
+    DY = [cur_jump, -cur_jump, 0, 0]
+    DX = [0, 0, cur_jump, -cur_jump]
+    
+    cur_options = []
+    for dy, dx in zip(DY, DX):
+        nxt_y = cur_y + dy 
+        nxt_x = cur_x + dx 
+        
+        if in_range(nxt_y, nxt_x):
+            condition1 = graph[nxt_y][nxt_x] == '.' # 도착위치에 돌이 있음
+            condition2 = graph[nxt_y][nxt_x] != 'S' # 도착위치가 미끄러운 돌이 아님 
+            condition3 = graph[nxt_y][nxt_x] != '#' # 도착위치에 천적이 거주 
+            condition4 = check_ways(cur_y, cur_x, dy, dx) # 현재위치에서 경로까지 천적이 살지 않는지 
+            flag = condition1 and condition2 and condition3 and condition4
+            
+            if flag:
+                # NOTE: edge의 정해진 weight에 대한, Node생성, 현재 점프력도 저장 
+                cur_options.append(Node(weight, nxt_y, nxt_x, cur_jump))
+
+    return cur_options
+
+def cal_options(cur_y: int, cur_x: int, cur_jump: int) -> list[Node]:
+    # 현재 위치와 점프력으로 '다음에' 갈 수 있는 (weight, nxt_y, nxt_x)의 정보 수집
+    can_reach = []  
+    # 1) 바로 점프  = 1
+    can_reach += make_jump(weight=1, 
+                           cur_y=cur_y , cur_x=cur_x, cur_jump=cur_jump)
+    
+    # 2) 점프력 증가 후 점프 = k^2 + 1 
+    # NOTE: 점프력을 1올릴 수 있다고 했는데, 이는 만약 1을 올려도 없으면, 제자리에서 또 점프력을 올릴 수 있음 
+    # if 1<= cur_jump <= 4:
+    #     elevated_jump = cur_jump + 1 
+    #     can_reach += make_jump(weight=1+elevated_jump*elevated_jump, 
+    #                            cur_y= cur_y, cur_x=cur_x, cur_jump=elevated_jump)
+    if 1<=cur_jump <= 4:
+        weight = 0
+        for elevated_jump in range(cur_jump+1, 6):
+            # 누적합 
+            weight += (elevated_jump*elevated_jump)
+            can_reach += make_jump(weight=1+weight,
+                                   cur_y = cur_y, cur_x = cur_x, cur_jump=elevated_jump)
+
+    # 3) 점프력 감소 후 점프 = 1 + 1 
+    for reduced_jump in range(1, cur_jump):
+        can_reach += make_jump(weight=1+1, cur_y=cur_y , 
+                               cur_x=cur_x, cur_jump=reduced_jump)
+    return can_reach 
+
+
+
+N = int(input())
+MAX = int(1e9)
+#### 필요한 자료구조 
+graph = [[0]*(1+N)]
+for idx in range(1, N+1):
+    graph.append([0])
+    graph[idx] = graph[idx] + list(input())
+
+# print(graph)
+# print(len(graph), len(graph[0]))
+
+# 현재 위치 (tuple)에서 시작할때 각 도착지에 대해서 걸리는 최단 시간에 대한 정보 저장 
+# 3D dijkstra, [y][x][jump]
+shortest_path: dict[tuple, list[list[list[int]]]] = dict()
+# 현재 위치와 점프력으로 '다음에' 갈 수 있는 (weight, nxt_y, nxt_x)의 정보 수집 
+options: list[list[list["Node"]]] # [cur_y][cur_x][jump] -> [(edge weight(걸리는 시간), next_y, next_x, 도달할때 점프력), 저장]
+
+options = [[[[] for _ in range(6)] for _ in range(1+N)] for _ in range(1+N)]
+
+Q = int(input())
+
+# NOTE: 이렇게 다 만들고 풀면, 시간 초과 
+# # 모든 시작 위치에 대해서 
+# for cur_y in range(1, N+1):
+#     for cur_x in range(1, N+1):
+#         for cur_jump in range(1, 6): # jump는 1에서 5까지
+#             # 다시 돌아갈 수도 있는거잖아...아닌가?
+#             # if cur_y == 1 and cur_x == 1 and cur_jump != 1:
+#             #     # 최초 위치에서는 cur_jump이 1밖에 없음. 
+#             #     continue 
+#             options[cur_y][cur_x][cur_jump] = cal_options(cur_y, cur_x, cur_jump) # options 미리 만들어놓기 
+
+# print(options[6][2][1])
+
+for _ in range(Q):
+    r1, c1, r2, c2 = list(map(int, input().split()))
+    modified_dijkstra(r1, c1, r2, c2)
+```
+````
+
+아래의 코드는 해설에 있는 코드를 가져왔다. 
