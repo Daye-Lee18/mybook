@@ -27,6 +27,7 @@ sort()와 min-heap은 오름차순으로 두면, "매번 현재 가장 싼 간�
   
 - Dijkstra 
   - [개구리의 여행](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/frog-journey/description)
+  - [Reachable Nodes in Subdivided Graph](https://leetcode.com/problems/reachable-nodes-in-subdivided-graph/description/?envType=problem-list-v2&envId=shortest-path)
 
 ## Priority Queue 
 
@@ -1662,6 +1663,7 @@ if __name__ == "__main__":
 2. 시간 초과가 나는 경우, dijkstra algorithm에서 중간에, Destination에 도달했다면, 빨리 알고리즘을 종료시킴으로써, 해결할 수 있다. (다만 이경우에는 start_node가 동일한 경우 기존에 계산한 것에서 사용하지못하고, 다시 계산해야한다. )
    - 다익스트라는 ***우선순위 큐에서 pop되는 순간, 그 상태의 거리는 '그 상태로 가는 최단 거리'가 확정*** 이다. 
    - 나중에 다른 점프력 (d_y, d_x, j2)로 도달하는 경로들이 있을 수 있지만, 그 상태는 (d_y, d_x, j1)보다 더 작은 거리를 가지고 있어야하지만, pop()되어서 나온 것이 j1이면, 그 상태에서 최단 거리를 가지고 있기 때문에 고려하지 않아도 된다. 
+3. 전체 상태의 개수는 격자 칸수와 점프력의 가능한 값의 곱에 비례하며, 다익스트라 알고리즘을 통해 처리하므로 시간복잡도는 O(N^2 J^2 log(N^2 J^2)) ~ O(N^2 J^2 log(N J)) 가 된다. 
 
 ````{admonition} coding and decoding for each state 
 :class: dropdown 
@@ -2087,4 +2089,7 @@ for _ in range(Q):
     modified_dijkstra(r1, c1, r2, c2)
 ```
 ````
+
+
+### Reachable Nodes In Subdivided Graph 
 

@@ -378,6 +378,7 @@ document.write(`
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dijkstra">Dijkstra</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">개구리의 여행</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reachable-nodes-in-subdivided-graph">Reachable Nodes In Subdivided Graph</a></li>
 </ul>
 </li>
 </ul>
@@ -423,6 +424,7 @@ document.write(`
 <li><p>Dijkstra</p>
 <ul>
 <li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/frog-journey/description">개구리의 여행</a></p></li>
+<li><p><a class="reference external" href="https://leetcode.com/problems/reachable-nodes-in-subdivided-graph/description/?envType=problem-list-v2&amp;amp;envId=shortest-path">Reachable Nodes in Subdivided Graph</a></p></li>
 </ul>
 </li>
 </ul>
@@ -1998,6 +2000,7 @@ dictionary 안의 object안의 variable을 변환해주면, 이를 가지고 있
 <li><p>나중에 다른 점프력 (d_y, d_x, j2)로 도달하는 경로들이 있을 수 있지만, 그 상태는 (d_y, d_x, j1)보다 더 작은 거리를 가지고 있어야하지만, pop()되어서 나온 것이 j1이면, 그 상태에서 최단 거리를 가지고 있기 때문에 고려하지 않아도 된다.</p></li>
 </ul>
 </li>
+<li><p>전체 상태의 개수는 격자 칸수와 점프력의 가능한 값의 곱에 비례하며, 다익스트라 알고리즘을 통해 처리하므로 시간복잡도는 O(N^2 J^2 log(N^2 J^2)) ~ O(N^2 J^2 log(N J)) 가 된다.</p></li>
 </ol>
 <div class="dropdown admonition">
 <p class="admonition-title">coding and decoding for each state</p>
@@ -2407,6 +2410,9 @@ check_ways() 함수는 for loop을 진행하는 함수인데, 점프 옵션 외�
 </div>
 </div>
 </section>
+<section id="reachable-nodes-in-subdivided-graph">
+<h3>Reachable Nodes In Subdivided Graph<a class="headerlink" href="#reachable-nodes-in-subdivided-graph" title="Link to this heading">#</a></h3>
+</section>
 </section>
 </section>
 
@@ -2483,6 +2489,7 @@ check_ways() 함수는 for loop을 진행하는 함수인데, 점프 옵션 외�
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dijkstra">Dijkstra</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">개구리의 여행</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reachable-nodes-in-subdivided-graph">Reachable Nodes In Subdivided Graph</a></li>
 </ul>
 </li>
 </ul>
