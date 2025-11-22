@@ -18,13 +18,21 @@ sort()와 min-heap은 오름차순으로 두면, "매번 현재 가장 싼 간�
 ````
 
 예시 문제 링크 
-- [가로등 설치](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/street-light-installation/description)
-- [코드 트리 채점기](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/codetree-judger/description)
-- [코드트리 투어](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/codetree-tour/description)
-- [해적 선장 코디](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/pirate-captain-coddy/description)
-- [개구리의 여행](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/frog-journey/description)
+- Priority Queue 
+  - [가로등 설치](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/street-light-installation/description)
+  - [코드 트리 채점기](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/codetree-judger/description)
+  - [코드트리 투어](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/codetree-tour/description)
+  - [해적 선장 코디](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/pirate-captain-coddy/description)
+  - [토끼와 경주](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/rabit-and-race/description)
+  
+- Dijkstra 
+  - [개구리의 여행](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/frog-journey/description)
 
-## 가로등 설치 
+## Priority Queue 
+
+우선순위에 대해서 맨 처음의 데이터를 Extract하거나 데이터의 출입이 잦은 경우, priority queue를 이용해 데이터를 관리한다. 
+
+### 가로등 설치 
 
 
 ````{admonition} 전역변수 
@@ -494,7 +502,7 @@ if __name__ == "__main__":
 ```
 ````
 
-## 코드 트리 채점기 
+### 코드 트리 채점기 
 
 이런 문제를 푸는 경우, 각 문제의 요구 사항을 만족시키기 위해서는 ***(1) 각 정보의 특성에 맞는 효율적인 자료구조*** 를 설계하고, 각 명령어에 따른 ***(2) 상태 변화를 누락 없이 처리*** 하는 것이 중요하다. 
 
@@ -784,7 +792,7 @@ for _ in range(q):
 ```
 ````
 
-## 코드 트리 투어 
+### 코드 트리 투어 
 
 구현 문제의 경우, 실수할 수 있는 부분은 여러개의 command 중 하나를 하고 다른 command를 할 경우 그 다음 상황에 영향을 미치는 것이 있는 지 미리 체크해야한다. 이번 문제의 경우 새로 변한 start_id에 대해 이후에 command `200`이 나오는 경우에 새로운 `start_id`에 대하여 Trip의 cost등을 계산해야하므로 이를 global variable로 관리해주는 것이 포인트였다. 
 
@@ -1061,7 +1069,7 @@ for _ in range(Q):
 ```
 ````
 
-## 해적 선장 코디 
+### 해적 선장 코디 
 
 해당 문제는 제일 우선순위가 높은 1개를 뽑는 것이 아닌, 조건에 맞는 최대 5개의 선박을 고를 수 있다는 것에 있다. 
 
@@ -1644,12 +1652,55 @@ if __name__ == "__main__":
 ```
 ````
 
-## 개구리의 여행 
+## Dijkstra 
+
+특정 시작점에서 다른 점으로의 최단 거리를 알고 싶은 경우, ***음수의 간선이 없는 경우*** dijkstra 알고리즘을 사용하여 계산할 수 있다. 
+
+### 개구리의 여행 
+
+3D dijkstra algorithm을 사용할 수 있다. 즉, 공간적 위치 뿐만 아니라, (y, x, jump) 현재의 점프력에 따라서도 도착지점까지의 최단 거리 (시간)이 달라지기 때문이다. 따라서, Shortest_path dictionary와 priority queue에 넣는 정보 모두 3D 차원에서 고려, 확인해야한다. 
+
+````{admonition} coding and decoding for each state 
+:class: dropdown 
+
+공간상으로 3D Matrix을 만드는 것이 가장 쉬운 접근법이지만, (y, x, jump)에 대하여 unique한 index를 만드는 함수를 구현하여 코드를 작성할 수도 있다. 
+
+```{code-block} python 
+---
+caption: 3D 공간 (행, 열, 점프력)을 하나의 stateID로 coding하는 함수. (row, col, jump)가 1-indexed이기 때문에, 0-indexed로 변환한 후 계산하고 있음에 주의하자.  
+---
+# 각 상태는 (행, 열, 점프력)으로 저장된다. 
+# 상태를 하나의 정수 인덱스로 변환하기 위한 함수이다. 
+# 상태 인덱스는 MAX_JUMP_POWER * (row-1) 
+def getStateId(row: int, col:int, jump: int) -> int:
+    global gridSize, MAX_JUMP_POWER
+    # 1-indexed (row, col, jump)
+    '''
+    row에 gridSize 숫자를 곱하면, 그 숫자들이 gridSize만큼 벌어지고, 그것을 col-1의 크기만큼 채우면 Unique한 수를 만들 수 있다. 
+    이는 Jump라는 3번째 숫자가 있을때도 동일하게 적용될 수 있다. 
+    '''
+    return MAX_JUMP_POWER*(gridSize*(row-1) + (col-1)) + (jump-1)
+```
+
+반면, 이렇게 unique index로 coding된 것들을 다시, (row, col, jump)로 계산할 수 있다. 
+
+```{code-block} python
+
+def decodeState(cur_state: int):
+    tempState = cur_state 
+    currentJumpPower = (tempState)%MAX_GRID_SIZE + 1 # 점프력 값 복원 
+    tempState //= MAX_JUMP_POWER
+    currentCol = (tempState % gridSize) + 1 # 열 복원 
+    tempState //= gridSize
+    currentRow = (tempState % gridSize) + 1 # 행 복원
+     
+    return (currentRow, currentCol, currentJumpPower)
+```
+
+````
 
 ````{admonition} sol1: Time Limit 
 :class: dropdown 
-
-3D dijkstra algorithm을 사용할 수 있다. 즉, 공간적 위치 뿐만 아니라, (y, x, jump) 현재의 점프력에 따라서도 도착지점까지의 최단 거리 (시간)이 달라지기 때문이다. 따라서, Shortest_path dictionary와 priority queue에 넣는 정보 모두 3D 차원에서 고려, 확인해야한다. 
 
 아래는 Time limit이 걸렸으나, 로직 자체는 맞는 것 같다. 시간초과가 나는 부분은 `cal_options()`함수를 호출할 때 부분으로, graph에 갈 공간이 많을 수록 할 수 있는 점프 및 다양한 경로가 존재하게 되어 이를 찾는데 시간초과가 걸리는 것 같다. 
 
@@ -1830,4 +1881,3 @@ for _ in range(Q):
 ```
 ````
 
-아래의 코드는 해설에 있는 코드를 가져왔다. 
