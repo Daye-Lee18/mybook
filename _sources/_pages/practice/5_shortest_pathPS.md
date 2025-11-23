@@ -28,6 +28,7 @@ sort()와 min-heap은 오름차순으로 두면, "매번 현재 가장 싼 간�
 - Dijkstra 
   - [개구리의 여행](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/frog-journey/description)
   - [Reachable Nodes in Subdivided Graph](https://leetcode.com/problems/reachable-nodes-in-subdivided-graph/description/?envType=problem-list-v2&envId=shortest-path)
+  - [Second Minimum Time to Reach Destination](https://leetcode.com/problems/second-minimum-time-to-reach-destination/description/?envType=problem-list-v2&envId=shortest-path)
 
 ## Priority Queue 
 
@@ -2093,3 +2094,163 @@ for _ in range(Q):
 
 ### Reachable Nodes In Subdivided Graph 
 
+````{admonition} Solution
+:class: dropdown 
+
+Time: 111ms  <br>
+Memory: 25 MB <br>
+
+used: dict[(node1, node2), int]: for each edge, `used` dictionary stores the number of possible new nodes we can walk through within the `maxMoves`. maxMoves - shortest_dis to the cur node can be negative. For example, maxMoves=6 and the shortest path to the node 3 can be 9. and the `used` will store -3. (since -3 will be always smaller than the number of new nodes) <- This is why when we get out values in `used` by using used.get() function, we need to do used.get((u, v), 0). 
+
+In the end, we calculate `ans += min(w, used.get((u, v), 0) + used.get((v, u), 0))` for each edge. 
+Since the graph is undirected graph, we can walk from u to v and, also, from v to u. 
+
+Since the addition of two values should not be greater than w (the number of new nodes), we add `min` value to the final answer. 
+
+```{code-block} python 
+
+import collections 
+import heapq 
+
+class Solution(object):
+    def reachableNodes(self, edges, M, N):
+        graph = collections.defaultdict(dict)
+        for u, v, w in edges:
+            graph[u][v] = graph[v][u] = w # how many new nodes there are on this edge 
+
+        pq = [(0, 0)]
+        dist = {0: 0}
+        used = {}
+        ans = 0
+
+        while pq:
+            d, node = heapq.heappop(pq)
+            if d > dist[node]: continue
+            # Each node is only visited once.  We've reached
+            # a node in our original graph.
+            ans += 1
+
+            for nei, weight in graph[node].items():
+                # M - d is how much further we can walk from this node;
+                # weight is how many new nodes there are on this edge.
+                # v is the maximum utilization of this edge.
+                v = min(weight, M - d)
+                used[node, nei] = v # start_node = node, end_node = nei
+
+                # d2 is the total distance to reach 'nei' (neighbor) node
+                # in the original graph.
+                d2 = d + weight + 1 # (weight+1 = the number of edges)
+                if d2 < dist.get(nei, M+1): # dict.get(key, value if there is no key)
+                    heapq.heappush(pq, (d2, nei))
+                    dist[nei] = d2
+
+        # At the end, each edge (u, v, w) can be used with a maximum
+        # of w new nodes: a max of used[u, v] nodes from one side,
+        # and used[v, u] nodes from the other.
+        for u, v, w in edges:
+            ans += min(w, used.get((u, v), 0) + used.get((v, u), 0))
+
+        return ans
+```
+````
+
+
+````{admonition} Solution2 
+:class: dropdown 
+
+Time: 149ms 
+Memory: 26MB 
+
+```{code-block} python
+from typing import List 
+import heapq
+from collections import defaultdict 
+
+def modified_dijkstra(cur_node:int, maxMoves:int):
+    global graph, shortest_path, used
+    cnt = 0
+
+    possible_reachable_nodes_num = maxMoves - (shortest_path[cur_node])
+    # NOTE: possible reachable nodes num이 음수가 되면, 위에 Temp_num이 음수가 되어 
+    # 로직이 틀려지므로 0으로 둔다. 
+    # possible reachable nodes num이 음수 = 0보다 멀리가면 안되고, 0과 가까운쪽의 노드로 가야함. 
+    # 근데 그쪽으로 가면, 어차피 이전에 Dijkstra에서 그쪽 노드에서 이미 계산했을 것이기 때문에, 그냥 지나치면 된다. 
+    possible_reachable_nodes_num = 0 if possible_reachable_nodes_num < 0 else possible_reachable_nodes_num
+    
+    for nxt_node, num_1 in graph[cur_node].items():
+        if cur_node < nxt_node:
+            node1= cur_node; node2=nxt_node 
+            
+        else:
+            node1 = nxt_node; node2=cur_node 
+        
+        exisiting_node_nums = used[(node1, node2)]
+        if exisiting_node_nums == 0:
+            continue 
+
+        reachable_nodes_num = min(exisiting_node_nums, possible_reachable_nodes_num)
+        temp_num = min(used[(node1,node2)], reachable_nodes_num)
+        used[(node1, node2)] -= temp_num
+        cnt += temp_num
+    return cnt 
+
+MAX = int(1e9)
+class Solution:
+    def reachableNodes(self, edges: List[List[int]], maxMoves: int, n: int) -> int:
+        global graph, shortest_path, used
+        # Step 1: graph Initialization with new edge weight 
+        # NOTE: graph와 dijkstra 의 결과인 SHORTESt path모두 dictionary로 저장해, 
+        # memory efficient 하게 만든다. 
+        graph = defaultdict(dict)
+        total = 0
+        used = dict()
+
+        for edge in edges:
+            # undirected graph 
+            graph[edge[0]][edge[1]] = graph[edge[1]][edge[0]] = (edge[2] + 1)
+            used[(edge[0], edge[1])] = edge[2]
+        
+        ## Step 2: dijkstra Algorithm 
+        dijkstra_pq = [(0, 0)] # start_dis, start_node 
+        # modified_dijkstra_pq = []
+        # n수가 많아지면, [MAX]*n은 좋지 않음. dictionary로 만듦. 
+        shortest_path = dict()
+        shortest_path[0] = 0 # start node 
+         
+        while dijkstra_pq:
+            cur_dis, cur_node = heapq.heappop(dijkstra_pq)
+
+            if cur_dis > shortest_path[cur_node]:
+                continue 
+
+            # each node is only visited once. we've reached a node in our original graph 
+            if shortest_path[cur_node] <= maxMoves:
+                total += 1 
+
+            # 최단 거리가 계산된 노드부터, 이어져 있는 edge들에 대하여 New graph에 있는
+            # reachable nodes들의 개수를 더해준다. 
+            total += modified_dijkstra(cur_node, maxMoves)
+
+            for nxt_node, nxt_weight in graph[cur_node].items():
+                # nxt_node=nxt_state.nxt_node; nxt_weight = nxt_state.weight
+                nxt_dis = cur_dis + nxt_weight 
+                
+                # MAX로 기본 값 세팅안되어있어서, 없으면 MAX값이라 됨. 
+                if nxt_node not in shortest_path or nxt_dis < shortest_path[nxt_node]:
+                    shortest_path[nxt_node] = nxt_dis 
+                    heapq.heappush(dijkstra_pq, (nxt_dis, nxt_node))
+
+        return total 
+    
+
+sol = Solution()
+# edges = [[0,1,10],[0,2,1],[1,2,2]]; maxMoves = 6; n = 3 # 13 
+# edges = [[0,1,4],[1,2,6],[0,2,8],[1,3,1]]; maxMoves = 10; n = 4 # 23 
+# edges = [[1,2,4],[1,4,5],[1,3,1],[2,3,4],[3,4,5]]; maxMoves = 17; n = 5 # 1 
+edges = [[1,2,5],[0,3,3],[1,3,2],[2,3,4],[0,4,1]]; maxMoves=7; n=5 # 13
+print(sol.reachableNodes(edges, maxMoves, n))
+
+```
+````
+
+### Second Minimum  Time to Reach Destination 
