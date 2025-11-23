@@ -2254,3 +2254,200 @@ print(sol.reachableNodes(edges, maxMoves, n))
 ````
 
 ### Second Minimum  Time to Reach Destination 
+
+````{admonition} Solution Time Limit 
+:class: dropdown 
+
+```{code-block} python 
+from typing import List 
+import heapq 
+from collections import defaultdict 
+import math 
+
+MAX = int(1e9)
+
+'''Time complexity
+원래의 Dijkstra 는 O(E+V logV) 이지만, 
+Second shortest path를 찾는 경우에는, 달라짐. 
+
+'''
+def dijkstra(start: int, time:int, n:int, change:int):
+    MAX = int(1e9)
+    q = [(0, start)]
+    shortest_path: dict = defaultdict(list)
+    shortest_path[start] = [0]
+
+    while q:
+        cur_time, cur_node = heapq.heappop(q) # cur_idx: 횟수, 시간 계산을 위해 사용됨.
+
+        # NOTE: Dijkstra에서 visited check하는 방식 
+        # second shortest path를 찾기 전까지 버리는 element가 없음. 
+        # 노드 n에 도달하기 전에, 다른 노드들에 도착할 때도 기다리고 다른 곳으로 가야할 때가 있음. 
+        # N이 아닌 다른 노드들에 대해서는 3, 4 번째 계속 구하다가, 노드가 n인 경우에만 2번째까지 구하면 됨. 
+        temp_shortest_path = shortest_path.get(cur_node, [])
+
+        # NOTE: dijkstra 종료 조건: n node에서 마무리 
+        # if cur_node == n:
+        #     print(cur_node)
+        # 해당 최종 노드로 들어오는 값이 동일한 경우에는, 맨 마지막을 반환해야함. "Strictly larger than the minimum value"
+        if cur_node == n and len(set(temp_shortest_path)) == 2:
+            return temp_shortest_path[-1] # second shortest path to node n 
+        
+        # cur_signal 계산 
+        cur_idx, cur_signal = calculate_signal(cur_time, change)
+        '''
+        조건 (갈 수 있는 옵션 중 제한 조건):
+        - 현재 시그널이 초록색: 바로 움직여야함. 어디로든 움직일 수 있음. (enter하는 것은 언제나 가능)
+        - 현재 시그널이 빨강색: 떠날 수 없음. (Signal이 초록색인 경우에만 vertex를 움직일 수 있음.)
+            -> 이 경우 기다려야하는데, 다음 시그널이 초록으로 바뀌는 시간까지만 기다리면 됨. 
+        '''
+        # 시그널이 빨간색인 경우 떠날 수 없음. 이 경우 다음 시그널인 초록으로 바뀌는 시간까지 버티면 됨.
+        # 기다리는 시간은 shortest_path를 Update해주지 않음. 다음 노드로 가는 경우에만 업데이트 함.
+        if cur_signal == 1:
+            heapq.heappush(q, ((cur_idx+1) * change, cur_node))
+        else: # 시그널이 초록색인 경우 어느곳으로라도 움직여야함.
+            for nxt_node in graph[cur_node]: 
+                nxt_time = cur_time + time 
+
+                # if n == nxt_node: 
+                shortest_path[nxt_node].append(nxt_time) # backtracking 
+                # if n != nxt_node: # memory 아끼기 
+                #     shortest_path[nxt_node][-1] = nxt_time 
+                heapq.heappush(q, (nxt_time, nxt_node))
+                
+    
+
+def calculate_signal(cur_time: int, change: int):
+    idx = math.floor(cur_time / change)
+    return (idx, 0 if idx % 2 == 0 else 1 )
+
+
+class Solution:
+    def secondMinimum(self, n: int, edges: List[List[int]], time: int, change: int) -> int:
+        global graph 
+        # create graph 
+        graph = [[] for _ in range(n+1)]
+        for edge in edges:
+            graph[edge[0]].append(edge[1])
+            graph[edge[1]].append(edge[0])
+
+        return dijkstra(1, time, n, change)
+
+        
+sol = Solution()
+n=5; edges=[[1,2],[1,3],[1,4],[3,4],[4,5]]; time=3; change=5 # 13 
+# n=2; edges=[[1,2]]; time=3; change=2 # 11 
+# n=7; edges=[[1,2],[1,3],[2,5],[2,6],[6,5],[5,7],[3,4],[4,7]]; time=4; change=7 # 22
+print(sol.secondMinimum(n, edges, time, change))
+
+# MAX_N = 1e4 
+# MAX_edges = 2*1e4 
+# print((MAX_N + MAX_edges) * math.log(MAX_N)) # ~ 3 * 10^5 
+```
+````
+
+````{admonition} Solution
+:class: dropdown 
+
+When a signal is red, since we don't move to the next node, we don't push (time_taken, nxt_node) in the queue. We directly add them when we make a move to the nextnode. 
+
+```{code-block} python 
+from typing import List 
+import heapq 
+from collections import defaultdict 
+import math 
+
+MAX = int(1e9)
+
+
+def dijkstra(start: int, time:int, n:int, change:int):
+    MAX = int(1e9)
+    q = [(0, start)]
+    shortest_path = [[MAX]*2 for _ in range(n+1)]
+    shortest_path[start][0] = 0
+    freq = [0] * (n+1)
+
+    while q:
+        cur_time, cur_node = heapq.heappop(q) # cur_idx: 횟수, 시간 계산을 위해 사용됨.
+        freq[cur_node] += 1 
+        # NOTE: Dijkstra에서 visited check하는 방식 
+        # second shortest path를 찾기 전까지 버리는 element가 없음. 
+        # 노드 n에 도달하기 전에, 다른 노드들에 도착할 때도 기다리고 다른 곳으로 가야할 때가 있음. 
+        # N이 아닌 다른 노드들에 대해서는 3, 4 번째 계속 구하다가, 노드가 n인 경우에만 2번째까지 구하면 됨. 
+
+        # NOTE: dijkstra 종료 조건: n node에서 마무리 
+        if cur_node == n and freq[cur_node] == 2:
+            return shortest_path[n][1] # second shortest path to node n 
+        
+        # cur_signal 계산 
+        cur_idx, cur_signal = calculate_signal(cur_time, change)
+        '''
+        조건 (갈 수 있는 옵션 중 제한 조건):
+        - 현재 시그널이 초록색: 바로 움직여야함. 어디로든 움직일 수 있음. (enter하는 것은 언제나 가능)
+        - 현재 시그널이 빨강색: 떠날 수 없음. (Signal이 초록색인 경우에만 vertex를 움직일 수 있음.)
+            -> 이 경우 기다려야하는데, 다음 시그널이 초록으로 바뀌는 시간까지만 기다리면 됨. 
+        '''
+        # 시그널이 빨간색인 경우 떠날 수 없음. 이 경우 다음 시그널인 초록으로 바뀌는 시간까지 버티면 됨.
+        # 기다리는 시간은 shortest_path를 Update해주지 않음. 다음 노드로 가는 경우에만 업데이트 함.
+        if cur_signal == 1:
+            # heapq.heappush(q, ((cur_idx+1) * change, cur_node))
+            # (cur_idx+1) * change= green으로 바꾸는 시간 
+            # + time = 다음 노드로 넘어가는 시간 
+            nxt_time = (cur_idx+1) * change + time 
+        else: # 시그널이 초록색인 경우 어느곳으로라도 움직여야함.
+            nxt_time = cur_time + time 
+
+        for nxt_node in graph[cur_node]:  
+            # Ignore nodes that have already popped out twice, we are not interested in
+            # visiting them again.
+            if freq[nxt_node] == 2:
+                continue 
+            # 해당 최종 노드로 들어오는 값이 동일한 경우에는, 맨 마지막을 반환해야함. 
+            # 즉, "Strictly larger than the minimum value"
+            # 따라서, 동일 값이 있다면 무시하고 넘어가야함. 
+            if shortest_path[nxt_node][0] > nxt_time:
+                shortest_path[nxt_node][1] =  shortest_path[nxt_node][0]# backtracking 
+                shortest_path[nxt_node][0] = nxt_time 
+                heapq.heappush(q, (nxt_time, nxt_node))
+            elif shortest_path[nxt_node][1] > nxt_time and shortest_path[nxt_node][0] != nxt_time:
+                shortest_path[nxt_node][1] = nxt_time 
+                heapq.heappush(q, (nxt_time, nxt_node))
+
+def calculate_signal(cur_time: int, change: int):
+    '''
+    (change* idx <= time < change*(idx+1)) 안에서 그린/레드 시그널이 바뀜. 
+    idx % 2 == 0일때는 그린, idx % 2 != 0 일때 레드 
+    따라서, 
+    idx <= time/change < idx + 1 
+    이므로, 
+    idx = floor(time/change)로 표현가능. 
+    '''
+    # idx = math.floor(cur_time / change)
+    idx = (cur_time // change) # 위와 동일 // == math.floor 
+    return (idx, 0 if idx % 2 == 0 else 1 )
+
+
+class Solution:
+    def secondMinimum(self, n: int, edges: List[List[int]], time: int, change: int) -> int:
+        global graph 
+        # create graph 
+        graph = [[] for _ in range(n+1)]
+        for edge in edges:
+            graph[edge[0]].append(edge[1])
+            graph[edge[1]].append(edge[0])
+
+        return dijkstra(1, time, n, change)
+
+        
+sol = Solution()
+n=5; edges=[[1,2],[1,3],[1,4],[3,4],[4,5]]; time=3; change=5 # 13 
+# n=2; edges=[[1,2]]; time=3; change=2 # 11 
+# n=7; edges=[[1,2],[1,3],[2,5],[2,6],[6,5],[5,7],[3,4],[4,7]]; time=4; change=7 # 22
+n=12; edges=[[1,2],[1,3],[3,4],[2,5],[4,6],[2,7],[1,8],[5,9],[3,10],[8,11],[6,12]]; time=60; change=600 # 22
+print(sol.secondMinimum(n, edges, time, change))
+
+# MAX_N = 1e4 
+# MAX_edges = 2*1e4 
+# print((MAX_N + MAX_edges) * math.log(MAX_N)) # ~ 3 * 10^5 
+```
+````

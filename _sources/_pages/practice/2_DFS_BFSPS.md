@@ -32,7 +32,8 @@ kernelspec:
   - [전투로봇](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/fighting-robot/description)
   - [토스트 계란틀](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/toast-eggmold/description)
 
-## 미생물 연구 Sorting, PriorityQueue 
+## BFS 
+###  미생물 연구 Sorting, PriorityQueue 
 
 ```{admonition} 문제 정리
 :class: dropdown
@@ -874,7 +875,7 @@ if __name__ == '__main__':
 2 4 6 7<br>
 ````
 
-## 마법의 숲 탐색
+### 마법의 숲 탐색
 
 ```{admonition} 문제 정리
 :class: dropdown 
@@ -1142,7 +1143,7 @@ if __name__ == "__main__":
     solve()
 ```
 ````
-## 블록 이동하기  
+### 블록 이동하기  
 
 ````{admonition} 갈 수 있는 방향 설정 
 :class: dropdown 
@@ -1335,7 +1336,7 @@ if __name__ == '__main__':
 
 ```
 
-## 2번: 고대 문명 유적 탐사 
+### 고대 문명 유적 탐사 
 
 ```{admonition} 리스트의 복사
 :class: dropdown

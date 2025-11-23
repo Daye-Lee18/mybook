@@ -2564,6 +2564,198 @@ Memory: 26MB</p>
 </section>
 <section id="second-minimum-time-to-reach-destination">
 <h3>Second Minimum  Time to Reach Destination<a class="headerlink" href="#second-minimum-time-to-reach-destination" title="Link to this heading">#</a></h3>
+<div class="dropdown admonition">
+<p class="admonition-title">Solution Time Limit</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span> 
+<span class="kn">import</span><span class="w"> </span><span class="nn">heapq</span> 
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span> 
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span> 
+
+<span class="n">MAX</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1e9</span><span class="p">)</span>
+
+<span class="sd">&#39;&#39;&#39;Time complexity</span>
+<span class="sd">원래의 Dijkstra 는 O(E+V logV) 이지만, </span>
+<span class="sd">Second shortest path를 찾는 경우에는, 달라짐. </span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dijkstra</span><span class="p">(</span><span class="n">start</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">change</span><span class="p">:</span><span class="nb">int</span><span class="p">):</span>
+    <span class="n">MAX</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1e9</span><span class="p">)</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="n">start</span><span class="p">)]</span>
+    <span class="n">shortest_path</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">shortest_path</span><span class="p">[</span><span class="n">start</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">while</span> <span class="n">q</span><span class="p">:</span>
+        <span class="n">cur_time</span><span class="p">,</span> <span class="n">cur_node</span> <span class="o">=</span> <span class="n">heapq</span><span class="o">.</span><span class="n">heappop</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="c1"># cur_idx: 횟수, 시간 계산을 위해 사용됨.</span>
+
+        <span class="c1"># NOTE: Dijkstra에서 visited check하는 방식 </span>
+        <span class="c1"># second shortest path를 찾기 전까지 버리는 element가 없음. </span>
+        <span class="c1"># 노드 n에 도달하기 전에, 다른 노드들에 도착할 때도 기다리고 다른 곳으로 가야할 때가 있음. </span>
+        <span class="c1"># N이 아닌 다른 노드들에 대해서는 3, 4 번째 계속 구하다가, 노드가 n인 경우에만 2번째까지 구하면 됨. </span>
+        <span class="n">temp_shortest_path</span> <span class="o">=</span> <span class="n">shortest_path</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cur_node</span><span class="p">,</span> <span class="p">[])</span>
+
+        <span class="c1"># NOTE: dijkstra 종료 조건: n node에서 마무리 </span>
+        <span class="c1"># if cur_node == n:</span>
+        <span class="c1">#     print(cur_node)</span>
+        <span class="c1"># 해당 최종 노드로 들어오는 값이 동일한 경우에는, 맨 마지막을 반환해야함. &quot;Strictly larger than the minimum value&quot;</span>
+        <span class="k">if</span> <span class="n">cur_node</span> <span class="o">==</span> <span class="n">n</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">temp_shortest_path</span><span class="p">))</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">temp_shortest_path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># second shortest path to node n </span>
+        
+        <span class="c1"># cur_signal 계산 </span>
+        <span class="n">cur_idx</span><span class="p">,</span> <span class="n">cur_signal</span> <span class="o">=</span> <span class="n">calculate_signal</span><span class="p">(</span><span class="n">cur_time</span><span class="p">,</span> <span class="n">change</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        조건 (갈 수 있는 옵션 중 제한 조건):</span>
+<span class="sd">        - 현재 시그널이 초록색: 바로 움직여야함. 어디로든 움직일 수 있음. (enter하는 것은 언제나 가능)</span>
+<span class="sd">        - 현재 시그널이 빨강색: 떠날 수 없음. (Signal이 초록색인 경우에만 vertex를 움직일 수 있음.)</span>
+<span class="sd">            -&gt; 이 경우 기다려야하는데, 다음 시그널이 초록으로 바뀌는 시간까지만 기다리면 됨. </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># 시그널이 빨간색인 경우 떠날 수 없음. 이 경우 다음 시그널인 초록으로 바뀌는 시간까지 버티면 됨.</span>
+        <span class="c1"># 기다리는 시간은 shortest_path를 Update해주지 않음. 다음 노드로 가는 경우에만 업데이트 함.</span>
+        <span class="k">if</span> <span class="n">cur_signal</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">heapq</span><span class="o">.</span><span class="n">heappush</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="p">((</span><span class="n">cur_idx</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">change</span><span class="p">,</span> <span class="n">cur_node</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span> <span class="c1"># 시그널이 초록색인 경우 어느곳으로라도 움직여야함.</span>
+            <span class="k">for</span> <span class="n">nxt_node</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">[</span><span class="n">cur_node</span><span class="p">]:</span> 
+                <span class="n">nxt_time</span> <span class="o">=</span> <span class="n">cur_time</span> <span class="o">+</span> <span class="n">time</span> 
+
+                <span class="c1"># if n == nxt_node: </span>
+                <span class="n">shortest_path</span><span class="p">[</span><span class="n">nxt_node</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nxt_time</span><span class="p">)</span> <span class="c1"># backtracking </span>
+                <span class="c1"># if n != nxt_node: # memory 아끼기 </span>
+                <span class="c1">#     shortest_path[nxt_node][-1] = nxt_time </span>
+                <span class="n">heapq</span><span class="o">.</span><span class="n">heappush</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="p">(</span><span class="n">nxt_time</span><span class="p">,</span> <span class="n">nxt_node</span><span class="p">))</span>
+                
+    
+
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_signal</span><span class="p">(</span><span class="n">cur_time</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">change</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">cur_time</span> <span class="o">/</span> <span class="n">change</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">idx</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">1</span> <span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">secondMinimum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">edges</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">time</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">change</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">global</span> <span class="n">graph</span> 
+        <span class="c1"># create graph </span>
+        <span class="n">graph</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
+            <span class="n">graph</span><span class="p">[</span><span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">graph</span><span class="p">[</span><span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">dijkstra</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">change</span><span class="p">)</span>
+
+        
+<span class="n">sol</span> <span class="o">=</span> <span class="n">Solution</span><span class="p">()</span>
+<span class="n">n</span><span class="o">=</span><span class="mi">5</span><span class="p">;</span> <span class="n">edges</span><span class="o">=</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]];</span> <span class="n">time</span><span class="o">=</span><span class="mi">3</span><span class="p">;</span> <span class="n">change</span><span class="o">=</span><span class="mi">5</span> <span class="c1"># 13 </span>
+<span class="c1"># n=2; edges=[[1,2]]; time=3; change=2 # 11 </span>
+<span class="c1"># n=7; edges=[[1,2],[1,3],[2,5],[2,6],[6,5],[5,7],[3,4],[4,7]]; time=4; change=7 # 22</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">secondMinimum</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">change</span><span class="p">))</span>
+
+<span class="c1"># MAX_N = 1e4 </span>
+<span class="c1"># MAX_edges = 2*1e4 </span>
+<span class="c1"># print((MAX_N + MAX_edges) * math.log(MAX_N)) # ~ 3 * 10^5 </span>
+</pre></div>
+</div>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">Solution</p>
+<p>When a signal is red, since we don’t move to the next node, we don’t push (time_taken, nxt_node) in the queue. We directly add them when we make a move to the nextnode.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span> 
+<span class="kn">import</span><span class="w"> </span><span class="nn">heapq</span> 
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span> 
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span> 
+
+<span class="n">MAX</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1e9</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">dijkstra</span><span class="p">(</span><span class="n">start</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">change</span><span class="p">:</span><span class="nb">int</span><span class="p">):</span>
+    <span class="n">MAX</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1e9</span><span class="p">)</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="n">start</span><span class="p">)]</span>
+    <span class="n">shortest_path</span> <span class="o">=</span> <span class="p">[[</span><span class="n">MAX</span><span class="p">]</span><span class="o">*</span><span class="mi">2</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+    <span class="n">shortest_path</span><span class="p">[</span><span class="n">start</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">freq</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="n">q</span><span class="p">:</span>
+        <span class="n">cur_time</span><span class="p">,</span> <span class="n">cur_node</span> <span class="o">=</span> <span class="n">heapq</span><span class="o">.</span><span class="n">heappop</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="c1"># cur_idx: 횟수, 시간 계산을 위해 사용됨.</span>
+        <span class="n">freq</span><span class="p">[</span><span class="n">cur_node</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span> 
+        <span class="c1"># NOTE: Dijkstra에서 visited check하는 방식 </span>
+        <span class="c1"># second shortest path를 찾기 전까지 버리는 element가 없음. </span>
+        <span class="c1"># 노드 n에 도달하기 전에, 다른 노드들에 도착할 때도 기다리고 다른 곳으로 가야할 때가 있음. </span>
+        <span class="c1"># N이 아닌 다른 노드들에 대해서는 3, 4 번째 계속 구하다가, 노드가 n인 경우에만 2번째까지 구하면 됨. </span>
+
+        <span class="c1"># NOTE: dijkstra 종료 조건: n node에서 마무리 </span>
+        <span class="k">if</span> <span class="n">cur_node</span> <span class="o">==</span> <span class="n">n</span> <span class="ow">and</span> <span class="n">freq</span><span class="p">[</span><span class="n">cur_node</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">shortest_path</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># second shortest path to node n </span>
+        
+        <span class="c1"># cur_signal 계산 </span>
+        <span class="n">cur_idx</span><span class="p">,</span> <span class="n">cur_signal</span> <span class="o">=</span> <span class="n">calculate_signal</span><span class="p">(</span><span class="n">cur_time</span><span class="p">,</span> <span class="n">change</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        조건 (갈 수 있는 옵션 중 제한 조건):</span>
+<span class="sd">        - 현재 시그널이 초록색: 바로 움직여야함. 어디로든 움직일 수 있음. (enter하는 것은 언제나 가능)</span>
+<span class="sd">        - 현재 시그널이 빨강색: 떠날 수 없음. (Signal이 초록색인 경우에만 vertex를 움직일 수 있음.)</span>
+<span class="sd">            -&gt; 이 경우 기다려야하는데, 다음 시그널이 초록으로 바뀌는 시간까지만 기다리면 됨. </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># 시그널이 빨간색인 경우 떠날 수 없음. 이 경우 다음 시그널인 초록으로 바뀌는 시간까지 버티면 됨.</span>
+        <span class="c1"># 기다리는 시간은 shortest_path를 Update해주지 않음. 다음 노드로 가는 경우에만 업데이트 함.</span>
+        <span class="k">if</span> <span class="n">cur_signal</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># heapq.heappush(q, ((cur_idx+1) * change, cur_node))</span>
+            <span class="c1"># (cur_idx+1) * change= green으로 바꾸는 시간 </span>
+            <span class="c1"># + time = 다음 노드로 넘어가는 시간 </span>
+            <span class="n">nxt_time</span> <span class="o">=</span> <span class="p">(</span><span class="n">cur_idx</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">change</span> <span class="o">+</span> <span class="n">time</span> 
+        <span class="k">else</span><span class="p">:</span> <span class="c1"># 시그널이 초록색인 경우 어느곳으로라도 움직여야함.</span>
+            <span class="n">nxt_time</span> <span class="o">=</span> <span class="n">cur_time</span> <span class="o">+</span> <span class="n">time</span> 
+
+        <span class="k">for</span> <span class="n">nxt_node</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">[</span><span class="n">cur_node</span><span class="p">]:</span>  
+            <span class="c1"># Ignore nodes that have already popped out twice, we are not interested in</span>
+            <span class="c1"># visiting them again.</span>
+            <span class="k">if</span> <span class="n">freq</span><span class="p">[</span><span class="n">nxt_node</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">continue</span> 
+            <span class="c1"># 해당 최종 노드로 들어오는 값이 동일한 경우에는, 맨 마지막을 반환해야함. </span>
+            <span class="c1"># 즉, &quot;Strictly larger than the minimum value&quot;</span>
+            <span class="c1"># 따라서, 동일 값이 있다면 무시하고 넘어가야함. </span>
+            <span class="k">if</span> <span class="n">shortest_path</span><span class="p">[</span><span class="n">nxt_node</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">nxt_time</span><span class="p">:</span>
+                <span class="n">shortest_path</span><span class="p">[</span><span class="n">nxt_node</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span>  <span class="n">shortest_path</span><span class="p">[</span><span class="n">nxt_node</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="c1"># backtracking </span>
+                <span class="n">shortest_path</span><span class="p">[</span><span class="n">nxt_node</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">nxt_time</span> 
+                <span class="n">heapq</span><span class="o">.</span><span class="n">heappush</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="p">(</span><span class="n">nxt_time</span><span class="p">,</span> <span class="n">nxt_node</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">shortest_path</span><span class="p">[</span><span class="n">nxt_node</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">nxt_time</span> <span class="ow">and</span> <span class="n">shortest_path</span><span class="p">[</span><span class="n">nxt_node</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">nxt_time</span><span class="p">:</span>
+                <span class="n">shortest_path</span><span class="p">[</span><span class="n">nxt_node</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">nxt_time</span> 
+                <span class="n">heapq</span><span class="o">.</span><span class="n">heappush</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="p">(</span><span class="n">nxt_time</span><span class="p">,</span> <span class="n">nxt_node</span><span class="p">))</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_signal</span><span class="p">(</span><span class="n">cur_time</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">change</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    (change* idx &lt;= time &lt; change*(idx+1)) 안에서 그린/레드 시그널이 바뀜. </span>
+<span class="sd">    idx % 2 == 0일때는 그린, idx % 2 != 0 일때 레드 </span>
+<span class="sd">    따라서, </span>
+<span class="sd">    idx &lt;= time/change &lt; idx + 1 </span>
+<span class="sd">    이므로, </span>
+<span class="sd">    idx = floor(time/change)로 표현가능. </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># idx = math.floor(cur_time / change)</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">cur_time</span> <span class="o">//</span> <span class="n">change</span><span class="p">)</span> <span class="c1"># 위와 동일 // == math.floor </span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">idx</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">1</span> <span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">secondMinimum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">edges</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">time</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">change</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">global</span> <span class="n">graph</span> 
+        <span class="c1"># create graph </span>
+        <span class="n">graph</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
+            <span class="n">graph</span><span class="p">[</span><span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">graph</span><span class="p">[</span><span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">dijkstra</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">change</span><span class="p">)</span>
+
+        
+<span class="n">sol</span> <span class="o">=</span> <span class="n">Solution</span><span class="p">()</span>
+<span class="n">n</span><span class="o">=</span><span class="mi">5</span><span class="p">;</span> <span class="n">edges</span><span class="o">=</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]];</span> <span class="n">time</span><span class="o">=</span><span class="mi">3</span><span class="p">;</span> <span class="n">change</span><span class="o">=</span><span class="mi">5</span> <span class="c1"># 13 </span>
+<span class="c1"># n=2; edges=[[1,2]]; time=3; change=2 # 11 </span>
+<span class="c1"># n=7; edges=[[1,2],[1,3],[2,5],[2,6],[6,5],[5,7],[3,4],[4,7]]; time=4; change=7 # 22</span>
+<span class="n">n</span><span class="o">=</span><span class="mi">12</span><span class="p">;</span> <span class="n">edges</span><span class="o">=</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">],[</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">],[</span><span class="mi">2</span><span class="p">,</span><span class="mi">7</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">8</span><span class="p">],[</span><span class="mi">5</span><span class="p">,</span><span class="mi">9</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span><span class="mi">10</span><span class="p">],[</span><span class="mi">8</span><span class="p">,</span><span class="mi">11</span><span class="p">],[</span><span class="mi">6</span><span class="p">,</span><span class="mi">12</span><span class="p">]];</span> <span class="n">time</span><span class="o">=</span><span class="mi">60</span><span class="p">;</span> <span class="n">change</span><span class="o">=</span><span class="mi">600</span> <span class="c1"># 22</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">secondMinimum</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">change</span><span class="p">))</span>
+
+<span class="c1"># MAX_N = 1e4 </span>
+<span class="c1"># MAX_edges = 2*1e4 </span>
+<span class="c1"># print((MAX_N + MAX_edges) * math.log(MAX_N)) # ~ 3 * 10^5 </span>
+</pre></div>
+</div>
+</div>
 </section>
 </section>
 </section>
