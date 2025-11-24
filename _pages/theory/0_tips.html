@@ -386,13 +386,44 @@ document.write(`
 <ul class="simple">
 <li><p>문제에서 요구하는 찾기, 삭제, 삽입 등의 operation을 진행할 때, 데이터의 개수와 비교하여 어떤 데이터 구조로 설정해야할 지 생각해야한다.</p>
 <ul>
-<li><p>예를 들어, dictionary는 key에 Str, int등의 다양한 데이터 타입을 받을 수 있지만, key가 String일 경우 해당 키를 찾을 때 max string length만큼의 비교 연산이 필요하다. 하지만, key가 int인 경우 List를 사용해 해당 값을 바로 접근할 수 있다.</p></li>
+<li><p>예를 들어, dictionary는 key에 str, int 등의 다양한 데이터 타입을 받을 수 있지만,</p>
+<ul>
+<li><p>**key가 문자열(str)**인 경우:</p>
+<ul>
+<li><p>해시 계산과 비교에 <strong>O(len(key))</strong> 시간이 든다.</p></li>
+<li><p>최대 길이가 긴 문자열을 계속 키로 쓰면, 상수항이 커진다.</p></li>
 </ul>
 </li>
-<li><p>문제를 읽고 <strong>제약 조건(입력 크기, 시간 제한)</strong> 먼저 확인 <span class="math notranslate nohighlight">\(\rightarrow\)</span> 바로 시간복잡도 상한을 설정해야 합니다.</p></li>
+<li><p><strong>key가 0 ~ N-1 범위의 int</strong>이고, <strong>중간 값 없이 빽빽하게</strong> 존재한다면:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">dict</span></code> 대신 <code class="docutils literal notranslate"><span class="pre">list</span></code>로 바로 인덱싱하는 것이 훨씬 빠르고 메모리도 덜 든다. (<code class="docutils literal notranslate"><span class="pre">a[x]</span></code>가 진짜 O(1) 배열 접근)</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>문제를 읽고 <strong>제약 조건(입력 크기, 시간 제한)</strong> 먼저 확인 <span class="math notranslate nohighlight">\(\rightarrow\)</span> 바로 시간복잡도 상한을 설정해야 합니다.</p>
+<ul>
+<li><p>파이썬 기준으로, <strong>1초에 약 <span class="math notranslate nohighlight">\(10^7\)</span> 번 연산</strong> 정도를 안전하게 본다고 생각하면 된다.</p>
+<ul>
+<li><p>예: <span class="math notranslate nohighlight">\(N = 10^5\)</span> 이면, <span class="math notranslate nohighlight">\(O(N \log N)\)</span> 은 대략 <span class="math notranslate nohighlight">\(10^5 \times 17 \approx 1.7 \times 10^6\)</span> → 충분히 여유.</p></li>
+<li><p>예: <span class="math notranslate nohighlight">\(N = 5000\)</span> 이고 <span class="math notranslate nohighlight">\(O(N^2)\)</span>이면 <span class="math notranslate nohighlight">\(2.5 \times 10^7\)</span> → 1초 기준 살짝 위험/언저리.</p></li>
+</ul>
+</li>
+<li><p>C/Java의 경우 primitive int 기준 4 byte이지만, **파이썬의 int는 객체(object)**라서 4 byte가 아니다.</p>
+<ul>
+<li><p>파이썬의 모든 것(숫자, 문자열, 리스트 원소 등)은<br />
+<em><strong>객체(Object) = 포인터 + 타입정보 + 길이정보 + 실제 값</strong></em><br />
+구조로 저장되어, <strong>객체 오버헤드</strong>가 붙는다.</p></li>
+<li><p>작은 정수 하나(<code class="docutils literal notranslate"><span class="pre">int</span></code>)는 대략 <strong>28 bytes</strong> 정도를 차지하고, 리스트 안에 들어가면 포인터까지 포함해 <strong>원소 하나당 약 36 bytes</strong> 정도로 생각하면 된다.</p></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><p><strong>풀이 아이디어 <span class="math notranslate nohighlight">\(\rightarrow\)</span> 복잡도 <span class="math notranslate nohighlight">\(\rightarrow\)</span> 자료구조</strong> 선택을 메모하는 습관 추천</p></li>
-<li><p>또한, <em><strong>구현</strong></em> 문제의 경우, 여러개의 command에 대해 다른 작업을 해야하는 경우, 해당 command를 작업하고 다른 command를 할 때, 어떤 영향을 주는 게 있는지, 어떤 작업을 처리해야하는지 유기적으로 보면서 알고리즘을 구현해야한다.</p></li>
-<li><p>또한, 하나의 cmd가 복잡한 경우 조건을 다 적은 후, 실제 algorithm을 순서대로 적어서 빠짐없이 하도록 한다. 예를 들어 아래처럼 미리 작성해놓으면 실제 구현시에 편하다.</p></li>
+<li><p>또한, <em><strong>구현</strong></em> 문제의 경우, 여러 개의 command에 대해 다른 작업을 해야하는 경우, 해당 command를 작업하고 다른 command를 할 때, 어떤 영향을 주는 게 있는지, 어떤 작업을 처리해야하는지 유기적으로 보면서 알고리즘을 구현해야 한다.</p></li>
+<li><p>또한, 하나의 cmd가 복잡한 경우 조건을 다 적은 후, 실제 algorithm을 순서대로 적어서 빠짐없이 하도록 한다. 예를 들어 아래처럼 미리 작성해놓으면 실제 구현 시에 편하다.</p></li>
 </ul>
 </li>
 </ol>
@@ -401,31 +432,226 @@ document.write(`
 2-1. 이미 3.에 의해 삭제된 여행 상품인지 확인한다. (O(1))
 2-2. 존재하는 상품이면, 판매 불가 상품인지 확인한다. (O(1))
 3-1. 위의 조건을 만족하면, id를 출력한 뒤 관리 목록에서 제거한다. (log30000 ~ 10)
-3-3. pq의 모든 상품을 다 돌았는데도 불구하고, 판매가능한 상품이 없으면, -1를 출력하고, 관리 목록에서 제거하지 않는다. 
+3-3. pq의 모든 상품을 다 돌았는데도 불구하고, 판매가능한 상품이 없으면, -1를 출력하고, 관리 목록에서 제거하지 않는다.  
 </pre></div>
 </div>
 <div class="dropdown admonition">
 <p class="admonition-title">N에 따른 시간 복잡도 계산 및 알고리즘 선택</p>
 <p>제한 시간이 1초 기준으로 입력 값의 범위가 다음과 같을 때 (언어, 채점 환경에 따라 달라질 수 있음)</p>
 <ul class="simple">
+<li><p><strong>(대략적인 감)</strong> 파이썬 기준 1초에 <span class="math notranslate nohighlight">\(\sim 10^7\)</span> 연산 정도로 생각하면 된다.</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(O(N)\)</span>:</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(N \le 10^7\)</span> 정도면 단순 루프 1번은 가능 (상수항이 크면 더 줄어든다고 생각).</p></li>
+</ul>
+</li>
+<li><p><span class="math notranslate nohighlight">\(O(N \log N)\)</span>:</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(N \le 10^5 \sim 2 \times 10^5\)</span> 는 대부분 안전.</p></li>
+<li><p>예: <span class="math notranslate nohighlight">\(N = 2 \times 10^5\)</span> 이면 <span class="math notranslate nohighlight">\(N \log N \approx 2 \times 10^5 \times 18 \approx 3.6 \times 10^6\)</span>.</p></li>
+</ul>
+</li>
+<li><p><span class="math notranslate nohighlight">\(O(N^2)\)</span>:</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(N \le 3000\)</span> 정도면 여유,</p></li>
+<li><p><span class="math notranslate nohighlight">\(N \approx 5000\)</span> 이면 <span class="math notranslate nohighlight">\(2.5 \times 10^7\)</span> 근처라 <strong>파이썬에선 위험/언저리</strong>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(N \ge 10^4\)</span>에서 <span class="math notranslate nohighlight">\(O(N^2)\)</span>은 대부분 시간 초과라고 보면 된다.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>간단히 암기용으로 정리하면:</p>
+<ul class="simple">
 <li><p>N의 범위가 ~500 : 시간 복잡도 O(N^3) 로 풀 수 있다.</p></li>
 <li><p>N의 범위가 ~2000 : 시간 복잡도 O(N^2) 로 풀 수 있다.</p></li>
 <li><p>N의 범위가 ~100,000 : 시간 복잡도 O(NlogN) 로 풀 수 있다.</p></li>
 <li><p>N의 범위가 ~10,000,000 : 시간 복잡도 O(N) 로 풀 수 있다.</p></li>
 </ul>
+<p><strong>문자열(str) 처리 시간 감각</strong></p>
+<ul class="simple">
+<li><p>문자열 길이를 <span class="math notranslate nohighlight">\(L\)</span>이라고 할 때,</p>
+<ul>
+<li><p>한 번 전체를 도는 연산(예: <code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">ch</span> <span class="pre">in</span> <span class="pre">s</span></code>, <code class="docutils literal notranslate"><span class="pre">s.count('a')</span></code>, <code class="docutils literal notranslate"><span class="pre">hash(s)</span></code> 등)은 <strong>O(L)</strong>.</p></li>
+<li><p>딕셔너리에서 문자열 키를 찾는 것도 해시 계산/비교 때문에 **평균 O(1)**이지만,
+내부적으로는 <strong>문자열 길이 <span class="math notranslate nohighlight">\(L\)</span>에 비례하는 작업</strong>이 포함됨.</p></li>
+</ul>
+</li>
+<li><p>예: 전체 입력 문자열 길이 총합이 <span class="math notranslate nohighlight">\(10^6\)</span> 이하면, 문자열 전체를 여러 번 도는 수준의 알고리즘도 대부분 1초 내에 가능하다.</p></li>
+</ul>
 </div>
 <div class="dropdown admonition">
-<p class="admonition-title">N에 따른 메모리</p>
+<p class="admonition-title">N에 따른 메모리 C/C++</p>
 <ul class="simple">
-<li><p>메모리
-int (4B) -&gt; 1,000,000 기준 4MB (256MB이면 64*10^6개 int N사용가능 (~10^6))
-long long / double (8B) -&gt; 1,000,000 기준 8MB
-char / bool (1B) -&gt; 1,000,000 기준 1MB</p></li>
-<li><p>스택(1MB) 주의
-재귀 깊이 한계: 프레임당 수십~수백 B + 지역변수.
-C++: 지역 큰 배열 금지. 재귀 DFS는 1e5 노드에서 위험 → 반복(스택 컨테이너) DFS/BFS로 전환.
-Python: 프레임 오버헤드 큼(+ 기본 재귀 제한 ≈ <strong>1000</strong>). 재귀 지양.
-규칙: 큰 배열 = 전역/힙, 재귀 함수 로컬에 큰 구조 금지.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">int</span></code> (4B)</p>
+<ul>
+<li><p>원소 1,000,000개 기준 → 약 4MB</p></li>
+<li><p>256MB라면</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(256 \text{MB} \approx 256 \times 10^6 \text{B}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(256 \times 10^6 / 4 \approx 64 \times 10^6\)</span> 개의 <code class="docutils literal notranslate"><span class="pre">int</span></code> 저장 가능 (약 <span class="math notranslate nohighlight">\(6.4 \times 10^7\)</span>개)</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">long</span> <span class="pre">long</span></code> / <code class="docutils literal notranslate"><span class="pre">double</span></code> (8B)</p>
+<ul>
+<li><p>1,000,000개 기준 → 약 8MB</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">char</span></code> / <code class="docutils literal notranslate"><span class="pre">bool</span></code> (1B)</p>
+<ul>
+<li><p>1,000,000개 기준 → 약 1MB</p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">N에 따른 메모리 (Python)</p>
+<h3 class="rubric" id="id1">메모리 (파이썬) – 감으로 계산하는 법</h3>
+<ul class="simple">
+<li><p>코테에서 제공하는 메모리 제한은 보통 <strong>512MB</strong> 수준.</p></li>
+<li><p>파이썬은 객체 오버헤드가 커서, <strong>실제로는 200~300MB 안에서 끝나는 풀이</strong>를 목표로 하는 게 안전하다.</p></li>
+</ul>
+<h4 class="rubric" id="int-list-int">1. <code class="docutils literal notranslate"><span class="pre">int</span></code> 와 <code class="docutils literal notranslate"><span class="pre">list[int]</span></code></h4>
+<ul class="simple">
+<li><p>작은 정수 하나(<code class="docutils literal notranslate"><span class="pre">int</span></code>) ~ 28 bytes</p></li>
+<li><p>리스트 안에 들어가면:</p>
+<ul>
+<li><p>리스트는 <strong>포인터 배열</strong>을 들고 있고,</p></li>
+<li><p>포인터가 원소당 8 bytes</p></li>
+<li><p>→ <strong>리스트 안의 int 1개 ≈ 28 + 8 ≈ 36 bytes</strong>로 생각.</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>대략 공식</strong></p>
+<ul class="simple">
+<li><p>원소가 <span class="math notranslate nohighlight">\(N\)</span>개인 <code class="docutils literal notranslate"><span class="pre">list[int]</span></code>의 메모리
+<span class="math notranslate nohighlight">\(\approx 36 \times N\)</span> bytes
+<span class="math notranslate nohighlight">\(\approx 0.036 \times N\)</span> MB</p></li>
+</ul>
+<p><strong>예시</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">N</span> <span class="pre">=</span> <span class="pre">1_000_000</span></code> (<code class="docutils literal notranslate"><span class="pre">10^6</span></code>)</p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(36 \times 10^6 \text{B} \approx 36 \text{MB}\)</span></p></li>
+<li><p>즉, <strong>정수 100만 개짜리 리스트 ≈ 36MB</strong></p></li>
+</ul>
+</li>
+<li><p>2차원 배열 <code class="docutils literal notranslate"><span class="pre">N</span> <span class="pre">x</span> <span class="pre">N</span></code> 이고, 각 원소가 <code class="docutils literal notranslate"><span class="pre">int</span></code>일 때:</p>
+<ul>
+<li><p>메모리 <span class="math notranslate nohighlight">\(\approx 36 \times N^2\)</span> bytes</p></li>
+<li><p>예: <code class="docutils literal notranslate"><span class="pre">N</span> <span class="pre">=</span> <span class="pre">1500</span></code></p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(1500^2 = 2.25 \times 10^6\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(36 \times 2.25 \times 10^6 \approx 81 \times 10^6\)</span> bytes ≈ <strong>81MB</strong></p></li>
+<li><p>파이썬에서 이 정도 2D 배열 하나만 써도 꽤 무겁다.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>실전 감각:</p>
+<ul class="simple">
+<li><p><strong>정수 리스트는 300만 개 (약 100MB) 이하</strong>를 목표로 잡으면 안전한 편.</p></li>
+<li><p>2D 배열은 <strong><span class="math notranslate nohighlight">\(N^2\)</span>가 수백만</strong> 수준이면 이미 수십 MB를 먹기 때문에,
+제한 메모리/다른 변수들을 고려하면 <code class="docutils literal notranslate"><span class="pre">N</span> <span class="pre">=</span> <span class="pre">1500</span> <span class="pre">~</span> <span class="pre">2000</span></code> 정도가 한계에 가깝다고 생각하면 된다.</p></li>
+</ul>
+<h4 class="rubric" id="str">2. 문자열(<code class="docutils literal notranslate"><span class="pre">str</span></code>)</h4>
+<p>파이썬 문자열은</p>
+<ul class="simple">
+<li><p><strong>고정 오버헤드</strong> + <strong>문자 개수만큼 1 byte씩</strong> 정도로 저장된다고 보면 된다.</p></li>
+</ul>
+<p>간단히:</p>
+<ul class="simple">
+<li><p>길이가 <span class="math notranslate nohighlight">\(L\)</span>인 문자열 1개 → 대략 <span class="math notranslate nohighlight">\((50 + L)\)</span> bytes 정도</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sys.getsizeof(&quot;a&quot;</span> <span class="pre">*</span> <span class="pre">1_000_000)</span></code> ≈ 1,000,049 bytes → 거의 1MB 수준</p></li>
+</ul>
+<p>즉,</p>
+<ul class="simple">
+<li><p><strong>총 문자 수 합이 <span class="math notranslate nohighlight">\(10^7\)</span> (1천만)</strong> 이라면,</p>
+<ul>
+<li><p>문자열만으로 약 10MB + 오버헤드 몇 MB → 여유 있음.</p></li>
+</ul>
+</li>
+<li><p>문자열이 메모리를 터뜨리는 경우는 보통</p>
+<ul>
+<li><p>아주 긴 문자열을 <strong>여러 개</strong> 쌓아두거나,</p></li>
+<li><p>거대한 문자열 리스트를 만들 때이다.</p></li>
+</ul>
+</li>
+</ul>
+<h4 class="rubric" id="set-dict">3. <code class="docutils literal notranslate"><span class="pre">set</span></code>, <code class="docutils literal notranslate"><span class="pre">dict</span></code></h4>
+<ul class="simple">
+<li><p>해시 테이블 구조라서 <strong>리스트보다 상당히 무겁다</strong>.</p></li>
+<li><p>대충 감각:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">dict</span></code> / <code class="docutils literal notranslate"><span class="pre">set</span></code> 안에 <code class="docutils literal notranslate"><span class="pre">int</span></code>를 <span class="math notranslate nohighlight">\(N\)</span>개 넣으면</p>
+<ul>
+<li><p>정수 객체: <span class="math notranslate nohighlight">\(28 \times N\)</span> bytes</p></li>
+<li><p>해시 버킷/포인터 등: 대략 그 수준 이상 추가</p></li>
+<li><p>→ **<span class="math notranslate nohighlight">\(N = 10^6\)</span> (백만 개)**면 <strong>수십 MB ~ 100MB 수준</strong>까지 갈 수 있다고 생각하면 된다.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>실전 안전선:</p>
+<ul>
+<li><p>코테에서 <strong><code class="docutils literal notranslate"><span class="pre">set</span></code> / <code class="docutils literal notranslate"><span class="pre">dict</span></code>에는 30만 ~ 50만 개 정도까지</strong> 를,</p>
+<ul>
+<li><p>그 이상은 “많이 무겁다”라고 생각하고 설계하는 게 좋다.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr class="docutils" />
+<h3 class="rubric" id="id2">실전에서 쓸 수 있는 간단 규칙 (파이썬)</h3>
+<ul class="simple">
+<li><p><strong>정수 배열</strong></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">list[int]</span></code> 크기 <span class="math notranslate nohighlight">\(N\)</span> → 메모리 ≈ <span class="math notranslate nohighlight">\(0.036 \times N\)</span> MB</p></li>
+<li><p><span class="math notranslate nohighlight">\(N = 1 \times 10^6\)</span> → 약 36MB</p></li>
+</ul>
+</li>
+<li><p><strong>2차원 정수 배열</strong></p>
+<ul>
+<li><p><span class="math notranslate nohighlight">\(N \times N\)</span> → 메모리 ≈ <span class="math notranslate nohighlight">\(0.036 \times N^2\)</span> MB</p></li>
+</ul>
+</li>
+<li><p><strong>문자열</strong></p>
+<ul>
+<li><p>전체 문자 수 합이 <span class="math notranslate nohighlight">\(L\)</span>이면, 문자열 전체 메모리 ≈ <span class="math notranslate nohighlight">\((L + 약간의 오버헤드)\)</span> bytes</p></li>
+<li><p><span class="math notranslate nohighlight">\(L = 10^7\)</span> → 약 10MB + overhead → 대체로 괜찮음</p></li>
+</ul>
+</li>
+<li><p><strong>set/dict</strong></p>
+<ul>
+<li><p>원소 수가 수십만 단위면 이미 메모리를 꽤 쓰고 있다.</p></li>
+<li><p>백만 단위면 “100MB 근처 갈 수 있다” 정도 감각으로 조심.</p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">스택 (재귀함수)</p>
+<h3 class="rubric" id="mb">스택(1MB 내외) 주의</h3>
+<ul class="simple">
+<li><p>재귀 깊이 한계: 프레임당 수십~수백 B + 지역변수.</p></li>
+<li><p>C++:</p>
+<ul>
+<li><p>함수 안에 <strong>큰 지역 배열</strong> 만들지 말 것.</p></li>
+<li><p>재귀 DFS는 <span class="math notranslate nohighlight">\(10^5\)</span> 노드 이상에서 스택 오버플로우 위험 → 반복(스택 컨테이너) DFS/BFS로 전환.</p></li>
+</ul>
+</li>
+<li><p>Python:</p>
+<ul>
+<li><p>프레임 오버헤드가 더 크고, 기본 재귀 제한도 ≈ 1000 정도.</p></li>
+<li><p><strong>재귀는 웬만하면 지양</strong>하고, 반복문 + 명시적인 스택/큐 자료구조 사용.</p></li>
+</ul>
+</li>
+<li><p>규칙: 큰 배열/리스트는 <strong>전역/힙에</strong> 두고, 재귀 함수 로컬에 큰 구조를 두지 않는다.</p></li>
 </ul>
 </div>
 <ol class="arabic simple">
