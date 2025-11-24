@@ -2451,3 +2451,62 @@ print(sol.secondMinimum(n, edges, time, change))
 # print((MAX_N + MAX_edges) * math.log(MAX_N)) # ~ 3 * 10^5 
 ```
 ````
+
+### Minimum Weighted Subgraph With the Required Paths 
+
+The idea is the following: paths from `s1` to dest and from `s2` to `dest` can have common point `x`. Then we need to reach:
+
+1. From s1 to x, for this we use Dijkstra
+2. From s2 to x, same.
+3. From x to dest, for this we use Dijkstra on the reversed graph.
+4. Finally, we check all possible x.
+
+Remark
+- In python it was quite challenging to get AC, and I need to look for faster implementation of Dijkstra, however complexity is still the same, it depends on implementation details.
+
+Complexity
+- It is O(n*log E) for time and O(n) for space.
+
+```{admonition} Solution 
+:class: dropdown 
+
+```{code-block} python 
+from collections import defaultdict 
+from heapq import heappop, heappush 
+
+class Solution:
+    def minimumWeight(self, n, edges, s1, s2, dest):
+        G1 = defaultdict(list)
+        G2 = defaultdict(list)
+        for a, b, w in edges:
+            G1[a].append((b, w))
+            G2[b].append((a, w))
+
+        def Dijkstra(graph, K):
+            q, t = [(0, K)], {}
+            while q:
+                time, node = heappop(q)
+                if node not in t:
+                    t[node] = time
+                    for v, w in graph[node]:
+                        heappush(q, (time + w, v))
+            return [t.get(i, float("inf")) for i in range(n)]
+        
+        arr1 = Dijkstra(G1, s1)
+        arr2 = Dijkstra(G1, s2)
+        arr3 = Dijkstra(G2, dest)
+        
+        ans = float("inf")
+        for i in range(n):
+            ans = min(ans, arr1[i] + arr2[i] + arr3[i])
+        
+        return ans if ans != float("inf") else -1
+    
+sol = Solution()
+n = 6; edges=[[0,2,2],[0,5,6],[1,0,3],[1,4,5],[2,1,1],[2,3,3],[2,3,4],[3,4,2],[4,5,1]]; src1=0; src2=1; dest=5 # 9
+# n = 3; edges=[[0,1,1],[2,1,1]]; src1=0; src2=1; dest=2 # -1 
+# n = 8; edges=[[4,7,24],[1,3,30],[4,0,31],[1,2,31],[1,5,18],[1,6,19],[4,6,25],[5,6,32],[0,6,50]]; src1=4; src2=1; dest=6 # 44 
+# n = 5; edges=[[0,2,1],[0,3,1],[2,4,1],[3,4,1],[1,2,1],[1,3,10]]; src1=0; src2=1; dest=4 # 3 
+print(sol.minimumWeight(n, edges, src1, src2, dest))
+```
+```

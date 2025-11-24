@@ -14,6 +14,9 @@ kernelspec:
 
 # 문제 풀이 순서 팁 (Tips)
 
+- 많이 나오는 유형: Sorting, priority queue, DFS/BFS, hash 
+- 알아야하는 유형: simulation, graph, linked list, DP
+
 0. (사전) 코딩테스트 IDE 준비 
     - 필수. 빠른 입출력 세팅 (sys.stdin.readline 등), 자주 쓰이는 함수 (예: dfs/bfs, 이분탐색) 미리 준비해두면 좋습니다. 
     - 다만, 온라인 IDE 환경과 로컬 IDE가 다르므로 실제 환경에 맞게 미리 연습해두는 게 핵심입니다. (debug 단축키 확인)
@@ -224,6 +227,19 @@ Algorithm
   * **재귀는 웬만하면 지양**하고, 반복문 + 명시적인 스택/큐 자료구조 사용.
 * 규칙: 큰 배열/리스트는 **전역/힙에** 두고, 재귀 함수 로컬에 큰 구조를 두지 않는다.
 
+```
+```python
+import math 
+import sys 
+
+# Time Complexity 계산 
+print(8*1e5 *math.log(1e5)) # <= 2*1e7보다 작아야함 
+
+# Memory Complexity 계산 
+N = 1_000_000
+print(40*N) # 4*1e7 ~ 40 MB  for int 
+
+sys.getsizeof([1] * N) # for a list with int in it 
 ```
 
 1. 에지 케이스 (edge case) 정리 
