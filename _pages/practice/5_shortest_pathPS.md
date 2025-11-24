@@ -18,13 +18,23 @@ sort()와 min-heap은 오름차순으로 두면, "매번 현재 가장 싼 간�
 ````
 
 예시 문제 링크 
-- [가로등 설치](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/street-light-installation/description)
-- [코드 트리 채점기](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/codetree-judger/description)
-- [코드트리 투어](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/codetree-tour/description)
-- [해적 선장 코디](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/pirate-captain-coddy/description)
-- [개구리의 여행](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/frog-journey/description)
+- Priority Queue 
+  - [가로등 설치](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/street-light-installation/description)
+  - [코드 트리 채점기](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/codetree-judger/description)
+  - [코드트리 투어](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/codetree-tour/description)
+  - [해적 선장 코디](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/pirate-captain-coddy/description)
+  - [토끼와 경주](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/rabit-and-race/description)
+  
+- Dijkstra 
+  - [개구리의 여행](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/frog-journey/description)
+  - [Reachable Nodes in Subdivided Graph](https://leetcode.com/problems/reachable-nodes-in-subdivided-graph/description/?envType=problem-list-v2&envId=shortest-path)
+  - [Second Minimum Time to Reach Destination](https://leetcode.com/problems/second-minimum-time-to-reach-destination/description/?envType=problem-list-v2&envId=shortest-path)
 
-## 가로등 설치 
+## Priority Queue 
+
+우선순위에 대해서 맨 처음의 데이터를 Extract하거나 데이터의 출입이 잦은 경우, priority queue를 이용해 데이터를 관리한다. 
+
+### 가로등 설치 
 
 
 ````{admonition} 전역변수 
@@ -494,7 +504,7 @@ if __name__ == "__main__":
 ```
 ````
 
-## 코드 트리 채점기 
+### 코드 트리 채점기 
 
 이런 문제를 푸는 경우, 각 문제의 요구 사항을 만족시키기 위해서는 ***(1) 각 정보의 특성에 맞는 효율적인 자료구조*** 를 설계하고, 각 명령어에 따른 ***(2) 상태 변화를 누락 없이 처리*** 하는 것이 중요하다. 
 
@@ -784,7 +794,7 @@ for _ in range(q):
 ```
 ````
 
-## 코드 트리 투어 
+### 코드 트리 투어 
 
 구현 문제의 경우, 실수할 수 있는 부분은 여러개의 command 중 하나를 하고 다른 command를 할 경우 그 다음 상황에 영향을 미치는 것이 있는 지 미리 체크해야한다. 이번 문제의 경우 새로 변한 start_id에 대해 이후에 command `200`이 나오는 경우에 새로운 `start_id`에 대하여 Trip의 cost등을 계산해야하므로 이를 global variable로 관리해주는 것이 포인트였다. 
 
@@ -1061,7 +1071,7 @@ for _ in range(Q):
 ```
 ````
 
-## 해적 선장 코디 
+### 해적 선장 코디 
 
 해당 문제는 제일 우선순위가 높은 1개를 뽑는 것이 아닌, 조건에 맞는 최대 5개의 선박을 고를 수 있다는 것에 있다. 
 
@@ -1644,14 +1654,76 @@ if __name__ == "__main__":
 ```
 ````
 
-## 개구리의 여행 
+## Dijkstra 
+
+특정 시작점에서 다른 점으로의 최단 거리를 알고 싶은 경우, ***음수의 간선이 없는 경우*** dijkstra 알고리즘을 사용하여 계산할 수 있다. 
+
+### 개구리의 여행 
+
+1. 3D dijkstra algorithm을 사용할 수 있다. 즉, 공간적 위치 뿐만 아니라, (y, x, jump) 현재의 점프력에 따라서도 도착지점까지의 최단 거리 (시간)이 달라지기 때문이다. 따라서, Shortest_path dictionary와 priority queue에 넣는 정보 모두 3D 차원에서 고려, 확인해야한다. 
+2. 시간 초과가 나는 경우, dijkstra algorithm에서 중간에, Destination에 도달했다면, 빨리 알고리즘을 종료시킴으로써, 해결할 수 있다. (다만 이경우에는 start_node가 동일한 경우 기존에 계산한 것에서 사용하지못하고, 다시 계산해야한다. )
+   - 다익스트라는 ***우선순위 큐에서 pop되는 순간, 그 상태의 거리는 '그 상태로 가는 최단 거리'가 확정*** 이다. 
+   - 나중에 다른 점프력 (d_y, d_x, j2)로 도달하는 경로들이 있을 수 있지만, 그 상태는 (d_y, d_x, j1)보다 더 작은 거리를 가지고 있어야하지만, pop()되어서 나온 것이 j1이면, 그 상태에서 최단 거리를 가지고 있기 때문에 고려하지 않아도 된다. 
+3. 전체 상태의 개수는 격자 칸수와 점프력의 가능한 값의 곱에 비례하며, 다익스트라 알고리즘을 통해 처리하므로 시간복잡도는 O(N^2 J^2 log(N^2 J^2)) ~ O(N^2 J^2 log(N J)) 가 된다. 
+
+````{admonition} coding and decoding for each state 
+:class: dropdown 
+
+공간상으로 3D Matrix을 만드는 것이 가장 쉬운 접근법이지만, (y, x, jump)에 대하여 unique한 index를 만드는 함수를 구현하여 코드를 작성할 수도 있다. 
+
+```{code-block} python 
+---
+caption: 3D 공간 (행, 열, 점프력)을 하나의 stateID로 coding하는 함수. (row, col, jump)가 1-indexed이기 때문에, 0-indexed로 변환한 후 계산하고 있음에 주의하자.  
+---
+# 각 상태는 (행, 열, 점프력)으로 저장된다. 
+# 상태를 하나의 정수 인덱스로 변환하기 위한 함수이다. 
+# 상태 인덱스는 MAX_JUMP_POWER * (row-1) 
+def getStateId(row: int, col:int, jump: int) -> int:
+    global gridSize, MAX_JUMP_POWER
+    # 1-indexed (row, col, jump)
+    '''
+    row에 gridSize 숫자를 곱하면, 그 숫자들이 gridSize만큼 벌어지고, 그것을 col-1의 크기만큼 채우면 Unique한 수를 만들 수 있다. 
+    이는 Jump라는 3번째 숫자가 있을때도 동일하게 적용될 수 있다. 
+    '''
+    return MAX_JUMP_POWER*(gridSize*(row-1) + (col-1)) + (jump-1)
+```
+
+반면, 이렇게 unique index로 coding된 것들을 다시, (row, col, jump)로 계산할 수 있다. 
+
+```{code-block} python
+
+def decodeState(cur_state: int):
+    tempState = cur_state 
+    currentJumpPower = (tempState)%MAX_GRID_SIZE + 1 # 점프력 값 복원 
+    tempState //= MAX_JUMP_POWER
+    currentCol = (tempState % gridSize) + 1 # 열 복원 
+    tempState //= gridSize
+    currentRow = (tempState % gridSize) + 1 # 행 복원
+     
+    return (currentRow, currentCol, currentJumpPower)
+```
+
+````
+
+````{admonition} Tips for dijkstra alogrithm 
+:class: tip 
+dijkstra priority queue에 (dis, (y, x)) 정보만 들어가면, 같은 위치에서 점프력이 다를때 중복되어 알고리즘이 정확히 움직이는 것을 파악하기 어렵지만, (dis, (y, x, jump))까지 들어가면, 겹치지 않고, 해당 State에 대해 최단 거리를 구할 수 있게 되므로, 굳이, options들을 구할때 점프후까지 고려할 필요가 없다. 
+
+따라서, 위치 정보 이외에도 어떤 정보가 필요한지, 잘 고려하여 해당 정보도 포함하도록 넣어주어야한다. 
+````
 
 ````{admonition} sol1: Time Limit 
 :class: dropdown 
 
-3D dijkstra algorithm을 사용할 수 있다. 즉, 공간적 위치 뿐만 아니라, (y, x, jump) 현재의 점프력에 따라서도 도착지점까지의 최단 거리 (시간)이 달라지기 때문이다. 따라서, Shortest_path dictionary와 priority queue에 넣는 정보 모두 3D 차원에서 고려, 확인해야한다. 
-
 아래는 Time limit이 걸렸으나, 로직 자체는 맞는 것 같다. 시간초과가 나는 부분은 `cal_options()`함수를 호출할 때 부분으로, graph에 갈 공간이 많을 수록 할 수 있는 점프 및 다양한 경로가 존재하게 되어 이를 찾는데 시간초과가 걸리는 것 같다. 
+
+현재 Time Limit이 나는 이유는, 다음에 갈 상태가 점프 후까지 계산을 해서 그런 것 같음. 
+check_ways() 함수는 for loop을 진행하는 함수인데, 점프 옵션 외에 점프력 감소/증가할때도 따지게 되므로, 시간 초과되는 것 같음.
+너무 멀리내다보지 말고, 현재 상황까지만 보도록 코드를 다시 짜보자. 
+
+Tips:  dijkstra priority queue에 (dis, (y, x)) 정보만 들어가면, 같은 위치에서 점프력이 다를때 중복되어 알고리즘이 정확히 움직이는 것을 파악하기 어렵지만, (dis, (y, x, jump))까지 들어가면, 겹치지 않고, 해당 State에 대해 최단 거리를 구할 수 있게 되므로, 굳이, options들을 구할때 점프후까지 고려할 필요가 없다.
+
+
 
 ```{code-block} python 
 import sys 
@@ -1830,4 +1902,611 @@ for _ in range(Q):
 ```
 ````
 
-아래의 코드는 해설에 있는 코드를 가져왔다. 
+````{admonition} Solution 
+:class: dropdown 
+
+```{code-block} python 
+import sys 
+import heapq 
+
+# sys.stdin = open('Input.txt')
+input = sys.stdin.readline
+
+class Node:
+    def __init__(self, time: int, y: int, x:int, jump: int):
+        self.time = time 
+        self.y = y
+        self.x = x 
+        self.jump = jump
+        
+    def __repr__(self):
+        return f"({self.y}, {self.x} with jump {self.jump})"
+    
+def modified_dijkstra(s_y:int, s_x:int, d_y:int, d_x: int):
+    global shortest_path, options
+    # if (s_y, s_x) in shortest_path:
+    #     dis = min(shortest_path[(s_y, s_x)][d_y][d_x])
+    #     print(dis if dis != MAX else -1) 
+    #     return 
+    # 해당 시작 노드에서 계산한 shortest_path가 없는 경우 
+    shortest_path[(s_y, s_x)] = [[[MAX] * 6 for _ in range(1+N)] for _ in range(1+N)]
+    shortest_path[(s_y, s_x)][s_y][s_x][1] = 0 
+
+    q = []
+    heapq.heappush(q, (0, (s_y, s_x), 1)) # dis, cur_locs, jump
+    # min_dis = MAX 
+    # visited = set() # options를 위한 방문 처리 셋 
+    while q:
+        cur_dis, cur_locs, cur_jump = heapq.heappop(q)
+        cur_y = cur_locs[0]; cur_x = cur_locs[1]
+
+        # NOTE: 같은 칸이라고 해도 Jump=1, jump5일때 그 이후에 갈 수 있는 다음 칸/비용이 달라지므로 점프력도 포함해야한다. 
+        if cur_dis > shortest_path[(s_y, s_x)][cur_y][cur_x][cur_jump]:
+            continue 
+        
+        if cur_y == d_y and cur_x == d_x:
+            shortest_path[(s_y, s_x)][d_y][d_x][cur_jump] = cur_dis
+            break
+        # backtracking 
+        # print(f'cur_locs: {cur_y}, {cur_x}: {options[cur_y][cur_x][cur_jump]}')
+        
+        # 현재 locs와 현재 점프력에서 nxt_node에는 (edge_weight, 연결된 Node위치, 연결된 Node위치까지 걸리는 점프력) 저장 
+        
+        # if graph[cur_y][cur_x] == '.' and (cur_y, cur_x, cur_jump) not in visited:
+        #     options[cur_y][cur_x][cur_jump] = cal_options(cur_y, cur_x, cur_jump)
+        #     visited.add((cur_y, cur_x, cur_jump))
+
+        for nxt_node in options[cur_y][cur_x][cur_jump]:
+            nxt_jump = nxt_node.jump # 다음 상태에서의 점프력
+            nxt_time = cur_dis + nxt_node.time 
+            
+            if nxt_time < shortest_path[(s_y, s_x)][nxt_node.y][nxt_node.x][nxt_jump]:
+                shortest_path[(s_y, s_x)][nxt_node.y][nxt_node.x][nxt_jump] = nxt_time 
+                heapq.heappush(q, (nxt_time, (nxt_node.y, nxt_node.x), nxt_jump))
+
+    # 결과 출력 
+    min_dis = min(shortest_path[(s_y, s_x)][d_y][d_x])
+    print(min_dis if min_dis != MAX else -1) 
+
+def in_range(y, x):
+    global N
+    return 1 <= y <= N and 1 <= x <= N
+
+def check_ways(cur_y: int, cur_x: int, dy: int, dx: int) -> bool:
+    global graph 
+
+    # condition1, 2 에서 도착 위치의 돌 정보를 확인하므로, 
+    # 시작~끝의 '경로'에만 천적이 있는지 없는지 확인하면 됨. (도착위치는 exclusive)
+
+    # dx나 dy가 0이면 range가 안돌아감. 
+    if dy == 0:
+        # dx방향으로만 검사 
+        dir = -1 if dx < 0 else 1 
+        for x in range(cur_x, cur_x+dx, dir):
+            if '#' == graph[cur_y][x]:
+                return False 
+    elif dx == 0:
+        dir = -1 if dy < 0 else 1 
+        for y in range(cur_y, cur_y+dy, dir):
+            if '#' == graph[y][cur_x]:
+                return False 
+    return True 
+
+def make_jump(weight: int, cur_y: int, cur_x: int, cur_jump: int):
+    global graph 
+
+    DY = [cur_jump, -cur_jump, 0, 0]
+    DX = [0, 0, cur_jump, -cur_jump]
+    
+    cur_options = []
+    for dy, dx in zip(DY, DX):
+        nxt_y = cur_y + dy 
+        nxt_x = cur_x + dx 
+        
+        if in_range(nxt_y, nxt_x):
+            condition1 = graph[nxt_y][nxt_x] == '.' # 도착위치에 돌이 있음
+            condition2 = graph[nxt_y][nxt_x] != 'S' # 도착위치가 미끄러운 돌이 아님 
+            condition3 = graph[nxt_y][nxt_x] != '#' # 도착위치에 천적이 거주 
+            condition4 = check_ways(cur_y, cur_x, dy, dx) # 현재위치에서 경로까지 천적이 살지 않는지 
+            flag = condition1 and condition2 and condition3 and condition4
+            
+            if flag:
+                # NOTE: edge의 정해진 weight에 대한, Node생성, 현재 점프력도 저장 
+                cur_options.append(Node(weight, nxt_y, nxt_x, cur_jump))
+
+    return cur_options
+
+def cal_options(cur_y: int, cur_x: int, cur_jump: int) -> list[Node]:
+    # 현재 위치와 점프력으로 '다음에' 갈 수 있는 (weight, nxt_y, nxt_x)의 정보 수집
+    can_reach = []  
+    # 1) 바로 점프  = 1
+    can_reach += make_jump(weight=1, 
+                           cur_y=cur_y , cur_x=cur_x, cur_jump=cur_jump)
+    
+    # 2) 점프력 증가 후 점프 = k^2 + 1 
+    # NOTE: 점프력을 1올릴 수 있다고 했는데, 이는 만약 1을 올려도 없으면, 제자리에서 또 점프력을 올릴 수 있음 
+    # if 1<= cur_jump <= 4:
+    #     elevated_jump = cur_jump + 1 
+    #     can_reach += make_jump(weight=1+elevated_jump*elevated_jump, 
+    #                            cur_y= cur_y, cur_x=cur_x, cur_jump=elevated_jump)
+    if 1<=cur_jump <= 4:
+        weight = 0
+        for elevated_jump in range(cur_jump+1, 6):
+            # 누적합 
+            weight += (elevated_jump*elevated_jump)
+            # can_reach += make_jump(weight=1+weight,
+            #                        cur_y = cur_y, cur_x = cur_x, cur_jump=elevated_jump)
+            # 점프력을 올리면, 점프력 상승만 하고, Weight 증가 but 그 자리에 가만히 있게 됨. 
+            can_reach.append(Node(time=weight,
+                                  y=cur_y, x=cur_x, jump=elevated_jump))
+
+    # 3) 점프력 감소 후 점프 = 1 + 1 
+    for reduced_jump in range(1, cur_jump):
+        # can_reach += make_jump(weight=1+1, cur_y=cur_y , 
+        #                        cur_x=cur_x, cur_jump=reduced_jump)
+        can_reach.append(Node(time=1,
+                              y=cur_y, x=cur_x, jump=reduced_jump))
+    return can_reach 
+
+
+
+N = int(input())
+MAX = int(1e9)
+#### 필요한 자료구조 
+graph = [[0]*(1+N)]
+for idx in range(1, N+1):
+    graph.append([0])
+    graph[idx] = graph[idx] + list(input())
+
+# print(graph)
+# print(len(graph), len(graph[0]))
+
+# 현재 위치 (tuple)에서 시작할때 각 도착지에 대해서 걸리는 최단 시간에 대한 정보 저장 
+# 3D dijkstra, [y][x][jump]
+shortest_path: dict[tuple, list[list[list[int]]]] = dict()
+# 현재 위치와 점프력으로 '다음에' 갈 수 있는 (weight, nxt_y, nxt_x)의 정보 수집 
+options: list[list[list["Node"]]] # [cur_y][cur_x][jump] -> [(edge weight(걸리는 시간), next_y, next_x, 도달할때 점프력), 저장]
+
+options = [[[[] for _ in range(6)] for _ in range(1+N)] for _ in range(1+N)]
+
+Q = int(input())
+
+# NOTE: 이렇게 다 만들고 풀면, 시간 초과 
+# # 모든 시작 위치에 대해서 
+for cur_y in range(1, N+1):
+    for cur_x in range(1, N+1):
+        for cur_jump in range(1, 6): # jump는 1에서 5까지
+            # 다시 돌아갈 수도 있는거잖아...아닌가?
+            # if cur_y == 1 and cur_x == 1 and cur_jump != 1:
+            #     # 최초 위치에서는 cur_jump이 1밖에 없음. 
+            #     continue 
+            if graph[cur_y][cur_x] == '.':
+                options[cur_y][cur_x][cur_jump] = cal_options(cur_y, cur_x, cur_jump) # options 미리 만들어놓기 
+
+# print(options[6][2][1])
+
+for _ in range(Q):
+    r1, c1, r2, c2 = list(map(int, input().split()))
+    modified_dijkstra(r1, c1, r2, c2)
+```
+````
+
+
+### Reachable Nodes In Subdivided Graph 
+
+````{admonition} Solution
+:class: dropdown 
+
+Time: 111ms  <br>
+Memory: 25 MB <br>
+
+used: dict[(node1, node2), int]: for each edge, `used` dictionary stores the number of possible new nodes we can walk through within the `maxMoves`. maxMoves - shortest_dis to the cur node can be negative. For example, maxMoves=6 and the shortest path to the node 3 can be 9. and the `used` will store -3. (since -3 will be always smaller than the number of new nodes) <- This is why when we get out values in `used` by using used.get() function, we need to do used.get((u, v), 0). 
+
+In the end, we calculate `ans += min(w, used.get((u, v), 0) + used.get((v, u), 0))` for each edge. 
+Since the graph is undirected graph, we can walk from u to v and, also, from v to u. 
+
+Since the addition of two values should not be greater than w (the number of new nodes), we add `min` value to the final answer. 
+
+```{code-block} python 
+
+import collections 
+import heapq 
+
+class Solution(object):
+    def reachableNodes(self, edges, M, N):
+        graph = collections.defaultdict(dict)
+        for u, v, w in edges:
+            graph[u][v] = graph[v][u] = w # how many new nodes there are on this edge 
+
+        pq = [(0, 0)]
+        dist = {0: 0}
+        used = {}
+        ans = 0
+
+        while pq:
+            d, node = heapq.heappop(pq)
+            if d > dist[node]: continue
+            # Each node is only visited once.  We've reached
+            # a node in our original graph.
+            ans += 1
+
+            for nei, weight in graph[node].items():
+                # M - d is how much further we can walk from this node;
+                # weight is how many new nodes there are on this edge.
+                # v is the maximum utilization of this edge.
+                v = min(weight, M - d)
+                used[node, nei] = v # start_node = node, end_node = nei
+
+                # d2 is the total distance to reach 'nei' (neighbor) node
+                # in the original graph.
+                d2 = d + weight + 1 # (weight+1 = the number of edges)
+                if d2 < dist.get(nei, M+1): # dict.get(key, value if there is no key)
+                    heapq.heappush(pq, (d2, nei))
+                    dist[nei] = d2
+
+        # At the end, each edge (u, v, w) can be used with a maximum
+        # of w new nodes: a max of used[u, v] nodes from one side,
+        # and used[v, u] nodes from the other.
+        for u, v, w in edges:
+            ans += min(w, used.get((u, v), 0) + used.get((v, u), 0))
+
+        return ans
+```
+````
+
+
+````{admonition} Solution2 
+:class: dropdown 
+
+Time: 149ms 
+Memory: 26MB 
+
+```{code-block} python
+from typing import List 
+import heapq
+from collections import defaultdict 
+
+def modified_dijkstra(cur_node:int, maxMoves:int):
+    global graph, shortest_path, used
+    cnt = 0
+
+    possible_reachable_nodes_num = maxMoves - (shortest_path[cur_node])
+    # NOTE: possible reachable nodes num이 음수가 되면, 위에 Temp_num이 음수가 되어 
+    # 로직이 틀려지므로 0으로 둔다. 
+    # possible reachable nodes num이 음수 = 0보다 멀리가면 안되고, 0과 가까운쪽의 노드로 가야함. 
+    # 근데 그쪽으로 가면, 어차피 이전에 Dijkstra에서 그쪽 노드에서 이미 계산했을 것이기 때문에, 그냥 지나치면 된다. 
+    possible_reachable_nodes_num = 0 if possible_reachable_nodes_num < 0 else possible_reachable_nodes_num
+    
+    for nxt_node, num_1 in graph[cur_node].items():
+        if cur_node < nxt_node:
+            node1= cur_node; node2=nxt_node 
+            
+        else:
+            node1 = nxt_node; node2=cur_node 
+        
+        exisiting_node_nums = used[(node1, node2)]
+        if exisiting_node_nums == 0:
+            continue 
+
+        reachable_nodes_num = min(exisiting_node_nums, possible_reachable_nodes_num)
+        temp_num = min(used[(node1,node2)], reachable_nodes_num)
+        used[(node1, node2)] -= temp_num
+        cnt += temp_num
+    return cnt 
+
+MAX = int(1e9)
+class Solution:
+    def reachableNodes(self, edges: List[List[int]], maxMoves: int, n: int) -> int:
+        global graph, shortest_path, used
+        # Step 1: graph Initialization with new edge weight 
+        # NOTE: graph와 dijkstra 의 결과인 SHORTESt path모두 dictionary로 저장해, 
+        # memory efficient 하게 만든다. 
+        graph = defaultdict(dict)
+        total = 0
+        used = dict()
+
+        for edge in edges:
+            # undirected graph 
+            graph[edge[0]][edge[1]] = graph[edge[1]][edge[0]] = (edge[2] + 1)
+            used[(edge[0], edge[1])] = edge[2]
+        
+        ## Step 2: dijkstra Algorithm 
+        dijkstra_pq = [(0, 0)] # start_dis, start_node 
+        # modified_dijkstra_pq = []
+        # n수가 많아지면, [MAX]*n은 좋지 않음. dictionary로 만듦. 
+        shortest_path = dict()
+        shortest_path[0] = 0 # start node 
+         
+        while dijkstra_pq:
+            cur_dis, cur_node = heapq.heappop(dijkstra_pq)
+
+            if cur_dis > shortest_path[cur_node]:
+                continue 
+
+            # each node is only visited once. we've reached a node in our original graph 
+            if shortest_path[cur_node] <= maxMoves:
+                total += 1 
+
+            # 최단 거리가 계산된 노드부터, 이어져 있는 edge들에 대하여 New graph에 있는
+            # reachable nodes들의 개수를 더해준다. 
+            total += modified_dijkstra(cur_node, maxMoves)
+
+            for nxt_node, nxt_weight in graph[cur_node].items():
+                # nxt_node=nxt_state.nxt_node; nxt_weight = nxt_state.weight
+                nxt_dis = cur_dis + nxt_weight 
+                
+                # MAX로 기본 값 세팅안되어있어서, 없으면 MAX값이라 됨. 
+                if nxt_node not in shortest_path or nxt_dis < shortest_path[nxt_node]:
+                    shortest_path[nxt_node] = nxt_dis 
+                    heapq.heappush(dijkstra_pq, (nxt_dis, nxt_node))
+
+        return total 
+    
+
+sol = Solution()
+# edges = [[0,1,10],[0,2,1],[1,2,2]]; maxMoves = 6; n = 3 # 13 
+# edges = [[0,1,4],[1,2,6],[0,2,8],[1,3,1]]; maxMoves = 10; n = 4 # 23 
+# edges = [[1,2,4],[1,4,5],[1,3,1],[2,3,4],[3,4,5]]; maxMoves = 17; n = 5 # 1 
+edges = [[1,2,5],[0,3,3],[1,3,2],[2,3,4],[0,4,1]]; maxMoves=7; n=5 # 13
+print(sol.reachableNodes(edges, maxMoves, n))
+
+```
+````
+
+### Second Minimum  Time to Reach Destination 
+
+````{admonition} Solution Time Limit 
+:class: dropdown 
+
+```{code-block} python 
+from typing import List 
+import heapq 
+from collections import defaultdict 
+import math 
+
+MAX = int(1e9)
+
+'''Time complexity
+원래의 Dijkstra 는 O(E+V logV) 이지만, 
+Second shortest path를 찾는 경우에는, 달라짐. 
+
+'''
+def dijkstra(start: int, time:int, n:int, change:int):
+    MAX = int(1e9)
+    q = [(0, start)]
+    shortest_path: dict = defaultdict(list)
+    shortest_path[start] = [0]
+
+    while q:
+        cur_time, cur_node = heapq.heappop(q) # cur_idx: 횟수, 시간 계산을 위해 사용됨.
+
+        # NOTE: Dijkstra에서 visited check하는 방식 
+        # second shortest path를 찾기 전까지 버리는 element가 없음. 
+        # 노드 n에 도달하기 전에, 다른 노드들에 도착할 때도 기다리고 다른 곳으로 가야할 때가 있음. 
+        # N이 아닌 다른 노드들에 대해서는 3, 4 번째 계속 구하다가, 노드가 n인 경우에만 2번째까지 구하면 됨. 
+        temp_shortest_path = shortest_path.get(cur_node, [])
+
+        # NOTE: dijkstra 종료 조건: n node에서 마무리 
+        # if cur_node == n:
+        #     print(cur_node)
+        # 해당 최종 노드로 들어오는 값이 동일한 경우에는, 맨 마지막을 반환해야함. "Strictly larger than the minimum value"
+        if cur_node == n and len(set(temp_shortest_path)) == 2:
+            return temp_shortest_path[-1] # second shortest path to node n 
+        
+        # cur_signal 계산 
+        cur_idx, cur_signal = calculate_signal(cur_time, change)
+        '''
+        조건 (갈 수 있는 옵션 중 제한 조건):
+        - 현재 시그널이 초록색: 바로 움직여야함. 어디로든 움직일 수 있음. (enter하는 것은 언제나 가능)
+        - 현재 시그널이 빨강색: 떠날 수 없음. (Signal이 초록색인 경우에만 vertex를 움직일 수 있음.)
+            -> 이 경우 기다려야하는데, 다음 시그널이 초록으로 바뀌는 시간까지만 기다리면 됨. 
+        '''
+        # 시그널이 빨간색인 경우 떠날 수 없음. 이 경우 다음 시그널인 초록으로 바뀌는 시간까지 버티면 됨.
+        # 기다리는 시간은 shortest_path를 Update해주지 않음. 다음 노드로 가는 경우에만 업데이트 함.
+        if cur_signal == 1:
+            heapq.heappush(q, ((cur_idx+1) * change, cur_node))
+        else: # 시그널이 초록색인 경우 어느곳으로라도 움직여야함.
+            for nxt_node in graph[cur_node]: 
+                nxt_time = cur_time + time 
+
+                # if n == nxt_node: 
+                shortest_path[nxt_node].append(nxt_time) # backtracking 
+                # if n != nxt_node: # memory 아끼기 
+                #     shortest_path[nxt_node][-1] = nxt_time 
+                heapq.heappush(q, (nxt_time, nxt_node))
+                
+    
+
+def calculate_signal(cur_time: int, change: int):
+    idx = math.floor(cur_time / change)
+    return (idx, 0 if idx % 2 == 0 else 1 )
+
+
+class Solution:
+    def secondMinimum(self, n: int, edges: List[List[int]], time: int, change: int) -> int:
+        global graph 
+        # create graph 
+        graph = [[] for _ in range(n+1)]
+        for edge in edges:
+            graph[edge[0]].append(edge[1])
+            graph[edge[1]].append(edge[0])
+
+        return dijkstra(1, time, n, change)
+
+        
+sol = Solution()
+n=5; edges=[[1,2],[1,3],[1,4],[3,4],[4,5]]; time=3; change=5 # 13 
+# n=2; edges=[[1,2]]; time=3; change=2 # 11 
+# n=7; edges=[[1,2],[1,3],[2,5],[2,6],[6,5],[5,7],[3,4],[4,7]]; time=4; change=7 # 22
+print(sol.secondMinimum(n, edges, time, change))
+
+# MAX_N = 1e4 
+# MAX_edges = 2*1e4 
+# print((MAX_N + MAX_edges) * math.log(MAX_N)) # ~ 3 * 10^5 
+```
+````
+
+````{admonition} Solution
+:class: dropdown 
+
+When a signal is red, since we don't move to the next node, we don't push (time_taken, nxt_node) in the queue. We directly add them when we make a move to the nextnode. 
+
+```{code-block} python 
+from typing import List 
+import heapq 
+from collections import defaultdict 
+import math 
+
+MAX = int(1e9)
+
+
+def dijkstra(start: int, time:int, n:int, change:int):
+    MAX = int(1e9)
+    q = [(0, start)]
+    shortest_path = [[MAX]*2 for _ in range(n+1)]
+    shortest_path[start][0] = 0
+    freq = [0] * (n+1)
+
+    while q:
+        cur_time, cur_node = heapq.heappop(q) # cur_idx: 횟수, 시간 계산을 위해 사용됨.
+        freq[cur_node] += 1 
+        # NOTE: Dijkstra에서 visited check하는 방식 
+        # second shortest path를 찾기 전까지 버리는 element가 없음. 
+        # 노드 n에 도달하기 전에, 다른 노드들에 도착할 때도 기다리고 다른 곳으로 가야할 때가 있음. 
+        # N이 아닌 다른 노드들에 대해서는 3, 4 번째 계속 구하다가, 노드가 n인 경우에만 2번째까지 구하면 됨. 
+
+        # NOTE: dijkstra 종료 조건: n node에서 마무리 
+        if cur_node == n and freq[cur_node] == 2:
+            return shortest_path[n][1] # second shortest path to node n 
+        
+        # cur_signal 계산 
+        cur_idx, cur_signal = calculate_signal(cur_time, change)
+        '''
+        조건 (갈 수 있는 옵션 중 제한 조건):
+        - 현재 시그널이 초록색: 바로 움직여야함. 어디로든 움직일 수 있음. (enter하는 것은 언제나 가능)
+        - 현재 시그널이 빨강색: 떠날 수 없음. (Signal이 초록색인 경우에만 vertex를 움직일 수 있음.)
+            -> 이 경우 기다려야하는데, 다음 시그널이 초록으로 바뀌는 시간까지만 기다리면 됨. 
+        '''
+        # 시그널이 빨간색인 경우 떠날 수 없음. 이 경우 다음 시그널인 초록으로 바뀌는 시간까지 버티면 됨.
+        # 기다리는 시간은 shortest_path를 Update해주지 않음. 다음 노드로 가는 경우에만 업데이트 함.
+        if cur_signal == 1:
+            # heapq.heappush(q, ((cur_idx+1) * change, cur_node))
+            # (cur_idx+1) * change= green으로 바꾸는 시간 
+            # + time = 다음 노드로 넘어가는 시간 
+            nxt_time = (cur_idx+1) * change + time 
+        else: # 시그널이 초록색인 경우 어느곳으로라도 움직여야함.
+            nxt_time = cur_time + time 
+
+        for nxt_node in graph[cur_node]:  
+            # Ignore nodes that have already popped out twice, we are not interested in
+            # visiting them again.
+            if freq[nxt_node] == 2:
+                continue 
+            # 해당 최종 노드로 들어오는 값이 동일한 경우에는, 맨 마지막을 반환해야함. 
+            # 즉, "Strictly larger than the minimum value"
+            # 따라서, 동일 값이 있다면 무시하고 넘어가야함. 
+            if shortest_path[nxt_node][0] > nxt_time:
+                shortest_path[nxt_node][1] =  shortest_path[nxt_node][0]# backtracking 
+                shortest_path[nxt_node][0] = nxt_time 
+                heapq.heappush(q, (nxt_time, nxt_node))
+            elif shortest_path[nxt_node][1] > nxt_time and shortest_path[nxt_node][0] != nxt_time:
+                shortest_path[nxt_node][1] = nxt_time 
+                heapq.heappush(q, (nxt_time, nxt_node))
+
+def calculate_signal(cur_time: int, change: int):
+    '''
+    (change* idx <= time < change*(idx+1)) 안에서 그린/레드 시그널이 바뀜. 
+    idx % 2 == 0일때는 그린, idx % 2 != 0 일때 레드 
+    따라서, 
+    idx <= time/change < idx + 1 
+    이므로, 
+    idx = floor(time/change)로 표현가능. 
+    '''
+    # idx = math.floor(cur_time / change)
+    idx = (cur_time // change) # 위와 동일 // == math.floor 
+    return (idx, 0 if idx % 2 == 0 else 1 )
+
+
+class Solution:
+    def secondMinimum(self, n: int, edges: List[List[int]], time: int, change: int) -> int:
+        global graph 
+        # create graph 
+        graph = [[] for _ in range(n+1)]
+        for edge in edges:
+            graph[edge[0]].append(edge[1])
+            graph[edge[1]].append(edge[0])
+
+        return dijkstra(1, time, n, change)
+
+        
+sol = Solution()
+n=5; edges=[[1,2],[1,3],[1,4],[3,4],[4,5]]; time=3; change=5 # 13 
+# n=2; edges=[[1,2]]; time=3; change=2 # 11 
+# n=7; edges=[[1,2],[1,3],[2,5],[2,6],[6,5],[5,7],[3,4],[4,7]]; time=4; change=7 # 22
+n=12; edges=[[1,2],[1,3],[3,4],[2,5],[4,6],[2,7],[1,8],[5,9],[3,10],[8,11],[6,12]]; time=60; change=600 # 22
+print(sol.secondMinimum(n, edges, time, change))
+
+# MAX_N = 1e4 
+# MAX_edges = 2*1e4 
+# print((MAX_N + MAX_edges) * math.log(MAX_N)) # ~ 3 * 10^5 
+```
+````
+
+### Minimum Weighted Subgraph With the Required Paths 
+
+The idea is the following: paths from `s1` to dest and from `s2` to `dest` can have common point `x`. Then we need to reach:
+
+1. From s1 to x, for this we use Dijkstra
+2. From s2 to x, same.
+3. From x to dest, for this we use Dijkstra on the reversed graph.
+4. Finally, we check all possible x.
+
+Remark
+- In python it was quite challenging to get AC, and I need to look for faster implementation of Dijkstra, however complexity is still the same, it depends on implementation details.
+
+Complexity
+- It is O(n*log E) for time and O(n) for space.
+
+```{admonition} Solution 
+:class: dropdown 
+
+```{code-block} python 
+from collections import defaultdict 
+from heapq import heappop, heappush 
+
+class Solution:
+    def minimumWeight(self, n, edges, s1, s2, dest):
+        G1 = defaultdict(list)
+        G2 = defaultdict(list)
+        for a, b, w in edges:
+            G1[a].append((b, w))
+            G2[b].append((a, w))
+
+        def Dijkstra(graph, K):
+            q, t = [(0, K)], {}
+            while q:
+                time, node = heappop(q)
+                if node not in t:
+                    t[node] = time
+                    for v, w in graph[node]:
+                        heappush(q, (time + w, v))
+            return [t.get(i, float("inf")) for i in range(n)]
+        
+        arr1 = Dijkstra(G1, s1)
+        arr2 = Dijkstra(G1, s2)
+        arr3 = Dijkstra(G2, dest)
+        
+        ans = float("inf")
+        for i in range(n):
+            ans = min(ans, arr1[i] + arr2[i] + arr3[i])
+        
+        return ans if ans != float("inf") else -1
+    
+sol = Solution()
+n = 6; edges=[[0,2,2],[0,5,6],[1,0,3],[1,4,5],[2,1,1],[2,3,3],[2,3,4],[3,4,2],[4,5,1]]; src1=0; src2=1; dest=5 # 9
+# n = 3; edges=[[0,1,1],[2,1,1]]; src1=0; src2=1; dest=2 # -1 
+# n = 8; edges=[[4,7,24],[1,3,30],[4,0,31],[1,2,31],[1,5,18],[1,6,19],[4,6,25],[5,6,32],[0,6,50]]; src1=4; src2=1; dest=6 # 44 
+# n = 5; edges=[[0,2,1],[0,3,1],[2,4,1],[3,4,1],[1,2,1],[1,3,10]]; src1=0; src2=1; dest=4 # 3 
+print(sol.minimumWeight(n, edges, src1, src2, dest))
+```
+```
