@@ -374,6 +374,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">코드 트리 채점기</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">코드 트리 투어</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">해적 선장 코디</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kit">더 맵게 (프로그래머스 고득점 kit)</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dijkstra">Dijkstra</a><ul class="nav section-nav flex-column">
@@ -421,6 +422,7 @@ document.write(`
 <li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/codetree-tour/description">코드트리 투어</a></p></li>
 <li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/pirate-captain-coddy/description">해적 선장 코디</a></p></li>
 <li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/rabit-and-race/description">토끼와 경주</a></p></li>
+<li><p><a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/parts/12117">프로그래머스 고득점 kit for heap</a></p></li>
 </ul>
 </li>
 <li><p>Dijkstra</p>
@@ -428,6 +430,7 @@ document.write(`
 <li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/frog-journey/description">개구리의 여행</a></p></li>
 <li><p><a class="reference external" href="https://leetcode.com/problems/reachable-nodes-in-subdivided-graph/description/?envType=problem-list-v2&amp;amp;envId=shortest-path">Reachable Nodes in Subdivided Graph</a></p></li>
 <li><p><a class="reference external" href="https://leetcode.com/problems/second-minimum-time-to-reach-destination/description/?envType=problem-list-v2&amp;amp;envId=shortest-path">Second Minimum Time to Reach Destination</a></p></li>
+<li><p><a class="reference external" href="https://leetcode.com/problems/minimum-weighted-subgraph-with-the-required-paths/?envType=problem-list-v2&amp;amp;envId=shortest-path">Minimum Weighted Subgraph With the Required Paths</a></p></li>
 </ul>
 </li>
 </ul>
@@ -1989,6 +1992,70 @@ dictionary 안의 object안의 variable을 변환해주면, 이를 가지고 있
 </div>
 </div>
 </section>
+<section id="kit">
+<h3>더 맵게 (프로그래머스 고득점 kit)<a class="headerlink" href="#kit" title="Link to this heading">#</a></h3>
+<p>Idea:</p>
+<ol class="arabic simple">
+<li><p>처음 원소의 개수가 짝수이든, 홀수이든 마지막에는 1개의 원소만 남게 된다. 따라서, 계속 진행되었을 때 남아있는 두 개의 원소 중 하나라도 K보다 크면 answer을 내놓으면 됨.</p>
+<ol class="arabic simple">
+<li><p>또한 answer=0이고, 첫 리스트가 1개만 남아있는 경우도 있으므로, 이를 위해 len(cur_scoville_list) == 1 인 경우를 위해, <code class="docutils literal notranslate"><span class="pre">while</span></code>조건에 맨 처음 원소가 &gt;= K임을 명시한다.</p></li>
+<li><p>따라서, <code class="docutils literal notranslate"><span class="pre">while</span></code>조건에는 K보다 작은 원소들이 존재하는 경우에만 새로 음식을 섞는 작업을 진행한다.</p></li>
+</ol>
+</li>
+<li><p>처음 scoville_pq를 초기화시킬 때, <code class="docutils literal notranslate"><span class="pre">heappush()</span></code> 로 초기화하였기 때문에, 모든 원소가 priority queue의 기준에 따라 정렬되었고 추후에 해당 priority queue에 들어오는 원소들은 당연히 기존 원소들보다 크기 때문에</p>
+<ul class="simple">
+<li><p>제일 작은 원소 1+1*2 = 3 이므로, 원소가 [1, 1, 2] 였다고 하더라도 heapush()로 삽입되기 때문에, 정렬상 작은 원소가 제일 앞에 있게 된다.</p></li>
+<li><p>for loop으로 heappush로 초기화하면 O(NlogN)이 걸리고, (for loop을 돌면서 heapush())</p></li>
+<li><p>heapify를 하면, O(n)이 걸린다. 배열을 트리 형태로 보고 아래에서 위로 정리</p></li>
+<li><p>따라서, python에서는 <code class="docutils literal notranslate"><span class="pre">heapify()</span></code>를 쓰는 것이 훨씬 빠르다.</p></li>
+</ul>
+</li>
+</ol>
+<div class="dropdown admonition">
+<p class="admonition-title">Solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">heapq</span> 
+
+<span class="k">def</span><span class="w"> </span><span class="nf">solution</span><span class="p">(</span><span class="n">scoville</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">K</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="c1"># INIT</span>
+    <span class="c1"># `scoville` list의 정보를 최소 힙으로 변환, 이것은 아래처럼 O(N)으로 할수도 있고, heapify 함수를 사용해서 할수도 있다. </span>
+    <span class="c1"># for idx, each_s in enumerate(scoville):</span>
+    <span class="c1">#     heapq.heappush(scoville_pq, (each_s, idx))</span>
+    <span class="c1">#     id_to_scoville.append(each_s)</span>
+    <span class="n">heapq</span><span class="o">.</span><span class="n">heapify</span><span class="p">(</span><span class="n">scoville</span><span class="p">)</span> <span class="c1"># O(N)</span>
+    <span class="n">answer</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># 연산 횟수 </span>
+        
+    <span class="c1"># 알고리즘 시작 </span>
+    <span class="k">while</span> <span class="n">scoville</span> <span class="ow">and</span> <span class="n">scoville</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">K</span><span class="p">:</span>
+        
+        <span class="c1"># 더 이상 두 개를 섞을 수 없으면 실패 </span>
+        <span class="c1"># 예) [1,2] -&gt; [5] 로 마지막에는 항상 한 개 만 남음 </span>
+        <span class="c1"># 예) 애초에 음식이 1개인데, K보다 작은 경우 </span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">scoville</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span> 
+        
+        <span class="c1"># Step 1. 총 두 개의 음식 꺼내기 </span>
+        <span class="n">first</span> <span class="o">=</span> <span class="n">heapq</span><span class="o">.</span><span class="n">heappop</span><span class="p">(</span><span class="n">scoville</span><span class="p">)</span>
+        <span class="n">second</span> <span class="o">=</span> <span class="n">heapq</span><span class="o">.</span><span class="n">heappop</span><span class="p">(</span><span class="n">scoville</span><span class="p">)</span>
+
+        <span class="c1"># NOTE: </span>
+        <span class="c1"># 1. scoville_pq의 모든 원소는 모두 priority queue형식으로 push되었고</span>
+        <span class="c1"># 2. 미래에 들어오는 원소들은 항상 클것이므로, 가장 작은 원소가 맨 앞에 있는 것이 진리임</span>
+        <span class="c1"># 따라서, 혹시 모를 작은 원소때문에 lazy deletion 필요 없음. </span>
+        <span class="n">new_s</span> <span class="o">=</span> <span class="n">first</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">second</span> 
+        <span class="n">heapq</span><span class="o">.</span><span class="n">heappush</span><span class="p">(</span><span class="n">scoville</span><span class="p">,</span> <span class="n">new_s</span><span class="p">)</span> <span class="c1"># 새로운 음식의 id = len(id_to_scoville)</span>
+        <span class="n">answer</span> <span class="o">+=</span> <span class="mi">1</span> 
+    <span class="k">return</span> <span class="n">answer</span> <span class="c1"># 위의 실패 경우를 제외하면, answer를 반환 </span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">scoville</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">];</span> <span class="n">K</span><span class="o">=</span><span class="mi">7</span> <span class="c1"># 2 </span>
+    <span class="c1"># scoville = [1, 1]; K=7</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">solution</span><span class="p">(</span><span class="n">scoville</span><span class="o">=</span><span class="n">scoville</span><span class="p">,</span> <span class="n">K</span><span class="o">=</span><span class="n">K</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</section>
 </section>
 <section id="dijkstra">
 <h2>Dijkstra<a class="headerlink" href="#dijkstra" title="Link to this heading">#</a></h2>
@@ -2817,9 +2884,6 @@ Memory: 26MB</p>
 </pre></div>
 </div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
 </section>
 </section>
 </section>
@@ -2893,6 +2957,7 @@ Memory: 26MB</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">코드 트리 채점기</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">코드 트리 투어</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">해적 선장 코디</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kit">더 맵게 (프로그래머스 고득점 kit)</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dijkstra">Dijkstra</a><ul class="nav section-nav flex-column">
