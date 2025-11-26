@@ -106,7 +106,8 @@ task_pq는 요청 시간이 아닌 소요 시간이 가장 짧은 테스크를 m
 또한, O(N^2log(N))이 걸림. 왜냐하면 `unused_task`를 따로 관리하며, 안 쓰는 것을 넣었다가 빼기 때문임.
 
 -> 이러한 문제점들을 위해서,도착한 작업만 pq에 넣고 + pq가 비면 다음 요청 시각으로 time 점프를 하는 것을 지켜주면 된다. 
-```{code-block} pyton 
+
+```{code-block} python 
 from typing import List 
 from heapq import heappush, heappop 
 
@@ -231,6 +232,60 @@ if __name__ == "__main__":
 ```
 ````
 
+````{admonition} Idea 
+:class: dropdown 
+
+```text
+'''
+- 단 '하나의' 하드디스크를 가지고 있음. 
+- 우선순위 디스크 컨트롤러 구현 
+
+1. 자료구조 큐: 작업 요청이 들어왔을 때 (작업 번호, 요청 시각, 작업 소요 시간) 저장
+    - 필요한 자료구조 
+        - priority queue (task_pq): request_time이 현재 시간보다 작은 작업들을 넣어야함. 
+        - jobs.sort()후 현재 시간이 request_time보다 작은 idx를 저장하고 있음. 
+2. 하드디스크가 작업을 하고 있지 않고, 대기 큐가 비어있지 않으면 우선순위가 가장 높은 작업을 대기 큐에서 꺼내서 하드디스크에 작업을 시킴
+    - 우선순위 
+        - 작업의 소요시간이 가장 짧은 것 
+        - 작업의 번호가 가장 작은 것 (작업 id는 request_time이 작으면 됨.)
+    - 필요한 자료구조 
+        - 하드디스크의 작업 여부 is_harddisk_used[harddisk_id] = -1 (False) / True (하드디스크가 작업하는 Task id)
+        - Task class (번호, 요청 시각, 작업 소요시간, 작업 시작 시간, end시간, __lt__ 함수  , turnaround 계산 함수 
+
+3. 하드디스크는 작업을 한 번 시작하면 작업을 마칠 때까지 그 작업만 수행 
+    - 필요한 자료구조 
+        - 하드디스크 id - History class (task_id, 시작 시간, end 시간)
+
+4. 하드디스크가 어떤 작업을 마치는 시점과 다른 작업 요청이 들어오는 시점이 "겹치면" 하드디스크가 작업을 마치자마자 디스크 컨트롤러는 요청이 들어온
+작업을 "대기 큐"에 저장한 뒤 우선순위가 높은 작업을 대기 큐에서 꺼내서 하드디스크에 그 작업을 시킨다. 
+- 요청을 한 작업이 들어오고 그 같은 시점에 하드디스크가 작업이 끝나면 바로 다른 작업을 시작할 수 있다. 
+    - 하드디스크가 작업을 하고 있는 중이면, -> 끝나는 지점 history에 확인해서 반환시간 계산하기  
+    - 작업이 끝나면 다음에 할 작업이 있는지 대기 큐에서 받으면 됨. 
+
+5. 하드디스크가 어떤 작업을 마치는 '시점'에 다른 작업이 들어오지 않더라도 그 작업을 마치자마자 또 다른 작업을 시작할 수 있다. 
+- 이 과정에서 걸리는 시간은 없다고 가정한다. 
+
+Algorithm 
+0. 필요한 자료구조 
+- Task class, History class, task_pq 생성, 
+- is_harddisk_used[harddisk_id] = -1 (False) / True (하드디스크가 작업하는 Task id), 
+- 대기 큐 Task class에 한번에 저장해놓기 
+- History class (task_id, 시작 시간, end 시간)
+
+Algorithm 
+    1. 현재 수행된 작업 개수(cnt) n이 원래 작업 개수보다 작은 경우에 아래 스텝을 계속 진행 
+    2. 현재 jobs.sort()[idx] request_time <= cur_time보다 작은 것들을 pq에 넣음 
+    3. pq에서 가장 작은 것을 뺌 
+        3-1. 만약 pq에 원소가 없다면, cur_time을 jobs.sort()에서 현재 idx.request_time의 값으로 대체 
+    4. turnaround_time은 cur_time + required_time (소요시간) 이고 cur_time += required_time으로 업데이트 
+'''
+
+import math 
+N = 500 
+
+print(N*math.log(N)) # ~1e4 
+```
+````
 ````{admonition} Solution 
 :class: dropdown 
 
