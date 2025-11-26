@@ -16,11 +16,11 @@ kernelspec:
 
 예시 문제 링크 
 - BFS 고득점 Kit 
-  - [타겟 넘버]
-  - [네트워크]
-  - [게임 맵 최단거리]
-  - [단어 변환]
-  - [아이템 줍기]
+  - [타겟 넘버](https://school.programmers.co.kr/learn/courses/30/lessons/43165)
+  - [네트워크](https://school.programmers.co.kr/learn/courses/30/lessons/43162)
+  - [게임 맵 최단거리](https://school.programmers.co.kr/learn/courses/30/lessons/1844)
+  - [단어 변환](https://school.programmers.co.kr/learn/courses/30/lessons/43163)
+  - [아이템 줍기](https://school.programmers.co.kr/learn/courses/30/lessons/87694)
   - [여행 경로]
   - [퍼즐 조각 채우기]
 
@@ -42,6 +42,253 @@ kernelspec:
   - [토스트 계란틀](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/toast-eggmold/description)
 
 ## BFS 고득점 Kit 
+
+### 타겟 넘버 
+
+````{admonition} Explanation
+:class: dropdown 
+
+n개의 음이 아닌 정수
+순서를 바꾸지 않고 적절히 더하거나 빼서 타겟 넘버를 만들려고 한다. 
+
+parameters:
+- numbers: 사용할 수 있는 숫자가 담긴 배열 2 <= numbers.length <= 20 
+- target: 타겟넘버 1<= target <= 1000
+
+return:
+- 타겟 넘버를 만드는 방법의 수를 반환 
+
+DFS를 사용하면 branch = 2, depth =N개라, 최악의 경우 2^20개 
+````
+````{admonition} Solution
+:class: dropdown 
+
+```{code-block} python
+def solution(numbers, target):
+    
+    def dfs(depth: int, total: int):
+        nonlocal answer
+        # termination 
+        if depth == n:
+            if total == target:
+                answer += 1 
+            return 
+
+        # branch + / -
+        dfs(depth+1, total+numbers[depth])
+        dfs(depth+1, total - numbers[depth])
+
+    answer = 0
+    n = len(numbers)
+    dfs(0, 0)
+
+    return answer 
+
+# numbers = [1, 1, 1, 1, 1]; target=3 # 5
+numbers = [4, 1, 2, 1]; target=4 # 2 
+print(solution(numbers, target))
+```
+````
+
+### 네트워크 
+
+````{admonition} Solution 
+:class: dropdown 
+
+union-find 구조를 이용해 풀이 
+
+```{code-block} python 
+
+def find(a):
+    global parent 
+    if parent[a] == a:
+        return a
+    parent[a] = find(parent[a]) # path compression 
+    return parent[a]
+
+def union(a, b):
+    global rank
+    rootA = find(a); rootB = find(b)
+
+    if rootA == rootB:
+        return False 
+    if rank[rootA] == rank[rootB]:
+        parent[rootB] = rootA 
+        rank[rootA] += 1 
+    elif rank[rootA] > rank[rootB]:
+        parent[rootB] = rootA 
+    else:
+        parent[rootA] = rootB 
+    return True 
+   
+
+
+def solution(n, computers):
+    global parent, rank, GroupCnt 
+    GroupCnt = n 
+    parent = [idx for idx in range(n)]
+    rank = [0] * n # height 
+
+    for node in range(n):
+        for end_node in range(node+1, n):
+            if computers[node][end_node] == 0:
+                continue 
+            else: # 연결되어 있고 
+                if union(node, end_node):
+                    GroupCnt -= 1 
+
+    return GroupCnt 
+
+```
+````
+
+### 게임 맵 최단 거리 
+
+````{admonition} Solution 
+:class: dropdown 
+
+```{code-block} python 
+from collections import deque 
+
+
+def solution(maps):
+    N = len(maps); M = len(maps[0])
+
+    def in_range(y, x):
+        nonlocal N, M 
+        return 0<=y<N and 0<=x<M 
+    DY = [-1, 1, 0, 0]; DX = [0, 0, -1, 1]
+
+    visited = [[False]*M for _ in range(N)]
+    start_y = 0; start_x = 0
+    target_y = N-1; target_x = M-1 
+    q = deque([(start_y, start_x, 1)]) # y, x, dis 
+    # BFS 
+    while q:
+        cur_y, cur_x, cur_dis = q.popleft()
+
+        # Early Stopping 
+        if cur_y == target_y and cur_x == target_x:
+            return cur_dis 
+        
+        for t in range(4):
+            nxt_y = cur_y + DY[t]
+            nxt_x = cur_x + DX[t]
+            if in_range(nxt_y, nxt_x) and maps[nxt_y][nxt_x] == 1 and not visited[nxt_y][nxt_x]:
+                visited[nxt_y][nxt_x] = True 
+                q.append((nxt_y, nxt_x, cur_dis + 1 ))
+        
+    return -1  # 위에서 도달하지 못한 경우 -1를 return 
+
+
+# maps= [[1,0,1,1,1],[1,0,1,0,1],[1,0,1,1,1],[1,1,1,0,1],[0,0,0,0,1]] # 11 
+maps= [[1,0,1,1,1],[1,0,1,0,1],[1,0,1,1,1],[1,1,1,0,0],[0,0,0,0,1]]	# -1 
+print(solution(maps))
+```
+````
+
+### 단어 변환 
+
+````{admonition} Idea 
+:class: dropdown 
+
+parameters: 
+- 두 개의 단어 begin, target
+    - 두 단어는 같지 않다. 
+- 단어의 집합 `words`, 3 <= words.length <= 50, 각 단어 3 <= str.length <= 10 
+
+아래의 규칙을 이용하여 begin -> target 변환하는 가장 짧은 변환 과정을 찾으려고 한다. 
+1. 한 번에 한 개의 알파벳만 바꿀 수 있음 
+2. `words`에 있는 단어로만 변환할 수 있음 (target도 `words`안에 있어야 함.)
+
+예를 들어, beging이 "hit"이고 target이 "cog", words = ["hot", "dot", "dog", "lot", "log", "cog"]라면 
+"hit" -> "hot" -> "dot" -> "dog" -> "cog"와 같이 4단계를 거쳐 변환할 수 있다. 
+
+return: 
+- "최소" 몇 단계의 과정을 거쳐 begin을 target으로 변환할 수 있는 지 return 하도록 solution함수를 작성해주세요. 
+- 변환할 수 없을 때 0을 반환 
+
+Idea: 
+- 문제에서 "최솟값"을 계산하라고 했으니까, BFS로 접근해보면, 각 단어들을 node로 설정하고
+- 하나의 char만 다른 값들만 edge 연결시킨다. 
+- 그리고 begin노드에서 target 노드까지 연결된 최소 거리를 측정하면 된다. (shortest path)
+````
+
+````{admonition} Solution 
+:class: dropdown 
+
+```{code-block} python 
+from heapq import heappush, heappop 
+
+MAX = int(1e10)
+
+def is_one_different(word1: str, word2: str) -> bool:
+    cnt = 0
+
+    if len(word1) != len(word2):
+        return False 
+    
+    for idx in range(len(word1)):
+        if word1[idx] != word2[idx]:
+            cnt += 1 
+        if cnt >= 2:
+            return False 
+    return True 
+
+def dijkstra(start_node, target_node):
+    global shortest_path 
+
+    shortest_path[start_node] = 0 
+    pq = [(0, 0)]
+    # (E+V) log(V)
+    while pq:
+        cur_dis, cur_node = heappop(pq) # VlogV
+
+        if cur_dis > shortest_path[cur_node]:
+            continue 
+
+        if cur_node == target_node:
+            return 
+        
+        # Elog(V)
+        for nxt_node in graph[cur_node]:
+            nxt_dis = cur_dis + 1 
+            if nxt_dis < shortest_path[nxt_node]:
+                shortest_path[nxt_node] = nxt_dis 
+                heappush(pq, (nxt_dis, nxt_node))
+
+
+def solution(begin, target, words):
+    global graph, shortest_path 
+    if target not in words:
+        return 0
+    
+    n = len(words) + 1  # words에 있는 단어들 + begin 단어 
+    graph = [[] for _ in range(n)]
+    
+    # graph INIT ~ O(N^2)
+    for idx, word in enumerate(words): 
+        if is_one_different(begin, word):
+            graph[0].append(idx+1) # words안에 있는 단어들은 index +1 (begin이 1증가)
+            graph[idx+1].append(0)
+        if word == target:
+            target_id = idx + 1 
+        
+        for j in range(idx+1, len(words)):
+            if is_one_different(word, words[j]):
+                graph[idx+1].append(j+1)
+                graph[j+1].append(idx+1)
+    # ~ O(ElogN)
+    shortest_path = [MAX] * n
+    dijkstra(0, target_id)
+    return shortest_path[target_id] if shortest_path[target_id] != MAX else 0
+
+
+# begin = "hit"; target="cog"; words = ["hot", "dot", "dog", "lot", "log", "cog"] # 4 
+begin = "hit"; target="cog"; words = ["hot", "dot", "dog", "lot", "log"] # 0
+print(solution(begin, target, words))
+```
+````
 
 ## BFS 
 ###  미생물 연구 Sorting, PriorityQueue 
