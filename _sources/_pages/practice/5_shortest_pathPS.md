@@ -96,6 +96,190 @@ if __name__ == "__main__":
 ````
 ### 디스크 컨트롤러 
 
+````{admonition} 틀린 정답 
+:class: dropdown 
+
+아래 코드의 문제점은 task_pq는 모든 작업을 가지고 있고, 작업의 요청시간이 현재 시간보다 클때에만 해당 task 작업을 진행하게 되어 있음. 
+이의 문제점은, 현재 작업이 안된 작업들 중 cur_time보다 request_time 들이 다 높아서, 요청 시간이 가장 작은 task를 꺼내야할 때 문제가 됨. 
+task_pq는 요청 시간이 아닌 소요 시간이 가장 짧은 테스크를 min-heap으로 저장해놓았기 때문에 해당 task를 뽑을 수 없음. 
+
+또한, O(N^2log(N))이 걸림. 왜냐하면 `unused_task`를 따로 관리하며, 안 쓰는 것을 넣었다가 빼기 때문임.
+
+-> 이러한 문제점들을 위해서,도착한 작업만 pq에 넣고 + pq가 비면 다음 요청 시각으로 time 점프를 하는 것을 지켜주면 된다. 
+```{code-block} pyton 
+from typing import List 
+from heapq import heappush, heappop 
+
+class Task:
+    def __init__(self, id: int, request_time: int, time_used:int):
+        self.id = id 
+        self.request_time = request_time
+        self.time_used = time_used 
+        self.start_time = -1 
+        self.end_time = -1 
+
+    def __lt__(self, other):
+        if self.time_used == other.time_used:
+            return self.id < other.id 
+        return self.time_used < other.time_used 
+    
+    def calculate_turnaround(self):
+        assert self.end_time != -1 
+        return self.end_time - self.request_time 
+    
+class History:
+    def __init__(self, id=-1):
+        self.start_time = -1 
+        self.end_time = -1 
+        self.task_id = id 
+    
+
+def solution(jobs):
+    '''
+    1 <= jobs.length <= 500
+    jobs[i] = [s, l] = [작업 요청 시점, 작업 소요시간]
+
+    최대 N=500, 3NlogN ~ 1e4 
+    '''
+    # 필요한 자료구조 INIT 
+    task_pq = []
+    is_harddisk_used = History() # History, task_id being processed 
+    task_id_to_object_list = []
+    # O(NlogN)
+    for id, job in enumerate(jobs):
+        cur_task = Task(id, job[0], job[1]) # object sharing 
+        heappush(task_pq, cur_task) # jobs.heapify를 하고 싶어도, 단일 정수가 아니라 어려울 듯. 
+        task_id_to_object_list.append(cur_task) 
+    '''
+    아이디어: 
+    - pq에 모든 작업을 넣어두고, 매번 "현재 시간까지 도착한 작업들 중에서" 수행할 수 있는 최단 작업을 찾으려고
+    pq를 쭉 빼면서 request_time <= cur_time인 task를 만날때까지 탐색 
+    - 아직 도착 안 한 것들은 unused_tasks에 모았다가 다시 pqd에 넣기 
+    - 시간 복잡도: 최악 O(N^2 log(N))
+
+    
+    '''
+    cur_time = 0
+    total_turnaround_time = 0
+    while task_pq: # 최악 N번 
+        # 1-1. 하드디스크가 사용 중이면, 작업을 끝냄 / 하드디스크가 사용중이 아님 (맨 처음)
+        if is_harddisk_used.task_id != -1 and is_harddisk_used.end_time == -1:
+            cur_id = is_harddisk_used.task_id 
+            cur_task = task_id_to_object_list[cur_id]
+            cur_time = cur_task.start_time + cur_task.time_used 
+            # 작업 끝냄 (end time 갱신)
+            cur_task.end_time = cur_time 
+            is_harddisk_used.end_time = cur_time 
+            # 1-2. 작업을 끝냈다면, turnaround time 계산 
+            total_turnaround_time += cur_task.calculate_turnaround()
+
+        # 작업을 끝냄과 동시에 다른 작업 시작 가능 
+        # 2-1. 현재 시간에서 요청이 된 task 중 (lazy validation) 우선순위가 가장 높은 task 선택
+        
+        unused_tasks = []
+        # O(NlogN)
+        while task_pq: # 최대 ~N
+            nxt_task = heappop(task_pq) # O(logN)
+            if nxt_task.request_time <= cur_time: 
+                # 가능 
+                # 2-2. 하드디스크가 처리하고 있는 정보 update 
+                is_harddisk_used.start_time = cur_time 
+                is_harddisk_used.end_time = -1 
+                is_harddisk_used.task_id = nxt_task.id 
+                task_id_to_object_list[nxt_task.id].start_time = cur_time 
+                break
+            else:
+                #  현재 요청안된 task 
+                unused_tasks.append(nxt_task)
+        
+        # 3. task_pq에서 제거하였으나, 아직 사용안된 task들 다시 넣어주기 
+        # O(NlogN)
+        for task in unused_tasks:
+            heappush(task_pq, task)
+
+        # 현재 시간대에 cur_Time을 위로 늘려줘야만 함. 
+        # 도착시간이 가장 빠른 작업을 골라야하는데, task_pq에는 소요 시간이 가장 짧은 작업이 들어있음. 
+        if len(unused_tasks) >0 and len(unused_tasks)== len(task_pq):
+            cur_task = heappop(task_pq)
+            cur_time = cur_task.request_time 
+            is_harddisk_used.task_id = cur_task.id
+            is_harddisk_used.start_time = cur_time 
+            cur_task.start_time = cur_time 
+            is_harddisk_used.end_time = -1 
+    # while 문에서 마지막 task작업에 대해서 끝마치기 
+    if is_harddisk_used.task_id != -1 and is_harddisk_used.end_time == -1:
+        cur_id = is_harddisk_used.task_id 
+        cur_task = task_id_to_object_list[cur_id]
+        cur_time = cur_task.start_time + cur_task.time_used 
+        # 작업 끝냄 (end time 갱신)
+        cur_task.end_time = cur_time 
+        is_harddisk_used.end_time = cur_time 
+        # 1-2. 작업을 끝냈다면, turnaround time 계산 
+        total_turnaround_time += cur_task.calculate_turnaround()
+
+    
+    return int(total_turnaround_time / len(jobs)) # turnaround평균의 "정수 부분"을 출력, 버림
+        
+
+
+    
+if __name__ == "__main__":
+    # jobs = [[0, 3], [1, 9], [3, 5]] # 8
+    # jobs = [[0, 3], [4, 3]] # 8
+    jobs = [[0, 10], [3, 1], [3, 2]]# 9
+    print(solution(jobs))
+```
+````
+
+````{admonition} Solution 
+:class: dropdown 
+
+```{code-block} python 
+import heapq 
+
+def solution(jobs):
+    # 1. 요청 시간 기준으로 정렬 
+    jobs.sort(key=lambda x: x[0]) # O(NlogN)
+
+    # 필요한 자료 구조 
+    heap = [] # (작업 소요 시간, 요청 시간)
+    time = 0 # 현재 시각 
+    idx = 0  # jobs에서 아직 힙에 안 넣은 인덱스 
+    count = 0 # 처리한 작업 수 
+    total_time = 0 # 요청 ~ 완료 시간 합 
+
+    n = len(jobs)
+
+    while count < n:
+        # 2. 현재 시각까지 들어온 모든 job을 heap에 넣기 
+        '''
+        각 job은 딱 한 번 heap에 push 되고 (idx가 전역에서 위로만 움직임), 딱 한 번 pop 됨
+        push, pop 각각 O(log N), N개에 대해 한 번씩 → O(N log N)
+        '''
+        while idx < n and jobs[idx][0] <= time:
+            req, dur = jobs[idx]
+            heapq.heappush(heap, (dur, req))
+            idx += 1 
+
+
+        if heap:
+            # 3. 가장 작업 시간이 짧은 job을 처리 
+            dur, req = heapq.heappop(heap)
+            time += dur  # 이 작업이 끝나는 시각 = 현재 시각 
+            total_time += time-req # 요청 ~ 완료 시간 (turnaround)
+            count += 1 
+        else:
+            time = jobs[idx][0]
+
+    return total_time // n
+    
+if __name__ == "__main__":
+    # jobs = [[0, 3], [1, 9], [3, 5]] # 8
+    # jobs = [[0, 3], [4, 3]] # 8
+    jobs = [[0, 10], [3, 1], [3, 2]]# 9
+    print(solution(jobs))
+```
+````
 
 ## Priority Queue 
 
