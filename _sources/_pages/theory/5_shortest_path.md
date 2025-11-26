@@ -231,16 +231,13 @@ for i in range(1, n+1):
 
 전체 노드 개수가 5000개 이하라면, 일반적으로 이 코드로 문제를 해결할 수 있지만, 노드의 개수가 10,000개를 넘어가면 이 코드로 문제를 해결하기 어렵다. 따라서 개선된 다익스트라 알고리즘을 이용해서 풀어야한다. 
 
-## 개선된 다익스트라 알고리즘 구현 
-
-개선된 다익스트라 알고리즘을 사용하면, 최악의 경우에도 시간 복잡도 O(ElogV)를 보장하여 해결할 수 있다. 간단한 다익스트라 알고리즘은 '최단 거리가 가장 짧은 노드'를 찾기 위해 매번 최단 거리 테이블을 선형적으로 탐색했다. 이 과정에서 O(V)의 시간이 걸리는데, 선형적인 방법이 아니라 더욱 빠르게 찾아 시간 복잡도를 줄인다. 즉, ***힙(heap)*** 이라는 자료구조를 사용하여 특정 노드까지의 최단 거리에 대한 정보를 빠르게 찾을 수 있다. heap을 사용하면 로그 시간이 걸리기 때문이다. N=1,000,000일 때 $\log_{2} N$이 약 20인 것을 감안하면 속도가 획기적으로 빨라지는 것임을 이해할 수 있다. 
-
 ```{admonition} priority queue & heap 
 :class: note 
 
 즉, 일반 큐(queue)는 "먼저 들어온 순서대로" (FIFO) 데이터를 꺼내는 구조이고, 우선순위 큐(priority queue)는 값의 크기나 우선순위 (priority)에 따라 꺼내는 구조인데, 이때, "가장 높은 우선순위의 원소"를 빠르게 꺼낼 수 있어야하고 힙(heap)을 사용한다. ***힙(heap)*** 는 완전이진트리 (complete binary tree) 구조를 기반으로 ***정렬된 트리*** 로 최소 힙 (min-heap)의 경우 부모 <= 자식의 조건을 만족한다. ***우선순위 큐에서는 heappush(), pop()등을 수행해야하는데, 이러한 연산을 O(logN)으로 빠르게 하도록 힙을 이용하여 구현*** 한다. 즉, 우선순위 큐는 "개념"이고, 힙은 "구현체"이다. 
 ```
-### 힙 (Heap) 자료 구조 
+
+## 힙 (Heap) 자료 구조 
 
 힙 자료구조는 우선순위 큐(Priority Queue)를 구현하기 위하여 사용하는 자료구조 중 하나이다. 큐 자료 구조는 가장 먼저 삽입한 데이터를 가장 먼저 삭제한다. 우선순위 큐는 **우선순위가 가장 높은 데이터를 가장 먼저 삭제한다**는 점이 특징이며 **우선순위 큐 구현에 최적화된 트리 기반 자료구조**이다. 우선순위 큐는 데이터를 우선순위에 따라 처리하고 싶을 때 사용한다. 예르 들어, 여러 개의 물건 데이터를 자료 구조에 넣었다가 가치가 높은 물건 데이터부터 꺼내서 확인해야하는 경우를 가정해보자. 
 
@@ -293,7 +290,7 @@ heapq.heappush(pq, 8)
 print(heapq.heappop(pq))  # 2
 ```
 
-#### 힙 문법 
+### 힙 문법 
 ```python
 
 """힙에 원소를 합입할 때는 heapq.heappush() 메서드를 사용하고, 힙에서 원소를 꺼내고자 할 때는 heapq.heappop() 메서드를 이용한다. 힙 정렬 (heap sort)을 heapq로 구현하는 예제를 통해 heapqd의 사용방법을 알아보자. 
@@ -315,7 +312,7 @@ def heapsort(iterable):
   print(result)
 ```
 
-#### 힙 구현
+### 힙 구현
 
 ````{admonition} 부모, 자식 인덱스
 :class: dropdown 
@@ -362,7 +359,7 @@ click the [link](https://www.cs.usfca.edu/~galles/visualization/Heap.html)
     - buildHeap button -> remove smallest 
 
 ````
-````{admonition} 힙 구현 
+````{admonition} heappush(), heappop() 구현  
 :class: dropdown 
 
 주의!
@@ -451,6 +448,34 @@ if __name__ == "__main__":
 
 ```
 ````
+
+````{admonition} heapify() 구현 
+:class: dropdown 
+
+The `heapify()` function achieves this in linear time complexity, O(N), where N is the number of elements in the list. It does this by ***starting from the last non-leaf node*** and working its way up to the root, performing a "sift down" operation on each node. The "sift down" operation ensures that a node is moved down the heap to its correct position to maintain the min-heap property.
+
+```{code-block} python 
+
+def heapify(pq: List):
+    """Transform list into a heap, in-place, in O(len(x)) time."""
+
+    n = len(pq)
+
+    '''
+    Transform bottom-up.  The largest index there's any point to looking at
+    is the largest with a child index in-range, so must have 2*i + 1 < n,
+    or i < (n-1)/2.  If n is even = 2*j, this is (2*j-1)/2 = j-1/2 so
+    j-1 is the largest, which is n//2 - 1.  If n is odd = 2*j+1, this is
+    (2*j+1-1)/2 = j so j-1 is the largest, and that's again n//2-1.
+    '''
+    for i in reversed(range(n//2)):
+        _siftup(pq, i)
+```
+````
+
+## 개선된 다익스트라 알고리즘 구현 
+
+개선된 다익스트라 알고리즘을 사용하면, 최악의 경우에도 시간 복잡도 O(ElogV)를 보장하여 해결할 수 있다. 간단한 다익스트라 알고리즘은 '최단 거리가 가장 짧은 노드'를 찾기 위해 매번 최단 거리 테이블을 선형적으로 탐색했다. 이 과정에서 O(V)의 시간이 걸리는데, 선형적인 방법이 아니라 더욱 빠르게 찾아 시간 복잡도를 줄인다. 즉, ***힙(heap)*** 이라는 자료구조를 사용하여 특정 노드까지의 최단 거리에 대한 정보를 빠르게 찾을 수 있다. heap을 사용하면 로그 시간이 걸리기 때문이다. N=1,000,000일 때 $\log_{2} N$이 약 20인 것을 감안하면 속도가 획기적으로 빨라지는 것임을 이해할 수 있다. 
 
 
 ### 우선순위 큐를 이용한 단계별 문제 풀이 

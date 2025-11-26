@@ -18,19 +18,84 @@ sort()와 min-heap은 오름차순으로 두면, "매번 현재 가장 싼 간�
 ````
 
 예시 문제 링크 
+- Priority Queue 고득점 Kit 
+  - [더 맵게](https://school.programmers.co.kr/learn/courses/30/lessons/42626)
+  - [디스크 컨트롤러](https://school.programmers.co.kr/learn/courses/30/lessons/42627)
+  - [이중우선순위큐](https://school.programmers.co.kr/learn/courses/30/lessons/42628)
+
 - Priority Queue 
   - [가로등 설치](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/street-light-installation/description)
   - [코드 트리 채점기](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/codetree-judger/description)
   - [코드트리 투어](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/codetree-tour/description)
   - [해적 선장 코디](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/pirate-captain-coddy/description)
   - [토끼와 경주](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/rabit-and-race/description)
-  - [프로그래머스 고득점 kit for heap](https://school.programmers.co.kr/learn/courses/30/parts/12117)
 
 - Dijkstra 
   - [개구리의 여행](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/frog-journey/description)
   - [Reachable Nodes in Subdivided Graph](https://leetcode.com/problems/reachable-nodes-in-subdivided-graph/description/?envType=problem-list-v2&envId=shortest-path)
   - [Second Minimum Time to Reach Destination](https://leetcode.com/problems/second-minimum-time-to-reach-destination/description/?envType=problem-list-v2&envId=shortest-path)
   - [Minimum Weighted Subgraph With the Required Paths](https://leetcode.com/problems/minimum-weighted-subgraph-with-the-required-paths/?envType=problem-list-v2&envId=shortest-path)
+
+## Priority Queue, 고득점 Kit 
+### 더 맵게
+
+Idea: 
+1. 처음 원소의 개수가 짝수이든, 홀수이든 마지막에는 1개의 원소만 남게 된다. 따라서, 계속 진행되었을 때 남아있는 두 개의 원소 중 하나라도 K보다 크면 answer을 내놓으면 됨. 
+   1. 또한 answer=0이고, 첫 리스트가 1개만 남아있는 경우도 있으므로, 이를 위해 len(cur_scoville_list) == 1 인 경우를 위해, `while`조건에 맨 처음 원소가 >= K임을 명시한다. 
+   2. 따라서, `while`조건에는 K보다 작은 원소들이 존재하는 경우에만 새로 음식을 섞는 작업을 진행한다. 
+2. 처음 scoville_pq를 초기화시킬 때, `heappush()` 로 초기화하였기 때문에, 모든 원소가 priority queue의 기준에 따라 정렬되었고 추후에 해당 priority queue에 들어오는 원소들은 당연히 기존 원소들보다 크기 때문에 
+    - 제일 작은 원소 1+1*2 = 3 이므로, 원소가 [1, 1, 2] 였다고 하더라도 heapush()로 삽입되기 때문에, 정렬상 작은 원소가 제일 앞에 있게 된다. 
+    - for loop으로 heappush로 초기화하면 O(NlogN)이 걸리고, (for loop을 돌면서 heapush())
+    - heapify를 하면, O(n)이 걸린다. 배열을 트리 형태로 보고 아래에서 위로 정리 
+    - 따라서, python에서는 `heapify()`를 쓰는 것이 훨씬 빠르다. 
+  
+````{admonition} Solution 
+:class: dropdown 
+
+```{code-block} python 
+from typing import List
+import heapq 
+
+def solution(scoville: List[int], K: int):
+    # INIT
+    # `scoville` list의 정보를 최소 힙으로 변환, 이것은 아래처럼 O(N)으로 할수도 있고, heapify 함수를 사용해서 할수도 있다. 
+    # for idx, each_s in enumerate(scoville):
+    #     heapq.heappush(scoville_pq, (each_s, idx))
+    #     id_to_scoville.append(each_s)
+    heapq.heapify(scoville) # O(N)
+    answer = 0 # 연산 횟수 
+        
+    # 알고리즘 시작 
+    while scoville and scoville[0] < K:
+        
+        # 더 이상 두 개를 섞을 수 없으면 실패 
+        # 예) [1,2] -> [5] 로 마지막에는 항상 한 개 만 남음 
+        # 예) 애초에 음식이 1개인데, K보다 작은 경우 
+        if len(scoville) < 2:
+            return -1 
+        
+        # Step 1. 총 두 개의 음식 꺼내기 
+        first = heapq.heappop(scoville)
+        second = heapq.heappop(scoville)
+
+        # NOTE: 
+        # 1. scoville_pq의 모든 원소는 모두 priority queue형식으로 push되었고
+        # 2. 미래에 들어오는 원소들은 항상 클것이므로, 가장 작은 원소가 맨 앞에 있는 것이 진리임
+        # 따라서, 혹시 모를 작은 원소때문에 lazy deletion 필요 없음. 
+        new_s = first + 2*second 
+        heapq.heappush(scoville, new_s) # 새로운 음식의 id = len(id_to_scoville)
+        answer += 1 
+    return answer # 위의 실패 경우를 제외하면, answer를 반환 
+
+
+if __name__ == "__main__":
+    scoville = [1, 2, 3, 9, 10, 12]; K=7 # 2 
+    # scoville = [1, 1]; K=7
+    print(solution(scoville=scoville, K=K))
+```
+````
+### 디스크 컨트롤러 
+
 
 ## Priority Queue 
 
@@ -1653,64 +1718,6 @@ if __name__ == "__main__":
             process_300(id, new_pw, t)
         else: # 400, 공격 명령 
             process_400(t)
-```
-````
-
-### 더 맵게 (프로그래머스 고득점 kit)
-
-Idea: 
-1. 처음 원소의 개수가 짝수이든, 홀수이든 마지막에는 1개의 원소만 남게 된다. 따라서, 계속 진행되었을 때 남아있는 두 개의 원소 중 하나라도 K보다 크면 answer을 내놓으면 됨. 
-   1. 또한 answer=0이고, 첫 리스트가 1개만 남아있는 경우도 있으므로, 이를 위해 len(cur_scoville_list) == 1 인 경우를 위해, `while`조건에 맨 처음 원소가 >= K임을 명시한다. 
-   2. 따라서, `while`조건에는 K보다 작은 원소들이 존재하는 경우에만 새로 음식을 섞는 작업을 진행한다. 
-2. 처음 scoville_pq를 초기화시킬 때, `heappush()` 로 초기화하였기 때문에, 모든 원소가 priority queue의 기준에 따라 정렬되었고 추후에 해당 priority queue에 들어오는 원소들은 당연히 기존 원소들보다 크기 때문에 
-    - 제일 작은 원소 1+1*2 = 3 이므로, 원소가 [1, 1, 2] 였다고 하더라도 heapush()로 삽입되기 때문에, 정렬상 작은 원소가 제일 앞에 있게 된다. 
-    - for loop으로 heappush로 초기화하면 O(NlogN)이 걸리고, (for loop을 돌면서 heapush())
-    - heapify를 하면, O(n)이 걸린다. 배열을 트리 형태로 보고 아래에서 위로 정리 
-    - 따라서, python에서는 `heapify()`를 쓰는 것이 훨씬 빠르다. 
-  
-````{admonition} Solution 
-:class: dropdown 
-
-```{code-block} python 
-from typing import List
-import heapq 
-
-def solution(scoville: List[int], K: int):
-    # INIT
-    # `scoville` list의 정보를 최소 힙으로 변환, 이것은 아래처럼 O(N)으로 할수도 있고, heapify 함수를 사용해서 할수도 있다. 
-    # for idx, each_s in enumerate(scoville):
-    #     heapq.heappush(scoville_pq, (each_s, idx))
-    #     id_to_scoville.append(each_s)
-    heapq.heapify(scoville) # O(N)
-    answer = 0 # 연산 횟수 
-        
-    # 알고리즘 시작 
-    while scoville and scoville[0] < K:
-        
-        # 더 이상 두 개를 섞을 수 없으면 실패 
-        # 예) [1,2] -> [5] 로 마지막에는 항상 한 개 만 남음 
-        # 예) 애초에 음식이 1개인데, K보다 작은 경우 
-        if len(scoville) < 2:
-            return -1 
-        
-        # Step 1. 총 두 개의 음식 꺼내기 
-        first = heapq.heappop(scoville)
-        second = heapq.heappop(scoville)
-
-        # NOTE: 
-        # 1. scoville_pq의 모든 원소는 모두 priority queue형식으로 push되었고
-        # 2. 미래에 들어오는 원소들은 항상 클것이므로, 가장 작은 원소가 맨 앞에 있는 것이 진리임
-        # 따라서, 혹시 모를 작은 원소때문에 lazy deletion 필요 없음. 
-        new_s = first + 2*second 
-        heapq.heappush(scoville, new_s) # 새로운 음식의 id = len(id_to_scoville)
-        answer += 1 
-    return answer # 위의 실패 경우를 제외하면, answer를 반환 
-
-
-if __name__ == "__main__":
-    scoville = [1, 2, 3, 9, 10, 12]; K=7 # 2 
-    # scoville = [1, 1]; K=7
-    print(solution(scoville=scoville, K=K))
 ```
 ````
 
