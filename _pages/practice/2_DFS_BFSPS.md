@@ -15,6 +15,15 @@ kernelspec:
 # Lecture 2-2. DFS/BFS 실습
 
 예시 문제 링크 
+- BFS 고득점 Kit 
+  - [타겟 넘버]
+  - [네트워크]
+  - [게임 맵 최단거리]
+  - [단어 변환]
+  - [아이템 줍기]
+  - [여행 경로]
+  - [퍼즐 조각 채우기]
+
 - BFS 
   - [AI 로봇 청소기](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/ai-robot/description)
   - [미생물 연구](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/microbial-research/description)
@@ -31,6 +40,8 @@ kernelspec:
   - [자율주행전기차](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/autonomous-electric-car/description)
   - [전투로봇](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/fighting-robot/description)
   - [토스트 계란틀](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/toast-eggmold/description)
+
+## BFS 고득점 Kit 
 
 ## BFS 
 ###  미생물 연구 Sorting, PriorityQueue 
