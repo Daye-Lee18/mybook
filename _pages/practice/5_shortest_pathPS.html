@@ -372,17 +372,18 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#priority-queue-kit">Priority Queue, 고득점 Kit</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">더 맵게</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">디스크 컨트롤러</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">이중우선순위큐</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#priority-queue">Priority Queue</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">가로등 설치</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">코드 트리 채점기</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">코드 트리 투어</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">해적 선장 코디</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">가로등 설치</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">코드 트리 채점기</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">코드 트리 투어</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">해적 선장 코디</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dijkstra">Dijkstra</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">개구리의 여행</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">개구리의 여행</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reachable-nodes-in-subdivided-graph">Reachable Nodes In Subdivided Graph</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#second-minimum-time-to-reach-destination">Second Minimum  Time to Reach Destination</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#minimum-weighted-subgraph-with-the-required-paths">Minimum Weighted Subgraph With the Required Paths</a></li>
@@ -745,12 +746,87 @@ print(N*math.log(N)) # ~1e4
 </div>
 </div>
 </section>
+<section id="id3">
+<h3>이중우선순위큐<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<div class="dropdown admonition">
+<p class="admonition-title">Explanation</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>이중 우선순위큐는 3가지 연산을 할 수 있다. 
+1. &quot;I 숫자&quot; 
+    - 큐에 주어진 숫자를 삽입 
+    - 숫자는 음수일 수 있음. 
+2. D 1 
+    - 큐에서 최댓값 삭제 
+    - 빈 큐에 데이터를 삭제하라는 연산이 주어질 경우, 해당 연산은 무시 
+3. D -1 
+    - 큐에서 최솟값 삭제 
+    - 빈 큐에 데이터를 삭제하라는 연산이 주어질 경우, 해당 연산은 무시 
+
+
+매개변수로 이중 우선순위 큐가 할 연산 operations이 주어질 때, 모든 연산을 처리한 후 큐가 비어있으면 [0,0], 
+비어있지 않으면 [최댓값, 최솟값]을 return 하도록 solution 함수를 구현해라. 
+
+1 &lt;= operations.length &lt;= 1_000_000 
+</pre></div>
+</div>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">Solution</p>
+<p>만약, visited 리스트를 만들어서 False/True로 지연 삭제를 만들고 싶은 경우에는
+visited = [False] * len(operations)를 하고
+visited[i] = True 로 한다. 이때 id 숫자는 음수일 수 있으므로, id는 operation index (0, 1, 2, …)로 만들어준다.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">heapq</span><span class="w"> </span><span class="kn">import</span> <span class="n">heappush</span><span class="p">,</span> <span class="n">heappop</span> 
+
+<span class="c1"># 필요한 자료구조 </span>
+<span class="n">min_heap</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">max_heap</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">does_id_exist</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>  <span class="c1"># True/False </span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">solution</span><span class="p">(</span><span class="n">operations</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">min_heap</span><span class="p">,</span> <span class="n">max_heap</span><span class="p">,</span> <span class="n">does_id_exist</span>
+    <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">operations</span><span class="p">:</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">cmd</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;I&quot;</span><span class="p">:</span>
+            <span class="n">heappush</span><span class="p">(</span><span class="n">min_heap</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">cmd</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="n">heappush</span><span class="p">(</span><span class="n">max_heap</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="o">*</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">cmd</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
+            <span class="n">does_id_exist</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">cmd</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        
+        <span class="c1"># 최댓값 삭제 </span>
+        <span class="k">elif</span> <span class="n">cmd</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;D&quot;</span> <span class="ow">and</span> <span class="n">cmd</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
+            <span class="c1"># lazy deletion </span>
+            <span class="k">while</span> <span class="n">max_heap</span><span class="p">:</span>
+                <span class="n">cur_num</span> <span class="o">=</span> <span class="n">heappop</span><span class="p">(</span><span class="n">max_heap</span><span class="p">)</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span> 
+                <span class="k">if</span> <span class="n">cur_num</span> <span class="ow">in</span> <span class="n">does_id_exist</span><span class="p">:</span>
+                    <span class="n">does_id_exist</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">cur_num</span><span class="p">)</span>
+                    <span class="k">break</span>
+        
+        <span class="c1"># 최솟값 삭제 </span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># lazy deletion </span>
+            <span class="k">while</span> <span class="n">min_heap</span><span class="p">:</span>
+                <span class="n">cur_num</span> <span class="o">=</span> <span class="n">heappop</span><span class="p">(</span><span class="n">min_heap</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">cur_num</span> <span class="ow">in</span> <span class="n">does_id_exist</span><span class="p">:</span>
+                    <span class="n">does_id_exist</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">cur_num</span><span class="p">)</span>
+                    <span class="k">break</span> 
+    <span class="c1"># 모든 연산 처리후 가장 최신 업데이트에는 does_id_exist가 가지고 있음 </span>
+    <span class="c1"># 큐가 비어있으면 [0,0]</span>
+    <span class="c1"># 비어있지 않으면, [최댓값, 최솟값]을 return </span>
+    <span class="n">does_id_exist</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">does_id_exist</span><span class="p">)</span>
+    <span class="n">does_id_exist</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span> <span class="c1"># ascending sort </span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">does_id_exist</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">does_id_exist</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="k">if</span> <span class="n">does_id_exist</span> <span class="k">else</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+<span class="c1"># operations = [&quot;I 16&quot;, &quot;I -5643&quot;, &quot;D -1&quot;, &quot;D 1&quot;, &quot;D 1&quot;, &quot;I 123&quot;, &quot;D -1&quot;] # [0,0]</span>
+<span class="n">operations</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;I -45&quot;</span><span class="p">,</span> <span class="s2">&quot;I 653&quot;</span><span class="p">,</span> <span class="s2">&quot;D 1&quot;</span><span class="p">,</span> <span class="s2">&quot;I -642&quot;</span><span class="p">,</span> <span class="s2">&quot;I 45&quot;</span><span class="p">,</span> <span class="s2">&quot;I 97&quot;</span><span class="p">,</span> <span class="s2">&quot;D 1&quot;</span><span class="p">,</span> <span class="s2">&quot;D -1&quot;</span><span class="p">,</span> <span class="s2">&quot;I 333&quot;</span><span class="p">]</span> <span class="c1"># [333, -45]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">solution</span><span class="p">(</span><span class="n">operations</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</section>
 </section>
 <section id="priority-queue">
 <h2>Priority Queue<a class="headerlink" href="#priority-queue" title="Link to this heading">#</a></h2>
 <p>우선순위에 대해서 맨 처음의 데이터를 Extract하거나 데이터의 출입이 잦은 경우, priority queue를 이용해 데이터를 관리한다.</p>
-<section id="id3">
-<h3>가로등 설치<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<section id="id4">
+<h3>가로등 설치<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
 <p class="admonition-title">전역변수</p>
 <p>어떤 전역 변수를 사용할 것인지, 정리한후, 전역 변수를 한번에 INIT 해놓는다.</p>
@@ -1185,8 +1261,8 @@ print(N*math.log(N)) # ~1e4
 </div>
 </div>
 </section>
-<section id="id4">
-<h3>코드 트리 채점기<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<section id="id5">
+<h3>코드 트리 채점기<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
 <p>이런 문제를 푸는 경우, 각 문제의 요구 사항을 만족시키기 위해서는 <em><strong>(1) 각 정보의 특성에 맞는 효율적인 자료구조</strong></em> 를 설계하고, 각 명령어에 따른 <em><strong>(2) 상태 변화를 누락 없이 처리</strong></em> 하는 것이 중요하다.</p>
 <div class="dropdown admonition">
 <p class="admonition-title">필요한 자료구조</p>
@@ -1470,8 +1546,8 @@ print(N*math.log(N)) # ~1e4
 </div>
 </div>
 </section>
-<section id="id5">
-<h3>코드 트리 투어<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<section id="id6">
+<h3>코드 트리 투어<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
 <p>구현 문제의 경우, 실수할 수 있는 부분은 여러개의 command 중 하나를 하고 다른 command를 할 경우 그 다음 상황에 영향을 미치는 것이 있는 지 미리 체크해야한다. 이번 문제의 경우 새로 변한 start_id에 대해 이후에 command <code class="docutils literal notranslate"><span class="pre">200</span></code>이 나오는 경우에 새로운 <code class="docutils literal notranslate"><span class="pre">start_id</span></code>에 대하여 Trip의 cost등을 계산해야하므로 이를 global variable로 관리해주는 것이 포인트였다.</p>
 <div class="dropdown admonition">
 <p class="admonition-title">explanation</p>
@@ -1742,8 +1818,8 @@ print(N*math.log(N)) # ~1e4
 </div>
 </div>
 </section>
-<section id="id6">
-<h3>해적 선장 코디<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<section id="id7">
+<h3>해적 선장 코디<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
 <p>해당 문제는 제일 우선순위가 높은 1개를 뽑는 것이 아닌, 조건에 맞는 최대 5개의 선박을 고를 수 있다는 것에 있다.</p>
 <div class="dropdown admonition">
 <p class="admonition-title">explanation</p>
@@ -2308,8 +2384,8 @@ dictionary 안의 object안의 variable을 변환해주면, 이를 가지고 있
 <section id="dijkstra">
 <h2>Dijkstra<a class="headerlink" href="#dijkstra" title="Link to this heading">#</a></h2>
 <p>특정 시작점에서 다른 점으로의 최단 거리를 알고 싶은 경우, <em><strong>음수의 간선이 없는 경우</strong></em> dijkstra 알고리즘을 사용하여 계산할 수 있다.</p>
-<section id="id7">
-<h3>개구리의 여행<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<section id="id8">
+<h3>개구리의 여행<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
 <ol class="arabic simple">
 <li><p>3D dijkstra algorithm을 사용할 수 있다. 즉, 공간적 위치 뿐만 아니라, (y, x, jump) 현재의 점프력에 따라서도 도착지점까지의 최단 거리 (시간)이 달라지기 때문이다. 따라서, Shortest_path dictionary와 priority queue에 넣는 정보 모두 3D 차원에서 고려, 확인해야한다.</p></li>
 <li><p>시간 초과가 나는 경우, dijkstra algorithm에서 중간에, Destination에 도달했다면, 빨리 알고리즘을 종료시킴으로써, 해결할 수 있다. (다만 이경우에는 start_node가 동일한 경우 기존에 계산한 것에서 사용하지못하고, 다시 계산해야한다. )</p>
@@ -2323,8 +2399,8 @@ dictionary 안의 object안의 variable을 변환해주면, 이를 가지고 있
 <div class="dropdown admonition">
 <p class="admonition-title">coding and decoding for each state</p>
 <p>공간상으로 3D Matrix을 만드는 것이 가장 쉬운 접근법이지만, (y, x, jump)에 대하여 unique한 index를 만드는 함수를 구현하여 코드를 작성할 수도 있다.</p>
-<div class="literal-block-wrapper docutils container" id="id8">
-<div class="code-block-caption"><span class="caption-number">예시 45 </span><span class="caption-text">3D 공간 (행, 열, 점프력)을 하나의 stateID로 coding하는 함수. (row, col, jump)가 1-indexed이기 때문에, 0-indexed로 변환한 후 계산하고 있음에 주의하자.</span><a class="headerlink" href="#id8" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id9">
+<div class="code-block-caption"><span class="caption-number">예시 45 </span><span class="caption-text">3D 공간 (행, 열, 점프력)을 하나의 stateID로 coding하는 함수. (row, col, jump)가 1-indexed이기 때문에, 0-indexed로 변환한 후 계산하고 있음에 주의하자.</span><a class="headerlink" href="#id9" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 각 상태는 (행, 열, 점프력)으로 저장된다. </span>
 <span class="c1"># 상태를 하나의 정수 인덱스로 변환하기 위한 함수이다. </span>
 <span class="c1"># 상태 인덱스는 MAX_JUMP_POWER * (row-1) </span>
@@ -3203,17 +3279,18 @@ Memory: 26MB</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#priority-queue-kit">Priority Queue, 고득점 Kit</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">더 맵게</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">디스크 컨트롤러</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">이중우선순위큐</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#priority-queue">Priority Queue</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">가로등 설치</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">코드 트리 채점기</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">코드 트리 투어</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">해적 선장 코디</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">가로등 설치</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">코드 트리 채점기</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">코드 트리 투어</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">해적 선장 코디</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dijkstra">Dijkstra</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">개구리의 여행</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">개구리의 여행</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reachable-nodes-in-subdivided-graph">Reachable Nodes In Subdivided Graph</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#second-minimum-time-to-reach-destination">Second Minimum  Time to Reach Destination</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#minimum-weighted-subgraph-with-the-required-paths">Minimum Weighted Subgraph With the Required Paths</a></li>

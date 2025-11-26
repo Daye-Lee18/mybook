@@ -336,6 +336,85 @@ if __name__ == "__main__":
 ```
 ````
 
+### 이중우선순위큐 
+
+````{admonition} Explanation 
+:class: dropdown 
+
+```text
+이중 우선순위큐는 3가지 연산을 할 수 있다. 
+1. "I 숫자" 
+    - 큐에 주어진 숫자를 삽입 
+    - 숫자는 음수일 수 있음. 
+2. D 1 
+    - 큐에서 최댓값 삭제 
+    - 빈 큐에 데이터를 삭제하라는 연산이 주어질 경우, 해당 연산은 무시 
+3. D -1 
+    - 큐에서 최솟값 삭제 
+    - 빈 큐에 데이터를 삭제하라는 연산이 주어질 경우, 해당 연산은 무시 
+
+
+매개변수로 이중 우선순위 큐가 할 연산 operations이 주어질 때, 모든 연산을 처리한 후 큐가 비어있으면 [0,0], 
+비어있지 않으면 [최댓값, 최솟값]을 return 하도록 solution 함수를 구현해라. 
+
+1 <= operations.length <= 1_000_000 
+```
+````
+
+````{admonition} Solution
+:class: dropdown 
+
+만약, visited 리스트를 만들어서 False/True로 지연 삭제를 만들고 싶은 경우에는 
+visited = [False] * len(operations)를 하고 
+visited[i] = True 로 한다. 이때 id 숫자는 음수일 수 있으므로, id는 operation index (0, 1, 2, ...)로 만들어준다. 
+
+```{code-block} python 
+from heapq import heappush, heappop 
+
+# 필요한 자료구조 
+min_heap = []
+max_heap = []
+does_id_exist = set()  # True/False 
+
+def solution(operations):
+    global min_heap, max_heap, does_id_exist
+    for op in operations:
+        cmd = op.split()
+        if cmd[0] == "I":
+            heappush(min_heap, int(cmd[1]))
+            heappush(max_heap, -1*(int(cmd[1])))
+            does_id_exist.add(int(cmd[1]))
+        
+        # 최댓값 삭제 
+        elif cmd[0] == "D" and cmd[1] == "1":
+            # lazy deletion 
+            while max_heap:
+                cur_num = heappop(max_heap) * -1 
+                if cur_num in does_id_exist:
+                    does_id_exist.remove(cur_num)
+                    break
+        
+        # 최솟값 삭제 
+        else:
+            # lazy deletion 
+            while min_heap:
+                cur_num = heappop(min_heap)
+                if cur_num in does_id_exist:
+                    does_id_exist.remove(cur_num)
+                    break 
+    # 모든 연산 처리후 가장 최신 업데이트에는 does_id_exist가 가지고 있음 
+    # 큐가 비어있으면 [0,0]
+    # 비어있지 않으면, [최댓값, 최솟값]을 return 
+    does_id_exist = list(does_id_exist)
+    does_id_exist.sort() # ascending sort 
+    return [does_id_exist[-1], does_id_exist[0]] if does_id_exist else [0, 0]
+
+# operations = ["I 16", "I -5643", "D -1", "D 1", "D 1", "I 123", "D -1"] # [0,0]
+operations = ["I -45", "I 653", "D 1", "I -642", "I 45", "I 97", "D 1", "D -1", "I 333"] # [333, -45]
+print(solution(operations))
+```
+````
+
 ## Priority Queue 
 
 우선순위에 대해서 맨 처음의 데이터를 Extract하거나 데이터의 출입이 잦은 경우, priority queue를 이용해 데이터를 관리한다. 
