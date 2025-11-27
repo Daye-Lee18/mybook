@@ -1226,6 +1226,12 @@ if __name__ == '__main__':
 
 미생물 연구 
 
+필요한 자료구조 
+- `graph`: 현재 미생물의 위치를 저장한다. graph[y][x] = microbe_id , 아무것도 없으면 0으로 저장 (INIT)
+- `does_id_exist: [bool]` = does_id_exit[id] = True/False로 저장 해당 미생물 id가 죽었는지 살았는지 체크 
+- `id_to_locs: dict[int, list]` = 미생물들은 삽입되거나 제거되므로 add()뒤에 move()를 시작할 때 항상 계속 갱신 
+- `id_to_new_graph_origin: dict[int, Tuple[int]]`: move()이후에 id마다의 locs 재계산은 time consuming하므로 move()할때 새로 옮긴 origin을 저장해두어, record()때 이웃 미생물 검사시에 사용한다. 
+
 - 배양 크기 NxN (0, 0) ~ (N, N), 0-indexed , N+1개
     - 0 <= x,y < N (inclusive, exclusive)
     - 좌하단이 (0, 0)이며 (x, y)로 표시 
@@ -1301,12 +1307,7 @@ constraints:
 - 2 <= N <= 15 
 - 1 <= Q <= 50 
 
-필요한 자료구조 
-- `graph`: 현재 미생물의 위치를 저장한다. graph[y][x] = microbe_id , 아무것도 없으면 0으로 저장 (INIT)
-- `does_id_exist: [bool]` = does_id_exit[id] = True/False로 저장 해당 미생물 id가 죽었는지 살았는지 체크 
-- `id_to_locs: dict[int, list]` = 미생물들은 삽입되거나 제거되므로 add()뒤에 move()를 시작할 때 항상 계속 갱신 
-- `id_to_new_graph_origin: dict[int, Tuple[int]]`: move()이후에 id마다의 locs 재계산은 time consuming하므로 move()할때 새로 옮긴 origin을 저장해두어, record()때 이웃 미생물 검사시에 사용한다. 
-- 
+
 ````
 ````{admonition} Solution 
 :class: dropdown 
@@ -1544,6 +1545,15 @@ for id in range(1, Q+1): # microbe_id는 1부터 시작, graph가 0이면 아무
 1 0 3 6<br>
 7 7 8 8<br>
 2 4 6 7<br>
+
+4. 
+6 6 <br>
+3 4 5 5<br>
+3 3 4 4<br>
+2 0 3 1<br>
+0 2 1 4<br>
+1 4 3 6<br>
+5 0 6 2<br>
 ````
 
 ### 마법의 숲 탐색

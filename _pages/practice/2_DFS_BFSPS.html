@@ -1619,7 +1619,12 @@ if __name__ == '__main__':
 <div class="dropdown admonition">
 <p class="admonition-title">Explanation</p>
 <p>미생물 연구</p>
+<p>필요한 자료구조</p>
 <ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">graph</span></code>: 현재 미생물의 위치를 저장한다. graph[y][x] = microbe_id , 아무것도 없으면 0으로 저장 (INIT)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">does_id_exist:</span> <span class="pre">[bool]</span></code> = does_id_exit[id] = True/False로 저장 해당 미생물 id가 죽었는지 살았는지 체크</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">id_to_locs:</span> <span class="pre">dict[int,</span> <span class="pre">list]</span></code> = 미생물들은 삽입되거나 제거되므로 add()뒤에 move()를 시작할 때 항상 계속 갱신</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">id_to_new_graph_origin:</span> <span class="pre">dict[int,</span> <span class="pre">Tuple[int]]</span></code>: move()이후에 id마다의 locs 재계산은 time consuming하므로 move()할때 새로 옮긴 origin을 저장해두어, record()때 이웃 미생물 검사시에 사용한다.</p></li>
 <li><p>배양 크기 NxN (0, 0) ~ (N, N), 0-indexed , N+1개</p>
 <ul>
 <li><p>0 &lt;= x,y &lt; N (inclusive, exclusive)</p></li>
@@ -1744,14 +1749,6 @@ pair_set.add((id1, id2))</p></li>
 <ul class="simple">
 <li><p>2 &lt;= N &lt;= 15</p></li>
 <li><p>1 &lt;= Q &lt;= 50</p></li>
-</ul>
-<p>필요한 자료구조</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">graph</span></code>: 현재 미생물의 위치를 저장한다. graph[y][x] = microbe_id , 아무것도 없으면 0으로 저장 (INIT)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">does_id_exist:</span> <span class="pre">[bool]</span></code> = does_id_exit[id] = True/False로 저장 해당 미생물 id가 죽었는지 살았는지 체크</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">id_to_locs:</span> <span class="pre">dict[int,</span> <span class="pre">list]</span></code> = 미생물들은 삽입되거나 제거되므로 add()뒤에 move()를 시작할 때 항상 계속 갱신</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">id_to_new_graph_origin:</span> <span class="pre">dict[int,</span> <span class="pre">Tuple[int]]</span></code>: move()이후에 id마다의 locs 재계산은 time consuming하므로 move()할때 새로 옮긴 origin을 저장해두어, record()때 이웃 미생물 검사시에 사용한다.</p></li>
-<li></li>
 </ul>
 </div>
 <div class="dropdown admonition">
@@ -1993,6 +1990,16 @@ pair_set.add((id1, id2))</p></li>
 1 0 3 6<br>
 7 7 8 8<br>
 2 4 6 7<br></p>
+<ol class="arabic simple" start="4">
+<li></li>
+</ol>
+<p>6 6 <br>
+3 4 5 5<br>
+3 3 4 4<br>
+2 0 3 1<br>
+0 2 1 4<br>
+1 4 3 6<br>
+5 0 6 2<br></p>
 </div>
 </section>
 <section id="id8">
