@@ -189,6 +189,8 @@ print(solution(maps))
 
 ### 단어 변환 
 
+“변환 단계 최소 / 간선 개수 최소 / 최소 횟수” → 무조건 BFS 떠올리는 습관
+
 ````{admonition} Idea 
 :class: dropdown 
 
@@ -289,6 +291,114 @@ begin = "hit"; target="cog"; words = ["hot", "dot", "dog", "lot", "log"] # 0
 print(solution(begin, target, words))
 ```
 ````
+
+### 아이템 줍기 
+
+````{admonition} Idea 
+:class: dropdown 
+
+이 문제는 그래프를 직접 adjacency list로 그리려고 하면 괴로워진다. 애초에 "정점-간선 그래프"가 아닌 격자 (grid) + BFS로 생각하는게 훨씬 편하다. 
+
+![](../../assets/img/DFS_BFSPS/12.png)
+
+위의 상황에서 아래처럼 좌표를 2배로 만들면, 모서리와 안쪽 칸이 분리되어 테두리만 정확히 따라갈 수 있게 된다. 
+
+![](../../assets/img/DFS_BFSPS/13.png)
+
+
+1. 좌표를 2배로 키운다. 
+    - 이유: 직사각형들이 꼭짓점만 닿을 때, 대각선으로 잘못 돌아가는 길을 막기 위해 
+    - 좌표를 2배로 만들면 "모서리"들이 모두 칸 사이에 생겨서, 테두리만 정확히 따라갈 수 있음 
+2. 직사각형들로 2D 맵을 만든다.
+    - 처음에는 직사각형 전체 영역을 1(지나갈 수 있음)으로 채운다. 
+    - 그 다음, 직사각형 내부 (테두리 제외)는 0 (못지나감)으로 채운다.
+    - 이렇게 하면 딱 '테두리'만 1로 남음 -> 우리가 갈 수 있는 길은 이 1인 칸들 
+3. 캐릭터 위치에서 아이템 위치까지 BFS 
+    - 시작점, 도착점 좌표도 2배로 
+    - 상/하/좌/우 네 방향으로만 이동 
+    - 1인 칸만 이동 가능 
+    - BFS에서 (처음 아이템에 도달했을 때 거리 /2) 가 정답 
+
+왜 이렇게 하면 효율적인가?
+- 좌표가 최대 50이라서, 2배를 해도 최대 100 × 100 정도 격자.
+- BFS 한 번 돌려도 O(100 * 100) 정도 → 충분히 빠름.
+- 직사각형 개수도 많지 않아서, 전체 채우는 것도 O(rectangle 수 * 100 * 100) 이하.
+- 그래프의 인접 리스트를 만들 필요 없이, 그냥 2D 배열 + BFS로 끝낼 수 있어서 코드도 훨씬 깔끔해.
+````
+````{admonition} Solution
+:class: dropdown 
+
+한가지 짚을 점은, 아래 구현에서 range체크를 할 때, `0<=nx<=MAX`로 `2<=nx<=MAX`를 사용하지 않았다. x와 y의 범위는 원래 1<= x, y<=50인데, 이처럼 하는 이유는, graph의 유효 인덱스 범위는 행/열 인덱스: 0~101이기 때문이다.
+
+왜냐하면, grahp[0][..], graph[1][..]은 이미 0인 상태이며 뒤의 range는 넉넉히 해두고 실제 갈 수 있는 상태는 graph[0][..], graph[1][..]의 0/1 상태로 판단하기 때문이다. 
+
+```{code-block} python 
+from collections import deque 
+
+def solution(rectangle, characterX, characterY, itemX, itemY):
+    # N = 51
+    # 1. 좌표 2배 스케일링  
+    MAX = 102 
+    graph = [[0] * MAX for _ in range(MAX)]
+    # (x1, y2) ~ (x2, y2)
+    # (x1, y1) ~ (x2, y1)
+    #2-1. 직사각형 전체를 1로 채우기 
+    for x1, y1, x2, y2 in rectangle:
+        x1 *= 2 ; y1 *= 2 ; x2 *= 2  ; y2 *= 2
+        # 직사각형 안에는 다 1로 채우기 
+        for y in range(y1, y2+1):
+            for x in range(x1, x2+1):
+                graph[x][y] = 1 
+
+    #2-2. 직사각형 내부는 0으로 지워서 테두리만 남기기 
+    for x1, y1, x2, y2 in rectangle:
+        x1 *= 2 ; y1 *= 2 ; x2 *= 2  ; y2 *= 2
+        # 직사각형 안에는 다 1로 채우기 
+        for y in range(y1+1, y2):
+            for x in range(x1+1, x2):
+                graph[x][y] = 0 
+
+    # 3. BFS로 최단 거리 탐색 
+    sx, sy = characterX*2 , characterY*2 
+    ex, ey = itemX*2 , itemY*2 
+
+    dist = [[-1]*MAX for _ in range(MAX)]
+    q = deque()
+    q.append((sx, sy))
+    dist[sx][sy] = 0
+
+    dx = [1, -1, 0, 0]
+    dy = [0, 0, 1, -1]
+
+    while q:
+        x, y = q.popleft()
+
+        # 아이템 위치 도달하면 (2배 스케일링 했으니) 거리 나누기 2 
+        if x == ex and y == ey:
+            return dist[x][y] // 2 
+        
+        for k in range(4):
+            nx = x + dx[k]
+            ny = y + dy[k]
+
+            # 맵 범위 확인 + 테두리(1)만 이동 + 미방문
+            if 0 <= nx <= MAX and 0 <= ny <= MAX:
+                if graph[nx][ny] == 1 and dist[nx][ny] == -1:
+                    dist[nx][ny] = dist[x][y] + 1 
+                    q.append((nx, ny))
+
+
+
+            
+# rectangle = [[1,1,7,4],[3,2,5,5],[4,3,6,9],[2,6,8,8]]; s_x = 1; s_y=3; item_x = 7; item_y=8 # 17 
+# rectangle = [[1,1,8,4],[2,2,4,9],[3,6,9,8],[6,3,7,7]]; s_x = 9; s_y=7; item_x = 6; item_y=1 # 11
+# rectangle = [[1,1,5,7]]; s_x = 1; s_y=1; item_x = 4; item_y=7 # 9
+# rectangle = [[2,1,7,5],[6,4,10,10]]; s_x = 3; s_y=1; item_x = 7; item_y=10 # 15
+rectangle = [[2,2,5,5],[1,3,6,4],[3,1,4,6]]; s_x = 1; s_y=4; item_x = 6; item_y=3 # 10
+print(solution(rectangle, s_x, s_y, item_x, item_y))
+```
+````
+
 
 ## BFS 
 ###  미생물 연구 Sorting, PriorityQueue 

@@ -376,13 +376,14 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">네트워크</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">게임 맵 최단 거리</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">단어 변환</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">아이템 줍기</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bfs">BFS</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sorting-priorityqueue">미생물 연구 Sorting, PriorityQueue</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">마법의 숲 탐색</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">블록 이동하기</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">고대 문명 유적 탐사</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">마법의 숲 탐색</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">블록 이동하기</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">고대 문명 유적 탐사</a></li>
 </ul>
 </li>
 </ul>
@@ -573,6 +574,7 @@ document.write(`
 </section>
 <section id="id4">
 <h3>단어 변환<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>“변환 단계 최소 / 간선 개수 최소 / 최소 횟수” → 무조건 BFS 떠올리는 습관</p>
 <div class="dropdown admonition">
 <p class="admonition-title">Idea</p>
 <p>parameters:</p>
@@ -674,6 +676,116 @@ document.write(`
 <span class="c1"># begin = &quot;hit&quot;; target=&quot;cog&quot;; words = [&quot;hot&quot;, &quot;dot&quot;, &quot;dog&quot;, &quot;lot&quot;, &quot;log&quot;, &quot;cog&quot;] # 4 </span>
 <span class="n">begin</span> <span class="o">=</span> <span class="s2">&quot;hit&quot;</span><span class="p">;</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;cog&quot;</span><span class="p">;</span> <span class="n">words</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;hot&quot;</span><span class="p">,</span> <span class="s2">&quot;dot&quot;</span><span class="p">,</span> <span class="s2">&quot;dog&quot;</span><span class="p">,</span> <span class="s2">&quot;lot&quot;</span><span class="p">,</span> <span class="s2">&quot;log&quot;</span><span class="p">]</span> <span class="c1"># 0</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">solution</span><span class="p">(</span><span class="n">begin</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">words</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="id5">
+<h3>아이템 줍기<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<div class="dropdown admonition">
+<p class="admonition-title">Idea</p>
+<p>이 문제는 그래프를 직접 adjacency list로 그리려고 하면 괴로워진다. 애초에 “정점-간선 그래프”가 아닌 격자 (grid) + BFS로 생각하는게 훨씬 편하다.</p>
+<p><img alt="" src="../../_images/12.png" /></p>
+<p>위의 상황에서 아래처럼 좌표를 2배로 만들면, 모서리와 안쪽 칸이 분리되어 테두리만 정확히 따라갈 수 있게 된다.</p>
+<p><img alt="" src="../../_images/13.png" /></p>
+<ol class="arabic simple">
+<li><p>좌표를 2배로 키운다.</p>
+<ul class="simple">
+<li><p>이유: 직사각형들이 꼭짓점만 닿을 때, 대각선으로 잘못 돌아가는 길을 막기 위해</p></li>
+<li><p>좌표를 2배로 만들면 “모서리”들이 모두 칸 사이에 생겨서, 테두리만 정확히 따라갈 수 있음</p></li>
+</ul>
+</li>
+<li><p>직사각형들로 2D 맵을 만든다.</p>
+<ul class="simple">
+<li><p>처음에는 직사각형 전체 영역을 1(지나갈 수 있음)으로 채운다.</p></li>
+<li><p>그 다음, 직사각형 내부 (테두리 제외)는 0 (못지나감)으로 채운다.</p></li>
+<li><p>이렇게 하면 딱 ‘테두리’만 1로 남음 -&gt; 우리가 갈 수 있는 길은 이 1인 칸들</p></li>
+</ul>
+</li>
+<li><p>캐릭터 위치에서 아이템 위치까지 BFS</p>
+<ul class="simple">
+<li><p>시작점, 도착점 좌표도 2배로</p></li>
+<li><p>상/하/좌/우 네 방향으로만 이동</p></li>
+<li><p>1인 칸만 이동 가능</p></li>
+<li><p>BFS에서 (처음 아이템에 도달했을 때 거리 /2) 가 정답</p></li>
+</ul>
+</li>
+</ol>
+<p>왜 이렇게 하면 효율적인가?</p>
+<ul class="simple">
+<li><p>좌표가 최대 50이라서, 2배를 해도 최대 100 × 100 정도 격자.</p></li>
+<li><p>BFS 한 번 돌려도 O(100 * 100) 정도 → 충분히 빠름.</p></li>
+<li><p>직사각형 개수도 많지 않아서, 전체 채우는 것도 O(rectangle 수 * 100 * 100) 이하.</p></li>
+<li><p>그래프의 인접 리스트를 만들 필요 없이, 그냥 2D 배열 + BFS로 끝낼 수 있어서 코드도 훨씬 깔끔해.</p></li>
+</ul>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">Solution</p>
+<p>한가지 짚을 점은, 아래 구현에서 range체크를 할 때, <code class="docutils literal notranslate"><span class="pre">0&lt;=nx&lt;=MAX</span></code>로 <code class="docutils literal notranslate"><span class="pre">2&lt;=nx&lt;=MAX</span></code>를 사용하지 않았다. x와 y의 범위는 원래 1&lt;= x, y&lt;=50인데, 이처럼 하는 이유는, graph의 유효 인덱스 범위는 행/열 인덱스: 0~101이기 때문이다.</p>
+<p>왜냐하면, grahp[0][..], graph[1][..]은 이미 0인 상태이며 뒤의 range는 넉넉히 해두고 실제 갈 수 있는 상태는 graph[0][..], graph[1][..]의 0/1 상태로 판단하기 때문이다.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span> 
+
+<span class="k">def</span><span class="w"> </span><span class="nf">solution</span><span class="p">(</span><span class="n">rectangle</span><span class="p">,</span> <span class="n">characterX</span><span class="p">,</span> <span class="n">characterY</span><span class="p">,</span> <span class="n">itemX</span><span class="p">,</span> <span class="n">itemY</span><span class="p">):</span>
+    <span class="c1"># N = 51</span>
+    <span class="c1"># 1. 좌표 2배 스케일링  </span>
+    <span class="n">MAX</span> <span class="o">=</span> <span class="mi">102</span> 
+    <span class="n">graph</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">MAX</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">MAX</span><span class="p">)]</span>
+    <span class="c1"># (x1, y2) ~ (x2, y2)</span>
+    <span class="c1"># (x1, y1) ~ (x2, y1)</span>
+    <span class="c1">#2-1. 직사각형 전체를 1로 채우기 </span>
+    <span class="k">for</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="ow">in</span> <span class="n">rectangle</span><span class="p">:</span>
+        <span class="n">x1</span> <span class="o">*=</span> <span class="mi">2</span> <span class="p">;</span> <span class="n">y1</span> <span class="o">*=</span> <span class="mi">2</span> <span class="p">;</span> <span class="n">x2</span> <span class="o">*=</span> <span class="mi">2</span>  <span class="p">;</span> <span class="n">y2</span> <span class="o">*=</span> <span class="mi">2</span>
+        <span class="c1"># 직사각형 안에는 다 1로 채우기 </span>
+        <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">graph</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> 
+
+    <span class="c1">#2-2. 직사각형 내부는 0으로 지워서 테두리만 남기기 </span>
+    <span class="k">for</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="ow">in</span> <span class="n">rectangle</span><span class="p">:</span>
+        <span class="n">x1</span> <span class="o">*=</span> <span class="mi">2</span> <span class="p">;</span> <span class="n">y1</span> <span class="o">*=</span> <span class="mi">2</span> <span class="p">;</span> <span class="n">x2</span> <span class="o">*=</span> <span class="mi">2</span>  <span class="p">;</span> <span class="n">y2</span> <span class="o">*=</span> <span class="mi">2</span>
+        <span class="c1"># 직사각형 안에는 다 1로 채우기 </span>
+        <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">y1</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">y2</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x1</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">x2</span><span class="p">):</span>
+                <span class="n">graph</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span> 
+
+    <span class="c1"># 3. BFS로 최단 거리 탐색 </span>
+    <span class="n">sx</span><span class="p">,</span> <span class="n">sy</span> <span class="o">=</span> <span class="n">characterX</span><span class="o">*</span><span class="mi">2</span> <span class="p">,</span> <span class="n">characterY</span><span class="o">*</span><span class="mi">2</span> 
+    <span class="n">ex</span><span class="p">,</span> <span class="n">ey</span> <span class="o">=</span> <span class="n">itemX</span><span class="o">*</span><span class="mi">2</span> <span class="p">,</span> <span class="n">itemY</span><span class="o">*</span><span class="mi">2</span> 
+
+    <span class="n">dist</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">MAX</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">MAX</span><span class="p">)]</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">sx</span><span class="p">,</span> <span class="n">sy</span><span class="p">))</span>
+    <span class="n">dist</span><span class="p">[</span><span class="n">sx</span><span class="p">][</span><span class="n">sy</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">dx</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">dy</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">while</span> <span class="n">q</span><span class="p">:</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+
+        <span class="c1"># 아이템 위치 도달하면 (2배 스케일링 했으니) 거리 나누기 2 </span>
+        <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="n">ex</span> <span class="ow">and</span> <span class="n">y</span> <span class="o">==</span> <span class="n">ey</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">dist</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">y</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span> 
+        
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+            <span class="n">nx</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">dx</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="n">ny</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">dy</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+
+            <span class="c1"># 맵 범위 확인 + 테두리(1)만 이동 + 미방문</span>
+            <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">nx</span> <span class="o">&lt;=</span> <span class="n">MAX</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">ny</span> <span class="o">&lt;=</span> <span class="n">MAX</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">graph</span><span class="p">[</span><span class="n">nx</span><span class="p">][</span><span class="n">ny</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">dist</span><span class="p">[</span><span class="n">nx</span><span class="p">][</span><span class="n">ny</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="n">dist</span><span class="p">[</span><span class="n">nx</span><span class="p">][</span><span class="n">ny</span><span class="p">]</span> <span class="o">=</span> <span class="n">dist</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">y</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> 
+                    <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">))</span>
+
+
+
+            
+<span class="c1"># rectangle = [[1,1,7,4],[3,2,5,5],[4,3,6,9],[2,6,8,8]]; s_x = 1; s_y=3; item_x = 7; item_y=8 # 17 </span>
+<span class="c1"># rectangle = [[1,1,8,4],[2,2,4,9],[3,6,9,8],[6,3,7,7]]; s_x = 9; s_y=7; item_x = 6; item_y=1 # 11</span>
+<span class="c1"># rectangle = [[1,1,5,7]]; s_x = 1; s_y=1; item_x = 4; item_y=7 # 9</span>
+<span class="c1"># rectangle = [[2,1,7,5],[6,4,10,10]]; s_x = 3; s_y=1; item_x = 7; item_y=10 # 15</span>
+<span class="n">rectangle</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">]];</span> <span class="n">s_x</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">s_y</span><span class="o">=</span><span class="mi">4</span><span class="p">;</span> <span class="n">item_x</span> <span class="o">=</span> <span class="mi">6</span><span class="p">;</span> <span class="n">item_y</span><span class="o">=</span><span class="mi">3</span> <span class="c1"># 10</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">solution</span><span class="p">(</span><span class="n">rectangle</span><span class="p">,</span> <span class="n">s_x</span><span class="p">,</span> <span class="n">s_y</span><span class="p">,</span> <span class="n">item_x</span><span class="p">,</span> <span class="n">item_y</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -1536,8 +1648,8 @@ document.write(`
 2 4 6 7<br></p>
 </div>
 </section>
-<section id="id5">
-<h3>마법의 숲 탐색<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<section id="id6">
+<h3>마법의 숲 탐색<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
 <p class="admonition-title">문제 정리</p>
 <ol class="arabic">
@@ -1582,7 +1694,7 @@ document.write(`
 </div>
 <div class="dropdown admonition">
 <p class="admonition-title">graph의 확장</p>
-<p><img alt="3-1" src="../../_images/12.png" /></p>
+<p><img alt="3-1" src="../../_images/111.png" /></p>
 <p>In the beginning, the golem may extend up to <code class="docutils literal notranslate"><span class="pre">3</span> <span class="pre">cells</span></code> above the forest. To handle this, we add 3 buffer rows at the top of the grid. These buffer rows are not part of the forest but provide enough room for the golem to move and settle safely.</p>
 </div>
 <div class="dropdown admonition">
@@ -1811,8 +1923,8 @@ document.write(`
 </div>
 </div>
 </section>
-<section id="id6">
-<h3>블록 이동하기<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<section id="id7">
+<h3>블록 이동하기<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
 <p class="admonition-title">갈 수 있는 방향 설정</p>
 <p>아래처럼 길이 나있는 경우가 있을 수 있으므로, 직선으로 움직이는 경우 상하좌우, 회전도 robot의 pivot block 기준으로 가로로 위치한 경우에는 위아래 혹은 세로로 위치한 경우에는 상하로 회전할 수 있도록 해야한다.</p>
@@ -1825,7 +1937,7 @@ document.write(`
 <li><p><strong>Visited</strong>: 물체 (Robot)이 차지하는 셀이 한 개 초과 즉, 이경우에는 board에 표시하면 memory가 초과되기 때문에 visited={} set으로 방문 여부를 체크해주면 좋다.</p></li>
 <li><p><strong>Normalization</strong>: 상태 정규화(순서 고정)도 존재해야한다. 즉, (y,x,t,v)와 (t,v,y,x)는 같은 로봇 상태인데, visited가 다르게 취급해 중복 상태 폭증하며 시간도 초과된다. 매번 (a,b) 두 좌표를 정렬해서 (small,big)로 저장하거나, frozenset({pos1,pos2})로 관리해야 한다. 즉, 정규화를 통해 (P1, P2) 중 작은 것이 앞에 오도록하여 같은 위치에 있는 로봇의 상태 체크를 잘 할 수 있게 된다.</p></li>
 </ul>
-<p><img alt="" src="../../_images/13.png" /></p>
+<p><img alt="" src="../../_images/126.png" /></p>
 <p>When we run BFS, each robot state is represented as the positions of its two blocks and the current time. But we need consistency: which block should be stored first? To avoid duplicates, we always order the two coordinates so that the smaller one comes first. This normalization guarantees that the same robot configuration is stored uniquely in the queue.</p>
 </div>
 <div class="dropdown admonition">
@@ -1882,8 +1994,8 @@ The grid size is <span class="math notranslate nohighlight">\(N \times N\)</span
 <p>Consequently, the overall time complexity is <span class="math notranslate nohighlight">\(O(N^2)\)</span>, and the space complexity is also <span class="math notranslate nohighlight">\(O(N^2)\)</span>.</p>
 </div>
 <div class="toggle docutils container">
-<div class="literal-block-wrapper docutils container" id="id9">
-<div class="code-block-caption"><span class="caption-number">예시 42 </span><span class="caption-text">Solution</span><a class="headerlink" href="#id9" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id10">
+<div class="code-block-caption"><span class="caption-number">예시 42 </span><span class="caption-text">Solution</span><a class="headerlink" href="#id10" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">제한사항 </span>
 <span class="sd">5 &lt;= N &lt;= 100 </span>
@@ -1979,11 +2091,11 @@ The grid size is <span class="math notranslate nohighlight">\(N \times N\)</span
 </div>
 </div>
 </section>
-<section id="id7">
-<h3>고대 문명 유적 탐사<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<section id="id8">
+<h3>고대 문명 유적 탐사<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
 <p class="admonition-title">리스트의 복사</p>
-<h3 class="rubric" id="id8">리스트의 복사</h3>
+<h3 class="rubric" id="id9">리스트의 복사</h3>
 <ul class="simple">
 <li><p>1차원 리스트 같은 경우에는 <code class="docutils literal notranslate"><span class="pre">[:]</span></code>로 복사하면 된다.</p></li>
 <li><p>2차원 리스트는 [:]로 복사하면 얕은 복사라서, 내부 행 리스트를 공유하게 된다. 따라서 <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">copy</span> <span class="pre">import</span> <span class="pre">deepcopy</span></code>를 사용하거나 <code class="docutils literal notranslate"><span class="pre">list</span> <span class="pre">comprehension</span></code>를 사용하면 된다. 예를 들어 다음 코드와 같이 할 수 있다.</p></li>
@@ -2011,13 +2123,13 @@ center가 (1,2)일때 CW 90도 회전 이후 결과
 center가 (1,3)일때 CW 90도 회전 이후 결과
 <img alt="" src="../../_images/10.png" /> <br>
 center가 (2,1)일때 CW 90도 회전 이후 결과
-<img alt="" src="../../_images/111.png" /> <br></p>
+<img alt="" src="../../_images/1111.png" /> <br></p>
 </div>
 <div class="dropdown admonition">
 <p class="admonition-title"><a class="reference external" href="http://rotation.py">rotation.py</a> degugging file</p>
 <p>아래 파일을 따로 만들어서, 실제 로테이션이 잘 되는지 확인하였다. 문제를 풀 때 solve()함수는 다양한 함수들로 이루어져있어, 디버깅이 복잡하다. 따라서, 하나의 함수마다 degugging은 이런 식으로 별도로 output을 출력해서 확인하면 쉬워진다.</p>
-<div class="literal-block-wrapper docutils container" id="id10">
-<div class="code-block-caption"><span class="caption-number">예시 43 </span><span class="caption-text"><a class="reference external" href="http://rotation.py">rotation.py</a> (debug)</span><a class="headerlink" href="#id10" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id11">
+<div class="code-block-caption"><span class="caption-number">예시 43 </span><span class="caption-text"><a class="reference external" href="http://rotation.py">rotation.py</a> (debug)</span><a class="headerlink" href="#id11" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">in_circle</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">cx</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">cy</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">y</span> <span class="o">&lt;=</span> <span class="n">cy</span> <span class="o">+</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">cx</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">cx</span> <span class="o">+</span> <span class="mi">1</span>
 
@@ -2063,8 +2175,8 @@ center가 (2,1)일때 CW 90도 회전 이후 결과
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id11">
-<div class="code-block-caption"><span class="caption-number">예시 44 </span><span class="caption-text">Output of <a class="reference external" href="http://rotation.py">rotation.py</a></span><a class="headerlink" href="#id11" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id12">
+<div class="code-block-caption"><span class="caption-number">예시 44 </span><span class="caption-text">Output of <a class="reference external" href="http://rotation.py">rotation.py</a></span><a class="headerlink" href="#id12" title="Link to this code">#</a></div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>    Original Graph
     [1, 2, 3, 10, 11]
     [4, 5, 6, 12, 13]
@@ -2579,13 +2691,14 @@ center가 (2,1)일때 CW 90도 회전 이후 결과
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">네트워크</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">게임 맵 최단 거리</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">단어 변환</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">아이템 줍기</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bfs">BFS</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sorting-priorityqueue">미생물 연구 Sorting, PriorityQueue</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">마법의 숲 탐색</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">블록 이동하기</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">고대 문명 유적 탐사</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">마법의 숲 탐색</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">블록 이동하기</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">고대 문명 유적 탐사</a></li>
 </ul>
 </li>
 </ul>
