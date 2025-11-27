@@ -377,13 +377,14 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">게임 맵 최단 거리</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">단어 변환</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">아이템 줍기</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">여행 경로</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bfs">BFS</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sorting-priorityqueue">미생물 연구 Sorting, PriorityQueue</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">마법의 숲 탐색</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">블록 이동하기</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">고대 문명 유적 탐사</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">미생물 연구</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">마법의 숲 탐색</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">블록 이동하기</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">고대 문명 유적 탐사</a></li>
 </ul>
 </li>
 </ul>
@@ -408,7 +409,7 @@ document.write(`
 <li><p><a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/lessons/1844">게임 맵 최단거리</a></p></li>
 <li><p><a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/lessons/43163">단어 변환</a></p></li>
 <li><p><a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/lessons/87694">아이템 줍기</a></p></li>
-<li><p>[여행 경로]</p></li>
+<li><p><a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/lessons/43164">여행 경로</a></p></li>
 <li><p>[퍼즐 조각 채우기]</p></li>
 </ul>
 </li>
@@ -790,833 +791,1175 @@ document.write(`
 </div>
 </div>
 </section>
+<section id="id6">
+<h3>여행 경로<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+</section>
 </section>
 <section id="bfs">
 <h2>BFS<a class="headerlink" href="#bfs" title="Link to this heading">#</a></h2>
-<section id="sorting-priorityqueue">
-<h3>미생물 연구 Sorting, PriorityQueue<a class="headerlink" href="#sorting-priorityqueue" title="Link to this heading">#</a></h3>
-<div class="dropdown admonition">
-<p class="admonition-title">문제 정리</p>
-<ol class="arabic simple">
-<li><p>NxN 정사각형 배양 용기, 좌측 하단 (0,0), 우측 상단 (N, N)</p></li>
-<li><p>총 Q번 실험동안, 실험 결과 기록</p>
-<ul class="simple">
-<li><p>2-1. insert_and_get_result() 미생물 투입 후, 배양</p>
-<ul>
-<li><p>(r1, c1) ~ (r2, c2) 직사각형 미생물 투입, 영역내에는 새로 투입된 미생물만 남음.</p></li>
-<li><p>기존에 있던 미생물이 먹힌 경우, 영역이 두 개 이상으로 나뉘면 기존 미생물은 모두 사라짐.  -&gt; 항상 미생물은 하나의 그룹으로만 이루어지게 만듦.</p></li>
-</ul>
-</li>
-<li><p>2-2. 배양 용기 이동: move_microbe()</p>
-<ul>
-<li><p>기존 용기와 동일한 새로운 배양 용기로 이동. 기존 배양 용기에 미생물이 한 마디도 남지 않을 때까지</p>
-<ul>
-<li><p>가장 차지한 영역 ((r1, c1) ~ (r2, c2))이 넓은 무리 하나 선택 -&gt; 2개 이상이면 먼저 투입된 미생물 선택 (용기에는 미생물을 넣은 시간 정보 필요 -&gt; idx가 작은 것 선택)</p></li>
-<li><p>선택된 미생물의 영역 ((r1, c1) ~ (r2, c2))은</p>
-<ul>
-<li><p>배양 용기의 범위를 벗어나지 않으며</p></li>
-<li><p>다른 미생물의 영역과 겹치지 않아야하고,</p></li>
-<li><p>위의 조건에서 최대한 x좌표가 작은 위치로 미생물을 옮기는데,</p>
-<ul>
-<li><p>그 위치가 2개 이상이면 최대한 y좌표가 작은 위치로 오도록 옮김</p></li>
-</ul>
-</li>
-<li><p>위의 조건이 없다면, 옮기지 못하고 사라짐</p></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>2-3. record()</p>
-<ul>
-<li><p>미생물 무리 중 상하좌우로 닿아있는 인접한 무리 확인</p></li>
-<li><p>맞닿은 면이 둘 이상이더라도 micro_id같으면 한 번만 확인</p></li>
-<li><p>인접한 무리가 있으면</p>
-<ul>
-<li><p>확인하는 두 무리가 A,B라면 (미생물 A영역의 넓이) x (미생물 B영역의 넓이) 성과</p></li>
-<li><p>확인한 모든 쌍의 성과 기록</p></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ol>
-</div>
-<div class="dropdown admonition">
-<p class="admonition-title">debugging시 CCW 90도 rotation 적용</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">print_rotated_CCW_90</span><span class="p">(</span><span class="n">my_map</span><span class="p">):</span>
-    <span class="c1"># new_map = [[0] * N for _ in range(N)]</span>
-    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-            <span class="c1"># new_map[y][x] = my_map[N-x-1][y]</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">my_map</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">N</span><span class="o">-</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">()</span>
+<section id="id7">
+<h3>미생물 연구<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<!-- 
+```{admonition} 문제 정리
+:class: dropdown
 
-<span class="n">print_rotated_CCW_90</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+1. NxN 정사각형 배양 용기, 좌측 하단 (0,0), 우측 상단 (N, N)
+2. 총 Q번 실험동안, 실험 결과 기록 
+    - 2-1. insert_and_get_result() 미생물 투입 후, 배양 
+        - (r1, c1) ~ (r2, c2) 직사각형 미생물 투입, 영역내에는 새로 투입된 미생물만 남음. 
+        - 기존에 있던 미생물이 먹힌 경우, 영역이 두 개 이상으로 나뉘면 기존 미생물은 모두 사라짐.  -> 항상 미생물은 하나의 그룹으로만 이루어지게 만듦. 
+    - 2-2. 배양 용기 이동: move_microbe()
+        - 기존 용기와 동일한 새로운 배양 용기로 이동. 기존 배양 용기에 미생물이 한 마디도 남지 않을 때까지 
+            - 가장 차지한 영역 ((r1, c1) ~ (r2, c2))이 넓은 무리 하나 선택 -> 2개 이상이면 먼저 투입된 미생물 선택 (용기에는 미생물을 넣은 시간 정보 필요 -> idx가 작은 것 선택)
+            - 선택된 미생물의 영역 ((r1, c1) ~ (r2, c2))은 
+                - 배양 용기의 범위를 벗어나지 않으며 
+                - 다른 미생물의 영역과 겹치지 않아야하고, 
+                - 위의 조건에서 최대한 x좌표가 작은 위치로 미생물을 옮기는데, 
+                    - 그 위치가 2개 이상이면 최대한 y좌표가 작은 위치로 오도록 옮김 
+                - 위의 조건이 없다면, 옮기지 못하고 사라짐 
+    - 2-3. record() 
+        - 미생물 무리 중 상하좌우로 닿아있는 인접한 무리 확인 
+        - 맞닿은 면이 둘 이상이더라도 micro_id같으면 한 번만 확인 
+        - 인접한 무리가 있으면 
+            - 확인하는 두 무리가 A,B라면 (미생물 A영역의 넓이) x (미생물 B영역의 넓이) 성과 
+            - 확인한 모든 쌍의 성과 기록 
+```
+
+````{admonition} debugging시 CCW 90도 rotation 적용
+:class: dropdown 
+
+```{code-block} python
+def print_rotated_CCW_90(my_map):
+    # new_map = [[0] * N for _ in range(N)]
+    for y in range(N):
+        for x in range(N):
+            # new_map[y][x] = my_map[N-x-1][y]
+            print(my_map[x][N-y-1], end=' ')
+        print()
+
+print_rotated_CCW_90(graph)
     
-</pre></div>
-</div>
-</div>
-<div class="dropdown admonition">
-<p class="admonition-title">원점위치에 따른 좌표 변환</p>
-<p>좌상단이 시작점인지, 좌하단이 시작점인지 좌표 변환 <a class="reference external" href="https://colab.research.google.com/github/Daye-Lee18/mybook/blob/main/assets/ipynb/grid_coords_rotations_cheatsheet.ipynb"><img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
-<p><img alt="" src="../../_images/11.png" /></p>
-<p>요약하자면,</p>
-<ul class="simple">
-<li><p><strong>좌하단→좌상단(배열)</strong>: <code class="docutils literal notranslate"><span class="pre">row</span> <span class="pre">=</span> <span class="pre">N</span> <span class="pre">-</span> <span class="pre">1</span> <span class="pre">-</span> <span class="pre">y</span></code>, <code class="docutils literal notranslate"><span class="pre">col</span> <span class="pre">=</span> <span class="pre">x</span></code></p></li>
-<li><p><strong>회전</strong>: <strong>Transpose</strong> + (CW=<strong>flip left–right</strong>, CCW=<strong>flip up–down</strong>)</p></li>
-<li><p><strong>뒤집기</strong>: 상하=<strong>row만 뒤집기</strong>, 좌우=<strong>col만 뒤집기</strong></p></li>
-</ul>
-</div>
-<div class="dropdown admonition">
-<p class="admonition-title">sort</p>
-<p>주의해야할 것은, <code class="docutils literal notranslate"><span class="pre">lowest</span></code>와 <code class="docutils literal notranslate"><span class="pre">rear</span></code>을 비교하는 것!</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># sort id_to_locs_list in descending order of the area and id </span>
-<span class="n">list_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">id_to_locs_list</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">list_len</span><span class="p">):</span>
-    <span class="n">lowest</span> <span class="o">=</span> <span class="n">f</span> 
-    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">f</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">list_len</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">compare</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">id_to_locs_list</span><span class="p">[</span><span class="n">lowest</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">len</span><span class="p">(</span><span class="n">id_to_locs_list</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span> <span class="n">id_to_locs_list</span><span class="p">[</span><span class="n">lowest</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">id_to_locs_list</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="n">lowest</span> <span class="o">=</span> <span class="n">r</span> 
+```
+````
+
+````{admonition} 원점위치에 따른 좌표 변환 
+:class: dropdown 
+
+좌상단이 시작점인지, 좌하단이 시작점인지 좌표 변환 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](
+https://colab.research.google.com/github/Daye-Lee18/mybook/blob/main/assets/ipynb/grid_coords_rotations_cheatsheet.ipynb
+)
+
+![](../../assets/img/implementationPS/5/1.png)
+
+요약하자면, 
+- **좌하단→좌상단(배열)**: `row = N - 1 - y`, `col = x`  
+- **회전**: **Transpose** + (CW=**flip left–right**, CCW=**flip up–down**)  
+- **뒤집기**: 상하=**row만 뒤집기**, 좌우=**col만 뒤집기**  
+````
+
+````{admonition} sort
+:class: dropdown 
+주의해야할 것은, `lowest`와 `rear`을 비교하는 것! 
+```{code-block} python
+# sort id_to_locs_list in descending order of the area and id 
+list_len = len(id_to_locs_list)
+for f in range(list_len):
+    lowest = f 
+    for r in range(f+1, list_len):
+        if not compare(len(id_to_locs_list[lowest][1]), len(id_to_locs_list[r][1]), id_to_locs_list[lowest][0], id_to_locs_list[r][0]):
+            lowest = r 
             
     
-    <span class="c1"># SWAP </span>
-    <span class="k">if</span> <span class="n">lowest</span> <span class="o">!=</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">temp</span> <span class="o">=</span> <span class="n">id_to_locs_list</span><span class="p">[</span><span class="n">f</span><span class="p">]</span>
-        <span class="n">id_to_locs_list</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_to_locs_list</span><span class="p">[</span><span class="n">lowest</span><span class="p">]</span>
-        <span class="n">id_to_locs_list</span><span class="p">[</span><span class="n">lowest</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp</span> 
-</pre></div>
-</div>
-</div>
-<div class="dropdown admonition">
-<p class="admonition-title">3중 for loop안에서 닫는 위치</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">locs_and_id</span><span class="p">)):</span>          <span class="c1"># [루프 1]</span>
-    <span class="k">for</span> <span class="n">origin_x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>              <span class="c1"># [루프 2]</span>
-        <span class="k">for</span> <span class="n">origin_y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>          <span class="c1"># [루프 3]</span>
-            <span class="o">...</span>
-            <span class="k">if</span> <span class="n">flag</span><span class="p">:</span>
-                <span class="o">...</span>
-                <span class="k">break</span>   <span class="c1"># &lt;-- 여기서 끊기는 건 루프 3만</span>
-        <span class="k">if</span> <span class="n">flag</span><span class="p">:</span> <span class="c1"># [루프 2] 중단</span>
-            <span class="k">break</span>
-</pre></div>
-</div>
-</div>
-<div class="dropdown admonition">
-<p class="admonition-title">set.union</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">set1</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">set2</span><span class="p">)</span> <span class="c1"># X </span>
-<span class="n">set1</span> <span class="o">=</span> <span class="n">set1</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">set2</span><span class="p">)</span> <span class="c1"># O</span>
-</pre></div>
-</div>
-</div>
-<div class="dropdown admonition">
-<p class="admonition-title">내 문제 풀이</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span> 
+    # SWAP 
+    if lowest != f:
+        temp = id_to_locs_list[f]
+        id_to_locs_list[f] = id_to_locs_list[lowest]
+        id_to_locs_list[lowest] = temp 
+```
+````
 
-<span class="k">def</span><span class="w"> </span><span class="nf">yx_from_rc</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="n">r</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+````{admonition} 3중 for loop안에서 닫는 위치 
+:class: dropdown 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">put_new_microbe</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">micro_id</span><span class="p">):</span>
+```{code-block} python 
+for i in range(len(locs_and_id)):          # [루프 1]
+    for origin_x in range(N):              # [루프 2]
+        for origin_y in range(N):          # [루프 3]
+            ...
+            if flag:
+                ...
+                break   # <-- 여기서 끊기는 건 루프 3만
+        if flag: # [루프 2] 중단
+            break
+```
+````
 
-    <span class="c1"># # 바뀐 것에 대해서 작은 것 ~ 큰 것으로 분류 </span>
-    <span class="c1"># (y, x)는 포함 (t, v)는 불포함 </span>
-    <span class="c1"># small_y = y if y &lt; t else t </span>
-    <span class="c1"># big_y = y if y &gt; t else t </span>
-    <span class="c1"># small_x = x if x &lt; v else v </span>
-    <span class="c1"># big_x = x if x &gt; v else v </span>
+````{admonition} set.union
+:class: dropdown 
+
+```{code-block} python 
+set1.union(set2) # X 
+set1 = set1.union(set2) # O
+```
+````
+
+````{admonition} 내 문제 풀이
+:class: dropdown
+```{code-block} python
+from collections import deque 
+
+def yx_from_rc(c, r):
+    return (N-r-1, c)
+
+def put_new_microbe(y, x, t, v, micro_id):
+
+    # # 바뀐 것에 대해서 작은 것 ~ 큰 것으로 분류 
+    # (y, x)는 포함 (t, v)는 불포함 
+    # small_y = y if y < t else t 
+    # big_y = y if y > t else t 
+    # small_x = x if x < v else v 
+    # big_x = x if x > v else v 
 
 
-    <span class="c1"># print(f&#39;Cur graph after put at {y, x} ~ {t, v}&#39;)</span>
-    <span class="c1"># inclusive ~ exclusive </span>
-    <span class="n">eatened_microbe_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">v</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">graph</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">eatened_microbe_ids</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">])</span>
-            <span class="c1"># 다른 미생물들은 잡아먹음 </span>
-            <span class="n">graph</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="n">micro_id</span>
+    # print(f'Cur graph after put at {y, x} ~ {t, v}')
+    # inclusive ~ exclusive 
+    eatened_microbe_ids = set()
+    for a in range(y, t, -1):
+        for b in range(v-1, x-1, -1):
+            if graph[a][b] != 0:
+                eatened_microbe_ids.add(graph[a][b])
+            # 다른 미생물들은 잡아먹음 
+            graph[a][b] = micro_id
 
-    <span class="c1"># 기존 무리의 영역이 2개 이상이되면, 나눠진 미생물은 모두 사라짐. </span>
-    <span class="c1"># 잡아먹힌 micro_ids에 대해서 확인 </span>
-    <span class="k">for</span> <span class="n">removed_id</span> <span class="ow">in</span> <span class="n">eatened_microbe_ids</span><span class="p">:</span>
-        <span class="n">nums</span><span class="p">,</span> <span class="n">locs</span> <span class="o">=</span> <span class="n">count_group_of_id</span><span class="p">(</span><span class="n">removed_id</span><span class="p">)</span> <span class="c1"># int, list </span>
-        <span class="c1"># 해당 미생물을 없앰 </span>
-        <span class="k">if</span> <span class="n">nums</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">ry</span><span class="p">,</span> <span class="n">rx</span> <span class="ow">in</span> <span class="n">locs</span><span class="p">:</span>
-                <span class="n">graph</span><span class="p">[</span><span class="n">ry</span><span class="p">][</span><span class="n">rx</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    # 기존 무리의 영역이 2개 이상이되면, 나눠진 미생물은 모두 사라짐. 
+    # 잡아먹힌 micro_ids에 대해서 확인 
+    for removed_id in eatened_microbe_ids:
+        nums, locs = count_group_of_id(removed_id) # int, list 
+        # 해당 미생물을 없앰 
+        if nums >= 2:
+            for ry, rx in locs:
+                graph[ry][rx] = 0
 
-<span class="k">def</span><span class="w"> </span><span class="nf">in_range</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-    <span class="k">return</span> <span class="mi">0</span><span class="o">&lt;=</span><span class="n">y</span> <span class="o">&lt;</span><span class="n">N</span> <span class="ow">and</span> <span class="mi">0</span><span class="o">&lt;=</span><span class="n">x</span> <span class="o">&lt;</span><span class="n">N</span>
+def in_range(y, x):
+    return 0<=y <N and 0<=x <N
 
-<span class="k">def</span><span class="w"> </span><span class="nf">is_closer_to_lower_left</span><span class="p">(</span><span class="n">tuple1</span><span class="p">,</span> <span class="n">tuple2</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">tuple1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">tuple2</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="n">tuple1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">tuple2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># y가 더 큰 것 </span>
-    <span class="k">return</span> <span class="n">tuple1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">tuple2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># x는 더 작은 것 </span>
+def is_closer_to_lower_left(tuple1, tuple2):
+    if tuple1[0] != tuple2[0]:
+        return tuple1[0] > tuple2[0] # y가 더 큰 것 
+    return tuple1[1] < tuple2[1] # x는 더 작은 것 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">sort_locs_closer_to_lower_left</span><span class="p">(</span><span class="n">tuple_list</span><span class="p">):</span>
-    <span class="n">tuple_list_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tuple_list</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">tuple_list_len</span><span class="p">):</span>
-        <span class="n">lowest</span> <span class="o">=</span> <span class="n">f</span> 
-        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">f</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">tuple_list_len</span><span class="p">):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_closer_to_lower_left</span><span class="p">(</span><span class="n">tuple_list</span><span class="p">[</span><span class="n">lowest</span><span class="p">],</span> <span class="n">tuple_list</span><span class="p">[</span><span class="n">r</span><span class="p">]):</span>
-                <span class="n">lowest</span> <span class="o">=</span> <span class="n">r</span> 
+def sort_locs_closer_to_lower_left(tuple_list):
+    tuple_list_len = len(tuple_list)
+    for f in range(tuple_list_len):
+        lowest = f 
+        for r in range(f+1, tuple_list_len):
+            if not is_closer_to_lower_left(tuple_list[lowest], tuple_list[r]):
+                lowest = r 
         
-        <span class="k">if</span> <span class="n">lowest</span> <span class="o">!=</span> <span class="n">f</span><span class="p">:</span>
-            <span class="c1"># SWAP </span>
-            <span class="n">temp_tuple</span> <span class="o">=</span> <span class="n">tuple_list</span><span class="p">[</span><span class="n">lowest</span><span class="p">]</span>
-            <span class="n">tuple_list</span><span class="p">[</span><span class="n">lowest</span><span class="p">]</span> <span class="o">=</span> <span class="n">tuple_list</span><span class="p">[</span><span class="n">f</span><span class="p">]</span>
-            <span class="n">tuple_list</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_tuple</span>
+        if lowest != f:
+            # SWAP 
+            temp_tuple = tuple_list[lowest]
+            tuple_list[lowest] = tuple_list[f]
+            tuple_list[f] = temp_tuple
 
-<span class="k">def</span><span class="w"> </span><span class="nf">get_ids_and_shapes</span><span class="p">():</span>
+def get_ids_and_shapes():
     
-    <span class="n">id_to_locs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    id_to_locs = dict()
     
-    <span class="c1"># 현재 최대 cur_micro_id만큼의 개수가 존재할 수 있음 (지워진 것 빼고)</span>
-    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+    # 현재 최대 cur_micro_id만큼의 개수가 존재할 수 있음 (지워진 것 빼고)
+    for a in range(N):
+        for b in range(N):
 
-            <span class="k">if</span> <span class="n">graph</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">graph</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">id_to_locs</span><span class="p">:</span>
-                <span class="n">locs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>  <span class="c1"># NOTE: locations 추적, 새로운 ID 발견할 때마다 새롭게 INIT 필요 </span>
-                <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">([(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)])</span>
-                <span class="n">locs</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span>
-                <span class="k">while</span> <span class="n">q</span><span class="p">:</span>
-                    <span class="n">cury</span><span class="p">,</span> <span class="n">curx</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
-                    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
-                        <span class="n">ny</span> <span class="o">=</span> <span class="n">cury</span> <span class="o">+</span> <span class="n">DY</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="p">;</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">curx</span> <span class="o">+</span> <span class="n">DX</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
-                        <span class="c1"># 현재 micro_idx와도 동일해야함 </span>
-                        <span class="k">if</span> <span class="n">in_range</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">locs</span> <span class="ow">and</span> <span class="n">graph</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="o">==</span> <span class="n">graph</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">]:</span>
-                            <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
-                            <span class="n">locs</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
+            if graph[a][b] != 0 and graph[a][b] not in id_to_locs:
+                locs = set()  # NOTE: locations 추적, 새로운 ID 발견할 때마다 새롭게 INIT 필요 
+                q = deque([(a, b)])
+                locs.add((a, b))
+                while q:
+                    cury, curx = q.popleft()
+                    for t in range(4):
+                        ny = cury + DY[t] ; nx = curx + DX[t]
+                        # 현재 micro_idx와도 동일해야함 
+                        if in_range(ny, nx) and (ny, nx) not in locs and graph[ny][nx] == graph[a][b]:
+                            q.append((ny, nx))
+                            locs.add((ny, nx))
                 
-                <span class="c1"># micro_id마다 위치를 연결하는 dictionary 생성 </span>
-                <span class="n">id_to_locs</span><span class="p">[</span><span class="n">graph</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">locs</span><span class="p">)</span>
+                # micro_id마다 위치를 연결하는 dictionary 생성 
+                id_to_locs[graph[a][b]] = list(locs)
 
-    <span class="k">return</span> <span class="n">id_to_locs</span>
+    return id_to_locs
 
-<span class="k">def</span><span class="w"> </span><span class="nf">move_microbe</span><span class="p">(</span><span class="n">new_graph</span><span class="p">):</span>
-    <span class="c1"># 현재 global graph에 있는 미생물들을 보고 new_graph에 옮겨 담기 </span>
-    <span class="c1"># Step 1: 1개의 그룹씩 있는 각 미생물들의 위치 locs구하기, len(locs)이 가장 높은 것이 가장 먼저 옮겨짐 </span>
-    <span class="c1"># 모양은 원점에서 가장 왼쪽 아래 (바꾼 그래프 상으로는 왼쪽 위)와 가장 가까운 점까지의 거리만큼 모두 이동하면 됨.</span>
-    <span class="n">id_to_locs</span> <span class="o">=</span> <span class="n">get_ids_and_shapes</span><span class="p">()</span>
+def move_microbe(new_graph):
+    # 현재 global graph에 있는 미생물들을 보고 new_graph에 옮겨 담기 
+    # Step 1: 1개의 그룹씩 있는 각 미생물들의 위치 locs구하기, len(locs)이 가장 높은 것이 가장 먼저 옮겨짐 
+    # 모양은 원점에서 가장 왼쪽 아래 (바꾼 그래프 상으로는 왼쪽 위)와 가장 가까운 점까지의 거리만큼 모두 이동하면 됨.
+    id_to_locs = get_ids_and_shapes()
 
-    <span class="c1"># print(f&#39;Current id with locs \n{id_to_locs}&#39;)</span>
-    <span class="c1"># print(&#39;Len: &#39;, len(id_to_locs))</span>
+    # print(f'Current id with locs \n{id_to_locs}')
+    # print('Len: ', len(id_to_locs))
 
-    <span class="c1"># id_to_locs을 정렬 </span>
-    <span class="c1"># 1. 개수가 가장 많은 것</span>
-    <span class="c1"># 2. 개수가 동일하다면 가장 먼저 투입된 미생물 선택 </span>
-    <span class="n">id_to_locs_list</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">id_to_locs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">id_to_locs_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+    # id_to_locs을 정렬 
+    # 1. 개수가 가장 많은 것
+    # 2. 개수가 동일하다면 가장 먼저 투입된 미생물 선택 
+    id_to_locs_list = []
+    for key, value in id_to_locs.items():
+        id_to_locs_list.append((key, value))
 
-    <span class="n">sort_list</span><span class="p">(</span><span class="n">id_to_locs_list</span><span class="p">)</span> <span class="c1"># call by reference </span>
-    <span class="c1"># print(f&quot;Sorted as described in the problem \n {id_to_locs_list}&quot;)</span>
+    sort_list(id_to_locs_list) # call by reference 
+    # print(f"Sorted as described in the problem \n {id_to_locs_list}")
     
-    <span class="c1"># locs은 origin (7, 0) 과 가장 가까운 순서대로 정렬 즉, ascending order </span>
-    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">locs</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">id_to_locs_list</span><span class="p">):</span>
-        <span class="c1"># set 재할당 </span>
-        <span class="n">sort_locs_closer_to_lower_left</span><span class="p">(</span><span class="n">locs</span><span class="p">)</span>
-        <span class="n">id_to_locs_list</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">locs</span><span class="p">)</span>
+    # locs은 origin (7, 0) 과 가장 가까운 순서대로 정렬 즉, ascending order 
+    for idx, (id, locs) in enumerate(id_to_locs_list):
+        # set 재할당 
+        sort_locs_closer_to_lower_left(locs)
+        id_to_locs_list[idx] = (id, locs)
 
-    <span class="c1"># print(f&quot;Sorted id_to_locs closer to the origin \n {id_to_locs_list}&quot;)</span>
+    # print(f"Sorted id_to_locs closer to the origin \n {id_to_locs_list}")
 
-    <span class="n">each_nums</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># 옮겨서 살아남은 미생물들의 개수만 append </span>
+    each_nums = [] # 옮겨서 살아남은 미생물들의 개수만 append 
 
-    <span class="c1"># 옮기기 </span>
-    <span class="c1"># 모든 미생물에 대해 </span>
-    <span class="k">for</span> <span class="nb">id</span><span class="p">,</span> <span class="n">locs</span> <span class="ow">in</span> <span class="n">id_to_locs_list</span><span class="p">:</span>
+    # 옮기기 
+    # 모든 미생물에 대해 
+    for id, locs in id_to_locs_list:
         
-        <span class="n">done</span> <span class="o">=</span> <span class="kc">False</span> 
-        <span class="c1"># 이 조건안에서 colum 좌표가 작은 위치로 옮기고, 그 위치가 둘 이상이면 최대한 row 좌표가 작은 위치로 오도록 옮김 (x좌표가 작은 위치 -&gt; y가 작은 위치)</span>
-        <span class="c1"># 시작 위치 찾기: b를 outer loop에 둬서 x가 작은 위치를 먼저 확인  </span>
-        <span class="c1"># for ori_y in range(N-1, -1, -1):</span>
-        <span class="c1">#     for ori_x in range(N):</span>
-        <span class="k">for</span> <span class="n">ori_x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">ori_y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-                <span class="c1">#### NOTE: 매 origina마다 update하지 않으면, 이전에 실패한대로 계속 False로 머무르게됨.</span>
-                <span class="n">is_the_origin_ok</span> <span class="o">=</span> <span class="kc">True</span> 
-                <span class="k">if</span> <span class="n">new_graph</span><span class="p">[</span><span class="n">ori_y</span><span class="p">][</span><span class="n">ori_x</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># 옮길 그래프에서 시작점 for loop들어가기 전에 미리 체크해서 시간 줄이기 </span>
-                    <span class="k">continue</span>
+        done = False 
+        # 이 조건안에서 colum 좌표가 작은 위치로 옮기고, 그 위치가 둘 이상이면 최대한 row 좌표가 작은 위치로 오도록 옮김 (x좌표가 작은 위치 -> y가 작은 위치)
+        # 시작 위치 찾기: b를 outer loop에 둬서 x가 작은 위치를 먼저 확인  
+        # for ori_y in range(N-1, -1, -1):
+        #     for ori_x in range(N):
+        for ori_x in range(N):
+            for ori_y in range(N-1, -1, -1):
+                #### NOTE: 매 origina마다 update하지 않으면, 이전에 실패한대로 계속 False로 머무르게됨.
+                is_the_origin_ok = True 
+                if new_graph[ori_y][ori_x] != 0:  # 옮길 그래프에서 시작점 for loop들어가기 전에 미리 체크해서 시간 줄이기 
+                    continue
 
-                <span class="c1"># 미생물 무리가 차지한 영역이 배양 용기를 벗어나지 않아야함 </span>
-                <span class="c1"># 현재 locs의 모든 점이 (a,b)만큼 평행 이동했을 때 벗어나면 안됨 </span>
-                <span class="c1"># NOTE: dif_y, dif_x는 제일 작은 지점과의 거리임!! 고정!!!! </span>
-                <span class="n">dif_y</span> <span class="o">=</span> <span class="n">locs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">ori_y</span>
-                <span class="n">dif_x</span> <span class="o">=</span> <span class="n">locs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">ori_x</span>
+                # 미생물 무리가 차지한 영역이 배양 용기를 벗어나지 않아야함 
+                # 현재 locs의 모든 점이 (a,b)만큼 평행 이동했을 때 벗어나면 안됨 
+                # NOTE: dif_y, dif_x는 제일 작은 지점과의 거리임!! 고정!!!! 
+                dif_y = locs[0][0] - ori_y
+                dif_x = locs[0][1] - ori_x
                 
-                <span class="k">for</span> <span class="n">cur_y</span><span class="p">,</span> <span class="n">cur_x</span> <span class="ow">in</span> <span class="n">locs</span><span class="p">:</span>
-                    <span class="c1"># NOTE: dif_y, dif_x는 제일 작은 지점과의 거리임!! </span>
-                    <span class="n">n_y</span> <span class="o">=</span> <span class="n">cur_y</span><span class="o">-</span><span class="n">dif_y</span>
-                    <span class="n">n_x</span> <span class="o">=</span> <span class="n">cur_x</span><span class="o">-</span><span class="n">dif_x</span>
-                    <span class="c1"># print(f&quot;Move point {cur_y, cur_x} -&gt; {n_y, n_x}&quot;)</span>
-                    <span class="c1"># 평행 이동한 점들이 배양용기를 벗어나거나 다른 microbe가 있으면 </span>
-                    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">in_range</span><span class="p">(</span><span class="n">n_y</span><span class="p">,</span><span class="n">n_x</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">new_graph</span><span class="p">[</span><span class="n">n_y</span><span class="p">][</span><span class="n">n_x</span><span class="p">]</span> <span class="o">!=</span><span class="mi">0</span><span class="p">):</span>
-                        <span class="n">is_the_origin_ok</span> <span class="o">=</span> <span class="kc">False</span> 
-                        <span class="k">break</span> 
+                for cur_y, cur_x in locs:
+                    # NOTE: dif_y, dif_x는 제일 작은 지점과의 거리임!! 
+                    n_y = cur_y-dif_y
+                    n_x = cur_x-dif_x
+                    # print(f"Move point {cur_y, cur_x} -> {n_y, n_x}")
+                    # 평행 이동한 점들이 배양용기를 벗어나거나 다른 microbe가 있으면 
+                    if (not in_range(n_y,n_x)) or (new_graph[n_y][n_x] !=0):
+                        is_the_origin_ok = False 
+                        break 
                 
                 
-                <span class="c1"># 다른 미생물이 이미 있으면 이곳을 시작점으로 할 수 없음 </span>
-                <span class="k">if</span> <span class="n">is_the_origin_ok</span> <span class="ow">and</span> <span class="n">new_graph</span><span class="p">[</span><span class="n">ori_y</span><span class="p">][</span><span class="n">ori_x</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># 괜찮으면 new_graph에 옮김 </span>
-                    <span class="n">dif_y</span> <span class="o">=</span> <span class="n">locs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">ori_y</span>
-                    <span class="n">dif_x</span> <span class="o">=</span> <span class="n">locs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">ori_x</span>
-                    <span class="k">for</span> <span class="n">cur_y</span><span class="p">,</span> <span class="n">cur_x</span> <span class="ow">in</span> <span class="n">locs</span><span class="p">:</span>
-                        <span class="n">n_y</span> <span class="o">=</span> <span class="n">cur_y</span><span class="o">-</span><span class="n">dif_y</span>
-                        <span class="n">n_x</span> <span class="o">=</span> <span class="n">cur_x</span><span class="o">-</span><span class="n">dif_x</span>
-                        <span class="n">new_graph</span><span class="p">[</span><span class="n">n_y</span><span class="p">][</span><span class="n">n_x</span><span class="p">]</span> <span class="o">=</span> <span class="nb">id</span>
+                # 다른 미생물이 이미 있으면 이곳을 시작점으로 할 수 없음 
+                if is_the_origin_ok and new_graph[ori_y][ori_x] == 0: # 괜찮으면 new_graph에 옮김 
+                    dif_y = locs[0][0] - ori_y
+                    dif_x = locs[0][1] - ori_x
+                    for cur_y, cur_x in locs:
+                        n_y = cur_y-dif_y
+                        n_x = cur_x-dif_x
+                        new_graph[n_y][n_x] = id
                     
-                    <span class="n">done</span> <span class="o">=</span> <span class="kc">True</span> 
-                    <span class="c1"># each_nums update </span>
-                    <span class="n">each_nums</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">locs</span><span class="p">))</span>
-                    <span class="c1"># 한번 옮겼으면 2중 for loop을 멈춰야함. </span>
+                    done = True 
+                    # each_nums update 
+                    each_nums.append(len(locs))
+                    # 한번 옮겼으면 2중 for loop을 멈춰야함. 
 
-                <span class="k">if</span> <span class="n">done</span><span class="p">:</span>
-                    <span class="k">break</span>  <span class="c1"># stack구조에서 가장 안쪽 for loop </span>
-            <span class="k">if</span> <span class="n">done</span><span class="p">:</span>
-                <span class="k">break</span> <span class="c1"># stack구조에서 가장 바깥쪽 for loop  </span>
-                <span class="c1"># 그게 아니라면 어떤 곳에도 둘 수 없다면 사라짐  (update를 안하면 됨.)</span>
-    <span class="c1"># 살아남은 것들만 개수 return </span>
-    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">each_nums</span><span class="p">)</span>
+                if done:
+                    break  # stack구조에서 가장 안쪽 for loop 
+            if done:
+                break # stack구조에서 가장 바깥쪽 for loop  
+                # 그게 아니라면 어떤 곳에도 둘 수 없다면 사라짐  (update를 안하면 됨.)
+    # 살아남은 것들만 개수 return 
+    return len(each_nums)
 
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">compare</span><span class="p">(</span><span class="n">locs1</span><span class="p">,</span> <span class="n">locs2</span><span class="p">,</span> <span class="n">id1</span><span class="p">,</span> <span class="n">id2</span><span class="p">):</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">locs1</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">locs2</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">locs1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">locs2</span><span class="p">)</span> <span class="c1"># 개수가 더 많은 것이 좋음</span>
-    <span class="k">if</span> <span class="n">id1</span> <span class="o">!=</span> <span class="n">id2</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">id1</span> <span class="o">&lt;</span> <span class="n">id2</span>  <span class="c1"># 먼저 들어온 것일수록 좋음 </span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">True</span> 
+def compare(locs1, locs2, id1, id2):
+    if len(locs1) != len(locs2):
+        return len(locs1) > len(locs2) # 개수가 더 많은 것이 좋음
+    if id1 != id2:
+        return id1 < id2  # 먼저 들어온 것일수록 좋음 
+    else:
+        return True 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">sort_list</span><span class="p">(</span><span class="n">my_list</span><span class="p">):</span>
-    <span class="n">list_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">my_list</span><span class="p">)</span>
+def sort_list(my_list):
+    list_len = len(my_list)
 
-    <span class="k">for</span> <span class="n">front</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">list_len</span><span class="p">):</span>
-        <span class="n">lowest</span> <span class="o">=</span> <span class="n">front</span> 
-        <span class="k">for</span> <span class="n">rear</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">front</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">list_len</span><span class="p">):</span>
-            <span class="c1"># compare(locs1, locs2, id1, id2)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">compare</span><span class="p">(</span><span class="n">my_list</span><span class="p">[</span><span class="n">lowest</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">my_list</span><span class="p">[</span><span class="n">rear</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">my_list</span><span class="p">[</span><span class="n">lowest</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">my_list</span><span class="p">[</span><span class="n">rear</span><span class="p">][</span><span class="mi">0</span><span class="p">]):</span>
-                <span class="n">lowest</span> <span class="o">=</span> <span class="n">rear</span> 
+    for front in range(list_len):
+        lowest = front 
+        for rear in range(front+1, list_len):
+            # compare(locs1, locs2, id1, id2)
+            if not compare(my_list[lowest][1], my_list[rear][1], my_list[lowest][0], my_list[rear][0]):
+                lowest = rear 
         
-        <span class="c1"># 위치 변경이 있는 경우 SWAP </span>
-        <span class="k">if</span> <span class="n">lowest</span> <span class="o">!=</span> <span class="n">front</span><span class="p">:</span> 
-            <span class="n">temp_tuple</span> <span class="o">=</span> <span class="n">my_list</span><span class="p">[</span><span class="n">front</span><span class="p">]</span>
-            <span class="n">my_list</span><span class="p">[</span><span class="n">front</span><span class="p">]</span> <span class="o">=</span> <span class="n">my_list</span><span class="p">[</span><span class="n">lowest</span><span class="p">]</span> <span class="c1"># tuple의 재할당은 가능 , 다만 tuple은 t[0] = 99로 &#39;item&#39; assignment는 하지못함. </span>
-            <span class="n">my_list</span><span class="p">[</span><span class="n">lowest</span><span class="p">]</span><span class="o">=</span> <span class="n">temp_tuple</span>
+        # 위치 변경이 있는 경우 SWAP 
+        if lowest != front: 
+            temp_tuple = my_list[front]
+            my_list[front] = my_list[lowest] # tuple의 재할당은 가능 , 다만 tuple은 t[0] = 99로 'item' assignment는 하지못함. 
+            my_list[lowest]= temp_tuple
 
-<span class="k">def</span><span class="w"> </span><span class="nf">count_group_of_id</span><span class="p">(</span><span class="n">m_id</span><span class="p">):</span>
+def count_group_of_id(m_id):
+    cnt = 0
+    visited = set()
+    DY = [-1, 1, 0, 0]; DX =[0, 0, -1, 1]
+
+
+    # 맵 전체 돌면서 확인 
+    for a in range(N):
+        for b in range(N):
+            if graph[a][b] == m_id and (a, b) not in visited:
+                # visited propgation 
+                q = deque([(a, b)])
+                visited.add((a, b))
+                while q:
+                    cury, curx = q.popleft()
+
+                    for t in range(4):
+                        ny = cury + DY[t] ; nx = curx + DX[t]
+                        if in_range(ny, nx) and (ny, nx) not in visited and graph[ny][nx] == m_id:
+                            q.append((ny, nx))
+                            visited.add((ny, nx))
+
+                #### BFS가 끝나면 group 1개 
+                cnt += 1 
+    return cnt, list(visited)
+
+
+
+
+
+def solve():
+    global N, graph,DY, DX
+    DY = [-1, 1, 0, 0]; DX =[0, 0, -1, 1]
+    # f = open('/Users/dayelee/Documents/GitHub/mybook/Input.txt', 'r')
+    N, Q = map(int, input().split())
+    graph = [[0]*N for _ in range(N)]
+
+    for micro_id in range(1, Q+1):
+        c1, r1, c2, r2 = map(int, input().split())
+
+        # prelim 
+        y, x = yx_from_rc(c1, r1)
+        t, v = yx_from_rc(c2, r2)
+
+        # Step 1: 
+        # 직사각형 영역에 미생물 투입 [(y, x) ~ (t, v)) inclusive ~ exclusive
+        # 다른 미생물들은 잡아먹음 
+        # 기존 무리의 영역이 2개 이상이되면, 나눠진 미생물은 모두 사라짐. 
+        put_new_microbe(y, x, t, v, micro_id)
+
+        # print("Graph after putting new microbe")
+        # for row in graph:
+        #     print(row)
+
+        # Step 2: 배양 용기 이동 
+        # 가장 column 좌표가 작으면서 row 좌표가 작은 위치(x가 작고 그 다음에 y가 작은 위치로 이동)
+        moved_graph = [[0]*N for _ in range(N)]
+        nums = move_microbe(moved_graph) # call by reference 
+        # print(f"each nums: {each_nums}")
+
+        # print("Graph after Moving microbe")
+        # for row in moved_graph:
+        #     print(row)
+        # Step 3: 실험 결과 기록 
+        # 그룹이 2개 이상일 때 개수들을 다 곱함 
+
+        # NOTE: graph는 이전 moved_graph로 update 
+        graph = [row[:] for row in moved_graph]
+
+        if nums >= 2:
+            result = 0
+            # 새로 만들어진 graph의 shape구하기 
+            id_to_locs_dict = get_ids_and_shapes()
+            
+            # 인접한 두 무리가 있으면, 곱해서 더하기 
+            keys = [key for key in id_to_locs_dict.keys()]
+            # result = []
+            # for p1, p2 in all_pairs:
+            for idx, key_1 in enumerate(keys):
+                for key_2 in keys[idx+1:]:
+                    if is_adjacent(key_1, key_2, id_to_locs_dict[key_1], id_to_locs_dict[key_2]):
+                        result += len(id_to_locs_dict[key_1]) * len(id_to_locs_dict[key_2])
+            print(result)
+        else:
+            print(0)
+
+def is_adjacent(id1, id2, locs1, locs2):
+    
+    for y, x in locs1: # id1이 있는 좌표에 대하여
+        for t in range(4):
+            ny = y + DY[t]; nx = x + DX[t]
+            # 유효한 4방향 중 id2가 하나라도 잇다면, 
+            if in_range(ny, nx) and graph[ny][nx] == id2:
+                return True 
+    return False 
+    
+
+        
+
+if __name__ == '__main__':
+    solve()
+```
+````
+
+````{admonition} 내 문제 풀이 2
+:class: dropdown
+debugging시 graph를 CCW 90로 돌려서 풀고, 실제 문제 구현할때는 (c, r)로 구현하여 푼 문제. 
+0,0은 좌상단이므로, 미생물을 옮길때는 outer loop이 y, inter loop이 x가 온다. 
+
+```{code-block} python 
+from collections import deque
+
+# f = open("/Users/dayelee/Documents/GitHub/mybook/Input.txt", 'r')
+
+N, Q = map(int, input().split())
+graph = [[0]*N for _ in range(N)]
+DY = [-1, 1, 0, 0]; DX = [0, 0, -1, 1]
+
+def print_rotated_CCW_90(my_map):
+    # new_map = [[0] * N for _ in range(N)]
+    for y in range(N):
+        for x in range(N):
+            # new_map[y][x] = my_map[N-x-1][y]
+            print(my_map[x][N-y-1], end=' ')
+        print()
+    
+
+def in_range(y, x):
+    return 0<=y < N and 0<=x<N 
+
+def find_count_and_locs(id):
+
+    count = 0 
+    visited = set()
+
+    for y in range(N):
+        for x in range(N):
+            if (y, x) not in visited and graph[y][x] == id:
+                q = deque([(y, x)])
+                visited.add((y, x))
+                
+                while q:
+                    cur_y, cur_x = q.popleft()
+
+                    for t in range(4):
+                        ny = cur_y + DY[t] ; nx = cur_x + DX[t]
+
+                        if in_range(ny, nx) and (not (ny,nx) in visited) and graph[ny][nx] == id:
+                            visited.add((ny, nx))
+
+                            q.append((ny, nx))
+                
+                count += 1 
+
+    # visited sort in ascending order 
+    visited = list(visited)
+    visited.sort()
+
+    return count, visited
+
+def place_new_microbe(r1, c1, r2, c2, m_id):
+    removed_id = set()
+    # inclusive ~ exclusive 
+    for y in range(r1, r2):
+        for x in range(c1, c2): 
+            if graph[y][x] != 0 and graph[y][x] != m_id:
+                removed_id.add(graph[y][x])
+            graph[y][x] = m_id
+
+    # check current id_to_cells 
+
+    # for removed microbe, check if they are separated into 2 groups 
+    for id in removed_id:
+        count, locs = find_count_and_locs(id)
+        if count >= 2: 
+            for loc in locs:
+                graph[loc[0]][loc[1]] = 0 
+
+def move(cur_id):
+
+    # STEP1: order priorities: 1. 가장 큰 영역 차지 2. id가 작은 것 
+    # 이전부터 현재까지 id에 대해 id_to_dict variable 생성 
+    id_to_locs_list = []
+    for id in range(1, cur_id+1):
+        count, locs = find_count_and_locs(id)
+        if count > 0:
+            id_to_locs_list.append((id, locs))
+
+    # sort id_to_locs_list in descending order of the area and id 
+    list_len = len(id_to_locs_list)
+    for f in range(list_len):
+        lowest = f 
+        for r in range(f+1, list_len):
+            if not compare(len(id_to_locs_list[lowest][1]), len(id_to_locs_list[r][1]), id_to_locs_list[lowest][0], id_to_locs_list[r][0]):
+                lowest = r 
+                
+        
+        # SWAP 
+        if lowest != f:
+            temp = id_to_locs_list[f]
+            id_to_locs_list[f] = id_to_locs_list[lowest]
+            id_to_locs_list[lowest] = temp 
+
+    # 옮길 때는 1. 기존 배양 형태를 벗어나지 않고, 2. 다른 미생물 영역과 겹치지 않도록 3. x좌표가 작은 위치 -> y좌표가 작은 위치
+    # 옮길 수 없으면 새 용기에 옮겨지지 않고 사라짐. 
+    new_graph = [[0]*N for _ in range(N)]
+    return_id_and_locs = []
+    for idx in range(list_len):
+        # if idx == 3:
+        #     print('3')
+        cur_id = id_to_locs_list[idx][0]
+        cur_locs = id_to_locs_list[idx][1]
+        # 새 origin 찾기 : x좌표가 작은 위치 -> y좌표가 작은 위치이므로 b좌표가 Outer loop
+        # 현재 y와 x가 바뀌어 있는 상태라, 반대로 적음 
+        for a in range(N):
+            for b in range(N):
+                flag = True 
+                new_origin_y = a; new_origin_x = b 
+                # locs의 맨처음 (y, x)위치가 (0, 0) origin에 가장 가까울 것 : locs는 ascending order로 이미 sort되어 있음 
+                diff_y = cur_locs[0][0] - new_origin_y
+                diff_x = cur_locs[0][1] - new_origin_x
+                for cur_y, cur_x in cur_locs:
+                    if (not in_range(cur_y - diff_y, cur_x - diff_x)) or (new_graph[cur_y - diff_y][cur_x - diff_x] != 0):
+                        flag = False 
+                        break
+
+                if flag: # ok to move 
+                    return_id_and_locs.append((cur_id, []))
+                    for cur_y, cur_x in cur_locs:
+                        new_graph[cur_y - diff_y][cur_x-diff_x] = cur_id
+                        # return_id_and_area에 넣기 
+                        # cur_locs이 아니라, 변경된 위치를 넣어줘야함. 
+                        return_id_and_locs[-1][1].append((cur_y - diff_y,cur_x-diff_x ))
+                    # return_id_and_locs.append((cur_id, cur_locs))
+                    # move가 끝나면 다음 idx로 넘어가야함. 
+                    break 
+            if flag:
+                break
+
+
+    # original graph update 
+    for idx, row in enumerate(new_graph):
+        graph[idx] = row[:]
+
+    return return_id_and_locs
+
+
+def compare(len1, len2, id1, id2):
+    if len1 != len2:
+        return len1 > len2 
+    return id1 < id2 
+
+def connected(locs1, id2):
+    for l1 in locs1:
+        # for l2 in locs2:
+        for t in range(4):
+            ny = l1[0] + DY[t]; nx = l1[1] + DX[t]
+            if in_range(ny, nx) and graph[ny][nx] == id2:
+                return True 
+
+    return False 
+
+     
+def calculate(id_to_locs):
+    if len(id_to_locs) <= 1:
+        return 0 
+    
+    id_len = len(id_to_locs)
+    total = 0 
+    # 인접한 것 끼리만 계산 
+    for f in range(id_len):
+        for r in range(f+1, id_len):
+            # 인접하면 
+            if connected(id_to_locs[f][1], id_to_locs[r][0]):
+                total += len(id_to_locs[f][1]) * len(id_to_locs[r][1]) 
+
+    return total
+    
+
+def solve():
+    for microbe_id in range(1, Q+1):
+        r1, c1, r2, c2 = map(int, input().split())
+
+        # place new microbe 
+        place_new_microbe(r1, c1, r2, c2, microbe_id)
+    
+        # print(f"Cur graph after putting ({r1, c1})~ ({r2, c2})")
+        # print_rotated_CCW_90(graph)
+
+        # move them 
+        id_to_locs = move(microbe_id)
+        # print(f"After Move:")
+        # print_rotated_CCW_90(graph)
+
+        # calculate points 
+        print(calculate(id_to_locs))
+
+
+if __name__ == '__main__':
+    solve()
+```
+````
+
+````{admonition} 내 풀이 3
+:class: dropdown 
+
+min-heap으로 좀 더 쉽게 locs를 sorting 함 
+```{code-block} python 
+import sys 
+from heapq import heappush, heappop # min-heap 
+from collections import defaultdict
+
+sys.stdin = open('Input.txt', 'r')
+
+from collections import deque 
+
+N, Q = map(int, input().split())
+graph = [[0] * N for _ in range(N)]
+
+def insert_new_microbe(r1, c1, r2, c2, id):
+    # global graph 
+    # [(r1, c1) ~ exclusive (r2, c2)) 
+    candidates_for_removing = set()
+    for y in range(r1, r2):
+        for x in range(c1, c2):
+            if graph[y][x] != 0:
+                candidates_for_removing.add(graph[y][x])
+            graph[y][x] = id # list의 내부 요소만 수정하는 경우에는 "전역 객체의 참조"를 그대로 쓰는 거라 global 선언 업싱도 가능
+
+    # 침입된 id를 대상으로 group이 두개로 나누어졌는지 세기 
+    for r_id in candidates_for_removing:
+        count, locs = count_group_and_find_loc(r_id)
+        if count >= 2:
+            # removing 
+            for loc in locs:
+                graph[loc[0]][loc[1]] = 0
+
+def count_group_and_find_loc(id):
+    '''
+    count = int
+    return locs: list 
+    '''
+    visited = [[False]*N for _ in range(N)]
+    count = 0 
+    return_locs = set()
+    for y in range(N):
+        for x in range(N):
+            if graph[y][x] == id and not visited[y][x]:
+                locs = BFS(y, x, id, visited)
+                return_locs = return_locs.union(locs)
+                count += 1 
+    # print(f"count, locs: {count}, {return_locs}")
+    return count, list(return_locs)
+
+def in_range(y, x):
+    return 0<=y<N and 0<=x < N 
+
+def BFS(y, x, id, visited):
+    DY = [-1, 0, 1, 0]; DX = [0, 1, 0, -1]
+    q = deque([(y, x)])
+    visited[y][x] = True 
+    locs = set([(y, x)])
+    while q:
+        cur_y, cur_x = q.popleft()
+
+        for t in range(4):
+            ny = cur_y + DY[t]; nx = cur_x + DX[t]
+            # 옆의 위치의 id가 현재 id와 같을 때만 넣음 
+            # 방문하지 않았을 때에만 재방문해야함
+            if in_range(ny, nx) and not visited[ny][nx] and graph[ny][nx] == id:
+                visited[ny][nx] = True 
+                locs.add((ny, nx))
+                q.append((ny, nx))
+    
+    return locs
+
+def replace():  
+    new_graph = [[0] * N for _ in range(N)]
+    return_id_locs = defaultdict(list)
+
+    # 원래 그래프에 있는 id와 locs 계산 
+    visited =[[False]*N for _ in range(N)]
+    locs_and_id = []
+    visited_id = set()
+    for y in range(N):
+        for x in range(N):
+            if not graph[y][x] in visited_id and graph[y][x] != 0:
+                visited_id.add(graph[y][x])
+                cur_id = graph[y][x] 
+                locs = list(BFS(y, x, cur_id, visited))
+                locs_and_id.append((cur_id, locs))
+
+    # sorting [(id, locs)], locs이 넓은 것 우선 -> 같으면 id
+    '''
+    min_heap이용해서 저장하고 나중에 heappop()으로 최소부터 꺼내면 시간 복잡도 더 작음 
+    '''
+    sort(locs_and_id)
+
+    flag = False 
+    # 미생물 하나씩 옮김 
+    for i in range(len(locs_and_id)):  # [루프 1]
+        # origin 위치 찾기
+        # 현재 우리의 graph는 왼쪽 위가 기준이므로 y가 최대한 작게 -> x최대한 작게 
+        for origin_y in range(N):  # [루프 2]
+            for origin_x in range(N): # [루프 3]
+                flag, (distance_y, distance_x) = can_use_origin(origin_y, origin_x, new_graph, locs_and_id[i][0], locs_and_id[i][1])
+                # 옮기기 실행 
+                if flag:
+                    cur_id = locs_and_id[i][0]
+                    for before_y, before_x in locs_and_id[i][1]:
+                        y = before_y - distance_y
+                        x = before_x - distance_x
+                        new_graph[y][x] = cur_id
+                        return_id_locs[cur_id].append((y, x))
+                    break # 옮기면 현재 i에 대해서 멈춰야함. [루프 3 중단]
+            if flag:
+                break # 옮기면 현재 i에 대해서 멈춰야함. [루프 2 중단]
+
+    # 원래 그래프 update 필수  
+    for y in range(N):
+        for x in range(N):
+            graph[y][x] = new_graph[y][x]
+
+    return return_id_locs
+
+def can_use_origin(origin_y, origin_x, new_graph, id, locs):
+    '''
+    locs는 Sort되어서 맨 앞에 있는 것이 (y,x)가 제일 작아야함. -> min-heap을 사용해서 root가 제일 작게함. 
+    '''
+    # sort locs 
+    q = []
+    for i in range(len(locs)):
+        heappush(q, locs[i])
+
+    # 맨 첫 원소 q[0] 는 (y -> x)순으로 가장 작은 것이 들어있음 
+    distance_y = q[0][0] - origin_y 
+    distance_x = q[0][1] - origin_x
+
+    for cur_y, cur_x in q:
+        new_pos_y = cur_y - distance_y 
+        new_pos_x = cur_x - distance_x
+        if in_range(new_pos_y, new_pos_x) and new_graph[new_pos_y][new_pos_x] == 0:
+            continue 
+        else:
+            return False, (None, None)
+    return True, (distance_y, distance_x) 
+    
+
+
+def sort(locs_and_id):
+    '''
+    locs_and_id = [(id1, locs1 (list))]
+    '''
+    lens = len(locs_and_id)
+    for f in range(lens):
+        lowest = f 
+        for r in range(f+1, lens):
+            if not compare(locs_and_id[lowest][0], locs_and_id[lowest][1], locs_and_id[r][0], locs_and_id[r][1]):
+                lowest = r 
+        
+        # SWAP 
+        if lowest != f:
+            temp = locs_and_id[lowest]
+            locs_and_id[lowest] = locs_and_id[f]
+            locs_and_id[f] = temp 
+
+def compare(id1, locs1, id2, locs2):
+    if len(locs1) != len(locs2):
+        return len(locs1) > len(locs2)
+    return id1 < id2 
+
+def solve():
+    
+    for e_id in range(1, Q+1): # 글로벌 변수를 읽기만 할때는 global 선언안해도 됨. 
+        r1, c1, r2, c2 = map(int, input().split())
+        # 미생물 투입 
+        insert_new_microbe(r1, c1, r2, c2, e_id)
+
+        # print('graph:')
+        # for row in graph:
+        #     print(row[:])
+
+        # 배양 용기 이동, 옮긴 용기안의 {id: locs}으로 되어있는 dictionary 반환 
+        return_id_locs = replace()
+
+        # print('After moving graph:')
+        # for row in graph:
+        #     print(row[:])
+
+        # 인접한 미생물의 영역 넓이의 곱을 표시 
+        total = 0
+        keys = list(return_id_locs.keys())
+        for i in range(len(keys)):
+            for j in range(i+1, len(keys)):  # i < j 로만 돌림
+                id1, id2 = keys[i], keys[j]
+                locs1, locs2 = return_id_locs[id1], return_id_locs[id2]
+
+                if is_adjacent(id1, id2, locs1, locs2):
+                    total += len(locs1) * len(locs2)
+        print(total)
+
+def is_adjacent(id1, id2, locs1, locs2):
+    DY = [-1, 0, 1, 0]; DX = [0, 1, 0, -1]
+    for loc in locs1:
+        cur_y, cur_x = loc 
+
+        for t in range(4):
+            ny = cur_y + DY[t]
+            nx = cur_x + DX[t]
+            if in_range(ny, nx) and graph[ny][nx] == id2:
+                return True 
+    
+    return False 
+
+if __name__ == '__main__':
+    solve()
+```
+```` -->
+<div class="dropdown admonition">
+<p class="admonition-title">Explanation</p>
+<p>미생물 연구</p>
+<ul class="simple">
+<li><p>배양 크기 NxN (0, 0) ~ (N, N), 0-indexed , N+1개</p>
+<ul>
+<li><p>0 &lt;= x,y &lt;= N (inclusive)</p></li>
+<li><p>좌하단이 (0, 0)이며 (x, y)로 표시</p></li>
+</ul>
+</li>
+<li><p>총 Q번의 실험 진행하며 각 실험의 결과를 기록</p></li>
+</ul>
+<ol class="arabic simple">
+<li><p>미생물 투입 (add) ~ O(N) + O(N)</p></li>
+</ol>
+<ul class="simple">
+<li><p>(r1, c1, r2, c2)의 직사각형 여역에 한 무리의 미생물 투입</p>
+<ul>
+<li><p>graph[y][x] = microbe_id 저장한다.</p></li>
+<li><p>does_id_exist = [True] # id는 1부터 시작하므로, 맨 앞은 [True]로 저장</p></li>
+<li><p>does_id_exist.append(True)</p></li>
+</ul>
+</li>
+<li><p>원래 자리에 다른 미생물이 존재하면 새로 투입된 미생물의 영역 내의 미생물들을 잡아먹는다.</p>
+<ul>
+<li><p>원래 뭐가 있어도 현재 microbe_id로 저장한다.</p></li>
+<li><p>이때 기존에 있는 미생물 id를 <code class="docutils literal notranslate"><span class="pre">removed_id</span> <span class="pre">=</span> <span class="pre">set()</span></code>에 저장해둔다.</p></li>
+</ul>
+</li>
+<li><p>즉, 영역 내에는 새로 투입된 미생물만 남게된다.</p></li>
+<li><p>만약 기존에 있던 어떤 미생물 무리 A가 새로 투입된 미생물 무리 B에게 잡아먹혀서 영역이 2이상으로 나눠진 경우에는, 기존 미생물은 전부 사라진다.</p>
+<ul>
+<li><p>map을 돌면서 해당 미생물 id의 그룹 수가 2이상이면 모두 제거 가능</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">does_id_exist[id]:</span> <span class="pre">list[int]</span></code> = True/False에서 False 로 저장한다.</p></li>
+</ul>
+</li>
+<li><p>X: (아래에서 다시 셀 것임) 만약 그룹 수가 2이상이 아니라면, 기존에 있던 <code class="docutils literal notranslate"><span class="pre">id_to_locs:</span> <span class="pre">list[set]</span></code>의 set에서 id_to_locs[id].remove(locs)로 해당 위치를 지워준다.</p></li>
+</ul>
+</li>
+</ul>
+<p>–&gt; 위의 문제는 뭐냐면, 기존에 있던 배양용기에서 뭔가가 사라지면, pq안에서 순서가 제대로 된 것이 없어지게 된다.
+–&gt; 이 때 또 graph를 돌면서 해당 id에 대해 계산해야하기때문에, step 2 (move)에서 한번에 계산하는게 더 편리할 것</p>
+<ol class="arabic simple" start="2">
+<li><p>배양 용기 이동 (move)</p></li>
+</ol>
+<ul class="simple">
+<li><p>모든 미생물을 새로운 배양 용기로 이동시킴. (NxN)</p>
+<ul>
+<li><p>new_graph를 생성한다. (임시)</p></li>
+</ul>
+</li>
+<li><p>기존 배양 용기에 있는 무리 중 가장 차지한 영역이 넓은 무리를 하나 선택 -&gt; 동일한 영역이면, 가장 먼저 투입된 미생물을 선택한다.</p>
+<ul>
+<li><p>Priority queue / sort</p></li>
+<li><p>기존 graph를 돌면서, (len(locs), id)정보를 저장하고, 이를 pq에 다 넣는다.</p>
+<ul>
+<li><p>새롭게 INIT된 빈 id_to_locs: dict(int, list)</p></li>
+<li><p>이 과정에서 <code class="docutils literal notranslate"><span class="pre">id_to_locs[id].append()</span></code>하여 locs 위치 정보를 파악해놓는다.</p></li>
+<li><p>위에서 pq에 바로 넣는 식으로하면, 예전에 pq에 미리 넣어놨던 것에서 미생물의 영역이 작아지는 경우에는 tracking하기가 어려우므로 다시 센다.</p></li>
+<li><p>list.sort()로 한다.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>선택된 미생물 무리를 새 배양 용기에 옮긴다. (new_graph)</p>
+<ul>
+<li><p>이때 무리는 기존 용기에서의 “형태를 유지”해야한다.</p>
+<ul>
+<li><p>해당 무리의 cell 좌표를 모두 가지고 있다가, origin이 바뀌면 그만큼 “평행이동”해준다.</p></li>
+</ul>
+</li>
+<li><p>배양 용기의 범위를 벗어나지 않아야 한다.</p>
+<ul>
+<li><p>in_range() 함수</p></li>
+</ul>
+</li>
+<li><p>다른 미생물의 영역과 겹치지 않도록 두어야한다.</p>
+<ul>
+<li><p>check(): 해당 id_to_locs[id]에 있는 모든 위치에서 new_graph의 모든 지점이 0이여야함.</p></li>
+</ul>
+</li>
+<li><p>위의 조건 안에서 x좌표가 최대한 작은 위치로 미생물을 옮겨야 하며, 그런 위치가 둘 이상이라면 최대한 y좌표가 작은 위치로 오도록 미생물을 옮긴다.</p>
+<ul>
+<li><p>(최대한 ‘좌측하단의 좌표’가 배양 용기의 좌측하단에 오도록 위치)</p></li>
+<li><p>미생물 id안에서 좌측하단의 좌표를 항상 알고 있는 것이 좋음</p></li>
+<li><p>같은 x에서는 작은 y : for x (for y)</p></li>
+<li><p>새로 옮겨진 위치는 (기존 위치 - 좌측하단 위치)</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>위의 조건을 만족하지 못하여 어떤 곳에도 둘 수 없으면, 새 용기에 옮기지 않고 사라진다.</p>
+<ul>
+<li><p>does_id_exist[id] = False 로 저장</p></li>
+</ul>
+</li>
+</ul>
+<p>graph = new_graph[:] # 슬라이싱</p>
+<ol class="arabic simple" start="3">
+<li><p>실험 결과 기록 (record)</p></li>
+</ol>
+<ul class="simple">
+<li><p>미생물 무리 중 상하좌우로 맞닿은 면이 있는 무리끼리는 ‘인접한 무리’</p>
+<ul>
+<li><p>인접한 무리 쌍을 저장한다. (1, 2), (2, 3)</p></li>
+<li><p>새로 옮겨진 위치에서 인접한지 확인한다.
+total = 0
+pair_set = set()
+for id in id_to_locs:
+if does_id_exist[id]:
+id_to_locs[모든 위치] - lower_bottom_loc[id]의 4방향에 다른 id가 있으면, 인접
+graph[dx][dy] != 0 and graph[dx][dy] != id:
+인접
+if (id1, id2) in pair_set or (id2, id1) in pair_set:
+continue
+total += len(id_to_locs[id1]) * len(id_to_locs[id2])
+pair_set.add((id1, id2))</p></li>
+</ul>
+</li>
+<li><p>모든 ‘인접한 무리’ “쌍” 을 확인한다.</p></li>
+<li><p>(A,B)와 (B,A)는 같은 쌍임</p></li>
+<li><p>미생물 A의 영역의 넓이 x 미생물 B의 영역의 넓이만큼의 성과를 얻고 -&gt; 이를 다 “더한” 값 (누적합)을 기록해야한다.</p></li>
+</ul>
+<p>constraints:</p>
+<ul class="simple">
+<li><p>2 &lt;= N &lt;= 15</p></li>
+<li><p>1 &lt;= Q &lt;= 50</p></li>
+</ul>
+<p>필요한 자료구조</p>
+<ul class="simple">
+<li><p>graph: 현재 미생물의 위치를 저장한다. graph[y][x] = microbe_id , 아무것도 없으면 0으로 저장 (INIT)</p></li>
+</ul>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">Solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span> 
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span><span class="p">,</span> <span class="n">defaultdict</span> 
+<span class="kn">from</span><span class="w"> </span><span class="nn">heapq</span><span class="w"> </span><span class="kn">import</span> <span class="n">heappush</span><span class="p">,</span> <span class="n">heappop</span> 
+
+<span class="c1"># sys.stdin = open(&quot;Input.txt&quot;)</span>
+<span class="nb">input</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">in_range</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">N</span>
+    <span class="k">return</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">N</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">N</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">BFS</span><span class="p">(</span><span class="n">start_x</span><span class="p">,</span> <span class="n">start_y</span><span class="p">,</span> <span class="n">cur_id</span><span class="p">,</span> <span class="n">visited</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">DX</span><span class="p">,</span> <span class="n">DY</span>
+
+    <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">start_x</span><span class="p">,</span> <span class="n">start_y</span><span class="p">))</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">([(</span><span class="n">start_x</span><span class="p">,</span> <span class="n">start_y</span><span class="p">)])</span>
+
+    <span class="k">while</span> <span class="n">q</span><span class="p">:</span>
+        <span class="n">cur_x</span><span class="p">,</span> <span class="n">cur_y</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+            <span class="n">nxt_x</span> <span class="o">=</span> <span class="n">cur_x</span> <span class="o">+</span> <span class="n">DX</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+            <span class="n">nxt_y</span> <span class="o">=</span> <span class="n">cur_y</span> <span class="o">+</span> <span class="n">DY</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">in_range</span><span class="p">(</span><span class="n">nxt_x</span><span class="p">,</span> <span class="n">nxt_y</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="n">nxt_x</span><span class="p">,</span> <span class="n">nxt_y</span><span class="p">)</span> <span class="ow">in</span> <span class="n">visited</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">graph</span><span class="p">[</span><span class="n">nxt_x</span><span class="p">][</span><span class="n">nxt_y</span><span class="p">]</span> <span class="o">==</span> <span class="n">cur_id</span><span class="p">:</span>
+                    <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">nxt_x</span><span class="p">,</span> <span class="n">nxt_y</span><span class="p">))</span>
+                    <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">nxt_x</span><span class="p">,</span> <span class="n">nxt_y</span><span class="p">))</span>
+
+            
+<span class="k">def</span><span class="w"> </span><span class="nf">count_group_bfs</span><span class="p">(</span><span class="n">cur_id</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">graph</span> 
     <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">visited</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-    <span class="n">DY</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">];</span> <span class="n">DX</span> <span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-
-
-    <span class="c1"># 맵 전체 돌면서 확인 </span>
-    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">graph</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">]</span> <span class="o">==</span> <span class="n">m_id</span> <span class="ow">and</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">visited</span><span class="p">:</span>
-                <span class="c1"># visited propgation </span>
-                <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">([(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)])</span>
-                <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span>
-                <span class="k">while</span> <span class="n">q</span><span class="p">:</span>
-                    <span class="n">cury</span><span class="p">,</span> <span class="n">curx</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
-
-                    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
-                        <span class="n">ny</span> <span class="o">=</span> <span class="n">cury</span> <span class="o">+</span> <span class="n">DY</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="p">;</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">curx</span> <span class="o">+</span> <span class="n">DX</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
-                        <span class="k">if</span> <span class="n">in_range</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">visited</span> <span class="ow">and</span> <span class="n">graph</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="o">==</span> <span class="n">m_id</span><span class="p">:</span>
-                            <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
-                            <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
-
-                <span class="c1">#### BFS가 끝나면 group 1개 </span>
-                <span class="n">cnt</span> <span class="o">+=</span> <span class="mi">1</span> 
-    <span class="k">return</span> <span class="n">cnt</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">visited</span><span class="p">)</span>
-
-
-
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">():</span>
-    <span class="k">global</span> <span class="n">N</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span><span class="n">DY</span><span class="p">,</span> <span class="n">DX</span>
-    <span class="n">DY</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">];</span> <span class="n">DX</span> <span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-    <span class="c1"># f = open(&#39;/Users/dayelee/Documents/GitHub/mybook/Input.txt&#39;, &#39;r&#39;)</span>
-    <span class="n">N</span><span class="p">,</span> <span class="n">Q</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
-    <span class="n">graph</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">N</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
-
-    <span class="k">for</span> <span class="n">micro_id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">Q</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
-        <span class="n">c1</span><span class="p">,</span> <span class="n">r1</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="n">r2</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
-
-        <span class="c1"># prelim </span>
-        <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">yx_from_rc</span><span class="p">(</span><span class="n">c1</span><span class="p">,</span> <span class="n">r1</span><span class="p">)</span>
-        <span class="n">t</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">yx_from_rc</span><span class="p">(</span><span class="n">c2</span><span class="p">,</span> <span class="n">r2</span><span class="p">)</span>
-
-        <span class="c1"># Step 1: </span>
-        <span class="c1"># 직사각형 영역에 미생물 투입 [(y, x) ~ (t, v)) inclusive ~ exclusive</span>
-        <span class="c1"># 다른 미생물들은 잡아먹음 </span>
-        <span class="c1"># 기존 무리의 영역이 2개 이상이되면, 나눠진 미생물은 모두 사라짐. </span>
-        <span class="n">put_new_microbe</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">micro_id</span><span class="p">)</span>
-
-        <span class="c1"># print(&quot;Graph after putting new microbe&quot;)</span>
-        <span class="c1"># for row in graph:</span>
-        <span class="c1">#     print(row)</span>
-
-        <span class="c1"># Step 2: 배양 용기 이동 </span>
-        <span class="c1"># 가장 column 좌표가 작으면서 row 좌표가 작은 위치(x가 작고 그 다음에 y가 작은 위치로 이동)</span>
-        <span class="n">moved_graph</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">N</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
-        <span class="n">nums</span> <span class="o">=</span> <span class="n">move_microbe</span><span class="p">(</span><span class="n">moved_graph</span><span class="p">)</span> <span class="c1"># call by reference </span>
-        <span class="c1"># print(f&quot;each nums: {each_nums}&quot;)</span>
-
-        <span class="c1"># print(&quot;Graph after Moving microbe&quot;)</span>
-        <span class="c1"># for row in moved_graph:</span>
-        <span class="c1">#     print(row)</span>
-        <span class="c1"># Step 3: 실험 결과 기록 </span>
-        <span class="c1"># 그룹이 2개 이상일 때 개수들을 다 곱함 </span>
-
-        <span class="c1"># NOTE: graph는 이전 moved_graph로 update </span>
-        <span class="n">graph</span> <span class="o">=</span> <span class="p">[</span><span class="n">row</span><span class="p">[:]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">moved_graph</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="n">nums</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="c1"># 새로 만들어진 graph의 shape구하기 </span>
-            <span class="n">id_to_locs_dict</span> <span class="o">=</span> <span class="n">get_ids_and_shapes</span><span class="p">()</span>
-            
-            <span class="c1"># 인접한 두 무리가 있으면, 곱해서 더하기 </span>
-            <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">id_to_locs_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
-            <span class="c1"># result = []</span>
-            <span class="c1"># for p1, p2 in all_pairs:</span>
-            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">key_1</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">key_2</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">[</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">:]:</span>
-                    <span class="k">if</span> <span class="n">is_adjacent</span><span class="p">(</span><span class="n">key_1</span><span class="p">,</span> <span class="n">key_2</span><span class="p">,</span> <span class="n">id_to_locs_dict</span><span class="p">[</span><span class="n">key_1</span><span class="p">],</span> <span class="n">id_to_locs_dict</span><span class="p">[</span><span class="n">key_2</span><span class="p">]):</span>
-                        <span class="n">result</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">id_to_locs_dict</span><span class="p">[</span><span class="n">key_1</span><span class="p">])</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">id_to_locs_dict</span><span class="p">[</span><span class="n">key_2</span><span class="p">])</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">is_adjacent</span><span class="p">(</span><span class="n">id1</span><span class="p">,</span> <span class="n">id2</span><span class="p">,</span> <span class="n">locs1</span><span class="p">,</span> <span class="n">locs2</span><span class="p">):</span>
-    
-    <span class="k">for</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">locs1</span><span class="p">:</span> <span class="c1"># id1이 있는 좌표에 대하여</span>
-        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
-            <span class="n">ny</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">DY</span><span class="p">[</span><span class="n">t</span><span class="p">];</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">DX</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
-            <span class="c1"># 유효한 4방향 중 id2가 하나라도 잇다면, </span>
-            <span class="k">if</span> <span class="n">in_range</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span> <span class="ow">and</span> <span class="n">graph</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="o">==</span> <span class="n">id2</span><span class="p">:</span>
-                <span class="k">return</span> <span class="kc">True</span> 
-    <span class="k">return</span> <span class="kc">False</span> 
-    
-
-        
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">solve</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="dropdown admonition">
-<p class="admonition-title">내 문제 풀이 2</p>
-<p>debugging시 graph를 CCW 90로 돌려서 풀고, 실제 문제 구현할때는 (c, r)로 구현하여 푼 문제.
-0,0은 좌상단이므로, 미생물을 옮길때는 outer loop이 y, inter loop이 x가 온다.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span>
-
-<span class="c1"># f = open(&quot;/Users/dayelee/Documents/GitHub/mybook/Input.txt&quot;, &#39;r&#39;)</span>
-
-<span class="n">N</span><span class="p">,</span> <span class="n">Q</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
-<span class="n">graph</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">N</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
-<span class="n">DY</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">];</span> <span class="n">DX</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">print_rotated_CCW_90</span><span class="p">(</span><span class="n">my_map</span><span class="p">):</span>
-    <span class="c1"># new_map = [[0] * N for _ in range(N)]</span>
     <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-            <span class="c1"># new_map[y][x] = my_map[N-x-1][y]</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">my_map</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">N</span><span class="o">-</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">graph</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">y</span><span class="p">]</span> <span class="o">==</span> <span class="n">cur_id</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="n">visited</span><span class="p">:</span>
+                <span class="n">BFS</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">cur_id</span><span class="p">,</span> <span class="n">visited</span><span class="p">)</span>
+                <span class="n">cnt</span> <span class="o">+=</span><span class="mi">1</span> 
+    <span class="k">return</span> <span class="n">cnt</span> 
+
+<span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">r2</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">graph</span><span class="p">,</span> <span class="n">does_id_exist</span>
+    <span class="n">removed_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="c1"># Step1: 새롭게 투입된 미생물 graph에 삽입 </span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="p">):</span> <span class="c1"># upper right : exclusive </span>
+        <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">graph</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">y</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">removed_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">y</span><span class="p">])</span>
+            <span class="n">graph</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="nb">id</span>
+
+    <span class="n">does_id_exist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># 새로운 id있으면 삽입 </span>
+    <span class="c1"># lower_bottom_coord[id] = (r1, c1)</span>
     
+    <span class="c1"># Step 2: 앞선 지워진 기존 미생물의 그룹 수가 2개 이상인지 확인 </span>
+    <span class="k">for</span> <span class="n">is_removed_id</span> <span class="ow">in</span> <span class="n">removed_set</span><span class="p">:</span>
+        <span class="n">cnt</span> <span class="o">=</span> <span class="n">count_group_bfs</span><span class="p">(</span><span class="n">is_removed_id</span><span class="p">)</span>
+        <span class="c1"># NOTE: 그룹 수가 아예없을 때도 False로 바꾸어주어야한다. </span>
+        <span class="k">if</span>  <span class="n">cnt</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">cnt</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">does_id_exist</span><span class="p">[</span><span class="n">is_removed_id</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span> 
+            <span class="c1"># 기존에 있던 location의 정보 다 삭제 </span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">in_range</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-    <span class="k">return</span> <span class="mi">0</span><span class="o">&lt;=</span><span class="n">y</span> <span class="o">&lt;</span> <span class="n">N</span> <span class="ow">and</span> <span class="mi">0</span><span class="o">&lt;=</span><span class="n">x</span><span class="o">&lt;</span><span class="n">N</span> 
+<span class="k">def</span><span class="w"> </span><span class="nf">move</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">N</span><span class="p">,</span> <span class="n">id_to_locs</span><span class="p">,</span> <span class="n">DX</span><span class="p">,</span> <span class="n">DY</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">does_id_exist</span><span class="p">,</span> <span class="n">id_to_new_graph_origin</span>
+    <span class="n">new_graph</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+    <span class="n">sort_pq</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">id_to_locs</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span> <span class="c1"># NOTE: 이전과 헷갈리지 않게 reinit </span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">find_count_and_locs</span><span class="p">(</span><span class="nb">id</span><span class="p">):</span>
-
-    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span> 
+    <span class="c1"># Stpe1. 각 id에 대해서 Locs에 대해 조사 </span>
     <span class="n">visited</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-
     <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">visited</span> <span class="ow">and</span> <span class="n">graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">==</span> <span class="nb">id</span><span class="p">:</span>
-                <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">([(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)])</span>
-                <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
-                
+            <span class="c1"># 현재 아이디 = graph[x][y]에 대해서 방문하지 않았던 것이면 </span>
+            <span class="c1"># 또한, add()함수에서 지워진, 미생물에 대해서 다시 0으로 만들지 않았으므로 </span>
+            <span class="c1"># does_id_exist[id]에 대해서도 현재 살아있는 것인지 lazy validtaion을 진행한다. </span>
+            <span class="n">cur_id</span> <span class="o">=</span> <span class="n">graph</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="n">y</span><span class="p">]</span> 
+            <span class="k">if</span> <span class="n">cur_id</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">visited</span> <span class="ow">and</span> <span class="n">does_id_exist</span><span class="p">[</span><span class="n">cur_id</span><span class="p">]:</span>
+                <span class="c1"># cur_id = graph[x][y]</span>
+                <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">([(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)])</span>
+                <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+
                 <span class="k">while</span> <span class="n">q</span><span class="p">:</span>
-                    <span class="n">cur_y</span><span class="p">,</span> <span class="n">cur_x</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+                    <span class="n">cur_x</span><span class="p">,</span> <span class="n">cur_y</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+                    <span class="c1"># 새로운 것을 만날 때마다 </span>
+                    <span class="n">cnt</span> <span class="o">+=</span> <span class="mi">1</span> 
+                    <span class="c1"># 예전 미생물이 다른 미생물한테 어느 정도 먹혀서 제일 작은 coordinate이 다를 수도 있음. </span>
+                    <span class="n">heappush</span><span class="p">(</span><span class="n">id_to_locs</span><span class="p">[</span><span class="n">cur_id</span><span class="p">],</span> <span class="p">(</span><span class="n">cur_x</span><span class="p">,</span> <span class="n">cur_y</span><span class="p">))</span> <span class="c1"># min_heap, x와 y모두 </span>
+                    <span class="c1"># id_to_locs[id].append((cur_x, cur_y)) </span>
 
                     <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
-                        <span class="n">ny</span> <span class="o">=</span> <span class="n">cur_y</span> <span class="o">+</span> <span class="n">DY</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="p">;</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">cur_x</span> <span class="o">+</span> <span class="n">DX</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+                        <span class="n">nxt_x</span> <span class="o">=</span> <span class="n">cur_x</span> <span class="o">+</span> <span class="n">DX</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+                        <span class="n">nxt_y</span> <span class="o">=</span> <span class="n">cur_y</span> <span class="o">+</span> <span class="n">DY</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
 
-                        <span class="k">if</span> <span class="n">in_range</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="p">(</span><span class="n">ny</span><span class="p">,</span><span class="n">nx</span><span class="p">)</span> <span class="ow">in</span> <span class="n">visited</span><span class="p">)</span> <span class="ow">and</span> <span class="n">graph</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="o">==</span> <span class="nb">id</span><span class="p">:</span>
-                            <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">in_range</span><span class="p">(</span><span class="n">nxt_x</span><span class="p">,</span> <span class="n">nxt_y</span><span class="p">):</span>
+                            <span class="k">continue</span> 
+                        <span class="k">if</span> <span class="p">(</span><span class="n">nxt_x</span><span class="p">,</span> <span class="n">nxt_y</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">visited</span> <span class="ow">and</span> <span class="n">graph</span><span class="p">[</span><span class="n">nxt_x</span><span class="p">][</span><span class="n">nxt_y</span><span class="p">]</span> <span class="o">==</span> <span class="n">cur_id</span><span class="p">:</span>
+                            <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">nxt_x</span><span class="p">,</span> <span class="n">nxt_y</span><span class="p">))</span>
+                            <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">nxt_x</span><span class="p">,</span> <span class="n">nxt_y</span><span class="p">))</span>
+                <span class="c1"># 다 돌았으면 </span>
+                <span class="n">heappush</span><span class="p">(</span><span class="n">sort_pq</span><span class="p">,</span> <span class="p">(</span><span class="n">cnt</span><span class="o">*-</span><span class="mi">1</span><span class="p">,</span> <span class="n">cur_id</span><span class="p">))</span> <span class="c1"># cnt에 대해서는 max heap, cur_id에 대해서 min_heap </span>
 
-                            <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
+    <span class="c1"># Step2. 미생물을 새로운 배양 용기에 옮김 </span>
+    <span class="k">while</span> <span class="n">sort_pq</span><span class="p">:</span>
+        <span class="n">cur_area</span><span class="p">,</span> <span class="n">cur_id</span> <span class="o">=</span> <span class="n">heappop</span><span class="p">(</span><span class="n">sort_pq</span><span class="p">)</span>
+        <span class="n">cur_area</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span> 
+
+        <span class="n">locs</span> <span class="o">=</span> <span class="n">id_to_locs</span><span class="p">[</span><span class="n">cur_id</span><span class="p">]</span>
+        <span class="n">ref_coord</span> <span class="o">=</span> <span class="n">locs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="w">        </span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        NOTE: flag, found를 사용할 때, for loop이나 while loop이 여러개 중첩되어 있는 경우, </span>
+<span class="sd">        반드시 &quot;모든 경우의 수&quot;에 대해서 for/while loop이 끝났을 경우, 결과가 어떻게 되는지 확인하여 flag 처리를 각별히 주의해준다. </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">flag</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># x좌표가 제일 작고, 같은 x위치가 2개이면, y의 위치가 작아야한다. </span>
+        <span class="k">for</span> <span class="n">origin_x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">origin_y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">new_graph</span><span class="p">[</span><span class="n">origin_x</span><span class="p">][</span><span class="n">origin_y</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">continue</span> 
+                <span class="c1"># 현재 cur_id에 대해 모든 locs에서 미생물을 옮길 수 있는지 확인 </span>
+                <span class="n">dif_x</span> <span class="o">=</span> <span class="n">ref_coord</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">origin_x</span> 
+                <span class="n">dif_y</span> <span class="o">=</span> <span class="n">ref_coord</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">origin_y</span>
                 
-                <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span> 
+                <span class="n">found</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">for</span> <span class="n">cur_loc</span> <span class="ow">in</span> <span class="n">locs</span><span class="p">:</span>
+                    <span class="n">new_x</span> <span class="o">=</span> <span class="n">cur_loc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">dif_x</span>
+                    <span class="n">new_y</span> <span class="o">=</span> <span class="n">cur_loc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">dif_y</span>
 
-    <span class="c1"># visited sort in ascending order </span>
-    <span class="n">visited</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">visited</span><span class="p">)</span>
-    <span class="n">visited</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
-
-    <span class="k">return</span> <span class="n">count</span><span class="p">,</span> <span class="n">visited</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">place_new_microbe</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">r2</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="n">m_id</span><span class="p">):</span>
-    <span class="n">removed_id</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-    <span class="c1"># inclusive ~ exclusive </span>
-    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">):</span> 
-            <span class="k">if</span> <span class="n">graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">!=</span> <span class="n">m_id</span><span class="p">:</span>
-                <span class="n">removed_id</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">])</span>
-            <span class="n">graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_id</span>
-
-    <span class="c1"># check current id_to_cells </span>
-
-    <span class="c1"># for removed microbe, check if they are separated into 2 groups </span>
-    <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">removed_id</span><span class="p">:</span>
-        <span class="n">count</span><span class="p">,</span> <span class="n">locs</span> <span class="o">=</span> <span class="n">find_count_and_locs</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span> 
-            <span class="k">for</span> <span class="n">loc</span> <span class="ow">in</span> <span class="n">locs</span><span class="p">:</span>
-                <span class="n">graph</span><span class="p">[</span><span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="n">loc</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">0</span> 
-
-<span class="k">def</span><span class="w"> </span><span class="nf">move</span><span class="p">(</span><span class="n">cur_id</span><span class="p">):</span>
-
-    <span class="c1"># STEP1: order priorities: 1. 가장 큰 영역 차지 2. id가 작은 것 </span>
-    <span class="c1"># 이전부터 현재까지 id에 대해 id_to_dict variable 생성 </span>
-    <span class="n">id_to_locs_list</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">cur_id</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
-        <span class="n">count</span><span class="p">,</span> <span class="n">locs</span> <span class="o">=</span> <span class="n">find_count_and_locs</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">id_to_locs_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">id</span><span class="p">,</span> <span class="n">locs</span><span class="p">))</span>
-
-    <span class="c1"># sort id_to_locs_list in descending order of the area and id </span>
-    <span class="n">list_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">id_to_locs_list</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">list_len</span><span class="p">):</span>
-        <span class="n">lowest</span> <span class="o">=</span> <span class="n">f</span> 
-        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">f</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">list_len</span><span class="p">):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">compare</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">id_to_locs_list</span><span class="p">[</span><span class="n">lowest</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">len</span><span class="p">(</span><span class="n">id_to_locs_list</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span> <span class="n">id_to_locs_list</span><span class="p">[</span><span class="n">lowest</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">id_to_locs_list</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="mi">0</span><span class="p">]):</span>
-                <span class="n">lowest</span> <span class="o">=</span> <span class="n">r</span> 
-                
-        
-        <span class="c1"># SWAP </span>
-        <span class="k">if</span> <span class="n">lowest</span> <span class="o">!=</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">temp</span> <span class="o">=</span> <span class="n">id_to_locs_list</span><span class="p">[</span><span class="n">f</span><span class="p">]</span>
-            <span class="n">id_to_locs_list</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_to_locs_list</span><span class="p">[</span><span class="n">lowest</span><span class="p">]</span>
-            <span class="n">id_to_locs_list</span><span class="p">[</span><span class="n">lowest</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp</span> 
-
-    <span class="c1"># 옮길 때는 1. 기존 배양 형태를 벗어나지 않고, 2. 다른 미생물 영역과 겹치지 않도록 3. x좌표가 작은 위치 -&gt; y좌표가 작은 위치</span>
-    <span class="c1"># 옮길 수 없으면 새 용기에 옮겨지지 않고 사라짐. </span>
-    <span class="n">new_graph</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">N</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
-    <span class="n">return_id_and_locs</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">list_len</span><span class="p">):</span>
-        <span class="c1"># if idx == 3:</span>
-        <span class="c1">#     print(&#39;3&#39;)</span>
-        <span class="n">cur_id</span> <span class="o">=</span> <span class="n">id_to_locs_list</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">cur_locs</span> <span class="o">=</span> <span class="n">id_to_locs_list</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-        <span class="c1"># 새 origin 찾기 : x좌표가 작은 위치 -&gt; y좌표가 작은 위치이므로 b좌표가 Outer loop</span>
-        <span class="c1"># 현재 y와 x가 바뀌어 있는 상태라, 반대로 적음 </span>
-        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-                <span class="n">flag</span> <span class="o">=</span> <span class="kc">True</span> 
-                <span class="n">new_origin_y</span> <span class="o">=</span> <span class="n">a</span><span class="p">;</span> <span class="n">new_origin_x</span> <span class="o">=</span> <span class="n">b</span> 
-                <span class="c1"># locs의 맨처음 (y, x)위치가 (0, 0) origin에 가장 가까울 것 : locs는 ascending order로 이미 sort되어 있음 </span>
-                <span class="n">diff_y</span> <span class="o">=</span> <span class="n">cur_locs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">new_origin_y</span>
-                <span class="n">diff_x</span> <span class="o">=</span> <span class="n">cur_locs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">new_origin_x</span>
-                <span class="k">for</span> <span class="n">cur_y</span><span class="p">,</span> <span class="n">cur_x</span> <span class="ow">in</span> <span class="n">cur_locs</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">in_range</span><span class="p">(</span><span class="n">cur_y</span> <span class="o">-</span> <span class="n">diff_y</span><span class="p">,</span> <span class="n">cur_x</span> <span class="o">-</span> <span class="n">diff_x</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">new_graph</span><span class="p">[</span><span class="n">cur_y</span> <span class="o">-</span> <span class="n">diff_y</span><span class="p">][</span><span class="n">cur_x</span> <span class="o">-</span> <span class="n">diff_x</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
-                        <span class="n">flag</span> <span class="o">=</span> <span class="kc">False</span> 
-                        <span class="k">break</span>
-
-                <span class="k">if</span> <span class="n">flag</span><span class="p">:</span> <span class="c1"># ok to move </span>
-                    <span class="n">return_id_and_locs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">cur_id</span><span class="p">,</span> <span class="p">[]))</span>
-                    <span class="k">for</span> <span class="n">cur_y</span><span class="p">,</span> <span class="n">cur_x</span> <span class="ow">in</span> <span class="n">cur_locs</span><span class="p">:</span>
-                        <span class="n">new_graph</span><span class="p">[</span><span class="n">cur_y</span> <span class="o">-</span> <span class="n">diff_y</span><span class="p">][</span><span class="n">cur_x</span><span class="o">-</span><span class="n">diff_x</span><span class="p">]</span> <span class="o">=</span> <span class="n">cur_id</span>
-                        <span class="c1"># return_id_and_area에 넣기 </span>
-                        <span class="c1"># cur_locs이 아니라, 변경된 위치를 넣어줘야함. </span>
-                        <span class="n">return_id_and_locs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">cur_y</span> <span class="o">-</span> <span class="n">diff_y</span><span class="p">,</span><span class="n">cur_x</span><span class="o">-</span><span class="n">diff_x</span> <span class="p">))</span>
-                    <span class="c1"># return_id_and_locs.append((cur_id, cur_locs))</span>
-                    <span class="c1"># move가 끝나면 다음 idx로 넘어가야함. </span>
-                    <span class="k">break</span> 
+                    <span class="c1"># 조건1. 배양 용기의 범위를 벗어나지 않아야 함. </span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">in_range</span><span class="p">(</span><span class="n">new_x</span><span class="p">,</span> <span class="n">new_y</span><span class="p">):</span>
+                        <span class="n">found</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="k">break</span> 
+                    <span class="c1"># 조건 2. 다른 미생물의 영역과 겹치지 않도록 두기 </span>
+                    <span class="k">if</span> <span class="n">new_graph</span><span class="p">[</span><span class="n">new_x</span><span class="p">][</span><span class="n">new_y</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">found</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="k">break</span> 
+                <span class="c1"># 만약 위의 모든 locs에 대해서 만족하였더라면, 옮길 수 있음 </span>
+                <span class="k">if</span> <span class="n">found</span><span class="p">:</span>
+                    <span class="n">id_to_new_graph_origin</span><span class="p">[</span><span class="n">cur_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">origin_x</span><span class="p">,</span> <span class="n">origin_y</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">cur_loc</span> <span class="ow">in</span> <span class="n">locs</span><span class="p">:</span>
+                        <span class="n">new_x</span> <span class="o">=</span> <span class="n">cur_loc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">dif_x</span>
+                        <span class="n">new_y</span> <span class="o">=</span> <span class="n">cur_loc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">dif_y</span>
+                        <span class="n">new_graph</span><span class="p">[</span><span class="n">new_x</span><span class="p">][</span><span class="n">new_y</span><span class="p">]</span> <span class="o">=</span> <span class="n">cur_id</span>
+                        <span class="n">flag</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># default로 0으로 해놓고 찾았을 때만 1로 해야함. 만약 default로 1 해놓으면, 아무것도 못찾고 그냥 끝나버림 </span>
+                    <span class="k">break</span> <span class="c1"># for문 break</span>
+                <span class="c1"># else:</span>
+                <span class="c1">#     # 조건을 만족하지 못한 미생물은 사라져야함. </span>
+                <span class="c1">#     does_id_exist[cur_id] = False </span>
             <span class="k">if</span> <span class="n">flag</span><span class="p">:</span>
                 <span class="k">break</span>
 
+        <span class="k">if</span> <span class="n">flag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">does_id_exist</span><span class="p">[</span><span class="n">cur_id</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span> 
+    <span class="c1"># Step 3: </span>
+    <span class="n">graph</span> <span class="o">=</span> <span class="n">new_graph</span><span class="p">[:]</span>
 
-    <span class="c1"># original graph update </span>
-    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">new_graph</span><span class="p">):</span>
-        <span class="n">graph</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[:]</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">record</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">id_to_locs</span><span class="p">,</span> <span class="n">does_id_exist</span><span class="p">,</span> <span class="n">id_to_new_graph_origin</span><span class="p">,</span> <span class="n">DY</span><span class="p">,</span> <span class="n">DX</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
 
-    <span class="k">return</span> <span class="n">return_id_and_locs</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">compare</span><span class="p">(</span><span class="n">len1</span><span class="p">,</span> <span class="n">len2</span><span class="p">,</span> <span class="n">id1</span><span class="p">,</span> <span class="n">id2</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">len1</span> <span class="o">!=</span> <span class="n">len2</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">len1</span> <span class="o">&gt;</span> <span class="n">len2</span> 
-    <span class="k">return</span> <span class="n">id1</span> <span class="o">&lt;</span> <span class="n">id2</span> 
-
-<span class="k">def</span><span class="w"> </span><span class="nf">connected</span><span class="p">(</span><span class="n">locs1</span><span class="p">,</span> <span class="n">id2</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">l1</span> <span class="ow">in</span> <span class="n">locs1</span><span class="p">:</span>
-        <span class="c1"># for l2 in locs2:</span>
-        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
-            <span class="n">ny</span> <span class="o">=</span> <span class="n">l1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">DY</span><span class="p">[</span><span class="n">t</span><span class="p">];</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">l1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">DX</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">in_range</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span> <span class="ow">and</span> <span class="n">graph</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="o">==</span> <span class="n">id2</span><span class="p">:</span>
-                <span class="k">return</span> <span class="kc">True</span> 
-
-    <span class="k">return</span> <span class="kc">False</span> 
-
-     
-<span class="k">def</span><span class="w"> </span><span class="nf">calculate</span><span class="p">(</span><span class="n">id_to_locs</span><span class="p">):</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">id_to_locs</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">0</span> 
     
-    <span class="n">id_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">id_to_locs</span><span class="p">)</span>
-    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span> 
-    <span class="c1"># 인접한 것 끼리만 계산 </span>
-    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">id_len</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">f</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">id_len</span><span class="p">):</span>
-            <span class="c1"># 인접하면 </span>
-            <span class="k">if</span> <span class="n">connected</span><span class="p">(</span><span class="n">id_to_locs</span><span class="p">[</span><span class="n">f</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">id_to_locs</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="mi">0</span><span class="p">]):</span>
-                <span class="n">total</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">id_to_locs</span><span class="p">[</span><span class="n">f</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">id_to_locs</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span> 
+    <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">does_id_exist</span><span class="p">)):</span>
+        <span class="c1"># 모든 id 에 대하여 인접한 곳에 다른 id 가 있으면, </span>
+        <span class="k">if</span> <span class="n">does_id_exist</span><span class="p">[</span><span class="nb">id</span><span class="p">]:</span>
+            <span class="n">locs</span> <span class="o">=</span> <span class="n">id_to_locs</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="c1"># move하기 전의 locations </span>
+            <span class="n">ref_coord</span> <span class="o">=</span> <span class="n">locs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">dif_x</span> <span class="o">=</span> <span class="n">ref_coord</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">id_to_new_graph_origin</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">dif_y</span> <span class="o">=</span> <span class="n">ref_coord</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">id_to_new_graph_origin</span><span class="p">[</span><span class="nb">id</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">pair_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
-    <span class="k">return</span> <span class="n">total</span>
-    
+            <span class="c1"># 하나의 id에 다른 id가 존재하는 경우 </span>
+            <span class="k">for</span> <span class="n">loc_x</span><span class="p">,</span> <span class="n">loc_y</span> <span class="ow">in</span> <span class="n">locs</span><span class="p">:</span>
+                <span class="n">new_x</span> <span class="o">=</span> <span class="n">loc_x</span> <span class="o">-</span> <span class="n">dif_x</span> 
+                <span class="n">new_y</span> <span class="o">=</span> <span class="n">loc_y</span> <span class="o">-</span> <span class="n">dif_y</span> 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">():</span>
-    <span class="k">for</span> <span class="n">microbe_id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">Q</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
-        <span class="n">r1</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">r2</span><span class="p">,</span> <span class="n">c2</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+                <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+                    <span class="n">nxt_x</span> <span class="o">=</span> <span class="n">new_x</span> <span class="o">+</span> <span class="n">DX</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+                    <span class="n">nxt_y</span> <span class="o">=</span> <span class="n">new_y</span> <span class="o">+</span> <span class="n">DY</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">in_range</span><span class="p">(</span><span class="n">nxt_x</span><span class="p">,</span> <span class="n">nxt_y</span><span class="p">)</span> <span class="ow">and</span> <span class="n">graph</span><span class="p">[</span><span class="n">nxt_x</span><span class="p">][</span><span class="n">nxt_y</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">nxt_id</span> <span class="o">=</span> <span class="n">graph</span><span class="p">[</span><span class="n">nxt_x</span><span class="p">][</span><span class="n">nxt_y</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="n">nxt_x</span><span class="p">][</span><span class="n">nxt_y</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">id</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">nxt_id</span> <span class="ow">in</span> <span class="n">pair_set</span><span class="p">):</span>
+                            <span class="k">if</span> <span class="n">does_id_exist</span><span class="p">[</span><span class="n">nxt_id</span><span class="p">]:</span>
+                                <span class="n">pair_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nxt_id</span><span class="p">)</span>
+                                <span class="n">total</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">id_to_locs</span><span class="p">[</span><span class="nb">id</span><span class="p">])</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">id_to_locs</span><span class="p">[</span><span class="n">nxt_id</span><span class="p">])</span>
 
-        <span class="c1"># place new microbe </span>
-        <span class="n">place_new_microbe</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">r2</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="n">microbe_id</span><span class="p">)</span>
-    
-        <span class="c1"># print(f&quot;Cur graph after putting ({r1, c1})~ ({r2, c2})&quot;)</span>
-        <span class="c1"># print_rotated_CCW_90(graph)</span>
-
-        <span class="c1"># move them </span>
-        <span class="n">id_to_locs</span> <span class="o">=</span> <span class="n">move</span><span class="p">(</span><span class="n">microbe_id</span><span class="p">)</span>
-        <span class="c1"># print(f&quot;After Move:&quot;)</span>
-        <span class="c1"># print_rotated_CCW_90(graph)</span>
-
-        <span class="c1"># calculate points </span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">calculate</span><span class="p">(</span><span class="n">id_to_locs</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">total</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span> <span class="c1"># (A, B) 와 (B, A)는 동일하므로 /2 로 나눠줌. </span>
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">solve</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="dropdown admonition">
-<p class="admonition-title">내 풀이 3</p>
-<p>min-heap으로 좀 더 쉽게 locs를 sorting 함</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span> 
-<span class="kn">from</span><span class="w"> </span><span class="nn">heapq</span><span class="w"> </span><span class="kn">import</span> <span class="n">heappush</span><span class="p">,</span> <span class="n">heappop</span> <span class="c1"># min-heap </span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="n">N</span><span class="p">,</span> <span class="n">Q</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
 
-<span class="n">sys</span><span class="o">.</span><span class="n">stdin</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;Input.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">필요한 자료구조 </span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+<span class="n">does_id_exist</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">]</span>
+<span class="n">id_to_locs</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span> <span class="c1"># id_to_locs[id] = [항상 맨 앞에 lower-left loc]</span>
+<span class="n">DY</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">];</span> <span class="n">DX</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">id_to_new_graph_origin</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span> 
+<span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">Q</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span> <span class="c1"># microbe_id는 1부터 시작, graph가 0이면 아무것도 없음.</span>
+    <span class="c1"># if id == 4:</span>
+    <span class="c1">#     print(&#39;a&#39;) </span>
+    <span class="n">r1</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">r2</span><span class="p">,</span> <span class="n">c2</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
 
-<span class="n">N</span><span class="p">,</span> <span class="n">Q</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
-<span class="n">graph</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">insert_new_microbe</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">r2</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
-    <span class="c1"># global graph </span>
-    <span class="c1"># [(r1, c1) ~ exclusive (r2, c2)) </span>
-    <span class="n">candidates_for_removing</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">candidates_for_removing</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">])</span>
-            <span class="n">graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="nb">id</span> <span class="c1"># list의 내부 요소만 수정하는 경우에는 &quot;전역 객체의 참조&quot;를 그대로 쓰는 거라 global 선언 업싱도 가능</span>
-
-    <span class="c1"># 침입된 id를 대상으로 group이 두개로 나누어졌는지 세기 </span>
-    <span class="k">for</span> <span class="n">r_id</span> <span class="ow">in</span> <span class="n">candidates_for_removing</span><span class="p">:</span>
-        <span class="n">count</span><span class="p">,</span> <span class="n">locs</span> <span class="o">=</span> <span class="n">count_group_and_find_loc</span><span class="p">(</span><span class="n">r_id</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="c1"># removing </span>
-            <span class="k">for</span> <span class="n">loc</span> <span class="ow">in</span> <span class="n">locs</span><span class="p">:</span>
-                <span class="n">graph</span><span class="p">[</span><span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="n">loc</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">0</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">count_group_and_find_loc</span><span class="p">(</span><span class="nb">id</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    count = int</span>
-<span class="sd">    return locs: list </span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">visited</span> <span class="o">=</span> <span class="p">[[</span><span class="kc">False</span><span class="p">]</span><span class="o">*</span><span class="n">N</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
-    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span> 
-    <span class="n">return_locs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">==</span> <span class="nb">id</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">visited</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]:</span>
-                <span class="n">locs</span> <span class="o">=</span> <span class="n">BFS</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">visited</span><span class="p">)</span>
-                <span class="n">return_locs</span> <span class="o">=</span> <span class="n">return_locs</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">locs</span><span class="p">)</span>
-                <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span> 
-    <span class="c1"># print(f&quot;count, locs: {count}, {return_locs}&quot;)</span>
-    <span class="k">return</span> <span class="n">count</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">return_locs</span><span class="p">)</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">in_range</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-    <span class="k">return</span> <span class="mi">0</span><span class="o">&lt;=</span><span class="n">y</span><span class="o">&lt;</span><span class="n">N</span> <span class="ow">and</span> <span class="mi">0</span><span class="o">&lt;=</span><span class="n">x</span> <span class="o">&lt;</span> <span class="n">N</span> 
-
-<span class="k">def</span><span class="w"> </span><span class="nf">BFS</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">visited</span><span class="p">):</span>
-    <span class="n">DY</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">];</span> <span class="n">DX</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">([(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)])</span>
-    <span class="n">visited</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span> 
-    <span class="n">locs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)])</span>
-    <span class="k">while</span> <span class="n">q</span><span class="p">:</span>
-        <span class="n">cur_y</span><span class="p">,</span> <span class="n">cur_x</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
-
-        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
-            <span class="n">ny</span> <span class="o">=</span> <span class="n">cur_y</span> <span class="o">+</span> <span class="n">DY</span><span class="p">[</span><span class="n">t</span><span class="p">];</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">cur_x</span> <span class="o">+</span> <span class="n">DX</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
-            <span class="c1"># 옆의 위치의 id가 현재 id와 같을 때만 넣음 </span>
-            <span class="c1"># 방문하지 않았을 때에만 재방문해야함</span>
-            <span class="k">if</span> <span class="n">in_range</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">visited</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="ow">and</span> <span class="n">graph</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="o">==</span> <span class="nb">id</span><span class="p">:</span>
-                <span class="n">visited</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span> 
-                <span class="n">locs</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
-                <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
-    
-    <span class="k">return</span> <span class="n">locs</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">replace</span><span class="p">():</span>  
-    <span class="n">new_graph</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
-    <span class="n">return_id_locs</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
-
-    <span class="c1"># 원래 그래프에 있는 id와 locs 계산 </span>
-    <span class="n">visited</span> <span class="o">=</span><span class="p">[[</span><span class="kc">False</span><span class="p">]</span><span class="o">*</span><span class="n">N</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
-    <span class="n">locs_and_id</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">visited_id</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="ow">in</span> <span class="n">visited_id</span> <span class="ow">and</span> <span class="n">graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">visited_id</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">])</span>
-                <span class="n">cur_id</span> <span class="o">=</span> <span class="n">graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> 
-                <span class="n">locs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">BFS</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">cur_id</span><span class="p">,</span> <span class="n">visited</span><span class="p">))</span>
-                <span class="n">locs_and_id</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">cur_id</span><span class="p">,</span> <span class="n">locs</span><span class="p">))</span>
-
-    <span class="c1"># sorting [(id, locs)], locs이 넓은 것 우선 -&gt; 같으면 id</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    min_heap이용해서 저장하고 나중에 heappop()으로 최소부터 꺼내면 시간 복잡도 더 작음 </span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">sort</span><span class="p">(</span><span class="n">locs_and_id</span><span class="p">)</span>
-
-    <span class="n">flag</span> <span class="o">=</span> <span class="kc">False</span> 
-    <span class="c1"># 미생물 하나씩 옮김 </span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">locs_and_id</span><span class="p">)):</span>  <span class="c1"># [루프 1]</span>
-        <span class="c1"># origin 위치 찾기</span>
-        <span class="c1"># 현재 우리의 graph는 왼쪽 위가 기준이므로 y가 최대한 작게 -&gt; x최대한 작게 </span>
-        <span class="k">for</span> <span class="n">origin_y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>  <span class="c1"># [루프 2]</span>
-            <span class="k">for</span> <span class="n">origin_x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span> <span class="c1"># [루프 3]</span>
-                <span class="n">flag</span><span class="p">,</span> <span class="p">(</span><span class="n">distance_y</span><span class="p">,</span> <span class="n">distance_x</span><span class="p">)</span> <span class="o">=</span> <span class="n">can_use_origin</span><span class="p">(</span><span class="n">origin_y</span><span class="p">,</span> <span class="n">origin_x</span><span class="p">,</span> <span class="n">new_graph</span><span class="p">,</span> <span class="n">locs_and_id</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">locs_and_id</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
-                <span class="c1"># 옮기기 실행 </span>
-                <span class="k">if</span> <span class="n">flag</span><span class="p">:</span>
-                    <span class="n">cur_id</span> <span class="o">=</span> <span class="n">locs_and_id</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-                    <span class="k">for</span> <span class="n">before_y</span><span class="p">,</span> <span class="n">before_x</span> <span class="ow">in</span> <span class="n">locs_and_id</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]:</span>
-                        <span class="n">y</span> <span class="o">=</span> <span class="n">before_y</span> <span class="o">-</span> <span class="n">distance_y</span>
-                        <span class="n">x</span> <span class="o">=</span> <span class="n">before_x</span> <span class="o">-</span> <span class="n">distance_x</span>
-                        <span class="n">new_graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">cur_id</span>
-                        <span class="n">return_id_locs</span><span class="p">[</span><span class="n">cur_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
-                    <span class="k">break</span> <span class="c1"># 옮기면 현재 i에 대해서 멈춰야함. [루프 3 중단]</span>
-            <span class="k">if</span> <span class="n">flag</span><span class="p">:</span>
-                <span class="k">break</span> <span class="c1"># 옮기면 현재 i에 대해서 멈춰야함. [루프 2 중단]</span>
-
-    <span class="c1"># 원래 그래프 update 필수  </span>
-    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-            <span class="n">graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
-
-    <span class="k">return</span> <span class="n">return_id_locs</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">can_use_origin</span><span class="p">(</span><span class="n">origin_y</span><span class="p">,</span> <span class="n">origin_x</span><span class="p">,</span> <span class="n">new_graph</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">locs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    locs는 Sort되어서 맨 앞에 있는 것이 (y,x)가 제일 작아야함. -&gt; min-heap을 사용해서 root가 제일 작게함. </span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="c1"># sort locs </span>
-    <span class="n">q</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">locs</span><span class="p">)):</span>
-        <span class="n">heappush</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">locs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-
-    <span class="c1"># 맨 첫 원소 q[0] 는 (y -&gt; x)순으로 가장 작은 것이 들어있음 </span>
-    <span class="n">distance_y</span> <span class="o">=</span> <span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">origin_y</span> 
-    <span class="n">distance_x</span> <span class="o">=</span> <span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">origin_x</span>
-
-    <span class="k">for</span> <span class="n">cur_y</span><span class="p">,</span> <span class="n">cur_x</span> <span class="ow">in</span> <span class="n">q</span><span class="p">:</span>
-        <span class="n">new_pos_y</span> <span class="o">=</span> <span class="n">cur_y</span> <span class="o">-</span> <span class="n">distance_y</span> 
-        <span class="n">new_pos_x</span> <span class="o">=</span> <span class="n">cur_x</span> <span class="o">-</span> <span class="n">distance_x</span>
-        <span class="k">if</span> <span class="n">in_range</span><span class="p">(</span><span class="n">new_pos_y</span><span class="p">,</span> <span class="n">new_pos_x</span><span class="p">)</span> <span class="ow">and</span> <span class="n">new_graph</span><span class="p">[</span><span class="n">new_pos_y</span><span class="p">][</span><span class="n">new_pos_x</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">continue</span> 
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-    <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="p">(</span><span class="n">distance_y</span><span class="p">,</span> <span class="n">distance_x</span><span class="p">)</span> 
-    
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">sort</span><span class="p">(</span><span class="n">locs_and_id</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    locs_and_id = [(id1, locs1 (list))]</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">lens</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">locs_and_id</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">lens</span><span class="p">):</span>
-        <span class="n">lowest</span> <span class="o">=</span> <span class="n">f</span> 
-        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">f</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">lens</span><span class="p">):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">compare</span><span class="p">(</span><span class="n">locs_and_id</span><span class="p">[</span><span class="n">lowest</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">locs_and_id</span><span class="p">[</span><span class="n">lowest</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">locs_and_id</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">locs_and_id</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="mi">1</span><span class="p">]):</span>
-                <span class="n">lowest</span> <span class="o">=</span> <span class="n">r</span> 
-        
-        <span class="c1"># SWAP </span>
-        <span class="k">if</span> <span class="n">lowest</span> <span class="o">!=</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">temp</span> <span class="o">=</span> <span class="n">locs_and_id</span><span class="p">[</span><span class="n">lowest</span><span class="p">]</span>
-            <span class="n">locs_and_id</span><span class="p">[</span><span class="n">lowest</span><span class="p">]</span> <span class="o">=</span> <span class="n">locs_and_id</span><span class="p">[</span><span class="n">f</span><span class="p">]</span>
-            <span class="n">locs_and_id</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp</span> 
-
-<span class="k">def</span><span class="w"> </span><span class="nf">compare</span><span class="p">(</span><span class="n">id1</span><span class="p">,</span> <span class="n">locs1</span><span class="p">,</span> <span class="n">id2</span><span class="p">,</span> <span class="n">locs2</span><span class="p">):</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">locs1</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">locs2</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">locs1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">locs2</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">id1</span> <span class="o">&lt;</span> <span class="n">id2</span> 
-
-<span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">():</span>
-    
-    <span class="k">for</span> <span class="n">e_id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">Q</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span> <span class="c1"># 글로벌 변수를 읽기만 할때는 global 선언안해도 됨. </span>
-        <span class="n">r1</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">r2</span><span class="p">,</span> <span class="n">c2</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
-        <span class="c1"># 미생물 투입 </span>
-        <span class="n">insert_new_microbe</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">r2</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="n">e_id</span><span class="p">)</span>
-
-        <span class="c1"># print(&#39;graph:&#39;)</span>
-        <span class="c1"># for row in graph:</span>
-        <span class="c1">#     print(row[:])</span>
-
-        <span class="c1"># 배양 용기 이동, 옮긴 용기안의 {id: locs}으로 되어있는 dictionary 반환 </span>
-        <span class="n">return_id_locs</span> <span class="o">=</span> <span class="n">replace</span><span class="p">()</span>
-
-        <span class="c1"># print(&#39;After moving graph:&#39;)</span>
-        <span class="c1"># for row in graph:</span>
-        <span class="c1">#     print(row[:])</span>
-
-        <span class="c1"># 인접한 미생물의 영역 넓이의 곱을 표시 </span>
-        <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">return_id_locs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)):</span>
-            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)):</span>  <span class="c1"># i &lt; j 로만 돌림</span>
-                <span class="n">id1</span><span class="p">,</span> <span class="n">id2</span> <span class="o">=</span> <span class="n">keys</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">keys</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
-                <span class="n">locs1</span><span class="p">,</span> <span class="n">locs2</span> <span class="o">=</span> <span class="n">return_id_locs</span><span class="p">[</span><span class="n">id1</span><span class="p">],</span> <span class="n">return_id_locs</span><span class="p">[</span><span class="n">id2</span><span class="p">]</span>
-
-                <span class="k">if</span> <span class="n">is_adjacent</span><span class="p">(</span><span class="n">id1</span><span class="p">,</span> <span class="n">id2</span><span class="p">,</span> <span class="n">locs1</span><span class="p">,</span> <span class="n">locs2</span><span class="p">):</span>
-                    <span class="n">total</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">locs1</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">locs2</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">total</span><span class="p">)</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">is_adjacent</span><span class="p">(</span><span class="n">id1</span><span class="p">,</span> <span class="n">id2</span><span class="p">,</span> <span class="n">locs1</span><span class="p">,</span> <span class="n">locs2</span><span class="p">):</span>
-    <span class="n">DY</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">];</span> <span class="n">DX</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="k">for</span> <span class="n">loc</span> <span class="ow">in</span> <span class="n">locs1</span><span class="p">:</span>
-        <span class="n">cur_y</span><span class="p">,</span> <span class="n">cur_x</span> <span class="o">=</span> <span class="n">loc</span> 
-
-        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
-            <span class="n">ny</span> <span class="o">=</span> <span class="n">cur_y</span> <span class="o">+</span> <span class="n">DY</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
-            <span class="n">nx</span> <span class="o">=</span> <span class="n">cur_x</span> <span class="o">+</span> <span class="n">DX</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">in_range</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span> <span class="ow">and</span> <span class="n">graph</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="o">==</span> <span class="n">id2</span><span class="p">:</span>
-                <span class="k">return</span> <span class="kc">True</span> 
-    
-    <span class="k">return</span> <span class="kc">False</span> 
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">solve</span><span class="p">()</span>
+    <span class="n">add</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">r2</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+    <span class="n">move</span><span class="p">()</span>
+    <span class="n">record</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1648,8 +1991,8 @@ document.write(`
 2 4 6 7<br></p>
 </div>
 </section>
-<section id="id6">
-<h3>마법의 숲 탐색<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<section id="id8">
+<h3>마법의 숲 탐색<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
 <p class="admonition-title">문제 정리</p>
 <ol class="arabic">
@@ -1694,7 +2037,7 @@ document.write(`
 </div>
 <div class="dropdown admonition">
 <p class="admonition-title">graph의 확장</p>
-<p><img alt="3-1" src="../../_images/111.png" /></p>
+<p><img alt="3-1" src="../../_images/11.png" /></p>
 <p>In the beginning, the golem may extend up to <code class="docutils literal notranslate"><span class="pre">3</span> <span class="pre">cells</span></code> above the forest. To handle this, we add 3 buffer rows at the top of the grid. These buffer rows are not part of the forest but provide enough room for the golem to move and settle safely.</p>
 </div>
 <div class="dropdown admonition">
@@ -1923,8 +2266,8 @@ document.write(`
 </div>
 </div>
 </section>
-<section id="id7">
-<h3>블록 이동하기<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<section id="id9">
+<h3>블록 이동하기<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
 <p class="admonition-title">갈 수 있는 방향 설정</p>
 <p>아래처럼 길이 나있는 경우가 있을 수 있으므로, 직선으로 움직이는 경우 상하좌우, 회전도 robot의 pivot block 기준으로 가로로 위치한 경우에는 위아래 혹은 세로로 위치한 경우에는 상하로 회전할 수 있도록 해야한다.</p>
@@ -1937,7 +2280,7 @@ document.write(`
 <li><p><strong>Visited</strong>: 물체 (Robot)이 차지하는 셀이 한 개 초과 즉, 이경우에는 board에 표시하면 memory가 초과되기 때문에 visited={} set으로 방문 여부를 체크해주면 좋다.</p></li>
 <li><p><strong>Normalization</strong>: 상태 정규화(순서 고정)도 존재해야한다. 즉, (y,x,t,v)와 (t,v,y,x)는 같은 로봇 상태인데, visited가 다르게 취급해 중복 상태 폭증하며 시간도 초과된다. 매번 (a,b) 두 좌표를 정렬해서 (small,big)로 저장하거나, frozenset({pos1,pos2})로 관리해야 한다. 즉, 정규화를 통해 (P1, P2) 중 작은 것이 앞에 오도록하여 같은 위치에 있는 로봇의 상태 체크를 잘 할 수 있게 된다.</p></li>
 </ul>
-<p><img alt="" src="../../_images/126.png" /></p>
+<p><img alt="" src="../../_images/111.png" /></p>
 <p>When we run BFS, each robot state is represented as the positions of its two blocks and the current time. But we need consistency: which block should be stored first? To avoid duplicates, we always order the two coordinates so that the smaller one comes first. This normalization guarantees that the same robot configuration is stored uniquely in the queue.</p>
 </div>
 <div class="dropdown admonition">
@@ -1994,8 +2337,8 @@ The grid size is <span class="math notranslate nohighlight">\(N \times N\)</span
 <p>Consequently, the overall time complexity is <span class="math notranslate nohighlight">\(O(N^2)\)</span>, and the space complexity is also <span class="math notranslate nohighlight">\(O(N^2)\)</span>.</p>
 </div>
 <div class="toggle docutils container">
-<div class="literal-block-wrapper docutils container" id="id10">
-<div class="code-block-caption"><span class="caption-number">예시 42 </span><span class="caption-text">Solution</span><a class="headerlink" href="#id10" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id12">
+<div class="code-block-caption"><span class="caption-number">예시 42 </span><span class="caption-text">Solution</span><a class="headerlink" href="#id12" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">제한사항 </span>
 <span class="sd">5 &lt;= N &lt;= 100 </span>
@@ -2091,11 +2434,11 @@ The grid size is <span class="math notranslate nohighlight">\(N \times N\)</span
 </div>
 </div>
 </section>
-<section id="id8">
-<h3>고대 문명 유적 탐사<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<section id="id10">
+<h3>고대 문명 유적 탐사<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
 <p class="admonition-title">리스트의 복사</p>
-<h3 class="rubric" id="id9">리스트의 복사</h3>
+<h3 class="rubric" id="id11">리스트의 복사</h3>
 <ul class="simple">
 <li><p>1차원 리스트 같은 경우에는 <code class="docutils literal notranslate"><span class="pre">[:]</span></code>로 복사하면 된다.</p></li>
 <li><p>2차원 리스트는 [:]로 복사하면 얕은 복사라서, 내부 행 리스트를 공유하게 된다. 따라서 <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">copy</span> <span class="pre">import</span> <span class="pre">deepcopy</span></code>를 사용하거나 <code class="docutils literal notranslate"><span class="pre">list</span> <span class="pre">comprehension</span></code>를 사용하면 된다. 예를 들어 다음 코드와 같이 할 수 있다.</p></li>
@@ -2128,8 +2471,8 @@ center가 (2,1)일때 CW 90도 회전 이후 결과
 <div class="dropdown admonition">
 <p class="admonition-title"><a class="reference external" href="http://rotation.py">rotation.py</a> degugging file</p>
 <p>아래 파일을 따로 만들어서, 실제 로테이션이 잘 되는지 확인하였다. 문제를 풀 때 solve()함수는 다양한 함수들로 이루어져있어, 디버깅이 복잡하다. 따라서, 하나의 함수마다 degugging은 이런 식으로 별도로 output을 출력해서 확인하면 쉬워진다.</p>
-<div class="literal-block-wrapper docutils container" id="id11">
-<div class="code-block-caption"><span class="caption-number">예시 43 </span><span class="caption-text"><a class="reference external" href="http://rotation.py">rotation.py</a> (debug)</span><a class="headerlink" href="#id11" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id13">
+<div class="code-block-caption"><span class="caption-number">예시 43 </span><span class="caption-text"><a class="reference external" href="http://rotation.py">rotation.py</a> (debug)</span><a class="headerlink" href="#id13" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">in_circle</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">cx</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">cy</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">y</span> <span class="o">&lt;=</span> <span class="n">cy</span> <span class="o">+</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">cx</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">cx</span> <span class="o">+</span> <span class="mi">1</span>
 
@@ -2175,8 +2518,8 @@ center가 (2,1)일때 CW 90도 회전 이후 결과
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id12">
-<div class="code-block-caption"><span class="caption-number">예시 44 </span><span class="caption-text">Output of <a class="reference external" href="http://rotation.py">rotation.py</a></span><a class="headerlink" href="#id12" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id14">
+<div class="code-block-caption"><span class="caption-number">예시 44 </span><span class="caption-text">Output of <a class="reference external" href="http://rotation.py">rotation.py</a></span><a class="headerlink" href="#id14" title="Link to this code">#</a></div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>    Original Graph
     [1, 2, 3, 10, 11]
     [4, 5, 6, 12, 13]
@@ -2692,13 +3035,14 @@ center가 (2,1)일때 CW 90도 회전 이후 결과
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">게임 맵 최단 거리</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">단어 변환</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">아이템 줍기</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">여행 경로</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bfs">BFS</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sorting-priorityqueue">미생물 연구 Sorting, PriorityQueue</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">마법의 숲 탐색</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">블록 이동하기</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">고대 문명 유적 탐사</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">미생물 연구</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">마법의 숲 탐색</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">블록 이동하기</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">고대 문명 유적 탐사</a></li>
 </ul>
 </li>
 </ul>
