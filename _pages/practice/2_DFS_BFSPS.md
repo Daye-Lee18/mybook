@@ -16,11 +16,11 @@ kernelspec:
 
 예시 문제 링크 
 - BFS 고득점 Kit 
-  - [타겟 넘버]
-  - [네트워크]
-  - [게임 맵 최단거리]
-  - [단어 변환]
-  - [아이템 줍기]
+  - [타겟 넘버](https://school.programmers.co.kr/learn/courses/30/lessons/43165)
+  - [네트워크](https://school.programmers.co.kr/learn/courses/30/lessons/43162)
+  - [게임 맵 최단거리](https://school.programmers.co.kr/learn/courses/30/lessons/1844)
+  - [단어 변환](https://school.programmers.co.kr/learn/courses/30/lessons/43163)
+  - [아이템 줍기](https://school.programmers.co.kr/learn/courses/30/lessons/87694)
   - [여행 경로]
   - [퍼즐 조각 채우기]
 
@@ -42,6 +42,363 @@ kernelspec:
   - [토스트 계란틀](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/toast-eggmold/description)
 
 ## BFS 고득점 Kit 
+
+### 타겟 넘버 
+
+````{admonition} Explanation
+:class: dropdown 
+
+n개의 음이 아닌 정수
+순서를 바꾸지 않고 적절히 더하거나 빼서 타겟 넘버를 만들려고 한다. 
+
+parameters:
+- numbers: 사용할 수 있는 숫자가 담긴 배열 2 <= numbers.length <= 20 
+- target: 타겟넘버 1<= target <= 1000
+
+return:
+- 타겟 넘버를 만드는 방법의 수를 반환 
+
+DFS를 사용하면 branch = 2, depth =N개라, 최악의 경우 2^20개 
+````
+````{admonition} Solution
+:class: dropdown 
+
+```{code-block} python
+def solution(numbers, target):
+    
+    def dfs(depth: int, total: int):
+        nonlocal answer
+        # termination 
+        if depth == n:
+            if total == target:
+                answer += 1 
+            return 
+
+        # branch + / -
+        dfs(depth+1, total+numbers[depth])
+        dfs(depth+1, total - numbers[depth])
+
+    answer = 0
+    n = len(numbers)
+    dfs(0, 0)
+
+    return answer 
+
+# numbers = [1, 1, 1, 1, 1]; target=3 # 5
+numbers = [4, 1, 2, 1]; target=4 # 2 
+print(solution(numbers, target))
+```
+````
+
+### 네트워크 
+
+````{admonition} Solution 
+:class: dropdown 
+
+union-find 구조를 이용해 풀이 
+
+```{code-block} python 
+
+def find(a):
+    global parent 
+    if parent[a] == a:
+        return a
+    parent[a] = find(parent[a]) # path compression 
+    return parent[a]
+
+def union(a, b):
+    global rank
+    rootA = find(a); rootB = find(b)
+
+    if rootA == rootB:
+        return False 
+    if rank[rootA] == rank[rootB]:
+        parent[rootB] = rootA 
+        rank[rootA] += 1 
+    elif rank[rootA] > rank[rootB]:
+        parent[rootB] = rootA 
+    else:
+        parent[rootA] = rootB 
+    return True 
+   
+
+
+def solution(n, computers):
+    global parent, rank, GroupCnt 
+    GroupCnt = n 
+    parent = [idx for idx in range(n)]
+    rank = [0] * n # height 
+
+    for node in range(n):
+        for end_node in range(node+1, n):
+            if computers[node][end_node] == 0:
+                continue 
+            else: # 연결되어 있고 
+                if union(node, end_node):
+                    GroupCnt -= 1 
+
+    return GroupCnt 
+
+```
+````
+
+### 게임 맵 최단 거리 
+
+````{admonition} Solution 
+:class: dropdown 
+
+```{code-block} python 
+from collections import deque 
+
+
+def solution(maps):
+    N = len(maps); M = len(maps[0])
+
+    def in_range(y, x):
+        nonlocal N, M 
+        return 0<=y<N and 0<=x<M 
+    DY = [-1, 1, 0, 0]; DX = [0, 0, -1, 1]
+
+    visited = [[False]*M for _ in range(N)]
+    start_y = 0; start_x = 0
+    target_y = N-1; target_x = M-1 
+    q = deque([(start_y, start_x, 1)]) # y, x, dis 
+    # BFS 
+    while q:
+        cur_y, cur_x, cur_dis = q.popleft()
+
+        # Early Stopping 
+        if cur_y == target_y and cur_x == target_x:
+            return cur_dis 
+        
+        for t in range(4):
+            nxt_y = cur_y + DY[t]
+            nxt_x = cur_x + DX[t]
+            if in_range(nxt_y, nxt_x) and maps[nxt_y][nxt_x] == 1 and not visited[nxt_y][nxt_x]:
+                visited[nxt_y][nxt_x] = True 
+                q.append((nxt_y, nxt_x, cur_dis + 1 ))
+        
+    return -1  # 위에서 도달하지 못한 경우 -1를 return 
+
+
+# maps= [[1,0,1,1,1],[1,0,1,0,1],[1,0,1,1,1],[1,1,1,0,1],[0,0,0,0,1]] # 11 
+maps= [[1,0,1,1,1],[1,0,1,0,1],[1,0,1,1,1],[1,1,1,0,0],[0,0,0,0,1]]	# -1 
+print(solution(maps))
+```
+````
+
+### 단어 변환 
+
+“변환 단계 최소 / 간선 개수 최소 / 최소 횟수” → 무조건 BFS 떠올리는 습관
+
+````{admonition} Idea 
+:class: dropdown 
+
+parameters: 
+- 두 개의 단어 begin, target
+    - 두 단어는 같지 않다. 
+- 단어의 집합 `words`, 3 <= words.length <= 50, 각 단어 3 <= str.length <= 10 
+
+아래의 규칙을 이용하여 begin -> target 변환하는 가장 짧은 변환 과정을 찾으려고 한다. 
+1. 한 번에 한 개의 알파벳만 바꿀 수 있음 
+2. `words`에 있는 단어로만 변환할 수 있음 (target도 `words`안에 있어야 함.)
+
+예를 들어, beging이 "hit"이고 target이 "cog", words = ["hot", "dot", "dog", "lot", "log", "cog"]라면 
+"hit" -> "hot" -> "dot" -> "dog" -> "cog"와 같이 4단계를 거쳐 변환할 수 있다. 
+
+return: 
+- "최소" 몇 단계의 과정을 거쳐 begin을 target으로 변환할 수 있는 지 return 하도록 solution함수를 작성해주세요. 
+- 변환할 수 없을 때 0을 반환 
+
+Idea: 
+- 문제에서 "최솟값"을 계산하라고 했으니까, BFS로 접근해보면, 각 단어들을 node로 설정하고
+- 하나의 char만 다른 값들만 edge 연결시킨다. 
+- 그리고 begin노드에서 target 노드까지 연결된 최소 거리를 측정하면 된다. (shortest path)
+````
+
+````{admonition} Solution 
+:class: dropdown 
+
+```{code-block} python 
+from heapq import heappush, heappop 
+
+MAX = int(1e10)
+
+def is_one_different(word1: str, word2: str) -> bool:
+    cnt = 0
+
+    if len(word1) != len(word2):
+        return False 
+    
+    for idx in range(len(word1)):
+        if word1[idx] != word2[idx]:
+            cnt += 1 
+        if cnt >= 2:
+            return False 
+    return True 
+
+def dijkstra(start_node, target_node):
+    global shortest_path 
+
+    shortest_path[start_node] = 0 
+    pq = [(0, 0)]
+    # (E+V) log(V)
+    while pq:
+        cur_dis, cur_node = heappop(pq) # VlogV
+
+        if cur_dis > shortest_path[cur_node]:
+            continue 
+
+        if cur_node == target_node:
+            return 
+        
+        # Elog(V)
+        for nxt_node in graph[cur_node]:
+            nxt_dis = cur_dis + 1 
+            if nxt_dis < shortest_path[nxt_node]:
+                shortest_path[nxt_node] = nxt_dis 
+                heappush(pq, (nxt_dis, nxt_node))
+
+
+def solution(begin, target, words):
+    global graph, shortest_path 
+    if target not in words:
+        return 0
+    
+    n = len(words) + 1  # words에 있는 단어들 + begin 단어 
+    graph = [[] for _ in range(n)]
+    
+    # graph INIT ~ O(N^2)
+    for idx, word in enumerate(words): 
+        if is_one_different(begin, word):
+            graph[0].append(idx+1) # words안에 있는 단어들은 index +1 (begin이 1증가)
+            graph[idx+1].append(0)
+        if word == target:
+            target_id = idx + 1 
+        
+        for j in range(idx+1, len(words)):
+            if is_one_different(word, words[j]):
+                graph[idx+1].append(j+1)
+                graph[j+1].append(idx+1)
+    # ~ O(ElogN)
+    shortest_path = [MAX] * n
+    dijkstra(0, target_id)
+    return shortest_path[target_id] if shortest_path[target_id] != MAX else 0
+
+
+# begin = "hit"; target="cog"; words = ["hot", "dot", "dog", "lot", "log", "cog"] # 4 
+begin = "hit"; target="cog"; words = ["hot", "dot", "dog", "lot", "log"] # 0
+print(solution(begin, target, words))
+```
+````
+
+### 아이템 줍기 
+
+````{admonition} Idea 
+:class: dropdown 
+
+이 문제는 그래프를 직접 adjacency list로 그리려고 하면 괴로워진다. 애초에 "정점-간선 그래프"가 아닌 격자 (grid) + BFS로 생각하는게 훨씬 편하다. 
+
+![](../../assets/img/DFS_BFSPS/12.png)
+
+위의 상황에서 아래처럼 좌표를 2배로 만들면, 모서리와 안쪽 칸이 분리되어 테두리만 정확히 따라갈 수 있게 된다. 
+
+![](../../assets/img/DFS_BFSPS/13.png)
+
+
+1. 좌표를 2배로 키운다. 
+    - 이유: 직사각형들이 꼭짓점만 닿을 때, 대각선으로 잘못 돌아가는 길을 막기 위해 
+    - 좌표를 2배로 만들면 "모서리"들이 모두 칸 사이에 생겨서, 테두리만 정확히 따라갈 수 있음 
+2. 직사각형들로 2D 맵을 만든다.
+    - 처음에는 직사각형 전체 영역을 1(지나갈 수 있음)으로 채운다. 
+    - 그 다음, 직사각형 내부 (테두리 제외)는 0 (못지나감)으로 채운다.
+    - 이렇게 하면 딱 '테두리'만 1로 남음 -> 우리가 갈 수 있는 길은 이 1인 칸들 
+3. 캐릭터 위치에서 아이템 위치까지 BFS 
+    - 시작점, 도착점 좌표도 2배로 
+    - 상/하/좌/우 네 방향으로만 이동 
+    - 1인 칸만 이동 가능 
+    - BFS에서 (처음 아이템에 도달했을 때 거리 /2) 가 정답 
+
+왜 이렇게 하면 효율적인가?
+- 좌표가 최대 50이라서, 2배를 해도 최대 100 × 100 정도 격자.
+- BFS 한 번 돌려도 O(100 * 100) 정도 → 충분히 빠름.
+- 직사각형 개수도 많지 않아서, 전체 채우는 것도 O(rectangle 수 * 100 * 100) 이하.
+- 그래프의 인접 리스트를 만들 필요 없이, 그냥 2D 배열 + BFS로 끝낼 수 있어서 코드도 훨씬 깔끔해.
+````
+````{admonition} Solution
+:class: dropdown 
+
+한가지 짚을 점은, 아래 구현에서 range체크를 할 때, `0<=nx<=MAX`로 `2<=nx<=MAX`를 사용하지 않았다. x와 y의 범위는 원래 1<= x, y<=50인데, 이처럼 하는 이유는, graph의 유효 인덱스 범위는 행/열 인덱스: 0~101이기 때문이다.
+
+왜냐하면, grahp[0][..], graph[1][..]은 이미 0인 상태이며 뒤의 range는 넉넉히 해두고 실제 갈 수 있는 상태는 graph[0][..], graph[1][..]의 0/1 상태로 판단하기 때문이다. 
+
+```{code-block} python 
+from collections import deque 
+
+def solution(rectangle, characterX, characterY, itemX, itemY):
+    # N = 51
+    # 1. 좌표 2배 스케일링  
+    MAX = 102 
+    graph = [[0] * MAX for _ in range(MAX)]
+    # (x1, y2) ~ (x2, y2)
+    # (x1, y1) ~ (x2, y1)
+    #2-1. 직사각형 전체를 1로 채우기 
+    for x1, y1, x2, y2 in rectangle:
+        x1 *= 2 ; y1 *= 2 ; x2 *= 2  ; y2 *= 2
+        # 직사각형 안에는 다 1로 채우기 
+        for y in range(y1, y2+1):
+            for x in range(x1, x2+1):
+                graph[x][y] = 1 
+
+    #2-2. 직사각형 내부는 0으로 지워서 테두리만 남기기 
+    for x1, y1, x2, y2 in rectangle:
+        x1 *= 2 ; y1 *= 2 ; x2 *= 2  ; y2 *= 2
+        # 직사각형 안에는 다 1로 채우기 
+        for y in range(y1+1, y2):
+            for x in range(x1+1, x2):
+                graph[x][y] = 0 
+
+    # 3. BFS로 최단 거리 탐색 
+    sx, sy = characterX*2 , characterY*2 
+    ex, ey = itemX*2 , itemY*2 
+
+    dist = [[-1]*MAX for _ in range(MAX)]
+    q = deque()
+    q.append((sx, sy))
+    dist[sx][sy] = 0
+
+    dx = [1, -1, 0, 0]
+    dy = [0, 0, 1, -1]
+
+    while q:
+        x, y = q.popleft()
+
+        # 아이템 위치 도달하면 (2배 스케일링 했으니) 거리 나누기 2 
+        if x == ex and y == ey:
+            return dist[x][y] // 2 
+        
+        for k in range(4):
+            nx = x + dx[k]
+            ny = y + dy[k]
+
+            # 맵 범위 확인 + 테두리(1)만 이동 + 미방문
+            if 0 <= nx <= MAX and 0 <= ny <= MAX:
+                if graph[nx][ny] == 1 and dist[nx][ny] == -1:
+                    dist[nx][ny] = dist[x][y] + 1 
+                    q.append((nx, ny))
+
+
+
+            
+# rectangle = [[1,1,7,4],[3,2,5,5],[4,3,6,9],[2,6,8,8]]; s_x = 1; s_y=3; item_x = 7; item_y=8 # 17 
+# rectangle = [[1,1,8,4],[2,2,4,9],[3,6,9,8],[6,3,7,7]]; s_x = 9; s_y=7; item_x = 6; item_y=1 # 11
+# rectangle = [[1,1,5,7]]; s_x = 1; s_y=1; item_x = 4; item_y=7 # 9
+# rectangle = [[2,1,7,5],[6,4,10,10]]; s_x = 3; s_y=1; item_x = 7; item_y=10 # 15
+rectangle = [[2,2,5,5],[1,3,6,4],[3,1,4,6]]; s_x = 1; s_y=4; item_x = 6; item_y=3 # 10
+print(solution(rectangle, s_x, s_y, item_x, item_y))
+```
+````
+
 
 ## BFS 
 ###  미생물 연구 Sorting, PriorityQueue 

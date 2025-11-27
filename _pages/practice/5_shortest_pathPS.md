@@ -96,6 +96,324 @@ if __name__ == "__main__":
 ````
 ### 디스크 컨트롤러 
 
+````{admonition} 틀린 정답 
+:class: dropdown 
+
+아래 코드의 문제점은 task_pq는 모든 작업을 가지고 있고, 작업의 요청시간이 현재 시간보다 클때에만 해당 task 작업을 진행하게 되어 있음. 
+이의 문제점은, 현재 작업이 안된 작업들 중 cur_time보다 request_time 들이 다 높아서, 요청 시간이 가장 작은 task를 꺼내야할 때 문제가 됨. 
+task_pq는 요청 시간이 아닌 소요 시간이 가장 짧은 테스크를 min-heap으로 저장해놓았기 때문에 해당 task를 뽑을 수 없음. 
+
+또한, O(N^2log(N))이 걸림. 왜냐하면 `unused_task`를 따로 관리하며, 안 쓰는 것을 넣었다가 빼기 때문임.
+
+-> 이러한 문제점들을 위해서,도착한 작업만 pq에 넣고 + pq가 비면 다음 요청 시각으로 time 점프를 하는 것을 지켜주면 된다. 
+
+```{code-block} python 
+from typing import List 
+from heapq import heappush, heappop 
+
+class Task:
+    def __init__(self, id: int, request_time: int, time_used:int):
+        self.id = id 
+        self.request_time = request_time
+        self.time_used = time_used 
+        self.start_time = -1 
+        self.end_time = -1 
+
+    def __lt__(self, other):
+        if self.time_used == other.time_used:
+            return self.id < other.id 
+        return self.time_used < other.time_used 
+    
+    def calculate_turnaround(self):
+        assert self.end_time != -1 
+        return self.end_time - self.request_time 
+    
+class History:
+    def __init__(self, id=-1):
+        self.start_time = -1 
+        self.end_time = -1 
+        self.task_id = id 
+    
+
+def solution(jobs):
+    '''
+    1 <= jobs.length <= 500
+    jobs[i] = [s, l] = [작업 요청 시점, 작업 소요시간]
+
+    최대 N=500, 3NlogN ~ 1e4 
+    '''
+    # 필요한 자료구조 INIT 
+    task_pq = []
+    is_harddisk_used = History() # History, task_id being processed 
+    task_id_to_object_list = []
+    # O(NlogN)
+    for id, job in enumerate(jobs):
+        cur_task = Task(id, job[0], job[1]) # object sharing 
+        heappush(task_pq, cur_task) # jobs.heapify를 하고 싶어도, 단일 정수가 아니라 어려울 듯. 
+        task_id_to_object_list.append(cur_task) 
+    '''
+    아이디어: 
+    - pq에 모든 작업을 넣어두고, 매번 "현재 시간까지 도착한 작업들 중에서" 수행할 수 있는 최단 작업을 찾으려고
+    pq를 쭉 빼면서 request_time <= cur_time인 task를 만날때까지 탐색 
+    - 아직 도착 안 한 것들은 unused_tasks에 모았다가 다시 pqd에 넣기 
+    - 시간 복잡도: 최악 O(N^2 log(N))
+
+    
+    '''
+    cur_time = 0
+    total_turnaround_time = 0
+    while task_pq: # 최악 N번 
+        # 1-1. 하드디스크가 사용 중이면, 작업을 끝냄 / 하드디스크가 사용중이 아님 (맨 처음)
+        if is_harddisk_used.task_id != -1 and is_harddisk_used.end_time == -1:
+            cur_id = is_harddisk_used.task_id 
+            cur_task = task_id_to_object_list[cur_id]
+            cur_time = cur_task.start_time + cur_task.time_used 
+            # 작업 끝냄 (end time 갱신)
+            cur_task.end_time = cur_time 
+            is_harddisk_used.end_time = cur_time 
+            # 1-2. 작업을 끝냈다면, turnaround time 계산 
+            total_turnaround_time += cur_task.calculate_turnaround()
+
+        # 작업을 끝냄과 동시에 다른 작업 시작 가능 
+        # 2-1. 현재 시간에서 요청이 된 task 중 (lazy validation) 우선순위가 가장 높은 task 선택
+        
+        unused_tasks = []
+        # O(NlogN)
+        while task_pq: # 최대 ~N
+            nxt_task = heappop(task_pq) # O(logN)
+            if nxt_task.request_time <= cur_time: 
+                # 가능 
+                # 2-2. 하드디스크가 처리하고 있는 정보 update 
+                is_harddisk_used.start_time = cur_time 
+                is_harddisk_used.end_time = -1 
+                is_harddisk_used.task_id = nxt_task.id 
+                task_id_to_object_list[nxt_task.id].start_time = cur_time 
+                break
+            else:
+                #  현재 요청안된 task 
+                unused_tasks.append(nxt_task)
+        
+        # 3. task_pq에서 제거하였으나, 아직 사용안된 task들 다시 넣어주기 
+        # O(NlogN)
+        for task in unused_tasks:
+            heappush(task_pq, task)
+
+        # 현재 시간대에 cur_Time을 위로 늘려줘야만 함. 
+        # 도착시간이 가장 빠른 작업을 골라야하는데, task_pq에는 소요 시간이 가장 짧은 작업이 들어있음. 
+        if len(unused_tasks) >0 and len(unused_tasks)== len(task_pq):
+            cur_task = heappop(task_pq)
+            cur_time = cur_task.request_time 
+            is_harddisk_used.task_id = cur_task.id
+            is_harddisk_used.start_time = cur_time 
+            cur_task.start_time = cur_time 
+            is_harddisk_used.end_time = -1 
+    # while 문에서 마지막 task작업에 대해서 끝마치기 
+    if is_harddisk_used.task_id != -1 and is_harddisk_used.end_time == -1:
+        cur_id = is_harddisk_used.task_id 
+        cur_task = task_id_to_object_list[cur_id]
+        cur_time = cur_task.start_time + cur_task.time_used 
+        # 작업 끝냄 (end time 갱신)
+        cur_task.end_time = cur_time 
+        is_harddisk_used.end_time = cur_time 
+        # 1-2. 작업을 끝냈다면, turnaround time 계산 
+        total_turnaround_time += cur_task.calculate_turnaround()
+
+    
+    return int(total_turnaround_time / len(jobs)) # turnaround평균의 "정수 부분"을 출력, 버림
+        
+
+
+    
+if __name__ == "__main__":
+    # jobs = [[0, 3], [1, 9], [3, 5]] # 8
+    # jobs = [[0, 3], [4, 3]] # 8
+    jobs = [[0, 10], [3, 1], [3, 2]]# 9
+    print(solution(jobs))
+```
+````
+
+````{admonition} Idea 
+:class: dropdown 
+
+```text
+'''
+- 단 '하나의' 하드디스크를 가지고 있음. 
+- 우선순위 디스크 컨트롤러 구현 
+
+1. 자료구조 큐: 작업 요청이 들어왔을 때 (작업 번호, 요청 시각, 작업 소요 시간) 저장
+    - 필요한 자료구조 
+        - priority queue (task_pq): request_time이 현재 시간보다 작은 작업들을 넣어야함. 
+        - jobs.sort()후 현재 시간이 request_time보다 작은 idx를 저장하고 있음. 
+2. 하드디스크가 작업을 하고 있지 않고, 대기 큐가 비어있지 않으면 우선순위가 가장 높은 작업을 대기 큐에서 꺼내서 하드디스크에 작업을 시킴
+    - 우선순위 
+        - 작업의 소요시간이 가장 짧은 것 
+        - 작업의 번호가 가장 작은 것 (작업 id는 request_time이 작으면 됨.)
+    - 필요한 자료구조 
+        - 하드디스크의 작업 여부 is_harddisk_used[harddisk_id] = -1 (False) / True (하드디스크가 작업하는 Task id)
+        - Task class (번호, 요청 시각, 작업 소요시간, 작업 시작 시간, end시간, __lt__ 함수  , turnaround 계산 함수 
+
+3. 하드디스크는 작업을 한 번 시작하면 작업을 마칠 때까지 그 작업만 수행 
+    - 필요한 자료구조 
+        - 하드디스크 id - History class (task_id, 시작 시간, end 시간)
+
+4. 하드디스크가 어떤 작업을 마치는 시점과 다른 작업 요청이 들어오는 시점이 "겹치면" 하드디스크가 작업을 마치자마자 디스크 컨트롤러는 요청이 들어온
+작업을 "대기 큐"에 저장한 뒤 우선순위가 높은 작업을 대기 큐에서 꺼내서 하드디스크에 그 작업을 시킨다. 
+- 요청을 한 작업이 들어오고 그 같은 시점에 하드디스크가 작업이 끝나면 바로 다른 작업을 시작할 수 있다. 
+    - 하드디스크가 작업을 하고 있는 중이면, -> 끝나는 지점 history에 확인해서 반환시간 계산하기  
+    - 작업이 끝나면 다음에 할 작업이 있는지 대기 큐에서 받으면 됨. 
+
+5. 하드디스크가 어떤 작업을 마치는 '시점'에 다른 작업이 들어오지 않더라도 그 작업을 마치자마자 또 다른 작업을 시작할 수 있다. 
+- 이 과정에서 걸리는 시간은 없다고 가정한다. 
+
+Algorithm 
+0. 필요한 자료구조 
+- Task class, History class, task_pq 생성, 
+- is_harddisk_used[harddisk_id] = -1 (False) / True (하드디스크가 작업하는 Task id), 
+- 대기 큐 Task class에 한번에 저장해놓기 
+- History class (task_id, 시작 시간, end 시간)
+
+Algorithm 
+    1. 현재 수행된 작업 개수(cnt) n이 원래 작업 개수보다 작은 경우에 아래 스텝을 계속 진행 
+    2. 현재 jobs.sort()[idx] request_time <= cur_time보다 작은 것들을 pq에 넣음 
+    3. pq에서 가장 작은 것을 뺌 
+        3-1. 만약 pq에 원소가 없다면, cur_time을 jobs.sort()에서 현재 idx.request_time의 값으로 대체 
+    4. turnaround_time은 cur_time + required_time (소요시간) 이고 cur_time += required_time으로 업데이트 
+'''
+
+import math 
+N = 500 
+
+print(N*math.log(N)) # ~1e4 
+```
+````
+````{admonition} Solution 
+:class: dropdown 
+
+```{code-block} python 
+import heapq 
+
+def solution(jobs):
+    # 1. 요청 시간 기준으로 정렬 
+    jobs.sort(key=lambda x: x[0]) # O(NlogN)
+
+    # 필요한 자료 구조 
+    heap = [] # (작업 소요 시간, 요청 시간)
+    time = 0 # 현재 시각 
+    idx = 0  # jobs에서 아직 힙에 안 넣은 인덱스 
+    count = 0 # 처리한 작업 수 
+    total_time = 0 # 요청 ~ 완료 시간 합 
+
+    n = len(jobs)
+
+    while count < n:
+        # 2. 현재 시각까지 들어온 모든 job을 heap에 넣기 
+        '''
+        각 job은 딱 한 번 heap에 push 되고 (idx가 전역에서 위로만 움직임), 딱 한 번 pop 됨
+        push, pop 각각 O(log N), N개에 대해 한 번씩 → O(N log N)
+        '''
+        while idx < n and jobs[idx][0] <= time:
+            req, dur = jobs[idx]
+            heapq.heappush(heap, (dur, req))
+            idx += 1 
+
+
+        if heap:
+            # 3. 가장 작업 시간이 짧은 job을 처리 
+            dur, req = heapq.heappop(heap)
+            time += dur  # 이 작업이 끝나는 시각 = 현재 시각 
+            total_time += time-req # 요청 ~ 완료 시간 (turnaround)
+            count += 1 
+        else:
+            time = jobs[idx][0]
+
+    return total_time // n
+    
+if __name__ == "__main__":
+    # jobs = [[0, 3], [1, 9], [3, 5]] # 8
+    # jobs = [[0, 3], [4, 3]] # 8
+    jobs = [[0, 10], [3, 1], [3, 2]]# 9
+    print(solution(jobs))
+```
+````
+
+### 이중우선순위큐 
+
+````{admonition} Explanation 
+:class: dropdown 
+
+```text
+이중 우선순위큐는 3가지 연산을 할 수 있다. 
+1. "I 숫자" 
+    - 큐에 주어진 숫자를 삽입 
+    - 숫자는 음수일 수 있음. 
+2. D 1 
+    - 큐에서 최댓값 삭제 
+    - 빈 큐에 데이터를 삭제하라는 연산이 주어질 경우, 해당 연산은 무시 
+3. D -1 
+    - 큐에서 최솟값 삭제 
+    - 빈 큐에 데이터를 삭제하라는 연산이 주어질 경우, 해당 연산은 무시 
+
+
+매개변수로 이중 우선순위 큐가 할 연산 operations이 주어질 때, 모든 연산을 처리한 후 큐가 비어있으면 [0,0], 
+비어있지 않으면 [최댓값, 최솟값]을 return 하도록 solution 함수를 구현해라. 
+
+1 <= operations.length <= 1_000_000 
+```
+````
+
+````{admonition} Solution
+:class: dropdown 
+
+만약, visited 리스트를 만들어서 False/True로 지연 삭제를 만들고 싶은 경우에는 
+visited = [False] * len(operations)를 하고 
+visited[i] = True 로 한다. 이때 id 숫자는 음수일 수 있으므로, id는 operation index (0, 1, 2, ...)로 만들어준다. 
+
+```{code-block} python 
+from heapq import heappush, heappop 
+
+# 필요한 자료구조 
+min_heap = []
+max_heap = []
+does_id_exist = set()  # True/False 
+
+def solution(operations):
+    global min_heap, max_heap, does_id_exist
+    for op in operations:
+        cmd = op.split()
+        if cmd[0] == "I":
+            heappush(min_heap, int(cmd[1]))
+            heappush(max_heap, -1*(int(cmd[1])))
+            does_id_exist.add(int(cmd[1]))
+        
+        # 최댓값 삭제 
+        elif cmd[0] == "D" and cmd[1] == "1":
+            # lazy deletion 
+            while max_heap:
+                cur_num = heappop(max_heap) * -1 
+                if cur_num in does_id_exist:
+                    does_id_exist.remove(cur_num)
+                    break
+        
+        # 최솟값 삭제 
+        else:
+            # lazy deletion 
+            while min_heap:
+                cur_num = heappop(min_heap)
+                if cur_num in does_id_exist:
+                    does_id_exist.remove(cur_num)
+                    break 
+    # 모든 연산 처리후 가장 최신 업데이트에는 does_id_exist가 가지고 있음 
+    # 큐가 비어있으면 [0,0]
+    # 비어있지 않으면, [최댓값, 최솟값]을 return 
+    does_id_exist = list(does_id_exist)
+    does_id_exist.sort() # ascending sort 
+    return [does_id_exist[-1], does_id_exist[0]] if does_id_exist else [0, 0]
+
+# operations = ["I 16", "I -5643", "D -1", "D 1", "D 1", "I 123", "D -1"] # [0,0]
+operations = ["I -45", "I 653", "D 1", "I -642", "I 45", "I 97", "D 1", "D -1", "I 333"] # [333, -45]
+print(solution(operations))
+```
+````
 
 ## Priority Queue 
 
