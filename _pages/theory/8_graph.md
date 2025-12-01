@@ -678,3 +678,303 @@ while q:                     # 각 정점은 최대 한 번만 큐에서 pop
 - Kahn's Algorithm을 이용해 구현할 수 있으며, 시간 복잡도는 O(K+E)이다. 
 - 사이클 검출: 진입 차수 0인 노드가 더 이상 없을 때 남은 노드가 존재하면, 사이클이 있는 것이다. 
 ```
+
+## 오일러 경로 (Eulerian Path)
+
+그래프 이론에서 ***모든 간선(edge)을 정확히 한 번씩*** 지나며 한 번에 이동할 수 있는 경로를 **오일러 경로(Eulerian Path)** 라고 한다. 
+
+> 간선을 한 번이라도 빠뜨리거나 중복으로 지나면 오일러 경로가 아님 
+
+오일러 경로는 실생활에서 **모든 연결(간선)을 한 번씩 처리** 하고 싶을 때 활용된다. 
+
+예시:
+
+- 우편 배달/쓰레기 수거 루트 최적화 
+- 도시 도로 위 점검 경로 설계 
+- 네트워크 케이블 검사 (모든 연결 지점 테스트)
+- 퍼즐 및 미로에서 간선 기반 완주 경로 찾기 
+- 항공권 경로 
+  
+---
+
+### 오일러 회로 (Eulerian Circuit)와 비교 
+
+- **오일러 경로**: 그래프에서 모든 간선(edge)을 정확히 한 번씩 지나가는 경로 
+- **오일러 회로**: 오일러 경로이면서, **시작점 = 끝점** 인 경우 
+
+```{list-table} 오일러 회로와 오일러 경로 비교 
+:widths: 20 45 45 
+:header-rows: 1 
+
+* - 구분 
+  - 오일러 경로 
+  - 오일러 회로 
+* - 정의 
+  - 모든 간선을 1번씩 방문하는 경로 
+  - 모든 간선을 1번씩 방문 후 제자리로 돌아오는 경로 
+* - 시작점 = 끝점 
+  - X 
+  - O
+* - undirected 그래프 존재 조건 
+  - **차수 (Degree) 가 홀수인 정점이 0개 또는 2개**
+  - **모든 정점의 차수가 짝수**
+* - directed graph 존재 조건 
+  - 시작 후보 out = in + 1 , 끝 후보: in = out +1, 다른 정점 in = out 
+  - 모든 정점에서 out = in 
+```
+> 차수 (Degree) = 한 정점에 연결된 간선의 개수, undirected graph에 사용됨. <br>
+> 진입 차수 (Indegree) =  directed graph에서 밖에서 해당 노드로 들어오는 간선 수를 의미 <br>
+> 진출 차수 (Outdegree) = directed graph에서 밖으로 나가는 간선 수 <br>
+
+
+### 오일러 경로 탐색 알고리즘 
+
+오일러 경로 탐색은 Hierholzer 알고리즘 (스택 DFS)를 사용하여 구현할 수 있다. Hierholzer 알고리름은 시작노드부터 연결되어 있는 다음 노드를 모두 stack에 넣어둔 후, 더 이상 나갈 간선이 없을 때 확정된 경로를 기록한다. 즉, 막다른 길부터 뒤에서부터 확정되기 때문에 경로가 거꾸로 쌓이게 되고 이를 마지막에 뒤집는 것이다. 
+
+#### 유향 그래프 소스코드 및 시간 복잡도 
+
+***주요 아이디어***
+- 각 간선을 정확히 1번만 사용하는 DFS 
+- stack에서 마지막 노드에서 더 이상 나갈 간선이 없으면 현재 노드를 경로에 확정 
+- 역순으로 쌓이므로 마지막에 뒤집어서 반환 
+
+아래는 유향 그래프 예시이다. 
+
+**Step 1** <br>
+
+<img src="../../assets/img/graph/22.png" width="500px">
+
+위와 같이, edges에 대한 정보를 받은 후, graph: dict[node, [nxt_nodes]]와 stack, route를 초기화해준다. stack의 첫 원소로 경로의 첫번째 노드를 삽입한다. 단, 문제에서 오일러 경로가 여러개일 경우, 알파벳 순으로 먼저 오는 경로를 반환하라고 하였기 때문에, graph의 각 value들은 반대로 저장해야하므로 내림 차순으로 정렬한다. (알파벳 순으로 작은 노드가 먼저 stack에 들어갈 수 있도록 함.)
+
+- stack[-1]: "ICN"
+- graph["ICN"] = ["SFO", "ATL"], 비어있지 않음. 
+  - graph["ICN"]의 맨 마지막 원소 제거한 후 stack.append()해준다. 
+
+**Step 2** <br>
+
+<img src="../../assets/img/graph/23.png" width="500px">
+
+- stack[-1]: "ATL"
+- graph["ATL"] = ["SFO", "ICN"], 비어있지 않음. 
+  - graph["ATL"]의 맨 마지막 원소 제거한 후 stack.append()해준다. 
+
+
+**Step 3** <br>
+
+<img src="../../assets/img/graph/24.png" width="500px">
+
+- stack[-1]: "ICN"
+- graph["ICN"] = ["SFO"], 비어있지 않음. 
+  - graph["ICN"]의 맨 마지막 원소 제거한 후 stack.append()해준다. 
+
+**Step 4** <br>
+
+<img src="../../assets/img/graph/25.png" width="500px">
+
+- stack[-1]: "SFO"
+- graph["SFO"] = ["ATL"], 비어있지 않음. 
+  - graph["SFO"]의 맨 마지막 원소 제거한 후 stack.append()해준다. 
+
+**Step 5** <br>
+
+<img src="../../assets/img/graph/26.png" width="500px">
+
+- stack[-1]: "ATL"
+- graph["ATL"] = ["SFO"], 비어있지 않음. 
+  - graph["ATL"]의 맨 마지막 원소 제거한 후 stack.append()해준다. 
+
+**Step 6** <br>
+
+<img src="../../assets/img/graph/27.png" width="500px">
+
+- stack[-1]: "SFO"
+- graph["SFO"] = [], 비어있음!
+  - 비어있는 경우, stack.pop() 원소를 route에 삽입한다. 
+
+**Step 7** <br>
+
+<img src="../../assets/img/graph/28.png" width="500px">
+
+- stack[-1]: "ATL"
+- graph["ATL"] = [], 비어있음!
+  - 비어있는 경우, stack.pop() 원소를 route에 삽입한다. 
+
+**Step 8** <br>
+
+<img src="../../assets/img/graph/29.png" width="500px">
+
+- stack[-1]: "SFO"
+- graph["SFO"] = [], 비어있음!
+  - 비어있는 경우, stack.pop() 원소를 route에 삽입한다. 
+
+**Step 9** <br>
+
+<img src="../../assets/img/graph/30.png" width="500px">
+
+- stack[-1]: "ICN"
+- graph["ICN"] = [], 비어있음!
+  - 비어있는 경우, stack.pop() 원소를 route에 삽입한다. 
+
+**Step 10** <br>
+
+<img src="../../assets/img/graph/31.png" width="500px">
+
+- stack[-1]: "ATL"
+- graph["ATL"] = [], 비어있음!
+  - 비어있는 경우, stack.pop() 원소를 route에 삽입한다. 
+
+**Step 11** <br>
+
+<img src="../../assets/img/graph/32.png" width="500px">
+
+- stack[-1]: "ICN"
+- graph["ICN"] = [], 비어있음!
+  - 비어있는 경우, stack.pop() 원소를 route에 삽입한다. 
+
+**Step 12** <br>
+
+<img src="../../assets/img/graph/33.png" width="500px">
+
+- stack이 비었음. 
+- 최종 경로는 route[::-1]임. 
+
+
+
+다음과 같이 오일러 경로를 구현할 수 있다. 
+````{admonition} Source code for Eulerian Path 
+:class: dropdown 
+
+```{code-block} python 
+from collections import defaultdict, deque 
+
+def is_weakly_connected_directed(edges, nodes):
+    """
+    방향을 무시했을 때 간선이 있는 정점들이 하나의 컴포넌트에 있는지 확인
+    edges: 리스트[(u, v)]
+    nodes: 간선에 등장하는 모든 정점의 집합
+    """
+    if not edges:
+        return True 
+    
+    undirected = defaultdict(list)
+    
+    for u, v in edges:
+        undirected[u].append(v)
+        undirected[v].append(u)
+        
+    # nodes는 이미 edges에서 나온 정점들만 모은 거라, 그 중 아무거나 시작해도 됨
+    start = next(iter(nodes))
+    visited = set([start])
+    q = deque([start])
+
+    while q:
+        cur = q.popleft()
+        for nxt in undirected[cur]:
+            if nxt not in visited:
+                visited.add(nxt)
+                q.append(nxt)
+
+    # 간선이 있는 모든 정점이 하나의 컴포넌트에 있어야 함
+    return visited == nodes
+
+
+def has_eulerian_path_directed(edges, outdeg, indeg, nodes):
+    """
+    Parameters:
+        edges: 리스트[(u, v)] 형태의 유향 간선 목록
+        nodes: set()으로 모든 정점 목록 
+        outdeg: outdeg[v]는 v정점이 가지는 outdegree 수
+        indeg: indeg[v]는 v정점이 가지는 indegree 수
+    
+    Return:
+        오일러 경로 존재 여부 반환 (True/False)
+    """
+
+    if not is_weakly_connected_directed(edges, nodes):
+        return False 
+    
+    start_nodes = 0
+    end_nodes = 0
+
+    for v in nodes:
+        outd = outdeg[v]
+        ind = indeg[v]
+        if outd - ind == 1:
+            start_nodes += 1 
+        elif ind - outd == 1:
+            end_nodes += 1 
+        elif ind == outd:
+            continue 
+        else:
+            # 차이가 1보다 큰 정점이 있으면 불가능 
+            return False 
+
+    # (시작 1, 끝 1) → path
+    # (시작 0, 끝 0) → circuit
+    return (start_nodes == 1 and end_nodes == 1) or (start_nodes == 0 and end_nodes == 0)
+
+
+def find_eulerian_path_directed(edges):
+    """
+    edges: 리스트[(u, v)] 형태의 유향 간선 목록 
+    반환: 오일러 경로(또는 회로) 리스트, 없으면 [] 
+    """
+    indeg = defaultdict(int)
+    outdeg = defaultdict(int)
+    graph = defaultdict(list)
+    nodes = set()
+
+    for u, v in edges:
+        graph[u].append(v)
+        outdeg[u] += 1 
+        indeg[v] += 1 
+        nodes.add(u)
+        nodes.add(v)
+
+    # 오일러 경로/회로 존재 여부 검사
+    if not has_eulerian_path_directed(edges, outdeg, indeg, nodes):
+        return [] 
+    
+    # 시작 정점 선택 규칙:
+    # 1) out = in + 1 인 정점이 있으면 그 정점에서 시작 (path)
+    # 2) 없으면, 아무 정점(간선이 있는)에서 시작 (circuit)
+    start = None 
+    for v in nodes:
+        if outdeg[v] - indeg[v] == 1:
+            start = v 
+            break 
+
+    if start is None:
+        start = next(iter(nodes))
+
+    # Hierholzer 알고리즘 
+    for v in graph:
+        # pop() 쓰기 좋게 역순 정렬 (사전순 필요 없으면 이 부분은 생략 가능)
+        graph[v].sort(reverse=True)
+
+    stack = [start]
+    path = []
+
+    while stack:
+        v = stack[-1]
+        if graph[v]:
+            nxt = graph[v].pop()
+            stack.append(nxt)
+        else:
+            path.append(stack.pop())
+    
+    return path[::-1]
+
+edges = [
+    ("ICN", "JFK"),
+    ("JFK", "HND"),
+    ("HND", "ICN"),
+]
+
+print(find_eulerian_path_directed(edges))
+# 예: ['ICN', 'JFK', 'HND', 'ICN'] (회로)
+
+```
+````
+
+시간 복잡도는 그래프 정렬시 O(ElogE), DFS + pop은 O(E) 시간이 걸리므로, 전체 시간 복잡도는 O(ElogE)로 효율적인 편이다. 
