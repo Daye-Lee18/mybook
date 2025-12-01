@@ -803,13 +803,176 @@ while q:                     # 각 정점은 최대 한 번만 큐에서 pop
 
 <img src="../../assets/img/graph/29.png" width="500px">
 
+- stack[-1]: "SFO"
+- graph["SFO"] = [], 비어있음!
+  - 비어있는 경우, stack.pop() 원소를 route에 삽입한다. 
+
+**Step 9** <br>
+
+<img src="../../assets/img/graph/30.png" width="500px">
+
+- stack[-1]: "ICN"
+- graph["ICN"] = [], 비어있음!
+  - 비어있는 경우, stack.pop() 원소를 route에 삽입한다. 
+
+**Step 10** <br>
+
+<img src="../../assets/img/graph/31.png" width="500px">
+
+- stack[-1]: "ATL"
+- graph["ATL"] = [], 비어있음!
+  - 비어있는 경우, stack.pop() 원소를 route에 삽입한다. 
+
+**Step 11** <br>
+
+<img src="../../assets/img/graph/32.png" width="500px">
+
+- stack[-1]: "ICN"
+- graph["ICN"] = [], 비어있음!
+  - 비어있는 경우, stack.pop() 원소를 route에 삽입한다. 
+
+**Step 12** <br>
+
+<img src="../../assets/img/graph/33.png" width="500px">
+
+- stack이 비었음. 
+- 최종 경로는 route[::-1]임. 
+
+
 
 다음과 같이 오일러 경로를 구현할 수 있다. 
 ````{admonition} Source code for Eulerian Path 
 :class: dropdown 
 
 ```{code-block} python 
+from collections import defaultdict, deque 
 
+def is_weakly_connected_directed(edges, nodes):
+    """
+    방향을 무시했을 때 간선이 있는 정점들이 하나의 컴포넌트에 있는지 확인
+    edges: 리스트[(u, v)]
+    nodes: 간선에 등장하는 모든 정점의 집합
+    """
+    if not edges:
+        return True 
+    
+    undirected = defaultdict(list)
+    
+    for u, v in edges:
+        undirected[u].append(v)
+        undirected[v].append(u)
+        
+    # nodes는 이미 edges에서 나온 정점들만 모은 거라, 그 중 아무거나 시작해도 됨
+    start = next(iter(nodes))
+    visited = set([start])
+    q = deque([start])
+
+    while q:
+        cur = q.popleft()
+        for nxt in undirected[cur]:
+            if nxt not in visited:
+                visited.add(nxt)
+                q.append(nxt)
+
+    # 간선이 있는 모든 정점이 하나의 컴포넌트에 있어야 함
+    return visited == nodes
+
+
+def has_eulerian_path_directed(edges, outdeg, indeg, nodes):
+    """
+    Parameters:
+        edges: 리스트[(u, v)] 형태의 유향 간선 목록
+        nodes: set()으로 모든 정점 목록 
+        outdeg: outdeg[v]는 v정점이 가지는 outdegree 수
+        indeg: indeg[v]는 v정점이 가지는 indegree 수
+    
+    Return:
+        오일러 경로 존재 여부 반환 (True/False)
+    """
+
+    if not is_weakly_connected_directed(edges, nodes):
+        return False 
+    
+    start_nodes = 0
+    end_nodes = 0
+
+    for v in nodes:
+        outd = outdeg[v]
+        ind = indeg[v]
+        if outd - ind == 1:
+            start_nodes += 1 
+        elif ind - outd == 1:
+            end_nodes += 1 
+        elif ind == outd:
+            continue 
+        else:
+            # 차이가 1보다 큰 정점이 있으면 불가능 
+            return False 
+
+    # (시작 1, 끝 1) → path
+    # (시작 0, 끝 0) → circuit
+    return (start_nodes == 1 and end_nodes == 1) or (start_nodes == 0 and end_nodes == 0)
+
+
+def find_eulerian_path_directed(edges):
+    """
+    edges: 리스트[(u, v)] 형태의 유향 간선 목록 
+    반환: 오일러 경로(또는 회로) 리스트, 없으면 [] 
+    """
+    indeg = defaultdict(int)
+    outdeg = defaultdict(int)
+    graph = defaultdict(list)
+    nodes = set()
+
+    for u, v in edges:
+        graph[u].append(v)
+        outdeg[u] += 1 
+        indeg[v] += 1 
+        nodes.add(u)
+        nodes.add(v)
+
+    # 오일러 경로/회로 존재 여부 검사
+    if not has_eulerian_path_directed(edges, outdeg, indeg, nodes):
+        return [] 
+    
+    # 시작 정점 선택 규칙:
+    # 1) out = in + 1 인 정점이 있으면 그 정점에서 시작 (path)
+    # 2) 없으면, 아무 정점(간선이 있는)에서 시작 (circuit)
+    start = None 
+    for v in nodes:
+        if outdeg[v] - indeg[v] == 1:
+            start = v 
+            break 
+
+    if start is None:
+        start = next(iter(nodes))
+
+    # Hierholzer 알고리즘 
+    for v in graph:
+        # pop() 쓰기 좋게 역순 정렬 (사전순 필요 없으면 이 부분은 생략 가능)
+        graph[v].sort(reverse=True)
+
+    stack = [start]
+    path = []
+
+    while stack:
+        v = stack[-1]
+        if graph[v]:
+            nxt = graph[v].pop()
+            stack.append(nxt)
+        else:
+            path.append(stack.pop())
+    
+    return path[::-1]
+
+edges = [
+    ("ICN", "JFK"),
+    ("JFK", "HND"),
+    ("HND", "ICN"),
+]
+
+print(find_eulerian_path_directed(edges))
+# 예: ['ICN', 'JFK', 'HND', 'ICN'] (회로)
 
 ```
 ````

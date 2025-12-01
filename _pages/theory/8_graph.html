@@ -1235,10 +1235,185 @@ union(1,5) → 5의 높이 낮으므로 5를 1 밑으로
 <p><strong>Step 8</strong> <br></p>
 <a class="reference internal image-reference" href="../../_images/292.png"><img alt="../../_images/292.png" src="../../_images/292.png" style="width: 500px;" />
 </a>
+<ul class="simple">
+<li><p>stack[-1]: “SFO”</p></li>
+<li><p>graph[“SFO”] = [], 비어있음!</p>
+<ul>
+<li><p>비어있는 경우, stack.pop() 원소를 route에 삽입한다.</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>Step 9</strong> <br></p>
+<a class="reference internal image-reference" href="../../_images/302.png"><img alt="../../_images/302.png" src="../../_images/302.png" style="width: 500px;" />
+</a>
+<ul class="simple">
+<li><p>stack[-1]: “ICN”</p></li>
+<li><p>graph[“ICN”] = [], 비어있음!</p>
+<ul>
+<li><p>비어있는 경우, stack.pop() 원소를 route에 삽입한다.</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>Step 10</strong> <br></p>
+<a class="reference internal image-reference" href="../../_images/314.png"><img alt="../../_images/314.png" src="../../_images/314.png" style="width: 500px;" />
+</a>
+<ul class="simple">
+<li><p>stack[-1]: “ATL”</p></li>
+<li><p>graph[“ATL”] = [], 비어있음!</p>
+<ul>
+<li><p>비어있는 경우, stack.pop() 원소를 route에 삽입한다.</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>Step 11</strong> <br></p>
+<a class="reference internal image-reference" href="../../_images/322.png"><img alt="../../_images/322.png" src="../../_images/322.png" style="width: 500px;" />
+</a>
+<ul class="simple">
+<li><p>stack[-1]: “ICN”</p></li>
+<li><p>graph[“ICN”] = [], 비어있음!</p>
+<ul>
+<li><p>비어있는 경우, stack.pop() 원소를 route에 삽입한다.</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>Step 12</strong> <br></p>
+<a class="reference internal image-reference" href="../../_images/331.png"><img alt="../../_images/331.png" src="../../_images/331.png" style="width: 500px;" />
+</a>
+<ul class="simple">
+<li><p>stack이 비었음.</p></li>
+<li><p>최종 경로는 route[::-1]임.</p></li>
+</ul>
 <p>다음과 같이 오일러 경로를 구현할 수 있다.</p>
 <div class="dropdown admonition">
 <p class="admonition-title">Source code for Eulerian Path</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span><span class="p">,</span> <span class="n">deque</span> 
+
+<span class="k">def</span><span class="w"> </span><span class="nf">is_weakly_connected_directed</span><span class="p">(</span><span class="n">edges</span><span class="p">,</span> <span class="n">nodes</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    방향을 무시했을 때 간선이 있는 정점들이 하나의 컴포넌트에 있는지 확인</span>
+<span class="sd">    edges: 리스트[(u, v)]</span>
+<span class="sd">    nodes: 간선에 등장하는 모든 정점의 집합</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">edges</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span> 
+    
+    <span class="n">undirected</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    
+    <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
+        <span class="n">undirected</span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="n">undirected</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+        
+    <span class="c1"># nodes는 이미 edges에서 나온 정점들만 모은 거라, 그 중 아무거나 시작해도 됨</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">nodes</span><span class="p">))</span>
+    <span class="n">visited</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">start</span><span class="p">])</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">([</span><span class="n">start</span><span class="p">])</span>
+
+    <span class="k">while</span> <span class="n">q</span><span class="p">:</span>
+        <span class="n">cur</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">nxt</span> <span class="ow">in</span> <span class="n">undirected</span><span class="p">[</span><span class="n">cur</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">nxt</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">visited</span><span class="p">:</span>
+                <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nxt</span><span class="p">)</span>
+                <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nxt</span><span class="p">)</span>
+
+    <span class="c1"># 간선이 있는 모든 정점이 하나의 컴포넌트에 있어야 함</span>
+    <span class="k">return</span> <span class="n">visited</span> <span class="o">==</span> <span class="n">nodes</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">has_eulerian_path_directed</span><span class="p">(</span><span class="n">edges</span><span class="p">,</span> <span class="n">outdeg</span><span class="p">,</span> <span class="n">indeg</span><span class="p">,</span> <span class="n">nodes</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parameters:</span>
+<span class="sd">        edges: 리스트[(u, v)] 형태의 유향 간선 목록</span>
+<span class="sd">        nodes: set()으로 모든 정점 목록 </span>
+<span class="sd">        outdeg: outdeg[v]는 v정점이 가지는 outdegree 수</span>
+<span class="sd">        indeg: indeg[v]는 v정점이 가지는 indegree 수</span>
+<span class="sd">    </span>
+<span class="sd">    Return:</span>
+<span class="sd">        오일러 경로 존재 여부 반환 (True/False)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_weakly_connected_directed</span><span class="p">(</span><span class="n">edges</span><span class="p">,</span> <span class="n">nodes</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span> 
+    
+    <span class="n">start_nodes</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">end_nodes</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+        <span class="n">outd</span> <span class="o">=</span> <span class="n">outdeg</span><span class="p">[</span><span class="n">v</span><span class="p">]</span>
+        <span class="n">ind</span> <span class="o">=</span> <span class="n">indeg</span><span class="p">[</span><span class="n">v</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">outd</span> <span class="o">-</span> <span class="n">ind</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">start_nodes</span> <span class="o">+=</span> <span class="mi">1</span> 
+        <span class="k">elif</span> <span class="n">ind</span> <span class="o">-</span> <span class="n">outd</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">end_nodes</span> <span class="o">+=</span> <span class="mi">1</span> 
+        <span class="k">elif</span> <span class="n">ind</span> <span class="o">==</span> <span class="n">outd</span><span class="p">:</span>
+            <span class="k">continue</span> 
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># 차이가 1보다 큰 정점이 있으면 불가능 </span>
+            <span class="k">return</span> <span class="kc">False</span> 
+
+    <span class="c1"># (시작 1, 끝 1) → path</span>
+    <span class="c1"># (시작 0, 끝 0) → circuit</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">start_nodes</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">end_nodes</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">start_nodes</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">end_nodes</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">find_eulerian_path_directed</span><span class="p">(</span><span class="n">edges</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    edges: 리스트[(u, v)] 형태의 유향 간선 목록 </span>
+<span class="sd">    반환: 오일러 경로(또는 회로) 리스트, 없으면 [] </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">indeg</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">outdeg</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">graph</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">nodes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
+        <span class="n">graph</span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="n">outdeg</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span> 
+        <span class="n">indeg</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span> 
+        <span class="n">nodes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+        <span class="n">nodes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="c1"># 오일러 경로/회로 존재 여부 검사</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">has_eulerian_path_directed</span><span class="p">(</span><span class="n">edges</span><span class="p">,</span> <span class="n">outdeg</span><span class="p">,</span> <span class="n">indeg</span><span class="p">,</span> <span class="n">nodes</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[]</span> 
+    
+    <span class="c1"># 시작 정점 선택 규칙:</span>
+    <span class="c1"># 1) out = in + 1 인 정점이 있으면 그 정점에서 시작 (path)</span>
+    <span class="c1"># 2) 없으면, 아무 정점(간선이 있는)에서 시작 (circuit)</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="kc">None</span> 
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">outdeg</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">-</span> <span class="n">indeg</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">v</span> 
+            <span class="k">break</span> 
+
+    <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">nodes</span><span class="p">))</span>
+
+    <span class="c1"># Hierholzer 알고리즘 </span>
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">:</span>
+        <span class="c1"># pop() 쓰기 좋게 역순 정렬 (사전순 필요 없으면 이 부분은 생략 가능)</span>
+        <span class="n">graph</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">stack</span> <span class="o">=</span> <span class="p">[</span><span class="n">start</span><span class="p">]</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">while</span> <span class="n">stack</span><span class="p">:</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">graph</span><span class="p">[</span><span class="n">v</span><span class="p">]:</span>
+            <span class="n">nxt</span> <span class="o">=</span> <span class="n">graph</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+            <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nxt</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">())</span>
+    
+    <span class="k">return</span> <span class="n">path</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="n">edges</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">&quot;ICN&quot;</span><span class="p">,</span> <span class="s2">&quot;JFK&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;JFK&quot;</span><span class="p">,</span> <span class="s2">&quot;HND&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;HND&quot;</span><span class="p">,</span> <span class="s2">&quot;ICN&quot;</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">find_eulerian_path_directed</span><span class="p">(</span><span class="n">edges</span><span class="p">))</span>
+<span class="c1"># 예: [&#39;ICN&#39;, &#39;JFK&#39;, &#39;HND&#39;, &#39;ICN&#39;] (회로)</span>
 </pre></div>
 </div>
 </div>
