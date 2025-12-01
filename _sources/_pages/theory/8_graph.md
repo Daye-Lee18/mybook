@@ -699,6 +699,9 @@ while q:                     # 각 정점은 최대 한 번만 큐에서 pop
 
 ### 오일러 회로 (Eulerian Circuit)와 비교 
 
+- **오일러 경로**: 그래프에서 모든 간선(edge)을 정확히 한 번씩 지나가는 경로 
+- **오일러 회로**: 오일러 경로이면서, **시작점 = 끝점** 인 경우 
+
 ```{list-table} 오일러 회로와 오일러 경로 비교 
 :widths: 20 45 45 
 :header-rows: 1 
@@ -712,21 +715,103 @@ while q:                     # 각 정점은 최대 한 번만 큐에서 pop
 * - 시작점 = 끝점 
   - X 
   - O
-* - 존재 조건 (undirected 그래프 기준)
+* - undirected 그래프 존재 조건 
   - **차수 (Degree) 가 홀수인 정점이 0개 또는 2개**
   - **모든 정점의 차수가 짝수**
+* - directed graph 존재 조건 
+  - 시작 후보 out = in + 1 , 끝 후보: in = out +1, 다른 정점 in = out 
+  - 모든 정점에서 out = in 
 ```
 > 차수 (Degree) = 한 정점에 연결된 간선의 개수, undirected graph에 사용됨. <br>
 > 진입 차수 (Indegree) =  directed graph에서 밖에서 해당 노드로 들어오는 간선 수를 의미 <br>
 > 진출 차수 (Outdegree) = directed graph에서 밖으로 나가는 간선 수 <br>
 
 
-오일러 경로는 undirected graph 기준으로 차수가 홀수인 정점이 0개 또는 2개여야 한다. 반면, directed graph에서는 아래의 기준을 만족해야한다. 
+### 오일러 경로 탐색 알고리즘 
 
-- 시작점: outdegree = indegree +1 
-- 끝점: indegree = outdegree +1 
-- 나머지 정점: indegree = outdegree 
+오일러 경로 탐색은 Hierholzer 알고리즘 (스택 DFS)를 사용하여 구현할 수 있다. Hierholzer 알고리름은 시작노드부터 연결되어 있는 다음 노드를 모두 stack에 넣어둔 후, 더 이상 나갈 간선이 없을 때 확정된 경로를 기록한다. 즉, 막다른 길부터 뒤에서부터 확정되기 때문에 경로가 거꾸로 쌓이게 되고 이를 마지막에 뒤집는 것이다. 
 
-### 오일러 경로 예제 
+#### 유향 그래프 소스코드 및 시간 복잡도 
 
-다음 그래프를 보자 
+***주요 아이디어***
+- 각 간선을 정확히 1번만 사용하는 DFS 
+- stack에서 마지막 노드에서 더 이상 나갈 간선이 없으면 현재 노드를 경로에 확정 
+- 역순으로 쌓이므로 마지막에 뒤집어서 반환 
+
+아래는 유향 그래프 예시이다. 
+
+**Step 1** <br>
+
+<img src="../../assets/img/graph/22.png" width="500px">
+
+위와 같이, edges에 대한 정보를 받은 후, graph: dict[node, [nxt_nodes]]와 stack, route를 초기화해준다. stack의 첫 원소로 경로의 첫번째 노드를 삽입한다. 단, 문제에서 오일러 경로가 여러개일 경우, 알파벳 순으로 먼저 오는 경로를 반환하라고 하였기 때문에, graph의 각 value들은 반대로 저장해야하므로 내림 차순으로 정렬한다. (알파벳 순으로 작은 노드가 먼저 stack에 들어갈 수 있도록 함.)
+
+- stack[-1]: "ICN"
+- graph["ICN"] = ["SFO", "ATL"], 비어있지 않음. 
+  - graph["ICN"]의 맨 마지막 원소 제거한 후 stack.append()해준다. 
+
+**Step 2** <br>
+
+<img src="../../assets/img/graph/23.png" width="500px">
+
+- stack[-1]: "ATL"
+- graph["ATL"] = ["SFO", "ICN"], 비어있지 않음. 
+  - graph["ATL"]의 맨 마지막 원소 제거한 후 stack.append()해준다. 
+
+
+**Step 3** <br>
+
+<img src="../../assets/img/graph/24.png" width="500px">
+
+- stack[-1]: "ICN"
+- graph["ICN"] = ["SFO"], 비어있지 않음. 
+  - graph["ICN"]의 맨 마지막 원소 제거한 후 stack.append()해준다. 
+
+**Step 4** <br>
+
+<img src="../../assets/img/graph/25.png" width="500px">
+
+- stack[-1]: "SFO"
+- graph["SFO"] = ["ATL"], 비어있지 않음. 
+  - graph["SFO"]의 맨 마지막 원소 제거한 후 stack.append()해준다. 
+
+**Step 5** <br>
+
+<img src="../../assets/img/graph/26.png" width="500px">
+
+- stack[-1]: "ATL"
+- graph["ATL"] = ["SFO"], 비어있지 않음. 
+  - graph["ATL"]의 맨 마지막 원소 제거한 후 stack.append()해준다. 
+
+**Step 6** <br>
+
+<img src="../../assets/img/graph/27.png" width="500px">
+
+- stack[-1]: "SFO"
+- graph["SFO"] = [], 비어있음!
+  - 비어있는 경우, stack.pop() 원소를 route에 삽입한다. 
+
+**Step 7** <br>
+
+<img src="../../assets/img/graph/28.png" width="500px">
+
+- stack[-1]: "ATL"
+- graph["ATL"] = [], 비어있음!
+  - 비어있는 경우, stack.pop() 원소를 route에 삽입한다. 
+
+**Step 8** <br>
+
+<img src="../../assets/img/graph/29.png" width="500px">
+
+
+다음과 같이 오일러 경로를 구현할 수 있다. 
+````{admonition} Source code for Eulerian Path 
+:class: dropdown 
+
+```{code-block} python 
+
+
+```
+````
+
+시간 복잡도는 그래프 정렬시 O(ElogE), DFS + pop은 O(E) 시간이 걸리므로, 전체 시간 복잡도는 O(ElogE)로 효율적인 편이다. 
