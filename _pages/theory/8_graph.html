@@ -399,6 +399,11 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">위상 정렬 알고리즘 및 시간 복잡도</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#eulerian-path">오일러 경로 (Eulerian Path)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#eulerian-circuit">오일러 회로 (Eulerian Circuit)와 비교</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">오일러 경로 예제</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -423,8 +428,8 @@ document.write(`
 <p>서로소 집합 자료구조란 <em><strong>서로소 부분 집합들로 나누어진 원소들의 데이터를 처리하기 위한 자료구조</strong></em> 이다. “union”과 “find” 2개의 연산으로 조작할 수 있다. 서로소 집합에서 “find”연산은 특정한 원소가 속한 집합이 어떤 집합인지 알려주는 연산, “union”연산은 합집합으로 2개의 원소가 포함된 집합을 하나의 집합으로 합치는 연산이다.</p>
 <p>서로소 집합 자료구조는 <em><strong>union-find 자료구조</strong></em> 라고 불리기도 한다. 두 집합이 서로소 관계인지를 확인할 수 있다는 말은 각 집합이 어떤 원소를 공통으로 가지고 있는지를 확인할 수 있다는 말과 같기 때문이다.</p>
 <p><strong>핵심 개념 요약</strong></p>
-<div class="pst-scrollable-table-container"><table class="table" id="id4">
-<caption><span class="caption-number">표 22 </span><span class="caption-text">disjoint set / union-find</span><a class="headerlink" href="#id4" title="Link to this table">#</a></caption>
+<div class="pst-scrollable-table-container"><table class="table" id="id5">
+<caption><span class="caption-number">표 22 </span><span class="caption-text">disjoint set / union-find</span><a class="headerlink" href="#id5" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 23.1%" />
 <col style="width: 76.9%" />
@@ -543,8 +548,8 @@ union(1,5) → 5의 높이 낮으므로 5를 1 밑으로
         <span class="n">rank</span><span class="p">[</span><span class="n">rootA</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
 </pre></div>
 </div>
-<div class="pst-scrollable-table-container"><table class="table" id="id5">
-<caption><span class="caption-number">표 23 </span><span class="caption-text">union/find 시간 복잡도</span><a class="headerlink" href="#id5" title="Link to this table">#</a></caption>
+<div class="pst-scrollable-table-container"><table class="table" id="id6">
+<caption><span class="caption-number">표 23 </span><span class="caption-text">union/find 시간 복잡도</span><a class="headerlink" href="#id6" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 15.0%" />
 <col style="width: 40.0%" />
@@ -835,8 +840,8 @@ union(1,5) → 5의 높이 낮으므로 5를 1 밑으로
 </pre></div>
 </div>
 </div>
-<div class="pst-scrollable-table-container"><table class="table" id="id6">
-<caption><span class="caption-number">표 24 </span><span class="caption-text">Kruskal’s Algorithm 시간 복잡도</span><a class="headerlink" href="#id6" title="Link to this table">#</a></caption>
+<div class="pst-scrollable-table-container"><table class="table" id="id7">
+<caption><span class="caption-number">표 24 </span><span class="caption-text">Kruskal’s Algorithm 시간 복잡도</span><a class="headerlink" href="#id7" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 30.8%" />
 <col style="width: 69.2%" />
@@ -1073,6 +1078,70 @@ union(1,5) → 5의 높이 낮으므로 5를 1 밑으로
 </div>
 </section>
 </section>
+<section id="eulerian-path">
+<h2>오일러 경로 (Eulerian Path)<a class="headerlink" href="#eulerian-path" title="Link to this heading">#</a></h2>
+<p>그래프 이론에서 <em><strong>모든 간선(edge)을 정확히 한 번씩</strong></em> 지나며 한 번에 이동할 수 있는 경로를 <strong>오일러 경로(Eulerian Path)</strong> 라고 한다.</p>
+<blockquote>
+<div><p>간선을 한 번이라도 빠뜨리거나 중복으로 지나면 오일러 경로가 아님</p>
+</div></blockquote>
+<p>오일러 경로는 실생활에서 <strong>모든 연결(간선)을 한 번씩 처리</strong> 하고 싶을 때 활용된다.</p>
+<p>예시:</p>
+<ul class="simple">
+<li><p>우편 배달/쓰레기 수거 루트 최적화</p></li>
+<li><p>도시 도로 위 점검 경로 설계</p></li>
+<li><p>네트워크 케이블 검사 (모든 연결 지점 테스트)</p></li>
+<li><p>퍼즐 및 미로에서 간선 기반 완주 경로 찾기</p></li>
+<li><p>항공권 경로</p></li>
+</ul>
+<hr class="docutils" />
+<section id="eulerian-circuit">
+<h3>오일러 회로 (Eulerian Circuit)와 비교<a class="headerlink" href="#eulerian-circuit" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table" id="id8">
+<caption><span class="caption-number">표 25 </span><span class="caption-text">오일러 회로와 오일러 경로 비교</span><a class="headerlink" href="#id8" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 18.2%" />
+<col style="width: 40.9%" />
+<col style="width: 40.9%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>구분</p></th>
+<th class="head"><p>오일러 경로</p></th>
+<th class="head"><p>오일러 회로</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>정의</p></td>
+<td><p>모든 간선을 1번씩 방문하는 경로</p></td>
+<td><p>모든 간선을 1번씩 방문 후 제자리로 돌아오는 경로</p></td>
+</tr>
+<tr class="row-odd"><td><p>시작점 = 끝점</p></td>
+<td><p>X</p></td>
+<td><p>O</p></td>
+</tr>
+<tr class="row-even"><td><p>존재 조건 (undirected 그래프 기준)</p></td>
+<td><p><strong>차수 (Degree) 가 홀수인 정점이 0개 또는 2개</strong></p></td>
+<td><p><strong>모든 정점의 차수가 짝수</strong></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<div><p>차수 (Degree) = 한 정점에 연결된 간선의 개수, undirected graph에 사용됨. <br>
+진입 차수 (Indegree) =  directed graph에서 밖에서 해당 노드로 들어오는 간선 수를 의미 <br>
+진출 차수 (Outdegree) = directed graph에서 밖으로 나가는 간선 수 <br></p>
+</div></blockquote>
+<p>오일러 경로는 undirected graph 기준으로 차수가 홀수인 정점이 0개 또는 2개여야 한다. 반면, directed graph에서는 아래의 기준을 만족해야한다.</p>
+<ul class="simple">
+<li><p>시작점: outdegree = indegree +1</p></li>
+<li><p>끝점: indegree = outdegree +1</p></li>
+<li><p>나머지 정점: indegree = outdegree</p></li>
+</ul>
+</section>
+<section id="id4">
+<h3>오일러 경로 예제<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>다음 그래프를 보자</p>
+</section>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -1165,6 +1234,11 @@ union(1,5) → 5의 높이 낮으므로 5를 1 밑으로
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topological-sort">위상 정렬 (Topological Sort)</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">위상 정렬 알고리즘 및 시간 복잡도</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#eulerian-path">오일러 경로 (Eulerian Path)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#eulerian-circuit">오일러 회로 (Eulerian Circuit)와 비교</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">오일러 경로 예제</a></li>
 </ul>
 </li>
 </ul>
