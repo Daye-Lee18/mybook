@@ -384,9 +384,11 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bfs">BFS</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ai">AI 로봇 청소기</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">미생물 연구</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">마법의 숲 탐색</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">블록 이동하기</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">고대 문명 유적 탐사</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">민트초코 우유</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">메두사와 전사들</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">마법의 숲 탐색</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">블록 이동하기</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">고대 문명 유적 탐사</a></li>
 </ul>
 </li>
 </ul>
@@ -419,7 +421,7 @@ document.write(`
 <ul>
 <li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/ai-robot/description">AI 로봇 청소기</a></p></li>
 <li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/microbial-research/description">미생물 연구</a></p></li>
-<li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/mint-choco-milk/description">민트초코우유</a></p></li>
+<li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/mint-choco-milk/description">민트초코 우유</a></p></li>
 <li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/medusa-and-warriors/description">메두사와 전사들</a></p></li>
 <li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/escape-unknown-space/description">미지의 공간 탈출</a></p></li>
 <li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/magical-forest-exploration/description">마법의 숲 탐색</a></p></li>
@@ -1054,6 +1056,8 @@ break # 넣을 수 있으면 현재 퍼즐 조각에 대해서 여기서 끝내�
 <h2>BFS<a class="headerlink" href="#bfs" title="Link to this heading">#</a></h2>
 <section id="ai">
 <h3>AI 로봇 청소기<a class="headerlink" href="#ai" title="Link to this heading">#</a></h3>
+<div class="dropdown admonition">
+<p class="admonition-title">실수한 부분</p>
 <p>이런 BFS문제를 풀 때, 각 격자가 가질 수 있는 상태의 수가 매우 중요함. 변화하는 상태에 대해서 update할 때 확인해야 할 것이 무엇인지 알 수 있기 때문</p>
 <p>각 격자는
 (1) 먼지가 있거나: 먼지의 양(p) 1 &lt;= graph[y][x] &lt;= 100 로 존재.
@@ -1071,6 +1075,8 @@ break # 넣을 수 있으면 현재 퍼즐 조각에 대해서 여기서 끝내�
 <li><p>현재 로봇 청소기 위치에 먼지가 있으면 움직이지 않아도 된다. 라는 부분이 잘 명시되어 있지 않아서 헷갈렸다.</p></li>
 <li><p>가장 가까운 오염거리에 대한 위치 계산을 할 때, 모든 오염 셀에 대한 거리를 계산하는 게 아니라, 로봇 위치에서 가장 가까운 격자의 거리를 계산하면 그 다음은 break를 하는 것이 훨씬 빠른데, 전자의 방법을 사용하여 시간 초과 에러를 받았다.</p></li>
 </ul>
+<p>마지막으로, constraints에 대한 time complexity계산을 어느 정도 한 뒤에 알고리즘을 짜야하는데, 너무 급하게 구현을 한 것 같다.</p>
+</div>
 <div class="dropdown admonition">
 <p class="admonition-title">Solution</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span> 
@@ -1278,6 +1284,575 @@ break # 넣을 수 있으면 현재 퍼즐 조각에 대해서 여기서 끝내�
 </section>
 <section id="id8">
 <h3>미생물 연구<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+</section>
+<section id="id9">
+<h3>민트초코 우유<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<div class="dropdown admonition">
+<p class="admonition-title">solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">heapq</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;input.txt&quot;</span><span class="p">)</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="k">pass</span>
+<span class="c1">#</span>
+
+<span class="c1">#</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">print_trust</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">board</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">trust</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;=&#39;</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">print_food</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">board</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">food</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;=&#39;</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span>
+<span class="c1">#</span>
+
+<span class="c1">#</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Student</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">r</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">c</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">food</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trust</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># 신앙심</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">defence</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># 방어</span>
+    <span class="c1">#</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">trust</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span> <span class="o">&lt;</span> <span class="p">(</span><span class="o">-</span><span class="n">other</span><span class="o">.</span><span class="n">trust</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">c</span><span class="p">)</span>
+<span class="c1">#</span>
+
+<span class="c1">#</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Group</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">food</span><span class="p">):</span>
+        <span class="c1"># 대표 좌표, 대표 음식</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">food</span> <span class="o">=</span> <span class="n">food</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">member</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">manager</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1">#</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_manager</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        대표자 정하기 &amp; trust set</span>
+<span class="sd">        대표자: trust up -&gt; r down -&gt; c down</span>
+<span class="sd">        대표자.trust += 그룹원 -1</span>
+<span class="sd">        팀원.trust -= 1</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">manager</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">member</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">member</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">m</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">manager</span><span class="p">:</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">trust</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">member</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">trust</span> <span class="o">-=</span> <span class="mi">1</span>
+    <span class="c1">#</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">print_group_member</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">member</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">((</span><span class="n">m</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">c</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+<span class="c1">#</span>
+
+<span class="c1">#</span>
+<span class="n">food2bin</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;T&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s1">&#39;M&#39;</span><span class="p">:</span> <span class="mi">2</span>
+<span class="p">}</span>
+<span class="c1">#</span>
+
+<span class="c1">#</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">in_range</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">r</span> <span class="o">&lt;</span> <span class="n">N</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">c</span> <span class="o">&lt;</span> <span class="n">N</span>
+<span class="c1">#</span>
+
+<span class="c1">#</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">breakfast</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    - 모든 학생의 trust += 1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+            <span class="n">stu</span> <span class="o">=</span> <span class="n">board</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="n">c</span><span class="p">]</span>
+            <span class="n">stu</span><span class="o">.</span><span class="n">trust</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="c1">#</span>
+
+<span class="c1">#</span>
+<span class="n">dr</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">dc</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">bfs</span><span class="p">(</span><span class="n">sr</span><span class="p">,</span> <span class="n">sc</span><span class="p">,</span> <span class="n">food</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">([(</span><span class="n">sr</span><span class="p">,</span> <span class="n">sc</span><span class="p">)])</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">member</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">board</span><span class="p">[</span><span class="n">sr</span><span class="p">][</span><span class="n">sc</span><span class="p">])</span>
+    <span class="k">while</span> <span class="n">q</span><span class="p">:</span>
+        <span class="n">r</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+        <span class="n">v</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+            <span class="n">nr</span> <span class="o">=</span> <span class="n">r</span> <span class="o">+</span> <span class="n">dr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">nc</span> <span class="o">=</span> <span class="n">c</span> <span class="o">+</span> <span class="n">dc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">in_range</span><span class="p">(</span><span class="n">nr</span><span class="p">,</span> <span class="n">nc</span><span class="p">)</span> <span class="ow">or</span> <span class="n">v</span><span class="p">[</span><span class="n">nr</span><span class="p">][</span><span class="n">nc</span><span class="p">]</span> <span class="ow">or</span> <span class="n">board</span><span class="p">[</span><span class="n">nr</span><span class="p">][</span><span class="n">nc</span><span class="p">]</span><span class="o">.</span><span class="n">food</span> <span class="o">!=</span> <span class="n">food</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">nr</span><span class="p">,</span> <span class="n">nc</span><span class="p">))</span>
+            <span class="n">v</span><span class="p">[</span><span class="n">nr</span><span class="p">][</span><span class="n">nc</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">group</span><span class="o">.</span><span class="n">member</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">board</span><span class="p">[</span><span class="n">nr</span><span class="p">][</span><span class="n">nc</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">v</span>
+<span class="c1">#</span>
+
+<span class="c1">#</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">lunch</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    - 인접한 학생들과 신봉 음식이 같은 경우 그룹 형성</span>
+<span class="sd">    - 대표자: trust up -&gt; r down -&gt; c down</span>
+<span class="sd">    - 대표자.trust += 그룹원 -1</span>
+<span class="sd">    - 팀원.trust -= 1</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">visited</span> <span class="o">=</span> <span class="p">[[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+    <span class="n">group_lst</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">visited</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="n">c</span><span class="p">]:</span>
+                <span class="k">continue</span>
+            <span class="c1"># 그룹 형성</span>
+            <span class="n">group</span> <span class="o">=</span> <span class="n">Group</span><span class="p">(</span><span class="n">board</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">food</span><span class="p">)</span>
+            <span class="n">visited</span> <span class="o">=</span> <span class="n">bfs</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">board</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">food</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">visited</span><span class="p">)</span>
+            <span class="n">group_lst</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+            <span class="c1"># 대표자 정하기 &amp; trust set</span>
+            <span class="n">group</span><span class="o">.</span><span class="n">set_manager</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">group_lst</span>
+<span class="c1">#</span>
+
+<span class="c1">#</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">set_order</span><span class="p">(</span><span class="n">group_lst</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    [1] 전파 순서 정하기</span>
+<span class="sd">    - 전파 순서: 단일 -&gt; 이중 -&gt; 삼중 그룹</span>
+<span class="sd">        - 대표자의 B up -&gt; 대표자의 r down -&gt; c down</span>
+<span class="sd">    :return order_lst</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">order_lst</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>  <span class="c1"># 단일/이중/삼중</span>
+    <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">group_lst</span><span class="p">:</span>
+        <span class="c1"># 삼중인 경우</span>
+        <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">food</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>
+            <span class="n">order_lst</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">manager</span><span class="p">)</span>
+        <span class="c1"># 단일 인 경우</span>
+        <span class="k">elif</span> <span class="n">g</span><span class="o">.</span><span class="n">food</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]:</span>
+            <span class="n">order_lst</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">manager</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># 이중인 경우</span>
+            <span class="n">order_lst</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">manager</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">order_lst</span>
+<span class="c1">#</span>
+
+<span class="c1">#</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">strong_spread</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">spreader</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+    <span class="n">target</span><span class="o">.</span><span class="n">food</span> <span class="o">=</span> <span class="n">spreader</span><span class="o">.</span><span class="n">food</span>
+    <span class="n">x</span> <span class="o">-=</span> <span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">trust</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">target</span><span class="o">.</span><span class="n">trust</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">x</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">weak_spread</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">spreader</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">food</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="p">((</span><span class="n">spreader</span><span class="o">.</span><span class="n">food</span> <span class="o">&gt;&gt;</span> <span class="n">food</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="p">((</span><span class="n">target</span><span class="o">.</span><span class="n">food</span> <span class="o">&gt;&gt;</span> <span class="n">food</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">target</span><span class="o">.</span><span class="n">food</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">food</span><span class="p">)</span>
+    <span class="n">target</span><span class="o">.</span><span class="n">trust</span> <span class="o">+=</span> <span class="n">x</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">return</span> <span class="n">x</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">do_spread</span><span class="p">(</span><span class="n">spreader</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    [2] 전파하기</span>
+<span class="sd">    - 전파자</span>
+<span class="sd">        - 전파 방향: trust % 4</span>
+<span class="sd">        - x: B-1(간절함), B = 1check</span>
+<span class="sd">    - 전파 시작</span>
+<span class="sd">        - 전파 방향으로 1칸씩 이동하며 전파</span>
+<span class="sd">        - 격자 밖으로 나가거나 x = 0이 되면 전파 종료</span>
+<span class="sd">        - 전파 음식이 타겟음식과 같으면 전파 X, 다음 진행</span>
+<span class="sd">        - 다르면, 전파 수행</span>
+<span class="sd">    [3] 전파 방법</span>
+<span class="sd">    - y: 타겟의 trust</span>
+<span class="sd">    - 강한 전파(x &gt; y):</span>
+<span class="sd">        - 타겟.food = 전파.food</span>
+<span class="sd">        - 전파.x -= y+1</span>
+<span class="sd">        - 타겟.trust += 1</span>
+<span class="sd">    - 약한 전파 (x &lt;= y):</span>
+<span class="sd">        - 타겟.food |= 전파자.food   (있는지 확인 필요)</span>
+<span class="sd">        - 타겟.trust += x</span>
+<span class="sd">        - 전파.x = 0</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">spreader</span><span class="o">.</span><span class="n">trust</span> <span class="o">%</span> <span class="mi">4</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">spreader</span><span class="o">.</span><span class="n">trust</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="n">spreader</span><span class="o">.</span><span class="n">trust</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">r</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">spreader</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="n">spreader</span><span class="o">.</span><span class="n">c</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="p">):</span>
+        <span class="n">nr</span> <span class="o">=</span> <span class="n">r</span> <span class="o">+</span> <span class="n">dr</span><span class="p">[</span><span class="n">d</span><span class="p">]</span> <span class="o">*</span> <span class="n">i</span>
+        <span class="n">nc</span> <span class="o">=</span> <span class="n">c</span> <span class="o">+</span> <span class="n">dc</span><span class="p">[</span><span class="n">d</span><span class="p">]</span> <span class="o">*</span> <span class="n">i</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">in_range</span><span class="p">(</span><span class="n">nr</span><span class="p">,</span> <span class="n">nc</span><span class="p">)</span> <span class="ow">or</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">break</span>
+
+        <span class="n">target</span> <span class="o">=</span> <span class="n">board</span><span class="p">[</span><span class="n">nr</span><span class="p">][</span><span class="n">nc</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">target</span><span class="o">.</span><span class="n">food</span> <span class="o">^</span> <span class="n">spreader</span><span class="o">.</span><span class="n">food</span><span class="p">:</span>  <span class="c1"># 두 음식이 다를 때만 전파 진행</span>
+            <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">target</span><span class="o">.</span><span class="n">trust</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">strong_spread</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">spreader</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">weak_spread</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">spreader</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+            <span class="n">target</span><span class="o">.</span><span class="n">defence</span> <span class="o">=</span> <span class="n">t</span>
+<span class="c1">#</span>
+
+<span class="c1">#</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dinner</span><span class="p">(</span><span class="n">group_lst</span><span class="p">):</span>
+    <span class="c1"># 전파 순서 정하기</span>
+    <span class="n">order_lst</span> <span class="o">=</span> <span class="n">set_order</span><span class="p">(</span><span class="n">group_lst</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">order_lst</span><span class="p">:</span>
+        <span class="n">order</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">spreader</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">spreader</span><span class="o">.</span><span class="n">defence</span> <span class="o">&lt;</span> <span class="n">t</span><span class="p">:</span>
+                <span class="n">do_spread</span><span class="p">(</span><span class="n">spreader</span><span class="p">)</span>
+<span class="c1">#</span>
+
+<span class="c1">#</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">print_result</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TCM, TC, TM, CM, M, C, T 순으로 각 음식의 신봉자들의 신앙심 총합 출력</span>
+<span class="sd">    &#39;T&#39;: 0,</span>
+<span class="sd">    &#39;C&#39;: 1,</span>
+<span class="sd">    &#39;M&#39;: 2</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mi">8</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+            <span class="n">stu</span> <span class="o">=</span> <span class="n">board</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="n">c</span><span class="p">]</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">stu</span><span class="o">.</span><span class="n">food</span><span class="p">]</span> <span class="o">+=</span> <span class="n">stu</span><span class="o">.</span><span class="n">trust</span>
+
+    <span class="k">for</span> <span class="n">food</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;TCM&#39;</span><span class="p">,</span> <span class="s1">&#39;TC&#39;</span><span class="p">,</span> <span class="s1">&#39;TM&#39;</span><span class="p">,</span> <span class="s1">&#39;CM&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">]:</span>
+        <span class="n">key_food</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">food</span><span class="p">:</span>
+            <span class="n">key_food</span> <span class="o">|=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">food2bin</span><span class="p">[</span><span class="n">f</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="n">key_food</span><span class="p">],</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+<span class="c1">#</span>
+
+<span class="c1">#</span>
+<span class="n">N</span><span class="p">,</span> <span class="n">T</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+<span class="n">board</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+        <span class="n">stu</span> <span class="o">=</span> <span class="n">Student</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="p">)</span>
+        <span class="n">food</span> <span class="o">=</span> <span class="n">food2bin</span><span class="p">[</span><span class="n">tmp</span><span class="p">[</span><span class="n">column</span><span class="p">]]</span>
+        <span class="n">stu</span><span class="o">.</span><span class="n">food</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">food</span><span class="p">)</span>
+        <span class="n">board</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">stu</span>
+<span class="c1">#</span>
+<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+    <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+        <span class="n">board</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">trust</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="n">column</span><span class="p">]</span>
+<span class="c1">#</span>
+
+<span class="c1">#</span>
+<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">T</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="n">breakfast</span><span class="p">()</span>
+
+    <span class="n">GROUP_LST</span> <span class="o">=</span> <span class="n">lunch</span><span class="p">()</span>
+
+    <span class="n">dinner</span><span class="p">(</span><span class="n">GROUP_LST</span><span class="p">)</span>
+
+    <span class="n">print_result</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">틀린 답</p>
+<p>어디서 틀렸나? 사실 잘 모르겠음.</p>
+<p>중요한 건, 보통의 경우는 list.sort()를 사용하고 아래와 같은 부득이한 경우에만 min-heap을 쓴다. 왜냐면 min-heap의 pop()이후 다시 heapify하는데 시간이 걸리기 때문.</p>
+<ul class="simple">
+<li><p>간선이 스트리밍으로 들어오거나 한 번에 다 만들기 어려운 상황(외부 입력/온라인 처리)</p></li>
+<li><p>“가장 싼 간선부터 일부만” 처리하며 중간에 조기 종료가 확실한 특수 케이스</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span> 
+
+<span class="n">sys</span><span class="o">.</span><span class="n">stdin</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;Input.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span> 
+<span class="kn">import</span><span class="w"> </span><span class="nn">heapq</span> 
+
+<span class="n">N</span><span class="p">,</span> <span class="n">T</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">belive_graph</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+    <span class="n">graph</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">input</span><span class="p">()))</span>
+
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+    <span class="n">belive_graph</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())))</span>
+
+<span class="c1"># 간절함 그래프 </span>
+<span class="n">desperate_graph</span> <span class="o">=</span><span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">morning</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+            <span class="n">belive_graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span> 
+
+<span class="k">def</span><span class="w"> </span><span class="nf">lunch</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    1. 인접한 학생들과 신봉 음식이 &quot;완전히 같은 경우&quot;에 그룹 형성 </span>
+<span class="sd">    2. 대표자 선정 </span>
+<span class="sd">        - 신앙심이 가장 큰 사람 -&gt; y가 작은 사람 -&gt; x가 작은 사람 </span>
+<span class="sd">    3. 그룹의 대표자에게 &lt;- 그룹 다른 학생들의 신앙심이 넘어감.</span>
+<span class="sd">        - 대표자는 +1, 그룹 내 다른 학생들 -1 </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">visited</span> <span class="o">=</span> <span class="p">[[</span><span class="kc">False</span><span class="p">]</span><span class="o">*</span><span class="n">N</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+    <span class="c1"># group을 넣을때 순서가 있음 </span>
+    <span class="n">groups</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">visited</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]:</span>
+                <span class="n">locs</span> <span class="o">=</span> <span class="n">BFS</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">visited</span><span class="p">)</span> <span class="c1"># 음식순서 -&gt; 대표자가 맨 앞에 있는 list반환, (len(음식), -belive_graph[ny][nx], ny, nx)</span>
+                <span class="n">heapq</span><span class="o">.</span><span class="n">heappush</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span> <span class="n">locs</span><span class="p">)</span>
+
+    <span class="c1"># 각 그룹을 돌면서 대표자(맨 처음)에게 신앙심 넘겨주기 </span>
+    <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">:</span>
+        <span class="c1"># 대표자 </span>
+        <span class="n">representative</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">group</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="n">belive_graph</span><span class="p">[</span><span class="n">other</span><span class="p">[</span><span class="mi">2</span><span class="p">]][</span><span class="n">other</span><span class="p">[</span><span class="mi">3</span><span class="p">]]</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="n">belive_graph</span><span class="p">[</span><span class="n">representative</span><span class="p">[</span><span class="mi">2</span><span class="p">]][</span><span class="n">representative</span><span class="p">[</span><span class="mi">3</span><span class="p">]]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">groups</span> 
+
+<span class="k">def</span><span class="w"> </span><span class="nf">in_range</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">N</span> <span class="ow">and</span> <span class="mi">0</span><span class="o">&lt;=</span><span class="n">x</span> <span class="o">&lt;</span><span class="n">N</span> 
+
+<span class="k">def</span><span class="w"> </span><span class="nf">BFS</span><span class="p">(</span><span class="n">cury</span><span class="p">,</span> <span class="n">curx</span><span class="p">,</span> <span class="n">visited</span><span class="p">):</span>
+    <span class="n">DY</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">];</span> <span class="n">DX</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">locs</span> <span class="o">=</span> <span class="p">[(</span><span class="nb">len</span><span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="n">cury</span><span class="p">][</span><span class="n">curx</span><span class="p">]),</span><span class="o">-</span><span class="n">belive_graph</span><span class="p">[</span><span class="n">cury</span><span class="p">][</span><span class="n">curx</span><span class="p">],</span><span class="n">cury</span><span class="p">,</span> <span class="n">curx</span><span class="p">)]</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">([(</span><span class="n">cury</span><span class="p">,</span> <span class="n">curx</span><span class="p">)])</span>
+    <span class="n">original_food</span> <span class="o">=</span> <span class="n">graph</span><span class="p">[</span><span class="n">cury</span><span class="p">][</span><span class="n">curx</span><span class="p">]</span>
+    <span class="n">visited</span><span class="p">[</span><span class="n">cury</span><span class="p">][</span><span class="n">curx</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span> 
+
+    <span class="k">while</span> <span class="n">q</span><span class="p">:</span>
+        <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+            <span class="n">ny</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">DY</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+            <span class="n">nx</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">DX</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+            <span class="c1"># graph내에 있고, 신봉 음식 이름이 원래 (cury, curx)와 동일하고 visited안했다면</span>
+            <span class="k">if</span> <span class="n">in_range</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span> <span class="ow">and</span> <span class="n">graph</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="o">==</span> <span class="n">original_food</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">visited</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]:</span>
+                <span class="n">visited</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span><span class="o">=</span><span class="kc">True</span> 
+                <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
+                <span class="c1"># 음식순서: 단일 -&gt; 2개 -&gt; 3개 (min-heap), 대표자: 신앙심이 가장 큰 사람 (max_heap) -&gt; y가 작은 사람 (min-heap) -&gt; x가 작은 사람 (min-heap)</span>
+                <span class="n">heapq</span><span class="o">.</span><span class="n">heappush</span><span class="p">(</span><span class="n">locs</span><span class="p">,</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]),</span> <span class="o">-</span><span class="n">belive_graph</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">],</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">locs</span>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">dinner</span><span class="p">(</span><span class="n">groups</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    groups안의 각 group은 다음과 같이 정렬 : heap이라서 heappop()으로 빼야함. </span>
+<span class="sd">    # (음식조합개수, -belive_graph[ny][nx], y, x): 음식조합개수 min, 신앙심이 max, y가 최소, x가 최소 </span>
+
+<span class="sd">    대표자(==전파자) 의 신앙심 전파</span>
+<span class="sd">    - 만약 전파하기 전에, 다른 전파자에게 전파 당한 경우 </span>
+<span class="sd">        - 그 날 전파하지 못함. </span>
+<span class="sd">        - 추가로 전파를 받을 수는 있음. </span>
+<span class="sd">    - 자신과 다른 음식을 좋아하는 학생이 있는 경우에 전파 방향으로 전파함.</span>
+<span class="sd">        - 전파 방향: 신앙심 % 4</span>
+<span class="sd">        - 0: 위, 1: 아래, 2: 왼쪽, 3: 오른쪽</span>
+<span class="sd">        - 전파자 update </span>
+<span class="sd">            - 간절함: 신앙심-1, 신앙심: 1 </span>
+<span class="sd">    - 전파 방향으로 한 칸 씩 이동하면 전파 </span>
+<span class="sd">        - 1. 전파 대상의 신봉음식이 동일한 경우, 전파하지 않고 지나감 </span>
+<span class="sd">        - 2. 신봉음식이 다른 경우 </span>
+<span class="sd">            - 강한 전파: 전파자의 간절함 &gt; 전파대상의 신앙심인 경우 </span>
+<span class="sd">                - 전파대상의 신봉 음식 = 전파자의 신봉 음식 </span>
+<span class="sd">                - 전파자 간절함: 간절함 - (전파대상의 신앙심 + 1)</span>
+<span class="sd">                    - 간절함이 0이 되면 전파 종료 </span>
+<span class="sd">                - 전파대상 신앙심: 전파대상의 신앙심 + 1  </span>
+<span class="sd">            - 약한 전파: 전파자의 간절함 &lt;= 전파대상의 신앙심인 경우 </span>
+<span class="sd">                - 전파대상의 신봉 음식 += 전파자의 신봉 음식 </span>
+<span class="sd">                - 전파자 간절함 = 0</span>
+<span class="sd">                - 전파대상의 신앙심 += 전파자의 간절함 </span>
+<span class="sd">        - 종료: Graph 밖을 벗어나거나, &#39;간절함&#39; 0이 되면 종료 </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">DY</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">];</span> <span class="n">DX</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">is_propagated</span> <span class="o">=</span> <span class="p">[[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+
+    <span class="c1"># 모든 대표자의 위치 </span>
+    <span class="n">all_representatives</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">:</span>
+        <span class="c1"># 대표자 </span>
+        <span class="n">representative</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">r_y</span> <span class="o">=</span> <span class="n">representative</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">r_x</span> <span class="o">=</span> <span class="n">representative</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">all_representatives</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">r_y</span><span class="p">,</span> <span class="n">r_x</span><span class="p">))</span>
+
+
+    <span class="c1"># 이후 ordered 순서로 전파 실행</span>
+    <span class="c1"># for representative in ordered:</span>
+    <span class="c1">#     ...</span>
+
+
+    <span class="c1"># for group in groups: # 순서대로 뽑기 </span>
+    <span class="k">while</span> <span class="n">groups</span><span class="p">:</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">heapq</span><span class="o">.</span><span class="n">heappop</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span>
+
+
+        <span class="c1"># 대표자 </span>
+        <span class="n">representative</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">r_y</span> <span class="o">=</span> <span class="n">representative</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">r_x</span> <span class="o">=</span> <span class="n">representative</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="c1"># print(f&#39;representative: ({representative[2], representative[3]})&#39;)</span>
+
+        <span class="c1"># 대표자가 전파당한 경우 전파할 수 없음 </span>
+        <span class="k">if</span> <span class="n">is_propagated</span><span class="p">[</span><span class="n">r_y</span><span class="p">][</span><span class="n">r_x</span><span class="p">]:</span>
+            <span class="k">continue</span>    
+
+        <span class="c1"># 전파 시작 </span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        전파자 update </span>
+<span class="sd">            - 간절함: 신앙심-1, 신앙심: 1 </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="nb">dir</span> <span class="o">=</span> <span class="n">belive_graph</span><span class="p">[</span><span class="n">r_y</span><span class="p">][</span><span class="n">r_x</span><span class="p">]</span> <span class="o">%</span> <span class="mi">4</span>  <span class="c1"># 빙행 설정 </span>
+        <span class="n">desperate_graph</span><span class="p">[</span><span class="n">r_y</span><span class="p">][</span><span class="n">r_x</span><span class="p">]</span> <span class="o">=</span> <span class="n">belive_graph</span><span class="p">[</span><span class="n">r_y</span><span class="p">][</span><span class="n">r_x</span><span class="p">]</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">belive_graph</span><span class="p">[</span><span class="n">r_y</span><span class="p">][</span><span class="n">r_x</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">r_food</span> <span class="o">=</span> <span class="n">graph</span><span class="p">[</span><span class="n">r_y</span><span class="p">][</span><span class="n">r_x</span><span class="p">]</span>
+
+
+        <span class="n">cur_y</span> <span class="o">=</span> <span class="n">r_y</span> <span class="o">+</span> <span class="n">DY</span><span class="p">[</span><span class="nb">dir</span><span class="p">]</span>
+        <span class="n">cur_x</span> <span class="o">=</span> <span class="n">r_x</span> <span class="o">+</span> <span class="n">DX</span><span class="p">[</span><span class="nb">dir</span><span class="p">]</span>
+        <span class="k">while</span> <span class="n">desperate_graph</span><span class="p">[</span><span class="n">r_y</span><span class="p">][</span><span class="n">r_x</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">in_range</span><span class="p">(</span><span class="n">cur_y</span><span class="p">,</span> <span class="n">cur_x</span><span class="p">):</span> <span class="c1"># 간절함이 0이 되면 전파 종료 혹은 그래프를 나가면 종료 </span>
+            <span class="c1"># 전파 대상의 신봉음식이 동일한 경우, 전파하지 않고 지나감 </span>
+            <span class="k">if</span> <span class="n">r_food</span> <span class="o">==</span> <span class="n">graph</span><span class="p">[</span><span class="n">cur_y</span><span class="p">][</span><span class="n">cur_x</span><span class="p">]:</span>
+                <span class="n">cur_y</span> <span class="o">+=</span> <span class="n">DY</span><span class="p">[</span><span class="nb">dir</span><span class="p">]</span>
+                <span class="n">cur_x</span> <span class="o">+=</span> <span class="n">DX</span><span class="p">[</span><span class="nb">dir</span><span class="p">]</span>
+                <span class="c1"># print(f&#39;after propgation with repre {r_y, r_x}&#39;)</span>
+                <span class="c1"># for row in belive_graph:</span>
+                <span class="c1">#     print(row[:])</span>
+                <span class="k">continue</span> 
+
+            <span class="c1"># 신봉음식이 다른 경우 </span>
+            <span class="k">if</span> <span class="n">desperate_graph</span><span class="p">[</span><span class="n">r_y</span><span class="p">][</span><span class="n">r_x</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">belive_graph</span><span class="p">[</span><span class="n">cur_y</span><span class="p">][</span><span class="n">cur_x</span><span class="p">]:</span> <span class="c1"># 강한전파 </span>
+<span class="w">                </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">                - 전파대상의 신봉 음식 = 전파자의 신봉 음식 </span>
+<span class="sd">                - 전파자 간절함: 간절함 - (전파대상의 신앙심 + 1)</span>
+<span class="sd">                - 전파대상 신앙심: 전파대상의 신앙심 + 1  </span>
+<span class="sd">                &#39;&#39;&#39;</span>
+                <span class="n">graph</span><span class="p">[</span><span class="n">cur_y</span><span class="p">][</span><span class="n">cur_x</span><span class="p">]</span> <span class="o">=</span> <span class="n">r_food</span> 
+                <span class="n">belive_graph</span><span class="p">[</span><span class="n">cur_y</span><span class="p">][</span><span class="n">cur_x</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">desperate_graph</span><span class="p">[</span><span class="n">r_y</span><span class="p">][</span><span class="n">r_x</span><span class="p">]</span> <span class="o">-=</span> <span class="n">belive_graph</span><span class="p">[</span><span class="n">cur_y</span><span class="p">][</span><span class="n">cur_x</span><span class="p">]</span>
+            
+            <span class="k">else</span><span class="p">:</span> <span class="c1"># 약한 전파 </span>
+<span class="w">                </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">                전파대상의 신봉 음식 += 전파자의 신봉 음식 </span>
+<span class="sd">                - 전파자 간절함 = 0</span>
+<span class="sd">                - 전파대상의 신앙심 += 전파자의 간절함 </span>
+<span class="sd">                </span>
+<span class="sd">                &#39;TCM&#39; -&gt; &#39;TC&#39; -&gt; &#39;TM&#39; -&gt; &#39;CM&#39; -&gt; &#39;M&#39; -&gt; &#39;C&#39; -&gt; &#39;T&#39; </span>
+<span class="sd">                민트초코우유 -&gt; 민트초코 -&gt; 민트우유 -&gt; 초코우유 -&gt; 우유 -&gt; 초코 -&gt; 민트 순서대로 각 음식의 신앙심 출력 </span>
+<span class="sd">                &#39;&#39;&#39;</span>
+                <span class="n">cur_food</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="n">cur_y</span><span class="p">][</span><span class="n">cur_x</span><span class="p">])</span>
+                <span class="n">cur_food</span> <span class="o">=</span> <span class="n">cur_food</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="n">r_y</span><span class="p">][</span><span class="n">r_x</span><span class="p">]))</span>
+                
+                <span class="n">result_food</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">if</span> <span class="s1">&#39;T&#39;</span> <span class="ow">in</span> <span class="n">cur_food</span><span class="p">:</span>
+                    <span class="n">result_food</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;T&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s1">&#39;C&#39;</span> <span class="ow">in</span> <span class="n">cur_food</span><span class="p">:</span>
+                    <span class="n">result_food</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s1">&#39;M&#39;</span> <span class="ow">in</span> <span class="n">cur_food</span><span class="p">:</span>
+                    <span class="n">result_food</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;M&#39;</span><span class="p">)</span>
+                
+
+                <span class="n">graph</span><span class="p">[</span><span class="n">cur_y</span><span class="p">][</span><span class="n">cur_x</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">result_food</span><span class="p">)</span>
+                <span class="c1"># print(result_food)</span>
+                <span class="n">belive_graph</span><span class="p">[</span><span class="n">cur_y</span><span class="p">][</span><span class="n">cur_x</span><span class="p">]</span> <span class="o">+=</span> <span class="n">desperate_graph</span><span class="p">[</span><span class="n">r_y</span><span class="p">][</span><span class="n">r_x</span><span class="p">]</span>
+                <span class="n">desperate_graph</span><span class="p">[</span><span class="n">r_y</span><span class="p">][</span><span class="n">r_x</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="c1">## update </span>
+            <span class="k">if</span> <span class="n">check_representative_propagaged</span><span class="p">(</span><span class="n">cur_y</span><span class="p">,</span> <span class="n">cur_x</span><span class="p">,</span> <span class="n">all_representatives</span><span class="p">):</span>
+                <span class="n">is_propagated</span><span class="p">[</span><span class="n">cur_y</span><span class="p">][</span><span class="n">cur_x</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span> 
+
+            <span class="n">cur_y</span> <span class="o">+=</span> <span class="n">DY</span><span class="p">[</span><span class="nb">dir</span><span class="p">]</span>
+            <span class="n">cur_x</span> <span class="o">+=</span> <span class="n">DX</span><span class="p">[</span><span class="nb">dir</span><span class="p">]</span>
+
+            <span class="c1"># print(f&#39;after propgation with repre {r_y, r_x}&#39;)</span>
+            <span class="c1"># for row in belive_graph:</span>
+            <span class="c1">#     print(row[:])</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">check_representative_propagaged</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">repres_set</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="ow">in</span> <span class="n">repres_set</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">print_believe</span><span class="p">(</span><span class="n">idx</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    &#39;TCM&#39; -&gt; &#39;TC&#39; -&gt; &#39;TM&#39; -&gt; &#39;CM&#39; -&gt; &#39;M&#39; -&gt; &#39;C&#39; -&gt; &#39;T&#39; </span>
+<span class="sd">    민트초코우유 -&gt; 민트초코 -&gt; 민트우유 -&gt; 초코우유 -&gt; 우유 -&gt; 초코 -&gt; 민트 순서대로 각 음식의 신앙심 출력 </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">my_dict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;TCM&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;TC&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s1">&#39;TM&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="s1">&#39;CM&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="s1">&#39;M&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+        <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="s1">&#39;T&#39;</span><span class="p">:</span> <span class="mi">6</span>
+    <span class="p">}</span>
+    <span class="n">believe_sums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">7</span>
+
+    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+            <span class="n">believe_sums</span><span class="p">[</span><span class="n">my_dict</span><span class="p">[</span><span class="n">graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]]]</span> <span class="o">+=</span> <span class="n">belive_graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">believe_sums</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">idx</span> <span class="o">!=</span> <span class="n">T</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+        <span class="c1"># 아침 </span>
+        <span class="n">morning</span><span class="p">()</span>
+        <span class="c1"># print(&#39;after morning: &#39;)</span>
+        <span class="c1"># for row in belive_graph:</span>
+        <span class="c1">#     print(row[:])</span>
+
+        <span class="c1"># 점심 </span>
+        <span class="n">groups</span> <span class="o">=</span> <span class="n">lunch</span><span class="p">()</span>
+        <span class="c1"># print(&#39;after lunch belif: &#39;)</span>
+        <span class="c1"># for row in belive_graph:</span>
+        <span class="c1">#     print(row[:])</span>
+        <span class="c1"># print(&#39;after lunch food: &#39;)</span>
+        <span class="c1"># for row in graph:</span>
+        <span class="c1">#     print(row[:])</span>
+
+        <span class="c1"># 저녁 </span>
+        <span class="n">dinner</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span>
+        <span class="c1"># print(&#39;after dinner: &#39;)</span>
+        <span class="c1"># for row in belive_graph:</span>
+        <span class="c1">#     print(row[:])</span>
+
+        <span class="c1"># 출력 </span>
+        <span class="n">print_believe</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">solve</span><span class="p">()</span>    
+</pre></div>
+</div>
+</div>
 <!-- 
 ```{admonition} 문제 정리
 :class: dropdown
@@ -2481,8 +3056,11 @@ pair_set.add((id1, id2))</p></li>
 5 0 6 2<br></p>
 </div>
 </section>
-<section id="id9">
-<h3>마법의 숲 탐색<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<section id="id10">
+<h3>메두사와 전사들<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+</section>
+<section id="id11">
+<h3>마법의 숲 탐색<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
 <p class="admonition-title">문제 정리</p>
 <ol class="arabic">
@@ -2756,8 +3334,8 @@ pair_set.add((id1, id2))</p></li>
 </div>
 </div>
 </section>
-<section id="id10">
-<h3>블록 이동하기<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<section id="id12">
+<h3>블록 이동하기<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
 <p class="admonition-title">갈 수 있는 방향 설정</p>
 <p>아래처럼 길이 나있는 경우가 있을 수 있으므로, 직선으로 움직이는 경우 상하좌우, 회전도 robot의 pivot block 기준으로 가로로 위치한 경우에는 위아래 혹은 세로로 위치한 경우에는 상하로 회전할 수 있도록 해야한다.</p>
@@ -2827,8 +3405,8 @@ The grid size is <span class="math notranslate nohighlight">\(N \times N\)</span
 <p>Consequently, the overall time complexity is <span class="math notranslate nohighlight">\(O(N^2)\)</span>, and the space complexity is also <span class="math notranslate nohighlight">\(O(N^2)\)</span>.</p>
 </div>
 <div class="toggle docutils container">
-<div class="literal-block-wrapper docutils container" id="id13">
-<div class="code-block-caption"><span class="caption-number">예시 42 </span><span class="caption-text">Solution</span><a class="headerlink" href="#id13" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id15">
+<div class="code-block-caption"><span class="caption-number">예시 42 </span><span class="caption-text">Solution</span><a class="headerlink" href="#id15" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">제한사항 </span>
 <span class="sd">5 &lt;= N &lt;= 100 </span>
@@ -2924,11 +3502,11 @@ The grid size is <span class="math notranslate nohighlight">\(N \times N\)</span
 </div>
 </div>
 </section>
-<section id="id11">
-<h3>고대 문명 유적 탐사<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<section id="id13">
+<h3>고대 문명 유적 탐사<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
 <p class="admonition-title">리스트의 복사</p>
-<h3 class="rubric" id="id12">리스트의 복사</h3>
+<h3 class="rubric" id="id14">리스트의 복사</h3>
 <ul class="simple">
 <li><p>1차원 리스트 같은 경우에는 <code class="docutils literal notranslate"><span class="pre">[:]</span></code>로 복사하면 된다.</p></li>
 <li><p>2차원 리스트는 [:]로 복사하면 얕은 복사라서, 내부 행 리스트를 공유하게 된다. 따라서 <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">copy</span> <span class="pre">import</span> <span class="pre">deepcopy</span></code>를 사용하거나 <code class="docutils literal notranslate"><span class="pre">list</span> <span class="pre">comprehension</span></code>를 사용하면 된다. 예를 들어 다음 코드와 같이 할 수 있다.</p></li>
@@ -2961,8 +3539,8 @@ center가 (2,1)일때 CW 90도 회전 이후 결과
 <div class="dropdown admonition">
 <p class="admonition-title"><a class="reference external" href="http://rotation.py">rotation.py</a> degugging file</p>
 <p>아래 파일을 따로 만들어서, 실제 로테이션이 잘 되는지 확인하였다. 문제를 풀 때 solve()함수는 다양한 함수들로 이루어져있어, 디버깅이 복잡하다. 따라서, 하나의 함수마다 degugging은 이런 식으로 별도로 output을 출력해서 확인하면 쉬워진다.</p>
-<div class="literal-block-wrapper docutils container" id="id14">
-<div class="code-block-caption"><span class="caption-number">예시 43 </span><span class="caption-text"><a class="reference external" href="http://rotation.py">rotation.py</a> (debug)</span><a class="headerlink" href="#id14" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id16">
+<div class="code-block-caption"><span class="caption-number">예시 43 </span><span class="caption-text"><a class="reference external" href="http://rotation.py">rotation.py</a> (debug)</span><a class="headerlink" href="#id16" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">in_circle</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">cx</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">cy</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">y</span> <span class="o">&lt;=</span> <span class="n">cy</span> <span class="o">+</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">cx</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">cx</span> <span class="o">+</span> <span class="mi">1</span>
 
@@ -3008,8 +3586,8 @@ center가 (2,1)일때 CW 90도 회전 이후 결과
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id15">
-<div class="code-block-caption"><span class="caption-number">예시 44 </span><span class="caption-text">Output of <a class="reference external" href="http://rotation.py">rotation.py</a></span><a class="headerlink" href="#id15" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id17">
+<div class="code-block-caption"><span class="caption-number">예시 44 </span><span class="caption-text">Output of <a class="reference external" href="http://rotation.py">rotation.py</a></span><a class="headerlink" href="#id17" title="Link to this code">#</a></div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>    Original Graph
     [1, 2, 3, 10, 11]
     [4, 5, 6, 12, 13]
@@ -3532,9 +4110,11 @@ center가 (2,1)일때 CW 90도 회전 이후 결과
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bfs">BFS</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ai">AI 로봇 청소기</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">미생물 연구</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">마법의 숲 탐색</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">블록 이동하기</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">고대 문명 유적 탐사</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">민트초코 우유</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">메두사와 전사들</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">마법의 숲 탐색</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">블록 이동하기</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">고대 문명 유적 탐사</a></li>
 </ul>
 </li>
 </ul>
