@@ -22,7 +22,7 @@ kernelspec:
   - [단어 변환](https://school.programmers.co.kr/learn/courses/30/lessons/43163)
   - [아이템 줍기](https://school.programmers.co.kr/learn/courses/30/lessons/87694)
   - [여행 경로](https://school.programmers.co.kr/learn/courses/30/lessons/43164)
-  - [퍼즐 조각 채우기]
+  - [퍼즐 조각 채우기](https://school.programmers.co.kr/learn/courses/30/lessons/84021)
 
 - BFS 
   - [AI 로봇 청소기](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/ai-robot/description)
@@ -401,8 +401,470 @@ print(solution(rectangle, s_x, s_y, item_x, item_y))
 
 ### 여행 경로 
 
+````{admonition} Solution 
+:class: dropdown 
+
+graph alogirhtm의 오일러 경로를 공부하면 된다. 
+
+```{code-block} python 
+from collections import defaultdict
+
+def solution(tickets):
+    '''
+    Eulerian Path 
+    '''
+    stack = []
+    graph = defaultdict(list)
+    for u, v in tickets:
+        graph[u].append(v)
+
+    # Sort
+    for node in graph:
+        graph[node].sort(reverse=True)
+
+    stack = ["ICN"]
+    route = []
+    while stack:
+        last_node = stack[-1] 
+        
+        if graph[last_node]:
+            stack.append(graph[last_node].pop())
+        else:
+            route.append(stack.pop())
+
+    return route[::-1]
+
+
+# tickets = [["ICN", "JFK"], ["HND", "IAD"], ["JFK", "HND"]] # ['ICN', 'JFK', 'HND', 'IAD']
+# tickets = [["ICN", "SFO"], ["ICN", "ATL"], ["SFO", "ATL"], ["ATL", "ICN"], ["ATL","SFO"]] # ['ICN', 'ATL', 'ICN', 'SFO', 'ATL', 'SFO']
+# tickets = [["ICN", "A"], ["ICN", "B"], ["C", "ICN"], ["B", "D"], ["D", "E"], ["E", "A"], ["A", "C"]] # ['ICN', 'A', 'C', 'ICN', 'B', 'D', 'E', 'A']
+tickets = [["ICN", "A"], ["A", "B"], ["B", "ICN"]] # ['ICN', 'A', 'B', 'ICN']
+print(solution(tickets))
+```
+````
+
+### 퍼즐 조각 채우기 
+
+````{admonition} Idea 
+:class: dropdown 
+
+- CCW 로 90도 회전하는 경우, 좌표는 다음과 같이 변한다.  (y, x) -> (N-1-x, y)
+- 문제를 읽어보면 퍼즐 조각과 비어있는 부분은 같은 사이즈일 경우, 그 size에 해당하는 퍼즐 조각과 비어있는 부분의 "모양"이 같은 지 확인해야한다. 
+    - dict[int, list[tuple]]로 채워준다. 
+        - key: size 
+        - value: key에 해당하는 사이즈를 가진, locs: list[tuple]들의 모임 
+    - 모양을 확인하기 위해, cell들의 상대적인 위치를 계산하도록 한다. 
+        - 좌상단 (y, x)둘다 Min_heap을 기준점으로 하여 나머지 Locs들을 좌상단 (y,x)에 대해서 subtraction을 해주면, 상대적인 위치로 변한다. 이를 sort()하면, 두 리스트가 동일하다면, 모양이 같은 것으로 판명할 수 있다. 
+- 필요한 자료 구조 
+    - empty_spaces 
+    - puzzles_parts 
+    - is_empty_spaces_used 
+````
+
+````{admonition} Explanation 
+:class: dropdown 
+
+테이블 위에는 "게임 보드"와 "테이블"이 있다. 
+
+- 게임보드와 테이블은 모두 각 칸이 1x1 크기인 정사각 격자 모양(NXN)이다. 
+    - 0은 빈칸, 1은 이미 채워진 칸 
+    - 게임 보드에 퍼즐 조각이 놓일 빈칸 및 table위의 퍼즐조각은 최소 1개에서 6개까지 연결된 형태 
+- 다음 규칙에 따라 "테이블" 위의 퍼즐 조각을 "게임 보드"의 빈칸에 채운다. 
+
+INIT:
+- 처음 테이블과 게임보드는 인접한 칸이 닿지 않도록 퍼즐들이 차있다.
+
+규칙 
+1. 조각은 한 번에 하나씩 채워 넣는다. 
+    - 한 조각이 해당 게임 보드에 들어갈 수 있는 여부 확인 후 다음 조각을 확인해야한다. for loop
+    - 문제는, '최대한 많은' 조각을 채워넣어야한다. 
+    - 똑같은 빈칸이라도, 1개를 넣느냐, 여러개를 넣을 수 있느냐에 따라 다른데, 이때 좋은 점은 인접한 칸이 비어있지 않아야 하므로, 
+        한 번 넣을 때 빈 칸이 온전히 꽉차도록 배치해야한다는 것이다. (규칙 4번에 의해)
+2. 조각을 회전시킬 수 있다. 
+    - 4개 가능: 그대로 + Rotate(90도, 180도, 270도)
+3. 조각을 뒤집을 수는 없다. 
+4. "게임 보드"에 "새로" 채워 넣은 퍼즐 조각과 인접한 칸이 비어있으면 안 된다. 
+
+Algorithm 
+1. game_board을 bfs: 비어있는 곳 확인 ~ O(N^2)
+    - dict[int, [list[(y, x)]]: dict[size]에는 넓이가 size만한 비어있는 위치 정보들이 저장되어 있음. 
+2. table 을 bfs: 퍼즐 조각 모양 확인  ~ O(N^2)
+    - dict[int, [list[(y, x)]]: dict[size]에는 넓이가 size만한 퍼즐 조각들의 정보들이 저장되어 있음. 
+
+3. 사이즈가 작은 순서대로, puzzles_parts[size]를 탐색. 
+- for size 
+    for 현재 사이즈 퍼즐 조각 idx_p 
+        for 현재 사이즈의 비어있는 공간 idx_e
+            if is_empty_spaces_used == True:
+                continue 
+            if (현재 사이즈 퍼즐 조각을 비어있는 공간에 넣을 수 있다): -> 현재 모양, 90, 180, 270에 대해서 돌렸을 때의 모양까지 확인 
+                total += 1 
+                break # 넣을 수 있으면 현재 퍼즐 조각에 대해서 여기서 끝내야함 
+        
+
+
+return:
+- 규칙에 맞게 최대한 많은 퍼즐 조각을 채워 넣을 경우, 총 몇 칸을 채울 수 있는지 return 하도록 solution 함수를 완성해라.
+````
+````{admonition} Solution
+:class: dropdown 
+
+```{code-block} python
+from collections import defaultdict , deque 
+from heapq import heappush, heappop 
+
+def in_range(y, x):
+    global N
+    return 0 <= y < N and 0 <= x < N 
+
+def BFS(s_y, s_x, visited, flag, graph):
+    global puzzles_parts, empty_spaces, is_empty_spaces_used
+    '''
+    floodfill을 하면서, 조건에 맞는 곳을 Visited에 삽입시킨다. 
+    '''
+    DY= [-1, 1, 0, 0]; DX = [0, 0, 1, -1]
+    visited.add((s_y, s_x))
+
+    q = deque([(s_y, s_x)])
+    locs = []
+    size = 0
+    while q:
+        cur_y, cur_x = q.popleft()
+        # start 위치인 (s_y, s_x)에 대해 "상대적인 위치" 저장 
+        locs.append((cur_y - s_y, cur_x - s_x)) 
+        size += 1 
+
+        for t in range(4):
+            ny = cur_y + DY[t] ; nx = cur_x + DX[t]
+            if (ny, nx) in visited:
+                continue 
+
+            if in_range(ny, nx) and graph[ny][nx] == flag:
+                visited.add((ny, nx))
+                q.append((ny, nx))
+    
+    locs.sort(key=lambda x: (x[0], x[1])) # 정렬 y-min, x-min 정렬 
+    if flag == 1: # 채워져있는 칸을 찾는 puzzle parts를 찾는다면, 
+        puzzles_parts[size].append(locs[:]) # slicing 
+    else: # 비어있는 칸을 찾는 다면, 
+        empty_spaces[size].append(locs[:])
+        is_empty_spaces_used[size].append(False)
+
+def make_locs_relative_locs(locs):
+    '''
+    이미 정렬된 Locs를 받음
+    in-place로 상대적 위치로 변환 
+    '''
+    ref_y, ref_x = locs[0]
+    for idx in range(len(locs)):
+        locs[idx] = (locs[idx][0] - ref_y, locs[idx][1] - ref_x)
+
+
+def can_fit(puzzle_parts_locs, empty_locs):
+    '''
+    두 Parameters들은 각 조각/비어있는 곳에 대한 
+    (0, 0)에 대한 상대적 위치로 저장되어 있음. 
+    '''
+    global N
+    assert len(puzzle_parts_locs) == len(empty_locs)
+
+    before_locs = puzzle_parts_locs[:]
+    for _ in range(4): # puzzle_parts 4번의 rotation 
+        # 모든 puzzle_parts의 현재 locs에 대하여 s
+        after_locs = []
+        for loc in before_locs: # before_locs의 원소양이 바뀌면 안되므로, temp_locs에 대신 채워넣음. 
+            y = loc[0]; x = loc[1]
+            after_locs.append((N-1-x, y))  
+        
+
+        before_locs = after_locs[:] # Update 다음 90도 CCW를 위해 
+
+        # 회전된 좌표들에 대해 좌표들의 '상대적 위치'가 동일한지 확인 
+        # empty_locs는 한 번 만들면 변하지 않고, 이미 상대적 위치들이 정렬되어 있음.  
+        after_locs.sort(key=lambda x: (x[0], x[1])) 
+        make_locs_relative_locs(after_locs)
+        if empty_locs == after_locs:
+            return True 
+    return False 
+
+
+
+
+def solution(game_board, table):
+    global empty_spaces, puzzles_parts, is_empty_spaces_used, N
+    empty_spaces = defaultdict(list)
+    puzzles_parts = defaultdict(list)
+    is_empty_spaces_used = defaultdict(list) # False/True 
+
+    N = len(table)
+
+    # Step 1. BFS로 empty_spaces와 puzzles_parts를 size별로 위치 정보 계산 
+    empty_spaces_visited = set()
+    puzzles_parts_visited = set()
+    for y in range(N):
+        for x in range(N):
+            if not (y, x) in empty_spaces_visited and \
+                game_board[y][x] == 0: # 비어져있는 칸이 비어있는 곳 
+                BFS(y, x, empty_spaces_visited, 0, game_board)
+            if not (y, x) in puzzles_parts_visited and \
+                table[y][x] == 1: # 채워져있는 칸이 puzzle parts 
+                BFS(y, x, puzzles_parts_visited, 1, table)
+
+    # Step 2. 사이즈 별로, puzzles_parts[size]를 탐색 
+    total = 0
+    for size in puzzles_parts.keys():
+        for puzzle_locs in puzzles_parts[size]: # 모든 퍼즐에 대하여 
+            if size in empty_spaces:
+                for idx_e, empty_locs in enumerate(empty_spaces[size]):
+                    if is_empty_spaces_used[size][idx_e] == True:
+                        continue 
+                    if can_fit(puzzle_locs, empty_locs):
+                        total += size # "총 몇 칸을 채울 수 있는지"
+                        is_empty_spaces_used[size][idx_e]= True 
+                        break # 찾았으면 맞는 빈 공간 찾는 것을 중단하고, 다음 puzzle 조각으로 넘어가야함. 
+
+                    
+    return total 
+
+```
+````
 
 ## BFS 
+
+### AI 로봇 청소기 
+
+
+````{admonition} 실수한 부분 
+:class: dropdown 
+
+이런 BFS문제를 풀 때, 각 격자가 가질 수 있는 상태의 수가 매우 중요함. 변화하는 상태에 대해서 update할 때 확인해야 할 것이 무엇인지 알 수 있기 때문 
+
+각 격자는 
+(1) 먼지가 있거나: 먼지의 양(p) 1 <= graph[y][x] <= 100 로 존재. 
+(2) 아무런 먼지가 없거나: graph[y][x] == 0
+(3) 물건이 위치할 수 있음: graph[y][x] == -1
+(4) 청소기 위치: vaccume_list[id].y, vaccume_list[id].x, locs_vaccume_set: set(tuple)
+-> 청소기의 위치를 나타내는 2차원 배열을 따로 만들어서 관리 B[r][c] = robot.num 
+
+이번 문제에서, 가장 큰 오류는 clean() 함수에서 존재하였다. 
+- 청소할 '방향'을 결정할 때, 현재 그래프의 먼지량 총합의 기준이 아니라, "청소할 수 있는"먼지 총합을 기준으로 방향을 설정했어야했다. 
+- 즉, 한 격자당 20 먼지량을 청소할 수 있으므로 총 합을 구할 때 min(20, A[r][c])로 구해야하는데, 그냥 A[r][c]을 계산해서 틀렸음. 
+  
+또한 시간을 가장 많이 잡아먹는 부분이 move()의 BFS 함수에서 존재하였다. 
+- 현재 로봇 청소기 위치에 먼지가 있으면 움직이지 않아도 된다. 라는 부분이 잘 명시되어 있지 않아서 헷갈렸다. 
+- 가장 가까운 오염거리에 대한 위치 계산을 할 때, 모든 오염 셀에 대한 거리를 계산하는 게 아니라, 로봇 위치에서 가장 가까운 격자의 거리를 계산하면 그 다음은 break를 하는 것이 훨씬 빠른데, 전자의 방법을 사용하여 시간 초과 에러를 받았다. 
+
+마지막으로, constraints에 대한 time complexity계산을 어느 정도 한 뒤에 알고리즘을 짜야하는데, 너무 급하게 구현을 한 것 같다. 
+````
+
+````{admonition} Solution 
+:class: dropdown 
+
+```{code-block} python 
+from collections import deque 
+import sys 
+
+# sys.stdin = open("Input.txt")
+
+class Robot:
+    def __init__(self, num:int, r:int, c: int):
+        self.num = num
+        self.r = r 
+        self.c = c 
+
+
+N, K, L = map(int, input().split())
+A = [list(map(int, input().split())) for _ in range(N)]
+B = [[-1]*N for _ in range(N)]
+robots = []
+
+for i in range(K):
+    r, c = map(int, input().split())
+    rb = Robot(i, r-1, c-1)
+    robots.append(rb)
+    B[rb.r][rb.c] = rb.num
+
+# 4방(좌,상,우,하) + (0,0) 유지(청소 시 자기 칸 포함용)
+dxys = [(0, -1), (-1, 0), (0, 1), (1,0), (0, 0)]
+
+def in_range(x: int, y: int) -> bool:
+    return 0 <= x < N and 0 <= y < N
+
+def move(rb: Robot) -> None:
+    if A[rb.r][rb.c] > 0:
+        return 
+    
+    nearest = None 
+    best_D = -1 
+
+    q = deque()
+    dist = [[-1] * N for _ in range(N)]
+    q.append((rb.r, rb.c))
+    dist[rb.r][rb.c] = 0
+    
+    while q:
+        r, c = q.popleft()
+
+        if best_D !=-1 and best_D < dist[r][c]:
+            break 
+
+        for dx, dy in dxys[:-1]:
+            nr = r + dx 
+            nc = c + dy 
+            
+            if in_range(nr, nc) and dist[nr][nc] == -1 and \
+            A[nr][nc] >= 0 and B[nr][nc] == -1:
+                dist[nr][nc] = dist[r][c] + 1 
+                q.append((nr, nc))
+
+                if A[nr][nc] > 0 and (best_D == -1 or best_D == dist[nr][nc]):
+                    best_D = dist[nr][nc]
+                    nearest = (nr, nc) if nearest is None else min((nr, nc), nearest)
+
+    if nearest is not None:
+        B[rb.r][rb.c] = -1 
+        rb.r, rb.c = nearest 
+        B[rb.r][rb.c] = rb.num
+
+
+# def clean(rb:Robot) -> None :
+#     max_sum = 0
+#     best_no_dxy = None 
+
+#     # 하나의 로봇당 4방향에 대해 
+#     for no_dxy in dxys[:-1]:  # 4방 중 제외할 방향 하나를 고른다
+#         s = 0
+#         for dx, dy in dxys:   # 자기 칸(0,0) + 4방
+#             r, c = rb.r + dx, rb.c + dy
+#             if in_range(r, c) and (dx, dy) != no_dxy:
+#                 s += min(20, max(0, A[r][c])) # A[r][c]가 -1인 경우 대비하여 max(0, A[r][c])
+
+#         if max_sum < s:
+#             max_sum = s 
+#             best_no_dxy = no_dxy 
+    
+#     if max_sum > 0:
+#         for dx, dy in dxys:
+#             r, c = rb.r + dx, rb.c + dy
+#             if in_range(r, c) and (dx, dy) != best_no_dxy and A[r][c] > 0:
+#                 A[r][c] = max(0, A[r][c] - 20)
+
+def clean(rb:Robot) -> None:
+    removed_dir = {
+        0: (0, -1),
+        1: (-1, 0),
+        2: (0, 1),
+        3: (1, 0)
+    }
+
+
+    cells_dict = {
+        0: [(-1, 0), (0, 0), (1, 0), (0, 1)],
+        1: [(0, -1), (0, 0), (0, 1), (1, 0)],
+        2: [(-1, 0), (0, -1), (0, 0), (1,0)],
+        3: [(-1, 0), (0, -1), (0, 0), (0, 1)]
+    }
+
+    DR = [-1, 1, 0, 0]
+    DC = [0, 0, -1, 1]
+
+    # 5가지 방향에 대한 총합 
+    five_sums = A[rb.r][rb.c]
+    for t in range(4):
+        ar = rb.r + DR[t]
+        ac = rb.c + DC[t]
+        if in_range(ar, ac) and A[ar][ac] >= 0:# NOTE: -1이면 five_sum이 잘못 구해짐 
+            five_sums += A[ar][ac]
+    
+    max_sum = 0
+    max_dir = None 
+    for key, dir in removed_dir.items():
+        cur_sum = five_sums
+        rr = rb.r + dir[0]
+        rc = rb.c + dir[1]
+        if in_range(rr, rc) and A[rr][rc] >= 0: # NOTE: -1이면 cur_sum이 잘못 빼짐 
+            cur_sum -= min(A[rr][rc], 20)
+
+        if cur_sum > max_sum:
+            max_sum = cur_sum 
+            max_dir = key 
+    
+    if max_sum > 0:
+        for dir in cells_dict[max_dir]:
+            nr = rb.r + dir[0]
+            nc = rb.c + dir[1]
+            if in_range(nr, nc) and A[nr][nc] > 0:
+                A[nr][nc] -= min(20, A[nr][nc])
+
+def increase() -> None:
+    """먼지 축적: 모든 먼지 칸(+5). 물건(-1)이나 0칸은 변화 없음."""
+    for i in range(N):
+        for j in range(N):
+            if A[i][j] > 0:
+                A[i][j] += 5
+
+
+def spread() -> None:
+    """
+    먼지 확산:
+      - 깨끗한 칸(=0)으로만 확산됨.
+      - 각 깨끗한 칸은 인접 4방의 '먼지 양 합' // 10 만큼 증가.
+      - 동시 적용을 위해 temp 누적 후 일괄 반영.
+    """
+    temp = [[0] * N for _ in range(N)]
+
+    for i in range(N):
+        for j in range(N):
+            if A[i][j] == 0:
+                s = 0
+                for dx, dy in dxys[:-1]:
+                    r, c = i + dx, j + dy
+                    if in_range(r, c) and A[r][c] > 0:
+                        s += A[r][c]
+                temp[i][j] = s // 10
+
+    for i in range(N):
+        for j in range(N):
+            A[i][j] += temp[i][j]
+
+
+
+def total_dust() -> int:
+    """현재 격자 내 총 먼지량 합산(>0인 칸만)."""
+    s = 0
+    for row in A:
+        for v in row:
+            if v > 0:
+                s += v
+    return s
+
+
+# L 라운드 시뮬레이션
+for _ in range(L):
+    # 1) 이동: 로봇 번호 순서대로
+    for rb in robots:
+        move(rb)
+
+    # 2) 청소: 로봇 번호 순서대로
+    for rb in robots:
+        clean(rb)
+
+    # 3) 먼지 축적
+    increase()
+
+    # 4) 먼지 확산
+    spread()
+
+    # 5) 총 먼지 출력 + 조기 종료
+    s = total_dust()
+    print(s)
+    if s == 0:
+        break
+```
+````
+
+
+
 ###  미생물 연구 
 <!-- 
 ```{admonition} 문제 정리
@@ -1555,6 +2017,8 @@ for id in range(1, Q+1): # microbe_id는 1부터 시작, graph가 0이면 아무
 1 4 3 6<br>
 5 0 6 2<br>
 ````
+
+### 메두사와 전사들 
 
 ### 마법의 숲 탐색
 
