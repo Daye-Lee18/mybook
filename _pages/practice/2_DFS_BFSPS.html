@@ -382,6 +382,7 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bfs">BFS</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ai">AI 로봇 청소기</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">미생물 연구</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">마법의 숲 탐색</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">블록 이동하기</a></li>
@@ -1051,6 +1052,230 @@ break # 넣을 수 있으면 현재 퍼즐 조각에 대해서 여기서 끝내�
 </section>
 <section id="bfs">
 <h2>BFS<a class="headerlink" href="#bfs" title="Link to this heading">#</a></h2>
+<section id="ai">
+<h3>AI 로봇 청소기<a class="headerlink" href="#ai" title="Link to this heading">#</a></h3>
+<p>이런 BFS문제를 풀 때, 각 격자가 가질 수 있는 상태의 수가 매우 중요함. 변화하는 상태에 대해서 update할 때 확인해야 할 것이 무엇인지 알 수 있기 때문</p>
+<p>각 격자는
+(1) 먼지가 있거나: 먼지의 양(p) 1 &lt;= graph[y][x] &lt;= 100 로 존재.
+(2) 아무런 먼지가 없거나: graph[y][x] == 0
+(3) 물건이 위치할 수 있음: graph[y][x] == -1
+(4) 청소기 위치: vaccume_list[id].y, vaccume_list[id].x, locs_vaccume_set: set(tuple)
+-&gt; 청소기의 위치를 나타내는 2차원 배열을 따로 만들어서 관리 B[r][c] = robot.num</p>
+<p>이번 문제에서, 가장 큰 오류는 clean() 함수에서 존재하였다.</p>
+<ul class="simple">
+<li><p>청소할 ‘방향’을 결정할 때, 현재 그래프의 먼지량 총합의 기준이 아니라, “청소할 수 있는”먼지 총합을 기준으로 방향을 설정했어야했다.</p></li>
+<li><p>즉, 한 격자당 20 먼지량을 청소할 수 있으므로 총 합을 구할 때 min(20, A[r][c])로 구해야하는데, 그냥 A[r][c]을 계산해서 틀렸음.</p></li>
+</ul>
+<p>또한 시간을 가장 많이 잡아먹는 부분이 move()의 BFS 함수에서 존재하였다.</p>
+<ul class="simple">
+<li><p>현재 로봇 청소기 위치에 먼지가 있으면 움직이지 않아도 된다. 라는 부분이 잘 명시되어 있지 않아서 헷갈렸다.</p></li>
+<li><p>가장 가까운 오염거리에 대한 위치 계산을 할 때, 모든 오염 셀에 대한 거리를 계산하는 게 아니라, 로봇 위치에서 가장 가까운 격자의 거리를 계산하면 그 다음은 break를 하는 것이 훨씬 빠른데, 전자의 방법을 사용하여 시간 초과 에러를 받았다.</p></li>
+</ul>
+<div class="dropdown admonition">
+<p class="admonition-title">Solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span> 
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span> 
+
+<span class="c1"># sys.stdin = open(&quot;Input.txt&quot;)</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Robot</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num</span> <span class="o">=</span> <span class="n">num</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">r</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">c</span> 
+
+
+<span class="n">N</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">L</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+<span class="n">A</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+<span class="n">B</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">N</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+<span class="n">robots</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">K</span><span class="p">):</span>
+    <span class="n">r</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+    <span class="n">rb</span> <span class="o">=</span> <span class="n">Robot</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">c</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">robots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rb</span><span class="p">)</span>
+    <span class="n">B</span><span class="p">[</span><span class="n">rb</span><span class="o">.</span><span class="n">r</span><span class="p">][</span><span class="n">rb</span><span class="o">.</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">rb</span><span class="o">.</span><span class="n">num</span>
+
+<span class="c1"># 4방(좌,상,우,하) + (0,0) 유지(청소 시 자기 칸 포함용)</span>
+<span class="n">dxys</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">in_range</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">return</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">N</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">N</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">move</span><span class="p">(</span><span class="n">rb</span><span class="p">:</span> <span class="n">Robot</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">A</span><span class="p">[</span><span class="n">rb</span><span class="o">.</span><span class="n">r</span><span class="p">][</span><span class="n">rb</span><span class="o">.</span><span class="n">c</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> 
+    
+    <span class="n">nearest</span> <span class="o">=</span> <span class="kc">None</span> 
+    <span class="n">best_D</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> 
+
+    <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">rb</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="n">rb</span><span class="o">.</span><span class="n">c</span><span class="p">))</span>
+    <span class="n">dist</span><span class="p">[</span><span class="n">rb</span><span class="o">.</span><span class="n">r</span><span class="p">][</span><span class="n">rb</span><span class="o">.</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="k">while</span> <span class="n">q</span><span class="p">:</span>
+        <span class="n">r</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">best_D</span> <span class="o">!=-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">best_D</span> <span class="o">&lt;</span> <span class="n">dist</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="n">c</span><span class="p">]:</span>
+            <span class="k">break</span> 
+
+        <span class="k">for</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="ow">in</span> <span class="n">dxys</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">nr</span> <span class="o">=</span> <span class="n">r</span> <span class="o">+</span> <span class="n">dx</span> 
+            <span class="n">nc</span> <span class="o">=</span> <span class="n">c</span> <span class="o">+</span> <span class="n">dy</span> 
+            
+            <span class="k">if</span> <span class="n">in_range</span><span class="p">(</span><span class="n">nr</span><span class="p">,</span> <span class="n">nc</span><span class="p">)</span> <span class="ow">and</span> <span class="n">dist</span><span class="p">[</span><span class="n">nr</span><span class="p">][</span><span class="n">nc</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> \
+            <span class="n">A</span><span class="p">[</span><span class="n">nr</span><span class="p">][</span><span class="n">nc</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">B</span><span class="p">[</span><span class="n">nr</span><span class="p">][</span><span class="n">nc</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">dist</span><span class="p">[</span><span class="n">nr</span><span class="p">][</span><span class="n">nc</span><span class="p">]</span> <span class="o">=</span> <span class="n">dist</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="n">c</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> 
+                <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">nr</span><span class="p">,</span> <span class="n">nc</span><span class="p">))</span>
+
+                <span class="k">if</span> <span class="n">A</span><span class="p">[</span><span class="n">nr</span><span class="p">][</span><span class="n">nc</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="p">(</span><span class="n">best_D</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">best_D</span> <span class="o">==</span> <span class="n">dist</span><span class="p">[</span><span class="n">nr</span><span class="p">][</span><span class="n">nc</span><span class="p">]):</span>
+                    <span class="n">best_D</span> <span class="o">=</span> <span class="n">dist</span><span class="p">[</span><span class="n">nr</span><span class="p">][</span><span class="n">nc</span><span class="p">]</span>
+                    <span class="n">nearest</span> <span class="o">=</span> <span class="p">(</span><span class="n">nr</span><span class="p">,</span> <span class="n">nc</span><span class="p">)</span> <span class="k">if</span> <span class="n">nearest</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">min</span><span class="p">((</span><span class="n">nr</span><span class="p">,</span> <span class="n">nc</span><span class="p">),</span> <span class="n">nearest</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">nearest</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">B</span><span class="p">[</span><span class="n">rb</span><span class="o">.</span><span class="n">r</span><span class="p">][</span><span class="n">rb</span><span class="o">.</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> 
+        <span class="n">rb</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="n">rb</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">nearest</span> 
+        <span class="n">B</span><span class="p">[</span><span class="n">rb</span><span class="o">.</span><span class="n">r</span><span class="p">][</span><span class="n">rb</span><span class="o">.</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">rb</span><span class="o">.</span><span class="n">num</span>
+
+
+<span class="c1"># def clean(rb:Robot) -&gt; None :</span>
+<span class="c1">#     max_sum = 0</span>
+<span class="c1">#     best_no_dxy = None </span>
+
+<span class="c1">#     # 하나의 로봇당 4방향에 대해 </span>
+<span class="c1">#     for no_dxy in dxys[:-1]:  # 4방 중 제외할 방향 하나를 고른다</span>
+<span class="c1">#         s = 0</span>
+<span class="c1">#         for dx, dy in dxys:   # 자기 칸(0,0) + 4방</span>
+<span class="c1">#             r, c = rb.r + dx, rb.c + dy</span>
+<span class="c1">#             if in_range(r, c) and (dx, dy) != no_dxy:</span>
+<span class="c1">#                 s += min(20, max(0, A[r][c])) # A[r][c]가 -1인 경우 대비하여 max(0, A[r][c])</span>
+
+<span class="c1">#         if max_sum &lt; s:</span>
+<span class="c1">#             max_sum = s </span>
+<span class="c1">#             best_no_dxy = no_dxy </span>
+    
+<span class="c1">#     if max_sum &gt; 0:</span>
+<span class="c1">#         for dx, dy in dxys:</span>
+<span class="c1">#             r, c = rb.r + dx, rb.c + dy</span>
+<span class="c1">#             if in_range(r, c) and (dx, dy) != best_no_dxy and A[r][c] &gt; 0:</span>
+<span class="c1">#                 A[r][c] = max(0, A[r][c] - 20)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">clean</span><span class="p">(</span><span class="n">rb</span><span class="p">:</span><span class="n">Robot</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">removed_dir</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="mi">0</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+        <span class="mi">1</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="mi">2</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="mi">3</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">}</span>
+
+
+    <span class="n">cells_dict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="mi">0</span><span class="p">:</span> <span class="p">[(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)],</span>
+        <span class="mi">1</span><span class="p">:</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)],</span>
+        <span class="mi">2</span><span class="p">:</span> <span class="p">[(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)],</span>
+        <span class="mi">3</span><span class="p">:</span> <span class="p">[(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
+    <span class="p">}</span>
+
+    <span class="n">DR</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">DC</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># 5가지 방향에 대한 총합 </span>
+    <span class="n">five_sums</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">rb</span><span class="o">.</span><span class="n">r</span><span class="p">][</span><span class="n">rb</span><span class="o">.</span><span class="n">c</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+        <span class="n">ar</span> <span class="o">=</span> <span class="n">rb</span><span class="o">.</span><span class="n">r</span> <span class="o">+</span> <span class="n">DR</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+        <span class="n">ac</span> <span class="o">=</span> <span class="n">rb</span><span class="o">.</span><span class="n">c</span> <span class="o">+</span> <span class="n">DC</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">in_range</span><span class="p">(</span><span class="n">ar</span><span class="p">,</span> <span class="n">ac</span><span class="p">)</span> <span class="ow">and</span> <span class="n">A</span><span class="p">[</span><span class="n">ar</span><span class="p">][</span><span class="n">ac</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span><span class="c1"># NOTE: -1이면 five_sum이 잘못 구해짐 </span>
+            <span class="n">five_sums</span> <span class="o">+=</span> <span class="n">A</span><span class="p">[</span><span class="n">ar</span><span class="p">][</span><span class="n">ac</span><span class="p">]</span>
+    
+    <span class="n">max_sum</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">max_dir</span> <span class="o">=</span> <span class="kc">None</span> 
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="nb">dir</span> <span class="ow">in</span> <span class="n">removed_dir</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">cur_sum</span> <span class="o">=</span> <span class="n">five_sums</span>
+        <span class="n">rr</span> <span class="o">=</span> <span class="n">rb</span><span class="o">.</span><span class="n">r</span> <span class="o">+</span> <span class="nb">dir</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">rc</span> <span class="o">=</span> <span class="n">rb</span><span class="o">.</span><span class="n">c</span> <span class="o">+</span> <span class="nb">dir</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">in_range</span><span class="p">(</span><span class="n">rr</span><span class="p">,</span> <span class="n">rc</span><span class="p">)</span> <span class="ow">and</span> <span class="n">A</span><span class="p">[</span><span class="n">rr</span><span class="p">][</span><span class="n">rc</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># NOTE: -1이면 cur_sum이 잘못 빼짐 </span>
+            <span class="n">cur_sum</span> <span class="o">-=</span> <span class="nb">min</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">rr</span><span class="p">][</span><span class="n">rc</span><span class="p">],</span> <span class="mi">20</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">cur_sum</span> <span class="o">&gt;</span> <span class="n">max_sum</span><span class="p">:</span>
+            <span class="n">max_sum</span> <span class="o">=</span> <span class="n">cur_sum</span> 
+            <span class="n">max_dir</span> <span class="o">=</span> <span class="n">key</span> 
+    
+    <span class="k">if</span> <span class="n">max_sum</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">for</span> <span class="nb">dir</span> <span class="ow">in</span> <span class="n">cells_dict</span><span class="p">[</span><span class="n">max_dir</span><span class="p">]:</span>
+            <span class="n">nr</span> <span class="o">=</span> <span class="n">rb</span><span class="o">.</span><span class="n">r</span> <span class="o">+</span> <span class="nb">dir</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">nc</span> <span class="o">=</span> <span class="n">rb</span><span class="o">.</span><span class="n">c</span> <span class="o">+</span> <span class="nb">dir</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">in_range</span><span class="p">(</span><span class="n">nr</span><span class="p">,</span> <span class="n">nc</span><span class="p">)</span> <span class="ow">and</span> <span class="n">A</span><span class="p">[</span><span class="n">nr</span><span class="p">][</span><span class="n">nc</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">A</span><span class="p">[</span><span class="n">nr</span><span class="p">][</span><span class="n">nc</span><span class="p">]</span> <span class="o">-=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="n">A</span><span class="p">[</span><span class="n">nr</span><span class="p">][</span><span class="n">nc</span><span class="p">])</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">increase</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;먼지 축적: 모든 먼지 칸(+5). 물건(-1)이나 0칸은 변화 없음.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">5</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">spread</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    먼지 확산:</span>
+<span class="sd">      - 깨끗한 칸(=0)으로만 확산됨.</span>
+<span class="sd">      - 각 깨끗한 칸은 인접 4방의 &#39;먼지 양 합&#39; // 10 만큼 증가.</span>
+<span class="sd">      - 동시 적용을 위해 temp 누적 후 일괄 반영.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">for</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="ow">in</span> <span class="n">dxys</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">r</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="n">dx</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="n">dy</span>
+                    <span class="k">if</span> <span class="n">in_range</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="ow">and</span> <span class="n">A</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="n">c</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">s</span> <span class="o">+=</span> <span class="n">A</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="n">c</span><span class="p">]</span>
+                <span class="n">temp</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span> <span class="o">//</span> <span class="mi">10</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+            <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="n">temp</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">total_dust</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;현재 격자 내 총 먼지량 합산(&gt;0인 칸만).&quot;&quot;&quot;</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">A</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">row</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">s</span> <span class="o">+=</span> <span class="n">v</span>
+    <span class="k">return</span> <span class="n">s</span>
+
+
+<span class="c1"># L 라운드 시뮬레이션</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">):</span>
+    <span class="c1"># 1) 이동: 로봇 번호 순서대로</span>
+    <span class="k">for</span> <span class="n">rb</span> <span class="ow">in</span> <span class="n">robots</span><span class="p">:</span>
+        <span class="n">move</span><span class="p">(</span><span class="n">rb</span><span class="p">)</span>
+
+    <span class="c1"># 2) 청소: 로봇 번호 순서대로</span>
+    <span class="k">for</span> <span class="n">rb</span> <span class="ow">in</span> <span class="n">robots</span><span class="p">:</span>
+        <span class="n">clean</span><span class="p">(</span><span class="n">rb</span><span class="p">)</span>
+
+    <span class="c1"># 3) 먼지 축적</span>
+    <span class="n">increase</span><span class="p">()</span>
+
+    <span class="c1"># 4) 먼지 확산</span>
+    <span class="n">spread</span><span class="p">()</span>
+
+    <span class="c1"># 5) 총 먼지 출력 + 조기 종료</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">total_dust</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">break</span>
+</pre></div>
+</div>
+</div>
+</section>
 <section id="id8">
 <h3>미생물 연구<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
 <!-- 
@@ -3305,6 +3530,7 @@ center가 (2,1)일때 CW 90도 회전 이후 결과
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bfs">BFS</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ai">AI 로봇 청소기</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">미생물 연구</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">마법의 숲 탐색</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">블록 이동하기</a></li>

@@ -630,6 +630,234 @@ def solution(game_board, table):
 ````
 
 ## BFS 
+
+### AI 로봇 청소기 
+
+이런 BFS문제를 풀 때, 각 격자가 가질 수 있는 상태의 수가 매우 중요함. 변화하는 상태에 대해서 update할 때 확인해야 할 것이 무엇인지 알 수 있기 때문 
+
+각 격자는 
+(1) 먼지가 있거나: 먼지의 양(p) 1 <= graph[y][x] <= 100 로 존재. 
+(2) 아무런 먼지가 없거나: graph[y][x] == 0
+(3) 물건이 위치할 수 있음: graph[y][x] == -1
+(4) 청소기 위치: vaccume_list[id].y, vaccume_list[id].x, locs_vaccume_set: set(tuple)
+-> 청소기의 위치를 나타내는 2차원 배열을 따로 만들어서 관리 B[r][c] = robot.num 
+
+이번 문제에서, 가장 큰 오류는 clean() 함수에서 존재하였다. 
+- 청소할 '방향'을 결정할 때, 현재 그래프의 먼지량 총합의 기준이 아니라, "청소할 수 있는"먼지 총합을 기준으로 방향을 설정했어야했다. 
+- 즉, 한 격자당 20 먼지량을 청소할 수 있으므로 총 합을 구할 때 min(20, A[r][c])로 구해야하는데, 그냥 A[r][c]을 계산해서 틀렸음. 
+  
+또한 시간을 가장 많이 잡아먹는 부분이 move()의 BFS 함수에서 존재하였다. 
+- 현재 로봇 청소기 위치에 먼지가 있으면 움직이지 않아도 된다. 라는 부분이 잘 명시되어 있지 않아서 헷갈렸다. 
+- 가장 가까운 오염거리에 대한 위치 계산을 할 때, 모든 오염 셀에 대한 거리를 계산하는 게 아니라, 로봇 위치에서 가장 가까운 격자의 거리를 계산하면 그 다음은 break를 하는 것이 훨씬 빠른데, 전자의 방법을 사용하여 시간 초과 에러를 받았다. 
+
+````{admonition} Solution 
+:class: dropdown 
+
+```{code-block} python 
+from collections import deque 
+import sys 
+
+# sys.stdin = open("Input.txt")
+
+class Robot:
+    def __init__(self, num:int, r:int, c: int):
+        self.num = num
+        self.r = r 
+        self.c = c 
+
+
+N, K, L = map(int, input().split())
+A = [list(map(int, input().split())) for _ in range(N)]
+B = [[-1]*N for _ in range(N)]
+robots = []
+
+for i in range(K):
+    r, c = map(int, input().split())
+    rb = Robot(i, r-1, c-1)
+    robots.append(rb)
+    B[rb.r][rb.c] = rb.num
+
+# 4방(좌,상,우,하) + (0,0) 유지(청소 시 자기 칸 포함용)
+dxys = [(0, -1), (-1, 0), (0, 1), (1,0), (0, 0)]
+
+def in_range(x: int, y: int) -> bool:
+    return 0 <= x < N and 0 <= y < N
+
+def move(rb: Robot) -> None:
+    if A[rb.r][rb.c] > 0:
+        return 
+    
+    nearest = None 
+    best_D = -1 
+
+    q = deque()
+    dist = [[-1] * N for _ in range(N)]
+    q.append((rb.r, rb.c))
+    dist[rb.r][rb.c] = 0
+    
+    while q:
+        r, c = q.popleft()
+
+        if best_D !=-1 and best_D < dist[r][c]:
+            break 
+
+        for dx, dy in dxys[:-1]:
+            nr = r + dx 
+            nc = c + dy 
+            
+            if in_range(nr, nc) and dist[nr][nc] == -1 and \
+            A[nr][nc] >= 0 and B[nr][nc] == -1:
+                dist[nr][nc] = dist[r][c] + 1 
+                q.append((nr, nc))
+
+                if A[nr][nc] > 0 and (best_D == -1 or best_D == dist[nr][nc]):
+                    best_D = dist[nr][nc]
+                    nearest = (nr, nc) if nearest is None else min((nr, nc), nearest)
+
+    if nearest is not None:
+        B[rb.r][rb.c] = -1 
+        rb.r, rb.c = nearest 
+        B[rb.r][rb.c] = rb.num
+
+
+# def clean(rb:Robot) -> None :
+#     max_sum = 0
+#     best_no_dxy = None 
+
+#     # 하나의 로봇당 4방향에 대해 
+#     for no_dxy in dxys[:-1]:  # 4방 중 제외할 방향 하나를 고른다
+#         s = 0
+#         for dx, dy in dxys:   # 자기 칸(0,0) + 4방
+#             r, c = rb.r + dx, rb.c + dy
+#             if in_range(r, c) and (dx, dy) != no_dxy:
+#                 s += min(20, max(0, A[r][c])) # A[r][c]가 -1인 경우 대비하여 max(0, A[r][c])
+
+#         if max_sum < s:
+#             max_sum = s 
+#             best_no_dxy = no_dxy 
+    
+#     if max_sum > 0:
+#         for dx, dy in dxys:
+#             r, c = rb.r + dx, rb.c + dy
+#             if in_range(r, c) and (dx, dy) != best_no_dxy and A[r][c] > 0:
+#                 A[r][c] = max(0, A[r][c] - 20)
+
+def clean(rb:Robot) -> None:
+    removed_dir = {
+        0: (0, -1),
+        1: (-1, 0),
+        2: (0, 1),
+        3: (1, 0)
+    }
+
+
+    cells_dict = {
+        0: [(-1, 0), (0, 0), (1, 0), (0, 1)],
+        1: [(0, -1), (0, 0), (0, 1), (1, 0)],
+        2: [(-1, 0), (0, -1), (0, 0), (1,0)],
+        3: [(-1, 0), (0, -1), (0, 0), (0, 1)]
+    }
+
+    DR = [-1, 1, 0, 0]
+    DC = [0, 0, -1, 1]
+
+    # 5가지 방향에 대한 총합 
+    five_sums = A[rb.r][rb.c]
+    for t in range(4):
+        ar = rb.r + DR[t]
+        ac = rb.c + DC[t]
+        if in_range(ar, ac) and A[ar][ac] >= 0:# NOTE: -1이면 five_sum이 잘못 구해짐 
+            five_sums += A[ar][ac]
+    
+    max_sum = 0
+    max_dir = None 
+    for key, dir in removed_dir.items():
+        cur_sum = five_sums
+        rr = rb.r + dir[0]
+        rc = rb.c + dir[1]
+        if in_range(rr, rc) and A[rr][rc] >= 0: # NOTE: -1이면 cur_sum이 잘못 빼짐 
+            cur_sum -= min(A[rr][rc], 20)
+
+        if cur_sum > max_sum:
+            max_sum = cur_sum 
+            max_dir = key 
+    
+    if max_sum > 0:
+        for dir in cells_dict[max_dir]:
+            nr = rb.r + dir[0]
+            nc = rb.c + dir[1]
+            if in_range(nr, nc) and A[nr][nc] > 0:
+                A[nr][nc] -= min(20, A[nr][nc])
+
+def increase() -> None:
+    """먼지 축적: 모든 먼지 칸(+5). 물건(-1)이나 0칸은 변화 없음."""
+    for i in range(N):
+        for j in range(N):
+            if A[i][j] > 0:
+                A[i][j] += 5
+
+
+def spread() -> None:
+    """
+    먼지 확산:
+      - 깨끗한 칸(=0)으로만 확산됨.
+      - 각 깨끗한 칸은 인접 4방의 '먼지 양 합' // 10 만큼 증가.
+      - 동시 적용을 위해 temp 누적 후 일괄 반영.
+    """
+    temp = [[0] * N for _ in range(N)]
+
+    for i in range(N):
+        for j in range(N):
+            if A[i][j] == 0:
+                s = 0
+                for dx, dy in dxys[:-1]:
+                    r, c = i + dx, j + dy
+                    if in_range(r, c) and A[r][c] > 0:
+                        s += A[r][c]
+                temp[i][j] = s // 10
+
+    for i in range(N):
+        for j in range(N):
+            A[i][j] += temp[i][j]
+
+
+
+def total_dust() -> int:
+    """현재 격자 내 총 먼지량 합산(>0인 칸만)."""
+    s = 0
+    for row in A:
+        for v in row:
+            if v > 0:
+                s += v
+    return s
+
+
+# L 라운드 시뮬레이션
+for _ in range(L):
+    # 1) 이동: 로봇 번호 순서대로
+    for rb in robots:
+        move(rb)
+
+    # 2) 청소: 로봇 번호 순서대로
+    for rb in robots:
+        clean(rb)
+
+    # 3) 먼지 축적
+    increase()
+
+    # 4) 먼지 확산
+    spread()
+
+    # 5) 총 먼지 출력 + 조기 종료
+    s = total_dust()
+    print(s)
+    if s == 0:
+        break
+```
+````
+
+
+
 ###  미생물 연구 
 <!-- 
 ```{admonition} 문제 정리
