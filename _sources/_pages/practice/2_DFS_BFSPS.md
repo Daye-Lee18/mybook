@@ -867,6 +867,341 @@ for _ in range(L):
 
 ###  미생물 연구 
 
+````{admonition} Explanation 
+:class: dropdown 
+
+미생물 연구 
+
+필요한 자료구조 
+- `graph`: 현재 미생물의 위치를 저장한다. graph[y][x] = microbe_id , 아무것도 없으면 0으로 저장 (INIT)
+- `does_id_exist: [bool]` = does_id_exit[id] = True/False로 저장 해당 미생물 id가 죽었는지 살았는지 체크 
+- `id_to_locs: dict[int, list]` = 미생물들은 삽입되거나 제거되므로 add()뒤에 move()를 시작할 때 항상 계속 갱신 
+- `id_to_new_graph_origin: dict[int, Tuple[int]]`: move()이후에 id마다의 locs 재계산은 time consuming하므로 move()할때 새로 옮긴 origin을 저장해두어, record()때 이웃 미생물 검사시에 사용한다. 
+
+- 배양 크기 NxN (0, 0) ~ (N, N), 0-indexed , N+1개
+    - 0 <= x,y < N (inclusive, exclusive)
+    - 좌하단이 (0, 0)이며 (x, y)로 표시 
+
+- 총 Q번의 실험 진행하며 각 실험의 결과를 기록 
+
+1. 미생물 투입 (add) ~ O(N) + O(N)
+- (r1, c1, r2, c2)의 직사각형 여역에 한 무리의 미생물 투입 
+    - graph[y][x] = microbe_id 저장한다. 
+    - does_id_exist = [True] # id는 1부터 시작하므로, 맨 앞은 [True]로 저장 
+    - does_id_exist.append(True)
+- 원래 자리에 다른 미생물이 존재하면 새로 투입된 미생물의 영역 내의 미생물들을 잡아먹는다. 
+    - 원래 뭐가 있어도 현재 microbe_id로 저장한다. 
+    - 이때 기존에 있는 미생물 id를 `removed_id = set()`에 저장해둔다. 
+- 즉, 영역 내에는 새로 투입된 미생물만 남게된다. 
+- 만약 기존에 있던 어떤 미생물 무리 A가 새로 투입된 미생물 무리 B에게 잡아먹혀서 영역이 2이상으로 나눠진 경우에는, 기존 미생물은 전부 사라진다. 
+    - map을 돌면서 해당 미생물 id의 그룹 수가 2이상이면 모두 제거 가능 
+        - `does_id_exist[id]: list[int]` = True/False에서 False 로 저장한다. 
+    - X: (아래에서 다시 셀 것임) 만약 그룹 수가 2이상이 아니라면, 기존에 있던 `id_to_locs: list[set]`의 set에서 id_to_locs[id].remove(locs)로 해당 위치를 지워준다. 
+    
+--> 위의 문제는 뭐냐면, 기존에 있던 배양용기에서 뭔가가 사라지면, pq안에서 순서가 제대로 된 것이 없어지게 된다. 
+--> 이 때 또 graph를 돌면서 해당 id에 대해 계산해야하기때문에, step 2 (move)에서 한번에 계산하는게 더 편리할 것 
+
+2. 배양 용기 이동 (move)
+- 모든 미생물을 새로운 배양 용기로 이동시킴. (NxN)
+    - new_graph를 생성한다. (임시)
+- 기존 배양 용기에 있는 무리 중 가장 차지한 영역이 넓은 무리를 하나 선택 -> 동일한 영역이면, 가장 먼저 투입된 미생물을 선택한다. 
+    - Priority queue / sort 
+    - 기존 graph를 돌면서, (len(locs), id)정보를 저장하고, 이를 pq에 다 넣는다. 
+        - 새롭게 INIT된 빈 id_to_locs: dict(int, list)
+        - 이 과정에서 `id_to_locs[id].append()`하여 locs 위치 정보를 파악해놓는다. 
+        - 위에서 pq에 바로 넣는 식으로하면, 예전에 pq에 미리 넣어놨던 것에서 미생물의 영역이 작아지는 경우에는 tracking하기가 어려우므로 다시 센다. 
+        - list.sort()로 한다. 
+- 선택된 미생물 무리를 새 배양 용기에 옮긴다. (new_graph)
+    - 이때 무리는 기존 용기에서의 "형태를 유지"해야한다. 
+        - 해당 무리의 cell 좌표를 모두 가지고 있다가, origin이 바뀌면 그만큼 "평행이동"해준다. 
+    - 배양 용기의 범위를 벗어나지 않아야 한다. 
+        - in_range() 함수 
+    - 다른 미생물의 영역과 겹치지 않도록 두어야한다. 
+        - check(): 해당 id_to_locs[id]에 있는 모든 위치에서 new_graph의 모든 지점이 0이여야함. 
+    - 위의 조건 안에서 x좌표가 최대한 작은 위치로 미생물을 옮겨야 하며, 그런 위치가 둘 이상이라면 최대한 y좌표가 작은 위치로 오도록 미생물을 옮긴다. 
+        - (최대한 '좌측하단의 좌표'가 배양 용기의 좌측하단에 오도록 위치)
+        - 미생물 id안에서 좌측하단의 좌표를 항상 알고 있는 것이 좋음 
+        - 같은 x에서는 작은 y : for x (for y)
+        - 새로 옮겨진 위치는 (기존 위치 - 좌측하단 위치) 
+- 위의 조건을 만족하지 못하여 어떤 곳에도 둘 수 없으면, 새 용기에 옮기지 않고 사라진다. 
+    - does_id_exist[id] = False 로 저장 
+
+graph = new_graph[:] # 슬라이싱 
+
+3. 실험 결과 기록 (record)
+- 미생물 무리 중 상하좌우로 맞닿은 면이 있는 무리끼리는 '인접한 무리'
+    - 인접한 무리 쌍을 저장한다. (1, 2), (2, 3)
+    - 새로 옮겨진 위치에서 인접한지 확인한다. 
+    total = 0
+    pair_set = set()
+    for id in id_to_locs:
+        if does_id_exist[id]:
+            id_to_locs[모든 위치] - lower_bottom_loc[id]의 4방향에 다른 id가 있으면, 인접 
+                graph[dx][dy] != 0 and graph[dx][dy] != id:
+                    인접 
+                    if (id1, id2) in pair_set or (id2, id1) in pair_set:
+                        continue 
+                    total += len(id_to_locs[id1]) * len(id_to_locs[id2])
+                    pair_set.add((id1, id2))
+
+- 모든 '인접한 무리' "쌍" 을 확인한다. 
+- (A,B)와 (B,A)는 같은 쌍임 
+- 미생물 A의 영역의 넓이 x 미생물 B의 영역의 넓이만큼의 성과를 얻고 -> 이를 다 "더한" 값 (누적합)을 기록해야한다. 
+
+
+constraints: 
+- 2 <= N <= 15 
+- 1 <= Q <= 50 
+
+
+````
+````{admonition} Solution 
+:class: dropdown 
+
+```{code-block} python 
+import sys 
+from collections import deque, defaultdict 
+from heapq import heappush, heappop 
+
+# sys.stdin = open("Input.txt")
+input = sys.stdin.readline
+
+def in_range(x, y):
+    global N
+    return 0 <= x < N and 0 <= y < N
+
+def BFS(start_x, start_y, cur_id, visited):
+    global DX, DY
+
+    visited.add((start_x, start_y))
+    q = deque([(start_x, start_y)])
+
+    while q:
+        cur_x, cur_y = q.popleft()
+
+        for t in range(4):
+            nxt_x = cur_x + DX[t]
+            nxt_y = cur_y + DY[t]
+
+            if in_range(nxt_x, nxt_y) and not (nxt_x, nxt_y) in visited:
+                if graph[nxt_x][nxt_y] == cur_id:
+                    q.append((nxt_x, nxt_y))
+                    visited.add((nxt_x, nxt_y))
+
+            
+def count_group_bfs(cur_id):
+    global graph 
+    cnt = 0
+    visited = set()
+    for y in range(N):
+        for x in range(N):
+            if graph[x][y] == cur_id and not (x, y) in visited:
+                BFS(x, y, cur_id, visited)
+                cnt +=1 
+    return cnt 
+
+def add(r1, c1, r2, c2, id):
+    global graph, does_id_exist
+    removed_set = set()
+    # Step1: 새롭게 투입된 미생물 graph에 삽입 
+    for x in range(r1, r2): # upper right : exclusive 
+        for y in range(c1, c2):
+            if graph[x][y] != 0:
+                removed_set.add(graph[x][y])
+            graph[x][y] = id
+
+    does_id_exist.append(True) # 새로운 id있으면 삽입 
+    # lower_bottom_coord[id] = (r1, c1)
+    
+    # Step 2: 앞선 지워진 기존 미생물의 그룹 수가 2개 이상인지 확인 
+    for is_removed_id in removed_set:
+        cnt = count_group_bfs(is_removed_id)
+        # NOTE: 그룹 수가 아예없을 때도 False로 바꾸어주어야한다. 
+        if  cnt >= 2 or cnt == 0:
+            does_id_exist[is_removed_id] = False 
+            # 기존에 있던 location의 정보 다 삭제 
+
+def move():
+    global N, id_to_locs, DX, DY, graph, does_id_exist, id_to_new_graph_origin
+    new_graph = [[0] * (N) for _ in range(N)]
+    sort_pq = []
+    id_to_locs = defaultdict(list) # NOTE: 이전과 헷갈리지 않게 reinit 
+
+    # Stpe1. 각 id에 대해서 Locs에 대해 조사 
+    visited = set()
+    for y in range(N):
+        for x in range(N):
+            # 현재 아이디 = graph[x][y]에 대해서 방문하지 않았던 것이면 
+            # 또한, add()함수에서 지워진, 미생물에 대해서 다시 0으로 만들지 않았으므로 
+            # does_id_exist[id]에 대해서도 현재 살아있는 것인지 lazy validtaion을 진행한다. 
+            cur_id = graph[x][y] 
+            if cur_id != 0 and (x, y) not in visited and does_id_exist[cur_id]:
+                # cur_id = graph[x][y]
+                cnt = 0
+                q = deque([(x, y)])
+                visited.add((x, y))
+
+                while q:
+                    cur_x, cur_y = q.popleft()
+                    # 새로운 것을 만날 때마다 
+                    cnt += 1 
+                    # 예전 미생물이 다른 미생물한테 어느 정도 먹혀서 제일 작은 coordinate이 다를 수도 있음. 
+                    heappush(id_to_locs[cur_id], (cur_x, cur_y)) # min_heap, x와 y모두 
+                    # id_to_locs[id].append((cur_x, cur_y)) 
+
+                    for t in range(4):
+                        nxt_x = cur_x + DX[t]
+                        nxt_y = cur_y + DY[t]
+
+                        if not in_range(nxt_x, nxt_y):
+                            continue 
+                        if (nxt_x, nxt_y) not in visited and graph[nxt_x][nxt_y] == cur_id:
+                            visited.add((nxt_x, nxt_y))
+                            q.append((nxt_x, nxt_y))
+                # 다 돌았으면 
+                heappush(sort_pq, (cnt*-1, cur_id)) # cnt에 대해서는 max heap, cur_id에 대해서 min_heap 
+
+    # Step2. 미생물을 새로운 배양 용기에 옮김 
+    while sort_pq:
+        cur_area, cur_id = heappop(sort_pq)
+        cur_area *= -1 
+
+        locs = id_to_locs[cur_id]
+        ref_coord = locs[0]
+        
+        '''
+        NOTE: flag, found를 사용할 때, for loop이나 while loop이 여러개 중첩되어 있는 경우, 
+        반드시 "모든 경우의 수"에 대해서 for/while loop이 끝났을 경우, 결과가 어떻게 되는지 확인하여 flag 처리를 각별히 주의해준다. 
+        '''
+        flag = 0
+        # x좌표가 제일 작고, 같은 x위치가 2개이면, y의 위치가 작아야한다. 
+        for origin_x in range(N):
+            for origin_y in range(N):
+                if new_graph[origin_x][origin_y] != 0:
+                    continue 
+                # 현재 cur_id에 대해 모든 locs에서 미생물을 옮길 수 있는지 확인 
+                dif_x = ref_coord[0] - origin_x 
+                dif_y = ref_coord[1] - origin_y
+                
+                found = 1
+                for cur_loc in locs:
+                    new_x = cur_loc[0] - dif_x
+                    new_y = cur_loc[1] - dif_y
+
+                    # 조건1. 배양 용기의 범위를 벗어나지 않아야 함. 
+                    if not in_range(new_x, new_y):
+                        found = 0
+                        break 
+                    # 조건 2. 다른 미생물의 영역과 겹치지 않도록 두기 
+                    if new_graph[new_x][new_y] != 0:
+                        found = 0
+                        break 
+                # 만약 위의 모든 locs에 대해서 만족하였더라면, 옮길 수 있음 
+                if found:
+                    id_to_new_graph_origin[cur_id] = (origin_x, origin_y)
+                    for cur_loc in locs:
+                        new_x = cur_loc[0] - dif_x
+                        new_y = cur_loc[1] - dif_y
+                        new_graph[new_x][new_y] = cur_id
+                        flag = 1 # default로 0으로 해놓고 찾았을 때만 1로 해야함. 만약 default로 1 해놓으면, 아무것도 못찾고 그냥 끝나버림 
+                    break # for문 break
+                # else:
+                #     # 조건을 만족하지 못한 미생물은 사라져야함. 
+                #     does_id_exist[cur_id] = False 
+            if flag:
+                break
+
+        if flag == 0:
+            does_id_exist[cur_id] = False 
+    # Step 3: 
+    graph = new_graph[:]
+
+def record():
+    global id_to_locs, does_id_exist, id_to_new_graph_origin, DY, DX
+    total = 0
+
+    
+    for id in range(1, len(does_id_exist)):
+        # 모든 id 에 대하여 인접한 곳에 다른 id 가 있으면, 
+        if does_id_exist[id]:
+            locs = id_to_locs[id] # move하기 전의 locations 
+            ref_coord = locs[0]
+            dif_x = ref_coord[0] - id_to_new_graph_origin[id][0]
+            dif_y = ref_coord[1] - id_to_new_graph_origin[id][1]
+            pair_set = set()
+
+            # 하나의 id에 다른 id가 존재하는 경우 
+            for loc_x, loc_y in locs:
+                new_x = loc_x - dif_x 
+                new_y = loc_y - dif_y 
+
+                for t in range(4):
+                    nxt_x = new_x + DX[t]
+                    nxt_y = new_y + DY[t]
+                    if in_range(nxt_x, nxt_y) and graph[nxt_x][nxt_y] != 0:
+                        nxt_id = graph[nxt_x][nxt_y]
+                        if (graph[nxt_x][nxt_y] != id) and (not nxt_id in pair_set):
+                            if does_id_exist[nxt_id]:
+                                pair_set.add(nxt_id)
+                                total += len(id_to_locs[id]) * len(id_to_locs[nxt_id])
+
+    print(int(total / 2)) # (A, B) 와 (B, A)는 동일하므로 /2 로 나눠줌. 
+
+
+N, Q = map(int, input().rstrip().split())
+
+'''
+필요한 자료구조 
+'''
+graph = [[0]*(N) for _ in range(N)]
+does_id_exist = [True]
+id_to_locs = defaultdict(list) # id_to_locs[id] = [항상 맨 앞에 lower-left loc]
+DY = [-1, 1, 0, 0]; DX = [0, 0, -1, 1]
+id_to_new_graph_origin = dict()
+
+for id in range(1, Q+1): # microbe_id는 1부터 시작, graph가 0이면 아무것도 없음.
+    # if id == 4:
+    #     print('a') 
+    r1, c1, r2, c2 = map(int, input().rstrip().split())
+
+    add(r1, c1, r2, c2, id)
+    move()
+    record()
+```
+````
+````{admonition} test case 
+:class: dropdown
+1. 
+8 4 <br>
+2 2 5 6<br>
+2 3 5 8<br>
+2 0 5 3<br>
+1 1 6 6<br>
+
+2.
+3 3<br>
+0 0 3 2 <br>
+1 0 3 3<br>
+2 2 3 3<br>
+
+3. 
+8 5<br>
+0 0 2 5<br>
+1 1 5 6<br>
+1 0 3 6<br>
+7 7 8 8<br>
+2 4 6 7<br>
+
+4. 
+6 6 <br>
+3 4 5 5<br>
+3 3 4 4<br>
+2 0 3 1<br>
+0 2 1 4<br>
+1 4 3 6<br>
+5 0 6 2<br>
+````
+
 
 ### 민트초코 우유 
 
@@ -1441,1157 +1776,7 @@ if __name__ == '__main__':
     solve()    
 ```
 ````
-<!-- 
-```{admonition} 문제 정리
-:class: dropdown
 
-1. NxN 정사각형 배양 용기, 좌측 하단 (0,0), 우측 상단 (N, N)
-2. 총 Q번 실험동안, 실험 결과 기록 
-    - 2-1. insert_and_get_result() 미생물 투입 후, 배양 
-        - (r1, c1) ~ (r2, c2) 직사각형 미생물 투입, 영역내에는 새로 투입된 미생물만 남음. 
-        - 기존에 있던 미생물이 먹힌 경우, 영역이 두 개 이상으로 나뉘면 기존 미생물은 모두 사라짐.  -> 항상 미생물은 하나의 그룹으로만 이루어지게 만듦. 
-    - 2-2. 배양 용기 이동: move_microbe()
-        - 기존 용기와 동일한 새로운 배양 용기로 이동. 기존 배양 용기에 미생물이 한 마디도 남지 않을 때까지 
-            - 가장 차지한 영역 ((r1, c1) ~ (r2, c2))이 넓은 무리 하나 선택 -> 2개 이상이면 먼저 투입된 미생물 선택 (용기에는 미생물을 넣은 시간 정보 필요 -> idx가 작은 것 선택)
-            - 선택된 미생물의 영역 ((r1, c1) ~ (r2, c2))은 
-                - 배양 용기의 범위를 벗어나지 않으며 
-                - 다른 미생물의 영역과 겹치지 않아야하고, 
-                - 위의 조건에서 최대한 x좌표가 작은 위치로 미생물을 옮기는데, 
-                    - 그 위치가 2개 이상이면 최대한 y좌표가 작은 위치로 오도록 옮김 
-                - 위의 조건이 없다면, 옮기지 못하고 사라짐 
-    - 2-3. record() 
-        - 미생물 무리 중 상하좌우로 닿아있는 인접한 무리 확인 
-        - 맞닿은 면이 둘 이상이더라도 micro_id같으면 한 번만 확인 
-        - 인접한 무리가 있으면 
-            - 확인하는 두 무리가 A,B라면 (미생물 A영역의 넓이) x (미생물 B영역의 넓이) 성과 
-            - 확인한 모든 쌍의 성과 기록 
-```
-
-````{admonition} debugging시 CCW 90도 rotation 적용
-:class: dropdown 
-
-```{code-block} python
-def print_rotated_CCW_90(my_map):
-    # new_map = [[0] * N for _ in range(N)]
-    for y in range(N):
-        for x in range(N):
-            # new_map[y][x] = my_map[N-x-1][y]
-            print(my_map[x][N-y-1], end=' ')
-        print()
-
-print_rotated_CCW_90(graph)
-    
-```
-````
-
-````{admonition} 원점위치에 따른 좌표 변환 
-:class: dropdown 
-
-좌상단이 시작점인지, 좌하단이 시작점인지 좌표 변환 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](
-https://colab.research.google.com/github/Daye-Lee18/mybook/blob/main/assets/ipynb/grid_coords_rotations_cheatsheet.ipynb
-)
-
-![](../../assets/img/implementationPS/5/1.png)
-
-요약하자면, 
-- **좌하단→좌상단(배열)**: `row = N - 1 - y`, `col = x`  
-- **회전**: **Transpose** + (CW=**flip left–right**, CCW=**flip up–down**)  
-- **뒤집기**: 상하=**row만 뒤집기**, 좌우=**col만 뒤집기**  
-````
-
-````{admonition} sort
-:class: dropdown 
-주의해야할 것은, `lowest`와 `rear`을 비교하는 것! 
-```{code-block} python
-# sort id_to_locs_list in descending order of the area and id 
-list_len = len(id_to_locs_list)
-for f in range(list_len):
-    lowest = f 
-    for r in range(f+1, list_len):
-        if not compare(len(id_to_locs_list[lowest][1]), len(id_to_locs_list[r][1]), id_to_locs_list[lowest][0], id_to_locs_list[r][0]):
-            lowest = r 
-            
-    
-    # SWAP 
-    if lowest != f:
-        temp = id_to_locs_list[f]
-        id_to_locs_list[f] = id_to_locs_list[lowest]
-        id_to_locs_list[lowest] = temp 
-```
-````
-
-````{admonition} 3중 for loop안에서 닫는 위치 
-:class: dropdown 
-
-```{code-block} python 
-for i in range(len(locs_and_id)):          # [루프 1]
-    for origin_x in range(N):              # [루프 2]
-        for origin_y in range(N):          # [루프 3]
-            ...
-            if flag:
-                ...
-                break   # <-- 여기서 끊기는 건 루프 3만
-        if flag: # [루프 2] 중단
-            break
-```
-````
-
-````{admonition} set.union
-:class: dropdown 
-
-```{code-block} python 
-set1.union(set2) # X 
-set1 = set1.union(set2) # O
-```
-````
-
-````{admonition} 내 문제 풀이
-:class: dropdown
-```{code-block} python
-from collections import deque 
-
-def yx_from_rc(c, r):
-    return (N-r-1, c)
-
-def put_new_microbe(y, x, t, v, micro_id):
-
-    # # 바뀐 것에 대해서 작은 것 ~ 큰 것으로 분류 
-    # (y, x)는 포함 (t, v)는 불포함 
-    # small_y = y if y < t else t 
-    # big_y = y if y > t else t 
-    # small_x = x if x < v else v 
-    # big_x = x if x > v else v 
-
-
-    # print(f'Cur graph after put at {y, x} ~ {t, v}')
-    # inclusive ~ exclusive 
-    eatened_microbe_ids = set()
-    for a in range(y, t, -1):
-        for b in range(v-1, x-1, -1):
-            if graph[a][b] != 0:
-                eatened_microbe_ids.add(graph[a][b])
-            # 다른 미생물들은 잡아먹음 
-            graph[a][b] = micro_id
-
-    # 기존 무리의 영역이 2개 이상이되면, 나눠진 미생물은 모두 사라짐. 
-    # 잡아먹힌 micro_ids에 대해서 확인 
-    for removed_id in eatened_microbe_ids:
-        nums, locs = count_group_of_id(removed_id) # int, list 
-        # 해당 미생물을 없앰 
-        if nums >= 2:
-            for ry, rx in locs:
-                graph[ry][rx] = 0
-
-def in_range(y, x):
-    return 0<=y <N and 0<=x <N
-
-def is_closer_to_lower_left(tuple1, tuple2):
-    if tuple1[0] != tuple2[0]:
-        return tuple1[0] > tuple2[0] # y가 더 큰 것 
-    return tuple1[1] < tuple2[1] # x는 더 작은 것 
-
-def sort_locs_closer_to_lower_left(tuple_list):
-    tuple_list_len = len(tuple_list)
-    for f in range(tuple_list_len):
-        lowest = f 
-        for r in range(f+1, tuple_list_len):
-            if not is_closer_to_lower_left(tuple_list[lowest], tuple_list[r]):
-                lowest = r 
-        
-        if lowest != f:
-            # SWAP 
-            temp_tuple = tuple_list[lowest]
-            tuple_list[lowest] = tuple_list[f]
-            tuple_list[f] = temp_tuple
-
-def get_ids_and_shapes():
-    
-    id_to_locs = dict()
-    
-    # 현재 최대 cur_micro_id만큼의 개수가 존재할 수 있음 (지워진 것 빼고)
-    for a in range(N):
-        for b in range(N):
-
-            if graph[a][b] != 0 and graph[a][b] not in id_to_locs:
-                locs = set()  # NOTE: locations 추적, 새로운 ID 발견할 때마다 새롭게 INIT 필요 
-                q = deque([(a, b)])
-                locs.add((a, b))
-                while q:
-                    cury, curx = q.popleft()
-                    for t in range(4):
-                        ny = cury + DY[t] ; nx = curx + DX[t]
-                        # 현재 micro_idx와도 동일해야함 
-                        if in_range(ny, nx) and (ny, nx) not in locs and graph[ny][nx] == graph[a][b]:
-                            q.append((ny, nx))
-                            locs.add((ny, nx))
-                
-                # micro_id마다 위치를 연결하는 dictionary 생성 
-                id_to_locs[graph[a][b]] = list(locs)
-
-    return id_to_locs
-
-def move_microbe(new_graph):
-    # 현재 global graph에 있는 미생물들을 보고 new_graph에 옮겨 담기 
-    # Step 1: 1개의 그룹씩 있는 각 미생물들의 위치 locs구하기, len(locs)이 가장 높은 것이 가장 먼저 옮겨짐 
-    # 모양은 원점에서 가장 왼쪽 아래 (바꾼 그래프 상으로는 왼쪽 위)와 가장 가까운 점까지의 거리만큼 모두 이동하면 됨.
-    id_to_locs = get_ids_and_shapes()
-
-    # print(f'Current id with locs \n{id_to_locs}')
-    # print('Len: ', len(id_to_locs))
-
-    # id_to_locs을 정렬 
-    # 1. 개수가 가장 많은 것
-    # 2. 개수가 동일하다면 가장 먼저 투입된 미생물 선택 
-    id_to_locs_list = []
-    for key, value in id_to_locs.items():
-        id_to_locs_list.append((key, value))
-
-    sort_list(id_to_locs_list) # call by reference 
-    # print(f"Sorted as described in the problem \n {id_to_locs_list}")
-    
-    # locs은 origin (7, 0) 과 가장 가까운 순서대로 정렬 즉, ascending order 
-    for idx, (id, locs) in enumerate(id_to_locs_list):
-        # set 재할당 
-        sort_locs_closer_to_lower_left(locs)
-        id_to_locs_list[idx] = (id, locs)
-
-    # print(f"Sorted id_to_locs closer to the origin \n {id_to_locs_list}")
-
-    each_nums = [] # 옮겨서 살아남은 미생물들의 개수만 append 
-
-    # 옮기기 
-    # 모든 미생물에 대해 
-    for id, locs in id_to_locs_list:
-        
-        done = False 
-        # 이 조건안에서 colum 좌표가 작은 위치로 옮기고, 그 위치가 둘 이상이면 최대한 row 좌표가 작은 위치로 오도록 옮김 (x좌표가 작은 위치 -> y가 작은 위치)
-        # 시작 위치 찾기: b를 outer loop에 둬서 x가 작은 위치를 먼저 확인  
-        # for ori_y in range(N-1, -1, -1):
-        #     for ori_x in range(N):
-        for ori_x in range(N):
-            for ori_y in range(N-1, -1, -1):
-                #### NOTE: 매 origina마다 update하지 않으면, 이전에 실패한대로 계속 False로 머무르게됨.
-                is_the_origin_ok = True 
-                if new_graph[ori_y][ori_x] != 0:  # 옮길 그래프에서 시작점 for loop들어가기 전에 미리 체크해서 시간 줄이기 
-                    continue
-
-                # 미생물 무리가 차지한 영역이 배양 용기를 벗어나지 않아야함 
-                # 현재 locs의 모든 점이 (a,b)만큼 평행 이동했을 때 벗어나면 안됨 
-                # NOTE: dif_y, dif_x는 제일 작은 지점과의 거리임!! 고정!!!! 
-                dif_y = locs[0][0] - ori_y
-                dif_x = locs[0][1] - ori_x
-                
-                for cur_y, cur_x in locs:
-                    # NOTE: dif_y, dif_x는 제일 작은 지점과의 거리임!! 
-                    n_y = cur_y-dif_y
-                    n_x = cur_x-dif_x
-                    # print(f"Move point {cur_y, cur_x} -> {n_y, n_x}")
-                    # 평행 이동한 점들이 배양용기를 벗어나거나 다른 microbe가 있으면 
-                    if (not in_range(n_y,n_x)) or (new_graph[n_y][n_x] !=0):
-                        is_the_origin_ok = False 
-                        break 
-                
-                
-                # 다른 미생물이 이미 있으면 이곳을 시작점으로 할 수 없음 
-                if is_the_origin_ok and new_graph[ori_y][ori_x] == 0: # 괜찮으면 new_graph에 옮김 
-                    dif_y = locs[0][0] - ori_y
-                    dif_x = locs[0][1] - ori_x
-                    for cur_y, cur_x in locs:
-                        n_y = cur_y-dif_y
-                        n_x = cur_x-dif_x
-                        new_graph[n_y][n_x] = id
-                    
-                    done = True 
-                    # each_nums update 
-                    each_nums.append(len(locs))
-                    # 한번 옮겼으면 2중 for loop을 멈춰야함. 
-
-                if done:
-                    break  # stack구조에서 가장 안쪽 for loop 
-            if done:
-                break # stack구조에서 가장 바깥쪽 for loop  
-                # 그게 아니라면 어떤 곳에도 둘 수 없다면 사라짐  (update를 안하면 됨.)
-    # 살아남은 것들만 개수 return 
-    return len(each_nums)
-
-
-
-def compare(locs1, locs2, id1, id2):
-    if len(locs1) != len(locs2):
-        return len(locs1) > len(locs2) # 개수가 더 많은 것이 좋음
-    if id1 != id2:
-        return id1 < id2  # 먼저 들어온 것일수록 좋음 
-    else:
-        return True 
-
-def sort_list(my_list):
-    list_len = len(my_list)
-
-    for front in range(list_len):
-        lowest = front 
-        for rear in range(front+1, list_len):
-            # compare(locs1, locs2, id1, id2)
-            if not compare(my_list[lowest][1], my_list[rear][1], my_list[lowest][0], my_list[rear][0]):
-                lowest = rear 
-        
-        # 위치 변경이 있는 경우 SWAP 
-        if lowest != front: 
-            temp_tuple = my_list[front]
-            my_list[front] = my_list[lowest] # tuple의 재할당은 가능 , 다만 tuple은 t[0] = 99로 'item' assignment는 하지못함. 
-            my_list[lowest]= temp_tuple
-
-def count_group_of_id(m_id):
-    cnt = 0
-    visited = set()
-    DY = [-1, 1, 0, 0]; DX =[0, 0, -1, 1]
-
-
-    # 맵 전체 돌면서 확인 
-    for a in range(N):
-        for b in range(N):
-            if graph[a][b] == m_id and (a, b) not in visited:
-                # visited propgation 
-                q = deque([(a, b)])
-                visited.add((a, b))
-                while q:
-                    cury, curx = q.popleft()
-
-                    for t in range(4):
-                        ny = cury + DY[t] ; nx = curx + DX[t]
-                        if in_range(ny, nx) and (ny, nx) not in visited and graph[ny][nx] == m_id:
-                            q.append((ny, nx))
-                            visited.add((ny, nx))
-
-                #### BFS가 끝나면 group 1개 
-                cnt += 1 
-    return cnt, list(visited)
-
-
-
-
-
-def solve():
-    global N, graph,DY, DX
-    DY = [-1, 1, 0, 0]; DX =[0, 0, -1, 1]
-    # f = open('/Users/dayelee/Documents/GitHub/mybook/Input.txt', 'r')
-    N, Q = map(int, input().split())
-    graph = [[0]*N for _ in range(N)]
-
-    for micro_id in range(1, Q+1):
-        c1, r1, c2, r2 = map(int, input().split())
-
-        # prelim 
-        y, x = yx_from_rc(c1, r1)
-        t, v = yx_from_rc(c2, r2)
-
-        # Step 1: 
-        # 직사각형 영역에 미생물 투입 [(y, x) ~ (t, v)) inclusive ~ exclusive
-        # 다른 미생물들은 잡아먹음 
-        # 기존 무리의 영역이 2개 이상이되면, 나눠진 미생물은 모두 사라짐. 
-        put_new_microbe(y, x, t, v, micro_id)
-
-        # print("Graph after putting new microbe")
-        # for row in graph:
-        #     print(row)
-
-        # Step 2: 배양 용기 이동 
-        # 가장 column 좌표가 작으면서 row 좌표가 작은 위치(x가 작고 그 다음에 y가 작은 위치로 이동)
-        moved_graph = [[0]*N for _ in range(N)]
-        nums = move_microbe(moved_graph) # call by reference 
-        # print(f"each nums: {each_nums}")
-
-        # print("Graph after Moving microbe")
-        # for row in moved_graph:
-        #     print(row)
-        # Step 3: 실험 결과 기록 
-        # 그룹이 2개 이상일 때 개수들을 다 곱함 
-
-        # NOTE: graph는 이전 moved_graph로 update 
-        graph = [row[:] for row in moved_graph]
-
-        if nums >= 2:
-            result = 0
-            # 새로 만들어진 graph의 shape구하기 
-            id_to_locs_dict = get_ids_and_shapes()
-            
-            # 인접한 두 무리가 있으면, 곱해서 더하기 
-            keys = [key for key in id_to_locs_dict.keys()]
-            # result = []
-            # for p1, p2 in all_pairs:
-            for idx, key_1 in enumerate(keys):
-                for key_2 in keys[idx+1:]:
-                    if is_adjacent(key_1, key_2, id_to_locs_dict[key_1], id_to_locs_dict[key_2]):
-                        result += len(id_to_locs_dict[key_1]) * len(id_to_locs_dict[key_2])
-            print(result)
-        else:
-            print(0)
-
-def is_adjacent(id1, id2, locs1, locs2):
-    
-    for y, x in locs1: # id1이 있는 좌표에 대하여
-        for t in range(4):
-            ny = y + DY[t]; nx = x + DX[t]
-            # 유효한 4방향 중 id2가 하나라도 잇다면, 
-            if in_range(ny, nx) and graph[ny][nx] == id2:
-                return True 
-    return False 
-    
-
-        
-
-if __name__ == '__main__':
-    solve()
-```
-````
-
-````{admonition} 내 문제 풀이 2
-:class: dropdown
-debugging시 graph를 CCW 90로 돌려서 풀고, 실제 문제 구현할때는 (c, r)로 구현하여 푼 문제. 
-0,0은 좌상단이므로, 미생물을 옮길때는 outer loop이 y, inter loop이 x가 온다. 
-
-```{code-block} python 
-from collections import deque
-
-# f = open("/Users/dayelee/Documents/GitHub/mybook/Input.txt", 'r')
-
-N, Q = map(int, input().split())
-graph = [[0]*N for _ in range(N)]
-DY = [-1, 1, 0, 0]; DX = [0, 0, -1, 1]
-
-def print_rotated_CCW_90(my_map):
-    # new_map = [[0] * N for _ in range(N)]
-    for y in range(N):
-        for x in range(N):
-            # new_map[y][x] = my_map[N-x-1][y]
-            print(my_map[x][N-y-1], end=' ')
-        print()
-    
-
-def in_range(y, x):
-    return 0<=y < N and 0<=x<N 
-
-def find_count_and_locs(id):
-
-    count = 0 
-    visited = set()
-
-    for y in range(N):
-        for x in range(N):
-            if (y, x) not in visited and graph[y][x] == id:
-                q = deque([(y, x)])
-                visited.add((y, x))
-                
-                while q:
-                    cur_y, cur_x = q.popleft()
-
-                    for t in range(4):
-                        ny = cur_y + DY[t] ; nx = cur_x + DX[t]
-
-                        if in_range(ny, nx) and (not (ny,nx) in visited) and graph[ny][nx] == id:
-                            visited.add((ny, nx))
-
-                            q.append((ny, nx))
-                
-                count += 1 
-
-    # visited sort in ascending order 
-    visited = list(visited)
-    visited.sort()
-
-    return count, visited
-
-def place_new_microbe(r1, c1, r2, c2, m_id):
-    removed_id = set()
-    # inclusive ~ exclusive 
-    for y in range(r1, r2):
-        for x in range(c1, c2): 
-            if graph[y][x] != 0 and graph[y][x] != m_id:
-                removed_id.add(graph[y][x])
-            graph[y][x] = m_id
-
-    # check current id_to_cells 
-
-    # for removed microbe, check if they are separated into 2 groups 
-    for id in removed_id:
-        count, locs = find_count_and_locs(id)
-        if count >= 2: 
-            for loc in locs:
-                graph[loc[0]][loc[1]] = 0 
-
-def move(cur_id):
-
-    # STEP1: order priorities: 1. 가장 큰 영역 차지 2. id가 작은 것 
-    # 이전부터 현재까지 id에 대해 id_to_dict variable 생성 
-    id_to_locs_list = []
-    for id in range(1, cur_id+1):
-        count, locs = find_count_and_locs(id)
-        if count > 0:
-            id_to_locs_list.append((id, locs))
-
-    # sort id_to_locs_list in descending order of the area and id 
-    list_len = len(id_to_locs_list)
-    for f in range(list_len):
-        lowest = f 
-        for r in range(f+1, list_len):
-            if not compare(len(id_to_locs_list[lowest][1]), len(id_to_locs_list[r][1]), id_to_locs_list[lowest][0], id_to_locs_list[r][0]):
-                lowest = r 
-                
-        
-        # SWAP 
-        if lowest != f:
-            temp = id_to_locs_list[f]
-            id_to_locs_list[f] = id_to_locs_list[lowest]
-            id_to_locs_list[lowest] = temp 
-
-    # 옮길 때는 1. 기존 배양 형태를 벗어나지 않고, 2. 다른 미생물 영역과 겹치지 않도록 3. x좌표가 작은 위치 -> y좌표가 작은 위치
-    # 옮길 수 없으면 새 용기에 옮겨지지 않고 사라짐. 
-    new_graph = [[0]*N for _ in range(N)]
-    return_id_and_locs = []
-    for idx in range(list_len):
-        # if idx == 3:
-        #     print('3')
-        cur_id = id_to_locs_list[idx][0]
-        cur_locs = id_to_locs_list[idx][1]
-        # 새 origin 찾기 : x좌표가 작은 위치 -> y좌표가 작은 위치이므로 b좌표가 Outer loop
-        # 현재 y와 x가 바뀌어 있는 상태라, 반대로 적음 
-        for a in range(N):
-            for b in range(N):
-                flag = True 
-                new_origin_y = a; new_origin_x = b 
-                # locs의 맨처음 (y, x)위치가 (0, 0) origin에 가장 가까울 것 : locs는 ascending order로 이미 sort되어 있음 
-                diff_y = cur_locs[0][0] - new_origin_y
-                diff_x = cur_locs[0][1] - new_origin_x
-                for cur_y, cur_x in cur_locs:
-                    if (not in_range(cur_y - diff_y, cur_x - diff_x)) or (new_graph[cur_y - diff_y][cur_x - diff_x] != 0):
-                        flag = False 
-                        break
-
-                if flag: # ok to move 
-                    return_id_and_locs.append((cur_id, []))
-                    for cur_y, cur_x in cur_locs:
-                        new_graph[cur_y - diff_y][cur_x-diff_x] = cur_id
-                        # return_id_and_area에 넣기 
-                        # cur_locs이 아니라, 변경된 위치를 넣어줘야함. 
-                        return_id_and_locs[-1][1].append((cur_y - diff_y,cur_x-diff_x ))
-                    # return_id_and_locs.append((cur_id, cur_locs))
-                    # move가 끝나면 다음 idx로 넘어가야함. 
-                    break 
-            if flag:
-                break
-
-
-    # original graph update 
-    for idx, row in enumerate(new_graph):
-        graph[idx] = row[:]
-
-    return return_id_and_locs
-
-
-def compare(len1, len2, id1, id2):
-    if len1 != len2:
-        return len1 > len2 
-    return id1 < id2 
-
-def connected(locs1, id2):
-    for l1 in locs1:
-        # for l2 in locs2:
-        for t in range(4):
-            ny = l1[0] + DY[t]; nx = l1[1] + DX[t]
-            if in_range(ny, nx) and graph[ny][nx] == id2:
-                return True 
-
-    return False 
-
-     
-def calculate(id_to_locs):
-    if len(id_to_locs) <= 1:
-        return 0 
-    
-    id_len = len(id_to_locs)
-    total = 0 
-    # 인접한 것 끼리만 계산 
-    for f in range(id_len):
-        for r in range(f+1, id_len):
-            # 인접하면 
-            if connected(id_to_locs[f][1], id_to_locs[r][0]):
-                total += len(id_to_locs[f][1]) * len(id_to_locs[r][1]) 
-
-    return total
-    
-
-def solve():
-    for microbe_id in range(1, Q+1):
-        r1, c1, r2, c2 = map(int, input().split())
-
-        # place new microbe 
-        place_new_microbe(r1, c1, r2, c2, microbe_id)
-    
-        # print(f"Cur graph after putting ({r1, c1})~ ({r2, c2})")
-        # print_rotated_CCW_90(graph)
-
-        # move them 
-        id_to_locs = move(microbe_id)
-        # print(f"After Move:")
-        # print_rotated_CCW_90(graph)
-
-        # calculate points 
-        print(calculate(id_to_locs))
-
-
-if __name__ == '__main__':
-    solve()
-```
-````
-
-````{admonition} 내 풀이 3
-:class: dropdown 
-
-min-heap으로 좀 더 쉽게 locs를 sorting 함 
-```{code-block} python 
-import sys 
-from heapq import heappush, heappop # min-heap 
-from collections import defaultdict
-
-sys.stdin = open('Input.txt', 'r')
-
-from collections import deque 
-
-N, Q = map(int, input().split())
-graph = [[0] * N for _ in range(N)]
-
-def insert_new_microbe(r1, c1, r2, c2, id):
-    # global graph 
-    # [(r1, c1) ~ exclusive (r2, c2)) 
-    candidates_for_removing = set()
-    for y in range(r1, r2):
-        for x in range(c1, c2):
-            if graph[y][x] != 0:
-                candidates_for_removing.add(graph[y][x])
-            graph[y][x] = id # list의 내부 요소만 수정하는 경우에는 "전역 객체의 참조"를 그대로 쓰는 거라 global 선언 업싱도 가능
-
-    # 침입된 id를 대상으로 group이 두개로 나누어졌는지 세기 
-    for r_id in candidates_for_removing:
-        count, locs = count_group_and_find_loc(r_id)
-        if count >= 2:
-            # removing 
-            for loc in locs:
-                graph[loc[0]][loc[1]] = 0
-
-def count_group_and_find_loc(id):
-    '''
-    count = int
-    return locs: list 
-    '''
-    visited = [[False]*N for _ in range(N)]
-    count = 0 
-    return_locs = set()
-    for y in range(N):
-        for x in range(N):
-            if graph[y][x] == id and not visited[y][x]:
-                locs = BFS(y, x, id, visited)
-                return_locs = return_locs.union(locs)
-                count += 1 
-    # print(f"count, locs: {count}, {return_locs}")
-    return count, list(return_locs)
-
-def in_range(y, x):
-    return 0<=y<N and 0<=x < N 
-
-def BFS(y, x, id, visited):
-    DY = [-1, 0, 1, 0]; DX = [0, 1, 0, -1]
-    q = deque([(y, x)])
-    visited[y][x] = True 
-    locs = set([(y, x)])
-    while q:
-        cur_y, cur_x = q.popleft()
-
-        for t in range(4):
-            ny = cur_y + DY[t]; nx = cur_x + DX[t]
-            # 옆의 위치의 id가 현재 id와 같을 때만 넣음 
-            # 방문하지 않았을 때에만 재방문해야함
-            if in_range(ny, nx) and not visited[ny][nx] and graph[ny][nx] == id:
-                visited[ny][nx] = True 
-                locs.add((ny, nx))
-                q.append((ny, nx))
-    
-    return locs
-
-def replace():  
-    new_graph = [[0] * N for _ in range(N)]
-    return_id_locs = defaultdict(list)
-
-    # 원래 그래프에 있는 id와 locs 계산 
-    visited =[[False]*N for _ in range(N)]
-    locs_and_id = []
-    visited_id = set()
-    for y in range(N):
-        for x in range(N):
-            if not graph[y][x] in visited_id and graph[y][x] != 0:
-                visited_id.add(graph[y][x])
-                cur_id = graph[y][x] 
-                locs = list(BFS(y, x, cur_id, visited))
-                locs_and_id.append((cur_id, locs))
-
-    # sorting [(id, locs)], locs이 넓은 것 우선 -> 같으면 id
-    '''
-    min_heap이용해서 저장하고 나중에 heappop()으로 최소부터 꺼내면 시간 복잡도 더 작음 
-    '''
-    sort(locs_and_id)
-
-    flag = False 
-    # 미생물 하나씩 옮김 
-    for i in range(len(locs_and_id)):  # [루프 1]
-        # origin 위치 찾기
-        # 현재 우리의 graph는 왼쪽 위가 기준이므로 y가 최대한 작게 -> x최대한 작게 
-        for origin_y in range(N):  # [루프 2]
-            for origin_x in range(N): # [루프 3]
-                flag, (distance_y, distance_x) = can_use_origin(origin_y, origin_x, new_graph, locs_and_id[i][0], locs_and_id[i][1])
-                # 옮기기 실행 
-                if flag:
-                    cur_id = locs_and_id[i][0]
-                    for before_y, before_x in locs_and_id[i][1]:
-                        y = before_y - distance_y
-                        x = before_x - distance_x
-                        new_graph[y][x] = cur_id
-                        return_id_locs[cur_id].append((y, x))
-                    break # 옮기면 현재 i에 대해서 멈춰야함. [루프 3 중단]
-            if flag:
-                break # 옮기면 현재 i에 대해서 멈춰야함. [루프 2 중단]
-
-    # 원래 그래프 update 필수  
-    for y in range(N):
-        for x in range(N):
-            graph[y][x] = new_graph[y][x]
-
-    return return_id_locs
-
-def can_use_origin(origin_y, origin_x, new_graph, id, locs):
-    '''
-    locs는 Sort되어서 맨 앞에 있는 것이 (y,x)가 제일 작아야함. -> min-heap을 사용해서 root가 제일 작게함. 
-    '''
-    # sort locs 
-    q = []
-    for i in range(len(locs)):
-        heappush(q, locs[i])
-
-    # 맨 첫 원소 q[0] 는 (y -> x)순으로 가장 작은 것이 들어있음 
-    distance_y = q[0][0] - origin_y 
-    distance_x = q[0][1] - origin_x
-
-    for cur_y, cur_x in q:
-        new_pos_y = cur_y - distance_y 
-        new_pos_x = cur_x - distance_x
-        if in_range(new_pos_y, new_pos_x) and new_graph[new_pos_y][new_pos_x] == 0:
-            continue 
-        else:
-            return False, (None, None)
-    return True, (distance_y, distance_x) 
-    
-
-
-def sort(locs_and_id):
-    '''
-    locs_and_id = [(id1, locs1 (list))]
-    '''
-    lens = len(locs_and_id)
-    for f in range(lens):
-        lowest = f 
-        for r in range(f+1, lens):
-            if not compare(locs_and_id[lowest][0], locs_and_id[lowest][1], locs_and_id[r][0], locs_and_id[r][1]):
-                lowest = r 
-        
-        # SWAP 
-        if lowest != f:
-            temp = locs_and_id[lowest]
-            locs_and_id[lowest] = locs_and_id[f]
-            locs_and_id[f] = temp 
-
-def compare(id1, locs1, id2, locs2):
-    if len(locs1) != len(locs2):
-        return len(locs1) > len(locs2)
-    return id1 < id2 
-
-def solve():
-    
-    for e_id in range(1, Q+1): # 글로벌 변수를 읽기만 할때는 global 선언안해도 됨. 
-        r1, c1, r2, c2 = map(int, input().split())
-        # 미생물 투입 
-        insert_new_microbe(r1, c1, r2, c2, e_id)
-
-        # print('graph:')
-        # for row in graph:
-        #     print(row[:])
-
-        # 배양 용기 이동, 옮긴 용기안의 {id: locs}으로 되어있는 dictionary 반환 
-        return_id_locs = replace()
-
-        # print('After moving graph:')
-        # for row in graph:
-        #     print(row[:])
-
-        # 인접한 미생물의 영역 넓이의 곱을 표시 
-        total = 0
-        keys = list(return_id_locs.keys())
-        for i in range(len(keys)):
-            for j in range(i+1, len(keys)):  # i < j 로만 돌림
-                id1, id2 = keys[i], keys[j]
-                locs1, locs2 = return_id_locs[id1], return_id_locs[id2]
-
-                if is_adjacent(id1, id2, locs1, locs2):
-                    total += len(locs1) * len(locs2)
-        print(total)
-
-def is_adjacent(id1, id2, locs1, locs2):
-    DY = [-1, 0, 1, 0]; DX = [0, 1, 0, -1]
-    for loc in locs1:
-        cur_y, cur_x = loc 
-
-        for t in range(4):
-            ny = cur_y + DY[t]
-            nx = cur_x + DX[t]
-            if in_range(ny, nx) and graph[ny][nx] == id2:
-                return True 
-    
-    return False 
-
-if __name__ == '__main__':
-    solve()
-```
-```` -->
-````{admonition} Explanation 
-:class: dropdown 
-
-미생물 연구 
-
-필요한 자료구조 
-- `graph`: 현재 미생물의 위치를 저장한다. graph[y][x] = microbe_id , 아무것도 없으면 0으로 저장 (INIT)
-- `does_id_exist: [bool]` = does_id_exit[id] = True/False로 저장 해당 미생물 id가 죽었는지 살았는지 체크 
-- `id_to_locs: dict[int, list]` = 미생물들은 삽입되거나 제거되므로 add()뒤에 move()를 시작할 때 항상 계속 갱신 
-- `id_to_new_graph_origin: dict[int, Tuple[int]]`: move()이후에 id마다의 locs 재계산은 time consuming하므로 move()할때 새로 옮긴 origin을 저장해두어, record()때 이웃 미생물 검사시에 사용한다. 
-
-- 배양 크기 NxN (0, 0) ~ (N, N), 0-indexed , N+1개
-    - 0 <= x,y < N (inclusive, exclusive)
-    - 좌하단이 (0, 0)이며 (x, y)로 표시 
-
-- 총 Q번의 실험 진행하며 각 실험의 결과를 기록 
-
-1. 미생물 투입 (add) ~ O(N) + O(N)
-- (r1, c1, r2, c2)의 직사각형 여역에 한 무리의 미생물 투입 
-    - graph[y][x] = microbe_id 저장한다. 
-    - does_id_exist = [True] # id는 1부터 시작하므로, 맨 앞은 [True]로 저장 
-    - does_id_exist.append(True)
-- 원래 자리에 다른 미생물이 존재하면 새로 투입된 미생물의 영역 내의 미생물들을 잡아먹는다. 
-    - 원래 뭐가 있어도 현재 microbe_id로 저장한다. 
-    - 이때 기존에 있는 미생물 id를 `removed_id = set()`에 저장해둔다. 
-- 즉, 영역 내에는 새로 투입된 미생물만 남게된다. 
-- 만약 기존에 있던 어떤 미생물 무리 A가 새로 투입된 미생물 무리 B에게 잡아먹혀서 영역이 2이상으로 나눠진 경우에는, 기존 미생물은 전부 사라진다. 
-    - map을 돌면서 해당 미생물 id의 그룹 수가 2이상이면 모두 제거 가능 
-        - `does_id_exist[id]: list[int]` = True/False에서 False 로 저장한다. 
-    - X: (아래에서 다시 셀 것임) 만약 그룹 수가 2이상이 아니라면, 기존에 있던 `id_to_locs: list[set]`의 set에서 id_to_locs[id].remove(locs)로 해당 위치를 지워준다. 
-    
---> 위의 문제는 뭐냐면, 기존에 있던 배양용기에서 뭔가가 사라지면, pq안에서 순서가 제대로 된 것이 없어지게 된다. 
---> 이 때 또 graph를 돌면서 해당 id에 대해 계산해야하기때문에, step 2 (move)에서 한번에 계산하는게 더 편리할 것 
-
-2. 배양 용기 이동 (move)
-- 모든 미생물을 새로운 배양 용기로 이동시킴. (NxN)
-    - new_graph를 생성한다. (임시)
-- 기존 배양 용기에 있는 무리 중 가장 차지한 영역이 넓은 무리를 하나 선택 -> 동일한 영역이면, 가장 먼저 투입된 미생물을 선택한다. 
-    - Priority queue / sort 
-    - 기존 graph를 돌면서, (len(locs), id)정보를 저장하고, 이를 pq에 다 넣는다. 
-        - 새롭게 INIT된 빈 id_to_locs: dict(int, list)
-        - 이 과정에서 `id_to_locs[id].append()`하여 locs 위치 정보를 파악해놓는다. 
-        - 위에서 pq에 바로 넣는 식으로하면, 예전에 pq에 미리 넣어놨던 것에서 미생물의 영역이 작아지는 경우에는 tracking하기가 어려우므로 다시 센다. 
-        - list.sort()로 한다. 
-- 선택된 미생물 무리를 새 배양 용기에 옮긴다. (new_graph)
-    - 이때 무리는 기존 용기에서의 "형태를 유지"해야한다. 
-        - 해당 무리의 cell 좌표를 모두 가지고 있다가, origin이 바뀌면 그만큼 "평행이동"해준다. 
-    - 배양 용기의 범위를 벗어나지 않아야 한다. 
-        - in_range() 함수 
-    - 다른 미생물의 영역과 겹치지 않도록 두어야한다. 
-        - check(): 해당 id_to_locs[id]에 있는 모든 위치에서 new_graph의 모든 지점이 0이여야함. 
-    - 위의 조건 안에서 x좌표가 최대한 작은 위치로 미생물을 옮겨야 하며, 그런 위치가 둘 이상이라면 최대한 y좌표가 작은 위치로 오도록 미생물을 옮긴다. 
-        - (최대한 '좌측하단의 좌표'가 배양 용기의 좌측하단에 오도록 위치)
-        - 미생물 id안에서 좌측하단의 좌표를 항상 알고 있는 것이 좋음 
-        - 같은 x에서는 작은 y : for x (for y)
-        - 새로 옮겨진 위치는 (기존 위치 - 좌측하단 위치) 
-- 위의 조건을 만족하지 못하여 어떤 곳에도 둘 수 없으면, 새 용기에 옮기지 않고 사라진다. 
-    - does_id_exist[id] = False 로 저장 
-
-graph = new_graph[:] # 슬라이싱 
-
-3. 실험 결과 기록 (record)
-- 미생물 무리 중 상하좌우로 맞닿은 면이 있는 무리끼리는 '인접한 무리'
-    - 인접한 무리 쌍을 저장한다. (1, 2), (2, 3)
-    - 새로 옮겨진 위치에서 인접한지 확인한다. 
-    total = 0
-    pair_set = set()
-    for id in id_to_locs:
-        if does_id_exist[id]:
-            id_to_locs[모든 위치] - lower_bottom_loc[id]의 4방향에 다른 id가 있으면, 인접 
-                graph[dx][dy] != 0 and graph[dx][dy] != id:
-                    인접 
-                    if (id1, id2) in pair_set or (id2, id1) in pair_set:
-                        continue 
-                    total += len(id_to_locs[id1]) * len(id_to_locs[id2])
-                    pair_set.add((id1, id2))
-
-- 모든 '인접한 무리' "쌍" 을 확인한다. 
-- (A,B)와 (B,A)는 같은 쌍임 
-- 미생물 A의 영역의 넓이 x 미생물 B의 영역의 넓이만큼의 성과를 얻고 -> 이를 다 "더한" 값 (누적합)을 기록해야한다. 
-
-
-constraints: 
-- 2 <= N <= 15 
-- 1 <= Q <= 50 
-
-
-````
-````{admonition} Solution 
-:class: dropdown 
-
-```{code-block} python 
-import sys 
-from collections import deque, defaultdict 
-from heapq import heappush, heappop 
-
-# sys.stdin = open("Input.txt")
-input = sys.stdin.readline
-
-def in_range(x, y):
-    global N
-    return 0 <= x < N and 0 <= y < N
-
-def BFS(start_x, start_y, cur_id, visited):
-    global DX, DY
-
-    visited.add((start_x, start_y))
-    q = deque([(start_x, start_y)])
-
-    while q:
-        cur_x, cur_y = q.popleft()
-
-        for t in range(4):
-            nxt_x = cur_x + DX[t]
-            nxt_y = cur_y + DY[t]
-
-            if in_range(nxt_x, nxt_y) and not (nxt_x, nxt_y) in visited:
-                if graph[nxt_x][nxt_y] == cur_id:
-                    q.append((nxt_x, nxt_y))
-                    visited.add((nxt_x, nxt_y))
-
-            
-def count_group_bfs(cur_id):
-    global graph 
-    cnt = 0
-    visited = set()
-    for y in range(N):
-        for x in range(N):
-            if graph[x][y] == cur_id and not (x, y) in visited:
-                BFS(x, y, cur_id, visited)
-                cnt +=1 
-    return cnt 
-
-def add(r1, c1, r2, c2, id):
-    global graph, does_id_exist
-    removed_set = set()
-    # Step1: 새롭게 투입된 미생물 graph에 삽입 
-    for x in range(r1, r2): # upper right : exclusive 
-        for y in range(c1, c2):
-            if graph[x][y] != 0:
-                removed_set.add(graph[x][y])
-            graph[x][y] = id
-
-    does_id_exist.append(True) # 새로운 id있으면 삽입 
-    # lower_bottom_coord[id] = (r1, c1)
-    
-    # Step 2: 앞선 지워진 기존 미생물의 그룹 수가 2개 이상인지 확인 
-    for is_removed_id in removed_set:
-        cnt = count_group_bfs(is_removed_id)
-        # NOTE: 그룹 수가 아예없을 때도 False로 바꾸어주어야한다. 
-        if  cnt >= 2 or cnt == 0:
-            does_id_exist[is_removed_id] = False 
-            # 기존에 있던 location의 정보 다 삭제 
-
-def move():
-    global N, id_to_locs, DX, DY, graph, does_id_exist, id_to_new_graph_origin
-    new_graph = [[0] * (N) for _ in range(N)]
-    sort_pq = []
-    id_to_locs = defaultdict(list) # NOTE: 이전과 헷갈리지 않게 reinit 
-
-    # Stpe1. 각 id에 대해서 Locs에 대해 조사 
-    visited = set()
-    for y in range(N):
-        for x in range(N):
-            # 현재 아이디 = graph[x][y]에 대해서 방문하지 않았던 것이면 
-            # 또한, add()함수에서 지워진, 미생물에 대해서 다시 0으로 만들지 않았으므로 
-            # does_id_exist[id]에 대해서도 현재 살아있는 것인지 lazy validtaion을 진행한다. 
-            cur_id = graph[x][y] 
-            if cur_id != 0 and (x, y) not in visited and does_id_exist[cur_id]:
-                # cur_id = graph[x][y]
-                cnt = 0
-                q = deque([(x, y)])
-                visited.add((x, y))
-
-                while q:
-                    cur_x, cur_y = q.popleft()
-                    # 새로운 것을 만날 때마다 
-                    cnt += 1 
-                    # 예전 미생물이 다른 미생물한테 어느 정도 먹혀서 제일 작은 coordinate이 다를 수도 있음. 
-                    heappush(id_to_locs[cur_id], (cur_x, cur_y)) # min_heap, x와 y모두 
-                    # id_to_locs[id].append((cur_x, cur_y)) 
-
-                    for t in range(4):
-                        nxt_x = cur_x + DX[t]
-                        nxt_y = cur_y + DY[t]
-
-                        if not in_range(nxt_x, nxt_y):
-                            continue 
-                        if (nxt_x, nxt_y) not in visited and graph[nxt_x][nxt_y] == cur_id:
-                            visited.add((nxt_x, nxt_y))
-                            q.append((nxt_x, nxt_y))
-                # 다 돌았으면 
-                heappush(sort_pq, (cnt*-1, cur_id)) # cnt에 대해서는 max heap, cur_id에 대해서 min_heap 
-
-    # Step2. 미생물을 새로운 배양 용기에 옮김 
-    while sort_pq:
-        cur_area, cur_id = heappop(sort_pq)
-        cur_area *= -1 
-
-        locs = id_to_locs[cur_id]
-        ref_coord = locs[0]
-        
-        '''
-        NOTE: flag, found를 사용할 때, for loop이나 while loop이 여러개 중첩되어 있는 경우, 
-        반드시 "모든 경우의 수"에 대해서 for/while loop이 끝났을 경우, 결과가 어떻게 되는지 확인하여 flag 처리를 각별히 주의해준다. 
-        '''
-        flag = 0
-        # x좌표가 제일 작고, 같은 x위치가 2개이면, y의 위치가 작아야한다. 
-        for origin_x in range(N):
-            for origin_y in range(N):
-                if new_graph[origin_x][origin_y] != 0:
-                    continue 
-                # 현재 cur_id에 대해 모든 locs에서 미생물을 옮길 수 있는지 확인 
-                dif_x = ref_coord[0] - origin_x 
-                dif_y = ref_coord[1] - origin_y
-                
-                found = 1
-                for cur_loc in locs:
-                    new_x = cur_loc[0] - dif_x
-                    new_y = cur_loc[1] - dif_y
-
-                    # 조건1. 배양 용기의 범위를 벗어나지 않아야 함. 
-                    if not in_range(new_x, new_y):
-                        found = 0
-                        break 
-                    # 조건 2. 다른 미생물의 영역과 겹치지 않도록 두기 
-                    if new_graph[new_x][new_y] != 0:
-                        found = 0
-                        break 
-                # 만약 위의 모든 locs에 대해서 만족하였더라면, 옮길 수 있음 
-                if found:
-                    id_to_new_graph_origin[cur_id] = (origin_x, origin_y)
-                    for cur_loc in locs:
-                        new_x = cur_loc[0] - dif_x
-                        new_y = cur_loc[1] - dif_y
-                        new_graph[new_x][new_y] = cur_id
-                        flag = 1 # default로 0으로 해놓고 찾았을 때만 1로 해야함. 만약 default로 1 해놓으면, 아무것도 못찾고 그냥 끝나버림 
-                    break # for문 break
-                # else:
-                #     # 조건을 만족하지 못한 미생물은 사라져야함. 
-                #     does_id_exist[cur_id] = False 
-            if flag:
-                break
-
-        if flag == 0:
-            does_id_exist[cur_id] = False 
-    # Step 3: 
-    graph = new_graph[:]
-
-def record():
-    global id_to_locs, does_id_exist, id_to_new_graph_origin, DY, DX
-    total = 0
-
-    
-    for id in range(1, len(does_id_exist)):
-        # 모든 id 에 대하여 인접한 곳에 다른 id 가 있으면, 
-        if does_id_exist[id]:
-            locs = id_to_locs[id] # move하기 전의 locations 
-            ref_coord = locs[0]
-            dif_x = ref_coord[0] - id_to_new_graph_origin[id][0]
-            dif_y = ref_coord[1] - id_to_new_graph_origin[id][1]
-            pair_set = set()
-
-            # 하나의 id에 다른 id가 존재하는 경우 
-            for loc_x, loc_y in locs:
-                new_x = loc_x - dif_x 
-                new_y = loc_y - dif_y 
-
-                for t in range(4):
-                    nxt_x = new_x + DX[t]
-                    nxt_y = new_y + DY[t]
-                    if in_range(nxt_x, nxt_y) and graph[nxt_x][nxt_y] != 0:
-                        nxt_id = graph[nxt_x][nxt_y]
-                        if (graph[nxt_x][nxt_y] != id) and (not nxt_id in pair_set):
-                            if does_id_exist[nxt_id]:
-                                pair_set.add(nxt_id)
-                                total += len(id_to_locs[id]) * len(id_to_locs[nxt_id])
-
-    print(int(total / 2)) # (A, B) 와 (B, A)는 동일하므로 /2 로 나눠줌. 
-
-
-N, Q = map(int, input().rstrip().split())
-
-'''
-필요한 자료구조 
-'''
-graph = [[0]*(N) for _ in range(N)]
-does_id_exist = [True]
-id_to_locs = defaultdict(list) # id_to_locs[id] = [항상 맨 앞에 lower-left loc]
-DY = [-1, 1, 0, 0]; DX = [0, 0, -1, 1]
-id_to_new_graph_origin = dict()
-
-for id in range(1, Q+1): # microbe_id는 1부터 시작, graph가 0이면 아무것도 없음.
-    # if id == 4:
-    #     print('a') 
-    r1, c1, r2, c2 = map(int, input().rstrip().split())
-
-    add(r1, c1, r2, c2, id)
-    move()
-    record()
-```
-````
-````{admonition} test case 
-:class: dropdown
-1. 
-8 4 <br>
-2 2 5 6<br>
-2 3 5 8<br>
-2 0 5 3<br>
-1 1 6 6<br>
-
-2.
-3 3<br>
-0 0 3 2 <br>
-1 0 3 3<br>
-2 2 3 3<br>
-
-3. 
-8 5<br>
-0 0 2 5<br>
-1 1 5 6<br>
-1 0 3 6<br>
-7 7 8 8<br>
-2 4 6 7<br>
-
-4. 
-6 6 <br>
-3 4 5 5<br>
-3 3 4 4<br>
-2 0 3 1<br>
-0 2 1 4<br>
-1 4 3 6<br>
-5 0 6 2<br>
-````
 
 ### 메두사와 전사들 
 
