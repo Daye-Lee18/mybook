@@ -2241,6 +2241,69 @@ pair_set.add((id1, id2))</p></li>
 </section>
 <section id="id10">
 <h3>메두사와 전사들<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<div class="dropdown admonition">
+<p class="admonition-title">메두사가 바라보는 방향대로 가려지는 격자 생성</p>
+<p>특정 전사에 의해 메두사에게 가려지는 범위는 메두사와 해당 전사의 상대적인 위치에 의해 결정된다. 상하좌우 대각선 8방향을 나누었을 때, 메두사로부터 8방향 중 한 방향에 전사가 위치해있다면, 그 전사가 “동일한 방향으로 바라본 범위”에 포함된 모든 칸은 메두사에게 보이지 않습니다.</p>
+<p><img alt="" src="../../_images/145.png" /></p>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">test case</p>
+<ol class="arabic simple">
+<li><p>case 1  <br>
+7 4 <br>
+1 1 5 0 <br>
+5 3 4 5 6 3 3 1 <br>
+0 0 0 0 0 1 0 <br>
+0 0 0 1 0 1 0 <br>
+0 1 1 0 0 0 0 <br>
+1 0 0 0 0 0 0 <br>
+0 0 1 0 0 0 0 <br>
+0 0 0 0 0 1 0 <br>
+0 0 0 0 1 0 0 <br></p></li>
+</ol>
+<p>1-A.  <br>
+0 3 0 <br>
+0 3 0 <br>
+0 3 0 <br>
+0 3 0 <br>
+2 2 0 <br>
+2 2 1 <br>
+0 2 0 <br>
+1 1 1 <br>
+0 2 0 <br>
+0 1 0 <br>
+0 1 0 <br>
+0 1 0 <br>
+0 <br></p>
+<ol class="arabic simple" start="2">
+<li><p>case 2  <br>
+5 9 <br>
+2 1 1 2 <br>
+0 2 1 4 0 1 4 3 2 4 4 0 3 2 4 4 2 3 <br>
+1 0 0 0 1 <br>
+0 0 0 0 1 <br>
+0 0 1 0 0 <br>
+0 0 1 0 1 <br>
+0 0 0 0 0 <br></p></li>
+</ol>
+<p>2-A.  <br>
+7 4 1 <br>
+0 <br></p>
+<ol class="arabic simple" start="3">
+<li><p>case 3 <br>
+5 10 <br>
+2 4 4 4 <br>
+0 3 3 2 2 1 3 3 0 4 2 2 1 2 1 0 2 0 2 3 <br>
+0 0 0 0 0 <br>
+0 0 1 1 1 <br>
+0 0 0 0 0 <br>
+0 0 0 0 0 <br>
+1 1 1 1 0 <br></p></li>
+</ol>
+<p>3-A.  <br>
+14 2 2 <br>
+0 <br></p>
+</div>
 </section>
 <section id="id11">
 <h3>마법의 숲 탐색<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
