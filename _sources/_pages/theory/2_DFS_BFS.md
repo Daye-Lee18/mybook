@@ -596,6 +596,102 @@ DFS(Depth-First Search)와 BFS(Breadth-First Search)는 전형적인 그래프(g
 - 1차원 배열이나, 2차원 배열 또한 그래프 형태로 생각하여 문제를 풀 수 있다. 
 ```
 
+### BFS: 최소한의 메모리 사용 
+
+BFS 문제를 풀 때 `visited` 라는 별도의 리스트나 set을 사용하지 않고 방문했던 곳을 다시 방문하는 것을 방지할 수 있다. 예를 들어, 최소 거리를 저장하는 distance_graph 같은 배열이 있고, 이 배열을 초기에는 모두 MAX로 채워 놓은 뒤, 처음 방문할 때만 값을 갱신하도록 만들면, distance_graph[y][x] == MAX 인지를 기준으로 ‘아직 방문하지 않은 칸인지’를 판별할 수 있다. 즉, 별도의 `visited` 객체를 만들지 않아도 된다. 
+
+다음 예시를 보자. 그래프에서 graph[y][x] = 0이면 도로라서 사람이 지나다닐 수 있고, graph[y][x] = 1이면 물이라 사람이 갈 수 없다. 이 때 시작지점 (s_y, s_x)에서 끝 지점 (e_y, e_x)까지 걸리는 최소 거리와 그 path를 알고 싶다. 시작점에서 끝 지점까지 갈 수 없는 경우는 -1를 출력하고 갈 수 있으면 path를 출력한다. 단, 여러 path들이 존재하는 경우 상/하/좌/우 우선순위로 최종 path를 계산한다. 
+
+이 문제를 해결하고자 할 때 다음과 같이 풀 수 있다. 
+> Algorithm 
+> 1. 시작점에서 끝 지점까지의 거리 계산 `build_distance_graph()`
+> 2. 시작점에서 끝 지점까지 길이 존재한다면, path계산 및 출력 `find_the_path()`
+
+이러한 경우 BFS를 이용해 접근할 수 있는데, 별도의 `visited`없이 처음 distance = MAX로 설정하고 distance가 MAX가 아니라면, 이미 방문했던 것으로 판명하여 다시 방문하지 않을 수 있다. 아래는 위의 문제를 푼 코드이다. 
+
+````{admonition} Solution for BFS without visited object 
+:class: dropdown 
+
+```{code-block} python 
+from collections import deque 
+
+graph = [
+    [0, 0, 0],
+    [1, 1, 0],
+    [0, 0, 0]
+]
+N = len(graph)
+MAX = 10**9  # 방문하지 않은 상태를 나타내는 충분히 큰 값
+
+# 시작점, 끝점 
+s_y, s_x = (0, 0)
+e_y, e_x = (2, 0)
+
+distance_graph = [[MAX]*N for _ in range(N)]
+
+DY = [-1, 1, 0, 0]
+DX = [0, 0, -1, 1]
+
+def in_range(y, x):
+    return 0 <= y < N and 0 <= x < N 
+
+def build_distance_graph():
+    """끝점에서부터 BFS를 돌려 각 칸에서 끝점까지의 최단 거리를 구한다."""
+    q = deque()
+    q.append((e_y, e_x))  # 끝 지점부터 시작
+    distance_graph[e_y][e_x] = 0 
+
+    while q:
+        cury, curx = q.popleft()
+
+        for t in range(4):
+            ny = cury + DY[t]
+            nx = curx + DX[t]
+
+            # 아직 방문하지 않았고(거리 == MAX), 도로(0)인 칸만 탐색
+            if in_range(ny, nx) and distance_graph[ny][nx] == MAX and graph[ny][nx] == 0:
+                q.append((ny, nx))
+                distance_graph[ny][nx] = distance_graph[cury][curx] + 1 
+
+def find_the_path():
+    """distance_graph를 이용해 시작점에서 끝점까지의 한 최단 경로를 복원한다."""
+    path = []
+    q = deque()
+    q.append((s_y, s_x))
+
+    while q:
+        cury, curx = q.popleft()
+
+        if cury == e_y and curx == e_x:
+            break 
+
+        for t in range(4):  # 상, 하, 좌, 우 순으로 우선순위 탐색
+            ny = cury + DY[t]
+            nx = curx + DX[t]
+
+            # 항상 '거리 1 작은 이웃'으로만 이동
+            if in_range(ny, nx) and distance_graph[ny][nx] < distance_graph[cury][curx]:
+                q.append((ny, nx))
+                path.append((ny, nx))
+                break   # 여러 경로가 있으면 제일 먼저 찾은 방향 하나만 선택
+    
+    return path
+
+if __name__ == "__main__":
+    build_distance_graph()
+    if distance_graph[s_y][s_x] != MAX:  # 길이 존재
+        path = find_the_path()
+        for p in path:
+            print(p)
+    else:
+        print(-1)  # 길이 존재하지 않음
+
+```
+````
+
+이에 대한 문제를 풀고 싶다면, [메두사와 전사들](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/medusa-and-warriors/description) 문제를 풀어보기 바란다. 
+
+
 ## 예제 
 
 ### 음료수 얼려 먹기 

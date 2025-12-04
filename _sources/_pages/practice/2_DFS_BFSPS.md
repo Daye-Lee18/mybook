@@ -1780,6 +1780,7 @@ if __name__ == '__main__':
 
 ### 메두사와 전사들 
 
+
 ````{admonition} 메두사가 바라보는 방향대로 가려지는 격자 생성 
 :class: dropdown 
 

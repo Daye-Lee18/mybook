@@ -384,6 +384,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dfs-bfs">탐색 알고리즘 DFS/BFS</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dfs-depth-first-search">DFS (Depth-First Search)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bfs-breadth-first-search">BFS (Breadth First Search)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bfs">BFS: 최소한의 메모리 사용</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">예제</a><ul class="nav section-nav flex-column">
@@ -891,6 +892,98 @@ document.write(`
 </ul>
 </div>
 </section>
+<section id="bfs">
+<h3>BFS: 최소한의 메모리 사용<a class="headerlink" href="#bfs" title="Link to this heading">#</a></h3>
+<p>BFS 문제를 풀 때 <code class="docutils literal notranslate"><span class="pre">visited</span></code> 라는 별도의 리스트나 set을 사용하지 않고 방문했던 곳을 다시 방문하는 것을 방지할 수 있다. 예를 들어, 최소 거리를 저장하는 distance_graph 같은 배열이 있고, 이 배열을 초기에는 모두 MAX로 채워 놓은 뒤, 처음 방문할 때만 값을 갱신하도록 만들면, distance_graph[y][x] == MAX 인지를 기준으로 ‘아직 방문하지 않은 칸인지’를 판별할 수 있다. 즉, 별도의 <code class="docutils literal notranslate"><span class="pre">visited</span></code> 객체를 만들지 않아도 된다.</p>
+<p>다음 예시를 보자. 그래프에서 graph[y][x] = 0이면 도로라서 사람이 지나다닐 수 있고, graph[y][x] = 1이면 물이라 사람이 갈 수 없다. 이 때 시작지점 (s_y, s_x)에서 끝 지점 (e_y, e_x)까지 걸리는 최소 거리와 그 path를 알고 싶다. 시작점에서 끝 지점까지 갈 수 없는 경우는 -1를 출력하고 갈 수 있으면 path를 출력한다. 단, 여러 path들이 존재하는 경우 상/하/좌/우 우선순위로 최종 path를 계산한다.</p>
+<p>이 문제를 해결하고자 할 때 다음과 같이 풀 수 있다.</p>
+<blockquote>
+<div><p>Algorithm</p>
+<ol class="arabic simple">
+<li><p>시작점에서 끝 지점까지의 거리 계산 <code class="docutils literal notranslate"><span class="pre">build_distance_graph()</span></code></p></li>
+<li><p>시작점에서 끝 지점까지 길이 존재한다면, path계산 및 출력 <code class="docutils literal notranslate"><span class="pre">find_the_path()</span></code></p></li>
+</ol>
+</div></blockquote>
+<p>이러한 경우 BFS를 이용해 접근할 수 있는데, 별도의 <code class="docutils literal notranslate"><span class="pre">visited</span></code>없이 처음 distance = MAX로 설정하고 distance가 MAX가 아니라면, 이미 방문했던 것으로 판명하여 다시 방문하지 않을 수 있다. 아래는 위의 문제를 푼 코드이다.</p>
+<div class="dropdown admonition">
+<p class="admonition-title">Solution for BFS without visited object</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span> 
+
+<span class="n">graph</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="p">]</span>
+<span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+<span class="n">MAX</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="mi">9</span>  <span class="c1"># 방문하지 않은 상태를 나타내는 충분히 큰 값</span>
+
+<span class="c1"># 시작점, 끝점 </span>
+<span class="n">s_y</span><span class="p">,</span> <span class="n">s_x</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">e_y</span><span class="p">,</span> <span class="n">e_x</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="n">distance_graph</span> <span class="o">=</span> <span class="p">[[</span><span class="n">MAX</span><span class="p">]</span><span class="o">*</span><span class="n">N</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+
+<span class="n">DY</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">DX</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">in_range</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">N</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">N</span> 
+
+<span class="k">def</span><span class="w"> </span><span class="nf">build_distance_graph</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;끝점에서부터 BFS를 돌려 각 칸에서 끝점까지의 최단 거리를 구한다.&quot;&quot;&quot;</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">e_y</span><span class="p">,</span> <span class="n">e_x</span><span class="p">))</span>  <span class="c1"># 끝 지점부터 시작</span>
+    <span class="n">distance_graph</span><span class="p">[</span><span class="n">e_y</span><span class="p">][</span><span class="n">e_x</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span> 
+
+    <span class="k">while</span> <span class="n">q</span><span class="p">:</span>
+        <span class="n">cury</span><span class="p">,</span> <span class="n">curx</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+            <span class="n">ny</span> <span class="o">=</span> <span class="n">cury</span> <span class="o">+</span> <span class="n">DY</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+            <span class="n">nx</span> <span class="o">=</span> <span class="n">curx</span> <span class="o">+</span> <span class="n">DX</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+
+            <span class="c1"># 아직 방문하지 않았고(거리 == MAX), 도로(0)인 칸만 탐색</span>
+            <span class="k">if</span> <span class="n">in_range</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span> <span class="ow">and</span> <span class="n">distance_graph</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="o">==</span> <span class="n">MAX</span> <span class="ow">and</span> <span class="n">graph</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
+                <span class="n">distance_graph</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="o">=</span> <span class="n">distance_graph</span><span class="p">[</span><span class="n">cury</span><span class="p">][</span><span class="n">curx</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> 
+
+<span class="k">def</span><span class="w"> </span><span class="nf">find_the_path</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;distance_graph를 이용해 시작점에서 끝점까지의 한 최단 경로를 복원한다.&quot;&quot;&quot;</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">s_y</span><span class="p">,</span> <span class="n">s_x</span><span class="p">))</span>
+
+    <span class="k">while</span> <span class="n">q</span><span class="p">:</span>
+        <span class="n">cury</span><span class="p">,</span> <span class="n">curx</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">cury</span> <span class="o">==</span> <span class="n">e_y</span> <span class="ow">and</span> <span class="n">curx</span> <span class="o">==</span> <span class="n">e_x</span><span class="p">:</span>
+            <span class="k">break</span> 
+
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>  <span class="c1"># 상, 하, 좌, 우 순으로 우선순위 탐색</span>
+            <span class="n">ny</span> <span class="o">=</span> <span class="n">cury</span> <span class="o">+</span> <span class="n">DY</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+            <span class="n">nx</span> <span class="o">=</span> <span class="n">curx</span> <span class="o">+</span> <span class="n">DX</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+
+            <span class="c1"># 항상 &#39;거리 1 작은 이웃&#39;으로만 이동</span>
+            <span class="k">if</span> <span class="n">in_range</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span> <span class="ow">and</span> <span class="n">distance_graph</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">distance_graph</span><span class="p">[</span><span class="n">cury</span><span class="p">][</span><span class="n">curx</span><span class="p">]:</span>
+                <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
+                <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
+                <span class="k">break</span>   <span class="c1"># 여러 경로가 있으면 제일 먼저 찾은 방향 하나만 선택</span>
+    
+    <span class="k">return</span> <span class="n">path</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">build_distance_graph</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">distance_graph</span><span class="p">[</span><span class="n">s_y</span><span class="p">][</span><span class="n">s_x</span><span class="p">]</span> <span class="o">!=</span> <span class="n">MAX</span><span class="p">:</span>  <span class="c1"># 길이 존재</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">find_the_path</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">path</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># 길이 존재하지 않음</span>
+</pre></div>
+</div>
+</div>
+<p>이에 대한 문제를 풀고 싶다면, <a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/medusa-and-warriors/description">메두사와 전사들</a> 문제를 풀어보기 바란다.</p>
+</section>
 </section>
 <section id="id2">
 <h2>예제<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
@@ -1269,6 +1362,7 @@ DFS로 해결할 수 있다. 얼음을 얼릴 수 있는 공간이 상, 하, 좌
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dfs-bfs">탐색 알고리즘 DFS/BFS</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dfs-depth-first-search">DFS (Depth-First Search)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bfs-breadth-first-search">BFS (Breadth First Search)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bfs">BFS: 최소한의 메모리 사용</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">예제</a><ul class="nav section-nav flex-column">
