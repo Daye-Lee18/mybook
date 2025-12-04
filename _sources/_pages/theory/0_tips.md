@@ -61,6 +61,12 @@ Algorithm
 3-1. 위의 조건을 만족하면, id를 출력한 뒤 관리 목록에서 제거한다. (log30000 ~ 10)
 3-3. pq의 모든 상품을 다 돌았는데도 불구하고, 판매가능한 상품이 없으면, -1를 출력하고, 관리 목록에서 제거하지 않는다.  
 ```
+```python
+# 아래처럼 class의 object의 실제 메모리 사용량을 측정할 수 있다. 
+import sys 
+
+print(sys.getsizeof(1))
+```
  
 ```{admonition} N에 따른 시간 복잡도 계산 및 알고리즘 선택 
 :class: dropdown 

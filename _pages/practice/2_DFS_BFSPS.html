@@ -386,9 +386,10 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">미생물 연구</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">민트초코 우유</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">메두사와 전사들</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">마법의 숲 탐색</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">블록 이동하기</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">고대 문명 유적 탐사</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">미지의 공간 탈출</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">마법의 숲 탐색</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">블록 이동하기</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">고대 문명 유적 탐사</a></li>
 </ul>
 </li>
 </ul>
@@ -2665,7 +2666,90 @@ warriors_graph: dict[tuple(int, int), list[int]] defaultdict(list) # warriors_gr
 </div>
 </section>
 <section id="id11">
-<h3>마법의 숲 탐색<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<h3>미지의 공간 탈출<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<div class="dropdown admonition">
+<p class="admonition-title">Solution</p>
+<p><a class="reference download internal" download="" href="../../_downloads/b5b641ad6576c6f9d7998c99129883c3/1.py"><span class="xref download myst">sol3</span></a></p>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">test case</p>
+<ol class="arabic">
+<li><br>
+</li>
+</ol>
+<p>10 2 2 <br>
+0 0 0 0 1 0 0 0 0 0 <br>
+1 0 0 0 0 1 0 0 1 1 <br>
+0 0 0 0 1 0 1 0 0 1 <br>
+0 0 0 0 0 1 1 1 1 0 <br>
+0 0 4 1 0 1 3 3 1 1 <br>
+0 0 0 1 1 1 3 3 1 1 <br>
+0 0 0 0 1 1 0 1 1 0 <br>
+0 0 0 0 0 0 0 0 1 1 <br>
+0 0 1 0 0 0 0 1 1 0 <br>
+0 0 0 1 0 0 1 0 1 1 <br>
+1 1 <br>
+1 1 <br>
+1 1 <br>
+1 1 <br>
+0 1 <br>
+0 1 <br>
+1 0 <br>
+1 1 <br>
+0 1 <br>
+2 0 <br>
+9 1 2 11 <br>
+8 4 3 15 <br></p>
+<ol class="arabic" start="2">
+<li><br>
+</li>
+</ol>
+<p>13 5 3 <br>
+1 0 0 0 0 0 0 0 0 0 0 0 1 <br>
+0 0 0 0 0 0 0 0 0 1 0 1 0 <br>
+0 0 0 0 1 0 0 0 0 0 0 0 1 <br>
+0 1 0 0 1 0 0 0 0 0 0 0 1 <br>
+4 0 0 0 0 0 0 0 0 0 0 0 1 <br>
+0 0 0 1 1 1 1 0 1 1 1 0 1 <br>
+0 0 0 1 1 3 3 3 3 3 1 1 0 <br>
+0 0 1 0 1 3 3 3 3 3 1 0 0 <br>
+1 0 0 0 1 3 3 3 3 3 1 1 0 <br>
+1 0 0 1 1 3 3 3 3 3 1 0 0 <br>
+0 0 0 1 1 3 3 3 3 3 1 0 1 <br>
+0 0 0 0 1 1 1 1 1 1 1 0 0 <br>
+0 0 0 1 0 1 1 0 1 0 1 0 1 <br>
+1 1 1 1 1 <br>
+1 0 0 0 0 <br>
+1 1 1 1 1 <br>
+1 1 1 1 1 <br>
+1 1 1 1 1 <br>
+0 0 1 1 1 <br>
+0 1 1 1 1 <br>
+0 1 1 1 1 <br>
+1 1 1 1 1 <br>
+1 1 1 1 1 <br>
+1 1 1 1 1 <br>
+1 1 1 1 1 <br>
+1 1 1 1 1 <br>
+1 1 1 1 1 <br>
+1 1 1 1 1 <br>
+0 0 0 0 0 <br>
+0 0 0 0 0 <br>
+0 0 0 0 1 <br>
+0 0 0 1 1 <br>
+1 1 0 1 1 <br>
+0 0 0 0 0 <br>
+0 0 0 0 0 <br>
+1 1 1 1 2 <br>
+1 1 1 1 0 <br>
+1 1 1 1 0 <br>
+7 1 3 12 <br>
+2 2 0 24 <br>
+0 8 0 20 <br></p>
+</div>
+</section>
+<section id="id12">
+<h3>마법의 숲 탐색<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
 <p class="admonition-title">문제 정리</p>
 <ol class="arabic">
@@ -2939,8 +3023,8 @@ warriors_graph: dict[tuple(int, int), list[int]] defaultdict(list) # warriors_gr
 </div>
 </div>
 </section>
-<section id="id12">
-<h3>블록 이동하기<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
+<section id="id13">
+<h3>블록 이동하기<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
 <p class="admonition-title">갈 수 있는 방향 설정</p>
 <p>아래처럼 길이 나있는 경우가 있을 수 있으므로, 직선으로 움직이는 경우 상하좌우, 회전도 robot의 pivot block 기준으로 가로로 위치한 경우에는 위아래 혹은 세로로 위치한 경우에는 상하로 회전할 수 있도록 해야한다.</p>
@@ -3010,8 +3094,8 @@ The grid size is <span class="math notranslate nohighlight">\(N \times N\)</span
 <p>Consequently, the overall time complexity is <span class="math notranslate nohighlight">\(O(N^2)\)</span>, and the space complexity is also <span class="math notranslate nohighlight">\(O(N^2)\)</span>.</p>
 </div>
 <div class="toggle docutils container">
-<div class="literal-block-wrapper docutils container" id="id15">
-<div class="code-block-caption"><span class="caption-number">예시 42 </span><span class="caption-text">Solution</span><a class="headerlink" href="#id15" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id16">
+<div class="code-block-caption"><span class="caption-number">예시 42 </span><span class="caption-text">Solution</span><a class="headerlink" href="#id16" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">제한사항 </span>
 <span class="sd">5 &lt;= N &lt;= 100 </span>
@@ -3107,11 +3191,11 @@ The grid size is <span class="math notranslate nohighlight">\(N \times N\)</span
 </div>
 </div>
 </section>
-<section id="id13">
-<h3>고대 문명 유적 탐사<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
+<section id="id14">
+<h3>고대 문명 유적 탐사<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
 <p class="admonition-title">리스트의 복사</p>
-<h3 class="rubric" id="id14">리스트의 복사</h3>
+<h3 class="rubric" id="id15">리스트의 복사</h3>
 <ul class="simple">
 <li><p>1차원 리스트 같은 경우에는 <code class="docutils literal notranslate"><span class="pre">[:]</span></code>로 복사하면 된다.</p></li>
 <li><p>2차원 리스트는 [:]로 복사하면 얕은 복사라서, 내부 행 리스트를 공유하게 된다. 따라서 <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">copy</span> <span class="pre">import</span> <span class="pre">deepcopy</span></code>를 사용하거나 <code class="docutils literal notranslate"><span class="pre">list</span> <span class="pre">comprehension</span></code>를 사용하면 된다. 예를 들어 다음 코드와 같이 할 수 있다.</p></li>
@@ -3144,8 +3228,8 @@ center가 (2,1)일때 CW 90도 회전 이후 결과
 <div class="dropdown admonition">
 <p class="admonition-title"><a class="reference external" href="http://rotation.py">rotation.py</a> degugging file</p>
 <p>아래 파일을 따로 만들어서, 실제 로테이션이 잘 되는지 확인하였다. 문제를 풀 때 solve()함수는 다양한 함수들로 이루어져있어, 디버깅이 복잡하다. 따라서, 하나의 함수마다 degugging은 이런 식으로 별도로 output을 출력해서 확인하면 쉬워진다.</p>
-<div class="literal-block-wrapper docutils container" id="id16">
-<div class="code-block-caption"><span class="caption-number">예시 43 </span><span class="caption-text"><a class="reference external" href="http://rotation.py">rotation.py</a> (debug)</span><a class="headerlink" href="#id16" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id17">
+<div class="code-block-caption"><span class="caption-number">예시 43 </span><span class="caption-text"><a class="reference external" href="http://rotation.py">rotation.py</a> (debug)</span><a class="headerlink" href="#id17" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">in_circle</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">cx</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">cy</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">y</span> <span class="o">&lt;=</span> <span class="n">cy</span> <span class="o">+</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">cx</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">cx</span> <span class="o">+</span> <span class="mi">1</span>
 
@@ -3191,8 +3275,8 @@ center가 (2,1)일때 CW 90도 회전 이후 결과
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id17">
-<div class="code-block-caption"><span class="caption-number">예시 44 </span><span class="caption-text">Output of <a class="reference external" href="http://rotation.py">rotation.py</a></span><a class="headerlink" href="#id17" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id18">
+<div class="code-block-caption"><span class="caption-number">예시 44 </span><span class="caption-text">Output of <a class="reference external" href="http://rotation.py">rotation.py</a></span><a class="headerlink" href="#id18" title="Link to this code">#</a></div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>    Original Graph
     [1, 2, 3, 10, 11]
     [4, 5, 6, 12, 13]
@@ -3717,9 +3801,10 @@ center가 (2,1)일때 CW 90도 회전 이후 결과
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">미생물 연구</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">민트초코 우유</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">메두사와 전사들</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">마법의 숲 탐색</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">블록 이동하기</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">고대 문명 유적 탐사</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">미지의 공간 탈출</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">마법의 숲 탐색</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">블록 이동하기</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">고대 문명 유적 탐사</a></li>
 </ul>
 </li>
 </ul>
