@@ -658,6 +658,7 @@ def solution(game_board, table):
 ````
 
 ````{admonition} Solution 
+:class: dropdown 
 
 ```{literalinclude} ../solutions/DFS_BFSPS/1.py
 :language: python 
