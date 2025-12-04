@@ -27,7 +27,7 @@ kernelspec:
 - BFS 
   - [AI 로봇 청소기](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/ai-robot/description)
   - [미생물 연구](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/microbial-research/description)
-  - [민트초코우유](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/mint-choco-milk/description)
+  - [민트초코 우유](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/mint-choco-milk/description)
   - [메두사와 전사들](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/medusa-and-warriors/description)
   - [미지의 공간 탈출](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/escape-unknown-space/description)
   - [마법의 숲 탐색](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/magical-forest-exploration/description)
@@ -866,823 +866,7 @@ for _ in range(L):
 
 
 ###  미생물 연구 
-<!-- 
-```{admonition} 문제 정리
-:class: dropdown
 
-1. NxN 정사각형 배양 용기, 좌측 하단 (0,0), 우측 상단 (N, N)
-2. 총 Q번 실험동안, 실험 결과 기록 
-    - 2-1. insert_and_get_result() 미생물 투입 후, 배양 
-        - (r1, c1) ~ (r2, c2) 직사각형 미생물 투입, 영역내에는 새로 투입된 미생물만 남음. 
-        - 기존에 있던 미생물이 먹힌 경우, 영역이 두 개 이상으로 나뉘면 기존 미생물은 모두 사라짐.  -> 항상 미생물은 하나의 그룹으로만 이루어지게 만듦. 
-    - 2-2. 배양 용기 이동: move_microbe()
-        - 기존 용기와 동일한 새로운 배양 용기로 이동. 기존 배양 용기에 미생물이 한 마디도 남지 않을 때까지 
-            - 가장 차지한 영역 ((r1, c1) ~ (r2, c2))이 넓은 무리 하나 선택 -> 2개 이상이면 먼저 투입된 미생물 선택 (용기에는 미생물을 넣은 시간 정보 필요 -> idx가 작은 것 선택)
-            - 선택된 미생물의 영역 ((r1, c1) ~ (r2, c2))은 
-                - 배양 용기의 범위를 벗어나지 않으며 
-                - 다른 미생물의 영역과 겹치지 않아야하고, 
-                - 위의 조건에서 최대한 x좌표가 작은 위치로 미생물을 옮기는데, 
-                    - 그 위치가 2개 이상이면 최대한 y좌표가 작은 위치로 오도록 옮김 
-                - 위의 조건이 없다면, 옮기지 못하고 사라짐 
-    - 2-3. record() 
-        - 미생물 무리 중 상하좌우로 닿아있는 인접한 무리 확인 
-        - 맞닿은 면이 둘 이상이더라도 micro_id같으면 한 번만 확인 
-        - 인접한 무리가 있으면 
-            - 확인하는 두 무리가 A,B라면 (미생물 A영역의 넓이) x (미생물 B영역의 넓이) 성과 
-            - 확인한 모든 쌍의 성과 기록 
-```
-
-````{admonition} debugging시 CCW 90도 rotation 적용
-:class: dropdown 
-
-```{code-block} python
-def print_rotated_CCW_90(my_map):
-    # new_map = [[0] * N for _ in range(N)]
-    for y in range(N):
-        for x in range(N):
-            # new_map[y][x] = my_map[N-x-1][y]
-            print(my_map[x][N-y-1], end=' ')
-        print()
-
-print_rotated_CCW_90(graph)
-    
-```
-````
-
-````{admonition} 원점위치에 따른 좌표 변환 
-:class: dropdown 
-
-좌상단이 시작점인지, 좌하단이 시작점인지 좌표 변환 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](
-https://colab.research.google.com/github/Daye-Lee18/mybook/blob/main/assets/ipynb/grid_coords_rotations_cheatsheet.ipynb
-)
-
-![](../../assets/img/implementationPS/5/1.png)
-
-요약하자면, 
-- **좌하단→좌상단(배열)**: `row = N - 1 - y`, `col = x`  
-- **회전**: **Transpose** + (CW=**flip left–right**, CCW=**flip up–down**)  
-- **뒤집기**: 상하=**row만 뒤집기**, 좌우=**col만 뒤집기**  
-````
-
-````{admonition} sort
-:class: dropdown 
-주의해야할 것은, `lowest`와 `rear`을 비교하는 것! 
-```{code-block} python
-# sort id_to_locs_list in descending order of the area and id 
-list_len = len(id_to_locs_list)
-for f in range(list_len):
-    lowest = f 
-    for r in range(f+1, list_len):
-        if not compare(len(id_to_locs_list[lowest][1]), len(id_to_locs_list[r][1]), id_to_locs_list[lowest][0], id_to_locs_list[r][0]):
-            lowest = r 
-            
-    
-    # SWAP 
-    if lowest != f:
-        temp = id_to_locs_list[f]
-        id_to_locs_list[f] = id_to_locs_list[lowest]
-        id_to_locs_list[lowest] = temp 
-```
-````
-
-````{admonition} 3중 for loop안에서 닫는 위치 
-:class: dropdown 
-
-```{code-block} python 
-for i in range(len(locs_and_id)):          # [루프 1]
-    for origin_x in range(N):              # [루프 2]
-        for origin_y in range(N):          # [루프 3]
-            ...
-            if flag:
-                ...
-                break   # <-- 여기서 끊기는 건 루프 3만
-        if flag: # [루프 2] 중단
-            break
-```
-````
-
-````{admonition} set.union
-:class: dropdown 
-
-```{code-block} python 
-set1.union(set2) # X 
-set1 = set1.union(set2) # O
-```
-````
-
-````{admonition} 내 문제 풀이
-:class: dropdown
-```{code-block} python
-from collections import deque 
-
-def yx_from_rc(c, r):
-    return (N-r-1, c)
-
-def put_new_microbe(y, x, t, v, micro_id):
-
-    # # 바뀐 것에 대해서 작은 것 ~ 큰 것으로 분류 
-    # (y, x)는 포함 (t, v)는 불포함 
-    # small_y = y if y < t else t 
-    # big_y = y if y > t else t 
-    # small_x = x if x < v else v 
-    # big_x = x if x > v else v 
-
-
-    # print(f'Cur graph after put at {y, x} ~ {t, v}')
-    # inclusive ~ exclusive 
-    eatened_microbe_ids = set()
-    for a in range(y, t, -1):
-        for b in range(v-1, x-1, -1):
-            if graph[a][b] != 0:
-                eatened_microbe_ids.add(graph[a][b])
-            # 다른 미생물들은 잡아먹음 
-            graph[a][b] = micro_id
-
-    # 기존 무리의 영역이 2개 이상이되면, 나눠진 미생물은 모두 사라짐. 
-    # 잡아먹힌 micro_ids에 대해서 확인 
-    for removed_id in eatened_microbe_ids:
-        nums, locs = count_group_of_id(removed_id) # int, list 
-        # 해당 미생물을 없앰 
-        if nums >= 2:
-            for ry, rx in locs:
-                graph[ry][rx] = 0
-
-def in_range(y, x):
-    return 0<=y <N and 0<=x <N
-
-def is_closer_to_lower_left(tuple1, tuple2):
-    if tuple1[0] != tuple2[0]:
-        return tuple1[0] > tuple2[0] # y가 더 큰 것 
-    return tuple1[1] < tuple2[1] # x는 더 작은 것 
-
-def sort_locs_closer_to_lower_left(tuple_list):
-    tuple_list_len = len(tuple_list)
-    for f in range(tuple_list_len):
-        lowest = f 
-        for r in range(f+1, tuple_list_len):
-            if not is_closer_to_lower_left(tuple_list[lowest], tuple_list[r]):
-                lowest = r 
-        
-        if lowest != f:
-            # SWAP 
-            temp_tuple = tuple_list[lowest]
-            tuple_list[lowest] = tuple_list[f]
-            tuple_list[f] = temp_tuple
-
-def get_ids_and_shapes():
-    
-    id_to_locs = dict()
-    
-    # 현재 최대 cur_micro_id만큼의 개수가 존재할 수 있음 (지워진 것 빼고)
-    for a in range(N):
-        for b in range(N):
-
-            if graph[a][b] != 0 and graph[a][b] not in id_to_locs:
-                locs = set()  # NOTE: locations 추적, 새로운 ID 발견할 때마다 새롭게 INIT 필요 
-                q = deque([(a, b)])
-                locs.add((a, b))
-                while q:
-                    cury, curx = q.popleft()
-                    for t in range(4):
-                        ny = cury + DY[t] ; nx = curx + DX[t]
-                        # 현재 micro_idx와도 동일해야함 
-                        if in_range(ny, nx) and (ny, nx) not in locs and graph[ny][nx] == graph[a][b]:
-                            q.append((ny, nx))
-                            locs.add((ny, nx))
-                
-                # micro_id마다 위치를 연결하는 dictionary 생성 
-                id_to_locs[graph[a][b]] = list(locs)
-
-    return id_to_locs
-
-def move_microbe(new_graph):
-    # 현재 global graph에 있는 미생물들을 보고 new_graph에 옮겨 담기 
-    # Step 1: 1개의 그룹씩 있는 각 미생물들의 위치 locs구하기, len(locs)이 가장 높은 것이 가장 먼저 옮겨짐 
-    # 모양은 원점에서 가장 왼쪽 아래 (바꾼 그래프 상으로는 왼쪽 위)와 가장 가까운 점까지의 거리만큼 모두 이동하면 됨.
-    id_to_locs = get_ids_and_shapes()
-
-    # print(f'Current id with locs \n{id_to_locs}')
-    # print('Len: ', len(id_to_locs))
-
-    # id_to_locs을 정렬 
-    # 1. 개수가 가장 많은 것
-    # 2. 개수가 동일하다면 가장 먼저 투입된 미생물 선택 
-    id_to_locs_list = []
-    for key, value in id_to_locs.items():
-        id_to_locs_list.append((key, value))
-
-    sort_list(id_to_locs_list) # call by reference 
-    # print(f"Sorted as described in the problem \n {id_to_locs_list}")
-    
-    # locs은 origin (7, 0) 과 가장 가까운 순서대로 정렬 즉, ascending order 
-    for idx, (id, locs) in enumerate(id_to_locs_list):
-        # set 재할당 
-        sort_locs_closer_to_lower_left(locs)
-        id_to_locs_list[idx] = (id, locs)
-
-    # print(f"Sorted id_to_locs closer to the origin \n {id_to_locs_list}")
-
-    each_nums = [] # 옮겨서 살아남은 미생물들의 개수만 append 
-
-    # 옮기기 
-    # 모든 미생물에 대해 
-    for id, locs in id_to_locs_list:
-        
-        done = False 
-        # 이 조건안에서 colum 좌표가 작은 위치로 옮기고, 그 위치가 둘 이상이면 최대한 row 좌표가 작은 위치로 오도록 옮김 (x좌표가 작은 위치 -> y가 작은 위치)
-        # 시작 위치 찾기: b를 outer loop에 둬서 x가 작은 위치를 먼저 확인  
-        # for ori_y in range(N-1, -1, -1):
-        #     for ori_x in range(N):
-        for ori_x in range(N):
-            for ori_y in range(N-1, -1, -1):
-                #### NOTE: 매 origina마다 update하지 않으면, 이전에 실패한대로 계속 False로 머무르게됨.
-                is_the_origin_ok = True 
-                if new_graph[ori_y][ori_x] != 0:  # 옮길 그래프에서 시작점 for loop들어가기 전에 미리 체크해서 시간 줄이기 
-                    continue
-
-                # 미생물 무리가 차지한 영역이 배양 용기를 벗어나지 않아야함 
-                # 현재 locs의 모든 점이 (a,b)만큼 평행 이동했을 때 벗어나면 안됨 
-                # NOTE: dif_y, dif_x는 제일 작은 지점과의 거리임!! 고정!!!! 
-                dif_y = locs[0][0] - ori_y
-                dif_x = locs[0][1] - ori_x
-                
-                for cur_y, cur_x in locs:
-                    # NOTE: dif_y, dif_x는 제일 작은 지점과의 거리임!! 
-                    n_y = cur_y-dif_y
-                    n_x = cur_x-dif_x
-                    # print(f"Move point {cur_y, cur_x} -> {n_y, n_x}")
-                    # 평행 이동한 점들이 배양용기를 벗어나거나 다른 microbe가 있으면 
-                    if (not in_range(n_y,n_x)) or (new_graph[n_y][n_x] !=0):
-                        is_the_origin_ok = False 
-                        break 
-                
-                
-                # 다른 미생물이 이미 있으면 이곳을 시작점으로 할 수 없음 
-                if is_the_origin_ok and new_graph[ori_y][ori_x] == 0: # 괜찮으면 new_graph에 옮김 
-                    dif_y = locs[0][0] - ori_y
-                    dif_x = locs[0][1] - ori_x
-                    for cur_y, cur_x in locs:
-                        n_y = cur_y-dif_y
-                        n_x = cur_x-dif_x
-                        new_graph[n_y][n_x] = id
-                    
-                    done = True 
-                    # each_nums update 
-                    each_nums.append(len(locs))
-                    # 한번 옮겼으면 2중 for loop을 멈춰야함. 
-
-                if done:
-                    break  # stack구조에서 가장 안쪽 for loop 
-            if done:
-                break # stack구조에서 가장 바깥쪽 for loop  
-                # 그게 아니라면 어떤 곳에도 둘 수 없다면 사라짐  (update를 안하면 됨.)
-    # 살아남은 것들만 개수 return 
-    return len(each_nums)
-
-
-
-def compare(locs1, locs2, id1, id2):
-    if len(locs1) != len(locs2):
-        return len(locs1) > len(locs2) # 개수가 더 많은 것이 좋음
-    if id1 != id2:
-        return id1 < id2  # 먼저 들어온 것일수록 좋음 
-    else:
-        return True 
-
-def sort_list(my_list):
-    list_len = len(my_list)
-
-    for front in range(list_len):
-        lowest = front 
-        for rear in range(front+1, list_len):
-            # compare(locs1, locs2, id1, id2)
-            if not compare(my_list[lowest][1], my_list[rear][1], my_list[lowest][0], my_list[rear][0]):
-                lowest = rear 
-        
-        # 위치 변경이 있는 경우 SWAP 
-        if lowest != front: 
-            temp_tuple = my_list[front]
-            my_list[front] = my_list[lowest] # tuple의 재할당은 가능 , 다만 tuple은 t[0] = 99로 'item' assignment는 하지못함. 
-            my_list[lowest]= temp_tuple
-
-def count_group_of_id(m_id):
-    cnt = 0
-    visited = set()
-    DY = [-1, 1, 0, 0]; DX =[0, 0, -1, 1]
-
-
-    # 맵 전체 돌면서 확인 
-    for a in range(N):
-        for b in range(N):
-            if graph[a][b] == m_id and (a, b) not in visited:
-                # visited propgation 
-                q = deque([(a, b)])
-                visited.add((a, b))
-                while q:
-                    cury, curx = q.popleft()
-
-                    for t in range(4):
-                        ny = cury + DY[t] ; nx = curx + DX[t]
-                        if in_range(ny, nx) and (ny, nx) not in visited and graph[ny][nx] == m_id:
-                            q.append((ny, nx))
-                            visited.add((ny, nx))
-
-                #### BFS가 끝나면 group 1개 
-                cnt += 1 
-    return cnt, list(visited)
-
-
-
-
-
-def solve():
-    global N, graph,DY, DX
-    DY = [-1, 1, 0, 0]; DX =[0, 0, -1, 1]
-    # f = open('/Users/dayelee/Documents/GitHub/mybook/Input.txt', 'r')
-    N, Q = map(int, input().split())
-    graph = [[0]*N for _ in range(N)]
-
-    for micro_id in range(1, Q+1):
-        c1, r1, c2, r2 = map(int, input().split())
-
-        # prelim 
-        y, x = yx_from_rc(c1, r1)
-        t, v = yx_from_rc(c2, r2)
-
-        # Step 1: 
-        # 직사각형 영역에 미생물 투입 [(y, x) ~ (t, v)) inclusive ~ exclusive
-        # 다른 미생물들은 잡아먹음 
-        # 기존 무리의 영역이 2개 이상이되면, 나눠진 미생물은 모두 사라짐. 
-        put_new_microbe(y, x, t, v, micro_id)
-
-        # print("Graph after putting new microbe")
-        # for row in graph:
-        #     print(row)
-
-        # Step 2: 배양 용기 이동 
-        # 가장 column 좌표가 작으면서 row 좌표가 작은 위치(x가 작고 그 다음에 y가 작은 위치로 이동)
-        moved_graph = [[0]*N for _ in range(N)]
-        nums = move_microbe(moved_graph) # call by reference 
-        # print(f"each nums: {each_nums}")
-
-        # print("Graph after Moving microbe")
-        # for row in moved_graph:
-        #     print(row)
-        # Step 3: 실험 결과 기록 
-        # 그룹이 2개 이상일 때 개수들을 다 곱함 
-
-        # NOTE: graph는 이전 moved_graph로 update 
-        graph = [row[:] for row in moved_graph]
-
-        if nums >= 2:
-            result = 0
-            # 새로 만들어진 graph의 shape구하기 
-            id_to_locs_dict = get_ids_and_shapes()
-            
-            # 인접한 두 무리가 있으면, 곱해서 더하기 
-            keys = [key for key in id_to_locs_dict.keys()]
-            # result = []
-            # for p1, p2 in all_pairs:
-            for idx, key_1 in enumerate(keys):
-                for key_2 in keys[idx+1:]:
-                    if is_adjacent(key_1, key_2, id_to_locs_dict[key_1], id_to_locs_dict[key_2]):
-                        result += len(id_to_locs_dict[key_1]) * len(id_to_locs_dict[key_2])
-            print(result)
-        else:
-            print(0)
-
-def is_adjacent(id1, id2, locs1, locs2):
-    
-    for y, x in locs1: # id1이 있는 좌표에 대하여
-        for t in range(4):
-            ny = y + DY[t]; nx = x + DX[t]
-            # 유효한 4방향 중 id2가 하나라도 잇다면, 
-            if in_range(ny, nx) and graph[ny][nx] == id2:
-                return True 
-    return False 
-    
-
-        
-
-if __name__ == '__main__':
-    solve()
-```
-````
-
-````{admonition} 내 문제 풀이 2
-:class: dropdown
-debugging시 graph를 CCW 90로 돌려서 풀고, 실제 문제 구현할때는 (c, r)로 구현하여 푼 문제. 
-0,0은 좌상단이므로, 미생물을 옮길때는 outer loop이 y, inter loop이 x가 온다. 
-
-```{code-block} python 
-from collections import deque
-
-# f = open("/Users/dayelee/Documents/GitHub/mybook/Input.txt", 'r')
-
-N, Q = map(int, input().split())
-graph = [[0]*N for _ in range(N)]
-DY = [-1, 1, 0, 0]; DX = [0, 0, -1, 1]
-
-def print_rotated_CCW_90(my_map):
-    # new_map = [[0] * N for _ in range(N)]
-    for y in range(N):
-        for x in range(N):
-            # new_map[y][x] = my_map[N-x-1][y]
-            print(my_map[x][N-y-1], end=' ')
-        print()
-    
-
-def in_range(y, x):
-    return 0<=y < N and 0<=x<N 
-
-def find_count_and_locs(id):
-
-    count = 0 
-    visited = set()
-
-    for y in range(N):
-        for x in range(N):
-            if (y, x) not in visited and graph[y][x] == id:
-                q = deque([(y, x)])
-                visited.add((y, x))
-                
-                while q:
-                    cur_y, cur_x = q.popleft()
-
-                    for t in range(4):
-                        ny = cur_y + DY[t] ; nx = cur_x + DX[t]
-
-                        if in_range(ny, nx) and (not (ny,nx) in visited) and graph[ny][nx] == id:
-                            visited.add((ny, nx))
-
-                            q.append((ny, nx))
-                
-                count += 1 
-
-    # visited sort in ascending order 
-    visited = list(visited)
-    visited.sort()
-
-    return count, visited
-
-def place_new_microbe(r1, c1, r2, c2, m_id):
-    removed_id = set()
-    # inclusive ~ exclusive 
-    for y in range(r1, r2):
-        for x in range(c1, c2): 
-            if graph[y][x] != 0 and graph[y][x] != m_id:
-                removed_id.add(graph[y][x])
-            graph[y][x] = m_id
-
-    # check current id_to_cells 
-
-    # for removed microbe, check if they are separated into 2 groups 
-    for id in removed_id:
-        count, locs = find_count_and_locs(id)
-        if count >= 2: 
-            for loc in locs:
-                graph[loc[0]][loc[1]] = 0 
-
-def move(cur_id):
-
-    # STEP1: order priorities: 1. 가장 큰 영역 차지 2. id가 작은 것 
-    # 이전부터 현재까지 id에 대해 id_to_dict variable 생성 
-    id_to_locs_list = []
-    for id in range(1, cur_id+1):
-        count, locs = find_count_and_locs(id)
-        if count > 0:
-            id_to_locs_list.append((id, locs))
-
-    # sort id_to_locs_list in descending order of the area and id 
-    list_len = len(id_to_locs_list)
-    for f in range(list_len):
-        lowest = f 
-        for r in range(f+1, list_len):
-            if not compare(len(id_to_locs_list[lowest][1]), len(id_to_locs_list[r][1]), id_to_locs_list[lowest][0], id_to_locs_list[r][0]):
-                lowest = r 
-                
-        
-        # SWAP 
-        if lowest != f:
-            temp = id_to_locs_list[f]
-            id_to_locs_list[f] = id_to_locs_list[lowest]
-            id_to_locs_list[lowest] = temp 
-
-    # 옮길 때는 1. 기존 배양 형태를 벗어나지 않고, 2. 다른 미생물 영역과 겹치지 않도록 3. x좌표가 작은 위치 -> y좌표가 작은 위치
-    # 옮길 수 없으면 새 용기에 옮겨지지 않고 사라짐. 
-    new_graph = [[0]*N for _ in range(N)]
-    return_id_and_locs = []
-    for idx in range(list_len):
-        # if idx == 3:
-        #     print('3')
-        cur_id = id_to_locs_list[idx][0]
-        cur_locs = id_to_locs_list[idx][1]
-        # 새 origin 찾기 : x좌표가 작은 위치 -> y좌표가 작은 위치이므로 b좌표가 Outer loop
-        # 현재 y와 x가 바뀌어 있는 상태라, 반대로 적음 
-        for a in range(N):
-            for b in range(N):
-                flag = True 
-                new_origin_y = a; new_origin_x = b 
-                # locs의 맨처음 (y, x)위치가 (0, 0) origin에 가장 가까울 것 : locs는 ascending order로 이미 sort되어 있음 
-                diff_y = cur_locs[0][0] - new_origin_y
-                diff_x = cur_locs[0][1] - new_origin_x
-                for cur_y, cur_x in cur_locs:
-                    if (not in_range(cur_y - diff_y, cur_x - diff_x)) or (new_graph[cur_y - diff_y][cur_x - diff_x] != 0):
-                        flag = False 
-                        break
-
-                if flag: # ok to move 
-                    return_id_and_locs.append((cur_id, []))
-                    for cur_y, cur_x in cur_locs:
-                        new_graph[cur_y - diff_y][cur_x-diff_x] = cur_id
-                        # return_id_and_area에 넣기 
-                        # cur_locs이 아니라, 변경된 위치를 넣어줘야함. 
-                        return_id_and_locs[-1][1].append((cur_y - diff_y,cur_x-diff_x ))
-                    # return_id_and_locs.append((cur_id, cur_locs))
-                    # move가 끝나면 다음 idx로 넘어가야함. 
-                    break 
-            if flag:
-                break
-
-
-    # original graph update 
-    for idx, row in enumerate(new_graph):
-        graph[idx] = row[:]
-
-    return return_id_and_locs
-
-
-def compare(len1, len2, id1, id2):
-    if len1 != len2:
-        return len1 > len2 
-    return id1 < id2 
-
-def connected(locs1, id2):
-    for l1 in locs1:
-        # for l2 in locs2:
-        for t in range(4):
-            ny = l1[0] + DY[t]; nx = l1[1] + DX[t]
-            if in_range(ny, nx) and graph[ny][nx] == id2:
-                return True 
-
-    return False 
-
-     
-def calculate(id_to_locs):
-    if len(id_to_locs) <= 1:
-        return 0 
-    
-    id_len = len(id_to_locs)
-    total = 0 
-    # 인접한 것 끼리만 계산 
-    for f in range(id_len):
-        for r in range(f+1, id_len):
-            # 인접하면 
-            if connected(id_to_locs[f][1], id_to_locs[r][0]):
-                total += len(id_to_locs[f][1]) * len(id_to_locs[r][1]) 
-
-    return total
-    
-
-def solve():
-    for microbe_id in range(1, Q+1):
-        r1, c1, r2, c2 = map(int, input().split())
-
-        # place new microbe 
-        place_new_microbe(r1, c1, r2, c2, microbe_id)
-    
-        # print(f"Cur graph after putting ({r1, c1})~ ({r2, c2})")
-        # print_rotated_CCW_90(graph)
-
-        # move them 
-        id_to_locs = move(microbe_id)
-        # print(f"After Move:")
-        # print_rotated_CCW_90(graph)
-
-        # calculate points 
-        print(calculate(id_to_locs))
-
-
-if __name__ == '__main__':
-    solve()
-```
-````
-
-````{admonition} 내 풀이 3
-:class: dropdown 
-
-min-heap으로 좀 더 쉽게 locs를 sorting 함 
-```{code-block} python 
-import sys 
-from heapq import heappush, heappop # min-heap 
-from collections import defaultdict
-
-sys.stdin = open('Input.txt', 'r')
-
-from collections import deque 
-
-N, Q = map(int, input().split())
-graph = [[0] * N for _ in range(N)]
-
-def insert_new_microbe(r1, c1, r2, c2, id):
-    # global graph 
-    # [(r1, c1) ~ exclusive (r2, c2)) 
-    candidates_for_removing = set()
-    for y in range(r1, r2):
-        for x in range(c1, c2):
-            if graph[y][x] != 0:
-                candidates_for_removing.add(graph[y][x])
-            graph[y][x] = id # list의 내부 요소만 수정하는 경우에는 "전역 객체의 참조"를 그대로 쓰는 거라 global 선언 업싱도 가능
-
-    # 침입된 id를 대상으로 group이 두개로 나누어졌는지 세기 
-    for r_id in candidates_for_removing:
-        count, locs = count_group_and_find_loc(r_id)
-        if count >= 2:
-            # removing 
-            for loc in locs:
-                graph[loc[0]][loc[1]] = 0
-
-def count_group_and_find_loc(id):
-    '''
-    count = int
-    return locs: list 
-    '''
-    visited = [[False]*N for _ in range(N)]
-    count = 0 
-    return_locs = set()
-    for y in range(N):
-        for x in range(N):
-            if graph[y][x] == id and not visited[y][x]:
-                locs = BFS(y, x, id, visited)
-                return_locs = return_locs.union(locs)
-                count += 1 
-    # print(f"count, locs: {count}, {return_locs}")
-    return count, list(return_locs)
-
-def in_range(y, x):
-    return 0<=y<N and 0<=x < N 
-
-def BFS(y, x, id, visited):
-    DY = [-1, 0, 1, 0]; DX = [0, 1, 0, -1]
-    q = deque([(y, x)])
-    visited[y][x] = True 
-    locs = set([(y, x)])
-    while q:
-        cur_y, cur_x = q.popleft()
-
-        for t in range(4):
-            ny = cur_y + DY[t]; nx = cur_x + DX[t]
-            # 옆의 위치의 id가 현재 id와 같을 때만 넣음 
-            # 방문하지 않았을 때에만 재방문해야함
-            if in_range(ny, nx) and not visited[ny][nx] and graph[ny][nx] == id:
-                visited[ny][nx] = True 
-                locs.add((ny, nx))
-                q.append((ny, nx))
-    
-    return locs
-
-def replace():  
-    new_graph = [[0] * N for _ in range(N)]
-    return_id_locs = defaultdict(list)
-
-    # 원래 그래프에 있는 id와 locs 계산 
-    visited =[[False]*N for _ in range(N)]
-    locs_and_id = []
-    visited_id = set()
-    for y in range(N):
-        for x in range(N):
-            if not graph[y][x] in visited_id and graph[y][x] != 0:
-                visited_id.add(graph[y][x])
-                cur_id = graph[y][x] 
-                locs = list(BFS(y, x, cur_id, visited))
-                locs_and_id.append((cur_id, locs))
-
-    # sorting [(id, locs)], locs이 넓은 것 우선 -> 같으면 id
-    '''
-    min_heap이용해서 저장하고 나중에 heappop()으로 최소부터 꺼내면 시간 복잡도 더 작음 
-    '''
-    sort(locs_and_id)
-
-    flag = False 
-    # 미생물 하나씩 옮김 
-    for i in range(len(locs_and_id)):  # [루프 1]
-        # origin 위치 찾기
-        # 현재 우리의 graph는 왼쪽 위가 기준이므로 y가 최대한 작게 -> x최대한 작게 
-        for origin_y in range(N):  # [루프 2]
-            for origin_x in range(N): # [루프 3]
-                flag, (distance_y, distance_x) = can_use_origin(origin_y, origin_x, new_graph, locs_and_id[i][0], locs_and_id[i][1])
-                # 옮기기 실행 
-                if flag:
-                    cur_id = locs_and_id[i][0]
-                    for before_y, before_x in locs_and_id[i][1]:
-                        y = before_y - distance_y
-                        x = before_x - distance_x
-                        new_graph[y][x] = cur_id
-                        return_id_locs[cur_id].append((y, x))
-                    break # 옮기면 현재 i에 대해서 멈춰야함. [루프 3 중단]
-            if flag:
-                break # 옮기면 현재 i에 대해서 멈춰야함. [루프 2 중단]
-
-    # 원래 그래프 update 필수  
-    for y in range(N):
-        for x in range(N):
-            graph[y][x] = new_graph[y][x]
-
-    return return_id_locs
-
-def can_use_origin(origin_y, origin_x, new_graph, id, locs):
-    '''
-    locs는 Sort되어서 맨 앞에 있는 것이 (y,x)가 제일 작아야함. -> min-heap을 사용해서 root가 제일 작게함. 
-    '''
-    # sort locs 
-    q = []
-    for i in range(len(locs)):
-        heappush(q, locs[i])
-
-    # 맨 첫 원소 q[0] 는 (y -> x)순으로 가장 작은 것이 들어있음 
-    distance_y = q[0][0] - origin_y 
-    distance_x = q[0][1] - origin_x
-
-    for cur_y, cur_x in q:
-        new_pos_y = cur_y - distance_y 
-        new_pos_x = cur_x - distance_x
-        if in_range(new_pos_y, new_pos_x) and new_graph[new_pos_y][new_pos_x] == 0:
-            continue 
-        else:
-            return False, (None, None)
-    return True, (distance_y, distance_x) 
-    
-
-
-def sort(locs_and_id):
-    '''
-    locs_and_id = [(id1, locs1 (list))]
-    '''
-    lens = len(locs_and_id)
-    for f in range(lens):
-        lowest = f 
-        for r in range(f+1, lens):
-            if not compare(locs_and_id[lowest][0], locs_and_id[lowest][1], locs_and_id[r][0], locs_and_id[r][1]):
-                lowest = r 
-        
-        # SWAP 
-        if lowest != f:
-            temp = locs_and_id[lowest]
-            locs_and_id[lowest] = locs_and_id[f]
-            locs_and_id[f] = temp 
-
-def compare(id1, locs1, id2, locs2):
-    if len(locs1) != len(locs2):
-        return len(locs1) > len(locs2)
-    return id1 < id2 
-
-def solve():
-    
-    for e_id in range(1, Q+1): # 글로벌 변수를 읽기만 할때는 global 선언안해도 됨. 
-        r1, c1, r2, c2 = map(int, input().split())
-        # 미생물 투입 
-        insert_new_microbe(r1, c1, r2, c2, e_id)
-
-        # print('graph:')
-        # for row in graph:
-        #     print(row[:])
-
-        # 배양 용기 이동, 옮긴 용기안의 {id: locs}으로 되어있는 dictionary 반환 
-        return_id_locs = replace()
-
-        # print('After moving graph:')
-        # for row in graph:
-        #     print(row[:])
-
-        # 인접한 미생물의 영역 넓이의 곱을 표시 
-        total = 0
-        keys = list(return_id_locs.keys())
-        for i in range(len(keys)):
-            for j in range(i+1, len(keys)):  # i < j 로만 돌림
-                id1, id2 = keys[i], keys[j]
-                locs1, locs2 = return_id_locs[id1], return_id_locs[id2]
-
-                if is_adjacent(id1, id2, locs1, locs2):
-                    total += len(locs1) * len(locs2)
-        print(total)
-
-def is_adjacent(id1, id2, locs1, locs2):
-    DY = [-1, 0, 1, 0]; DX = [0, 1, 0, -1]
-    for loc in locs1:
-        cur_y, cur_x = loc 
-
-        for t in range(4):
-            ny = cur_y + DY[t]
-            nx = cur_x + DX[t]
-            if in_range(ny, nx) and graph[ny][nx] == id2:
-                return True 
-    
-    return False 
-
-if __name__ == '__main__':
-    solve()
-```
-```` -->
 ````{admonition} Explanation 
 :class: dropdown 
 
@@ -2018,8 +1202,1016 @@ for id in range(1, Q+1): # microbe_id는 1부터 시작, graph가 0이면 아무
 5 0 6 2<br>
 ````
 
+
+### 민트초코 우유 
+
+
+````{admonition} solution 
+:class: dropdown 
+
+```{code-block} python 
+import sys
+from collections import deque
+import heapq
+
+try:
+    sys.stdin = open("input.txt")
+except:
+    pass
+#
+
+#
+def print_trust():
+    for r in range(N):
+        for c in range(N):
+            print(board[r][c].trust, end=' ')
+        print()
+    print('=' * 20)
+
+
+def print_food():
+    for r in range(N):
+        for c in range(N):
+            print(board[r][c].food, end=' ')
+        print()
+    print('=' * 20)
+#
+
+#
+class Student:
+    def __init__(self, r, c):
+        self.r = r
+        self.c = c
+        self.food = 0
+        self.trust = 0  # 신앙심
+        self.defence = 0  # 방어
+    #
+    def __lt__(self, other):
+        return (-self.trust, self.r, self.c) < (-other.trust, other.r, other.c)
+#
+
+#
+class Group:
+    def __init__(self, food):
+        # 대표 좌표, 대표 음식
+        self.food = food
+        self.member = []
+        self.manager = None
+
+    #
+    def set_manager(self):
+        """
+        대표자 정하기 & trust set
+        대표자: trust up -> r down -> c down
+        대표자.trust += 그룹원 -1
+        팀원.trust -= 1
+        """
+        self.manager = min(self.member)
+        for m in self.member:
+            if m == self.manager:
+                m.trust += len(self.member) - 1
+            else:
+                m.trust -= 1
+    #
+    def print_group_member(self):
+        for m in self.member:
+            print((m.r, m.c), end=' ')
+        print()
+#
+
+#
+food2bin = {
+    'T': 0,
+    'C': 1,
+    'M': 2
+}
+#
+
+#
+def in_range(r, c):
+    return 0 <= r < N and 0 <= c < N
+#
+
+#
+def breakfast():
+    """
+    - 모든 학생의 trust += 1
+    """
+    for r in range(N):
+        for c in range(N):
+            stu = board[r][c]
+            stu.trust += 1
+#
+
+#
+dr = [-1, 1, 0, 0]
+dc = [0, 0, -1, 1]
+def bfs(sr, sc, food, group, v):
+    q = deque([(sr, sc)])
+    group.member.append(board[sr][sc])
+    while q:
+        r, c = q.popleft()
+        v[r][c] = True
+        for i in range(4):
+            nr = r + dr[i]
+            nc = c + dc[i]
+            if not in_range(nr, nc) or v[nr][nc] or board[nr][nc].food != food:
+                continue
+            q.append((nr, nc))
+            v[nr][nc] = True
+            group.member.append(board[nr][nc])
+    return v
+#
+
+#
+def lunch():
+    """
+    - 인접한 학생들과 신봉 음식이 같은 경우 그룹 형성
+    - 대표자: trust up -> r down -> c down
+    - 대표자.trust += 그룹원 -1
+    - 팀원.trust -= 1
+    :return:
+    """
+    visited = [[False] * N for _ in range(N)]
+    group_lst = []
+    for r in range(N):
+        for c in range(N):
+            if visited[r][c]:
+                continue
+            # 그룹 형성
+            group = Group(board[r][c].food)
+            visited = bfs(r, c, board[r][c].food, group, visited)
+            group_lst.append(group)
+            # 대표자 정하기 & trust set
+            group.set_manager()
+
+    return group_lst
+#
+
+#
+def set_order(group_lst):
+    """
+    [1] 전파 순서 정하기
+    - 전파 순서: 단일 -> 이중 -> 삼중 그룹
+        - 대표자의 B up -> 대표자의 r down -> c down
+    :return order_lst
+    """
+    order_lst = [[] for _ in range(3)]  # 단일/이중/삼중
+    for g in group_lst:
+        # 삼중인 경우
+        if g.food == 7:
+            order_lst[2].append(g.manager)
+        # 단일 인 경우
+        elif g.food in [1, 2, 4]:
+            order_lst[0].append(g.manager)
+        else:  # 이중인 경우
+            order_lst[1].append(g.manager)
+    return order_lst
+#
+
+#
+def strong_spread(x, spreader, target):
+    target.food = spreader.food
+    x -= (target.trust + 1)
+    target.trust += 1
+
+    return x
+
+
+def weak_spread(x, spreader, target):
+    for food in [0, 1, 2]:
+        if ((spreader.food >> food) & 1 == 1) and ((target.food >> food) & 1 == 0):
+            target.food |= (1 << food)
+    target.trust += x
+    x = 0
+
+    return x
+
+
+def do_spread(spreader):
+    """
+    [2] 전파하기
+    - 전파자
+        - 전파 방향: trust % 4
+        - x: B-1(간절함), B = 1check
+    - 전파 시작
+        - 전파 방향으로 1칸씩 이동하며 전파
+        - 격자 밖으로 나가거나 x = 0이 되면 전파 종료
+        - 전파 음식이 타겟음식과 같으면 전파 X, 다음 진행
+        - 다르면, 전파 수행
+    [3] 전파 방법
+    - y: 타겟의 trust
+    - 강한 전파(x > y):
+        - 타겟.food = 전파.food
+        - 전파.x -= y+1
+        - 타겟.trust += 1
+    - 약한 전파 (x <= y):
+        - 타겟.food |= 전파자.food   (있는지 확인 필요)
+        - 타겟.trust += x
+        - 전파.x = 0
+    :return:
+    """
+    d = spreader.trust % 4
+    x = spreader.trust - 1
+    spreader.trust = 1
+    r, c = spreader.r, spreader.c
+
+    for i in range(1, N):
+        nr = r + dr[d] * i
+        nc = c + dc[d] * i
+
+        if not in_range(nr, nc) or x <= 0:
+            break
+
+        target = board[nr][nc]
+        if target.food ^ spreader.food:  # 두 음식이 다를 때만 전파 진행
+            if x > target.trust:
+                x = strong_spread(x, spreader, target)
+            else:
+                x = weak_spread(x, spreader, target)
+            target.defence = t
+#
+
+#
+def dinner(group_lst):
+    # 전파 순서 정하기
+    order_lst = set_order(group_lst)
+
+    for order in order_lst:
+        order.sort()
+        for spreader in order:
+            if spreader.defence < t:
+                do_spread(spreader)
+#
+
+#
+def print_result():
+    """
+    TCM, TC, TM, CM, M, C, T 순으로 각 음식의 신봉자들의 신앙심 총합 출력
+    'T': 0,
+    'C': 1,
+    'M': 2
+    """
+    result = [0]*8
+    for r in range(N):
+        for c in range(N):
+            stu = board[r][c]
+            result[stu.food] += stu.trust
+
+    for food in ['TCM', 'TC', 'TM', 'CM', 'M', 'C', 'T']:
+        key_food = 0
+        for f in food:
+            key_food |= 1 << food2bin[f]
+        print(result[key_food], end=" ")
+    print()
+#
+
+#
+N, T = map(int, input().split())
+board = [[0] * N for _ in range(N)]
+for row in range(N):
+    tmp = input()
+    for column in range(N):
+        stu = Student(row, column)
+        food = food2bin[tmp[column]]
+        stu.food |= (1 << food)
+        board[row][column] = stu
+#
+for row in range(N):
+    tmp = list(map(int, input().split()))
+    for column in range(N):
+        board[row][column].trust = tmp[column]
+#
+
+#
+for t in range(1, T + 1):
+    breakfast()
+
+    GROUP_LST = lunch()
+
+    dinner(GROUP_LST)
+
+    print_result()
+```
+````
+
+````{admonition} 틀린 답 
+:class: dropdown 
+
+어디서 틀렸나? 사실 잘 모르겠음. 
+
+중요한 건, 보통의 경우는 list.sort()를 사용하고 아래와 같은 부득이한 경우에만 min-heap을 쓴다. 왜냐면 min-heap의 pop()이후 다시 heapify하는데 시간이 걸리기 때문. 
+
+- 간선이 스트리밍으로 들어오거나 한 번에 다 만들기 어려운 상황(외부 입력/온라인 처리)
+- “가장 싼 간선부터 일부만” 처리하며 중간에 조기 종료가 확실한 특수 케이스
+
+```{code-block} python 
+import sys 
+
+sys.stdin = open('Input.txt', 'r')
+
+from collections import deque 
+import heapq 
+
+N, T = map(int, input().split())
+graph = []
+belive_graph = []
+for n in range(N):
+    graph.append(list(input()))
+
+for _ in range(N):
+    belive_graph.append(list(map(int, input().split())))
+
+# 간절함 그래프 
+desperate_graph =[[-1] * N for _ in range(N)]
+
+def morning():
+    for y in range(N):
+        for x in range(N):
+            belive_graph[y][x] += 1 
+
+def lunch():
+    '''
+    1. 인접한 학생들과 신봉 음식이 "완전히 같은 경우"에 그룹 형성 
+    2. 대표자 선정 
+        - 신앙심이 가장 큰 사람 -> y가 작은 사람 -> x가 작은 사람 
+    3. 그룹의 대표자에게 <- 그룹 다른 학생들의 신앙심이 넘어감.
+        - 대표자는 +1, 그룹 내 다른 학생들 -1 
+    '''
+    visited = [[False]*N for _ in range(N)]
+    # group을 넣을때 순서가 있음 
+    groups = []
+    for y in range(N):
+        for x in range(N):
+            if not visited[y][x]:
+                locs = BFS(y, x, visited) # 음식순서 -> 대표자가 맨 앞에 있는 list반환, (len(음식), -belive_graph[ny][nx], ny, nx)
+                heapq.heappush(groups, locs)
+
+    # 각 그룹을 돌면서 대표자(맨 처음)에게 신앙심 넘겨주기 
+    for group in groups:
+        # 대표자 
+        representative = group[0]
+        for other in group[1:]:
+            belive_graph[other[2]][other[3]] -= 1
+            belive_graph[representative[2]][representative[3]] += 1
+
+    return groups 
+
+def in_range(y, x):
+    return 0 <= y < N and 0<=x <N 
+
+def BFS(cury, curx, visited):
+    DY = [-1, 0, 1, 0]; DX = [0, 1, 0, -1]
+    locs = [(len(graph[cury][curx]),-belive_graph[cury][curx],cury, curx)]
+    q = deque([(cury, curx)])
+    original_food = graph[cury][curx]
+    visited[cury][curx] = True 
+
+    while q:
+        y, x = q.popleft()
+
+        for t in range(4):
+            ny = y + DY[t]
+            nx = x + DX[t]
+            # graph내에 있고, 신봉 음식 이름이 원래 (cury, curx)와 동일하고 visited안했다면
+            if in_range(ny, nx) and graph[ny][nx] == original_food and not visited[ny][nx]:
+                visited[ny][nx]=True 
+                q.append((ny, nx))
+                # 음식순서: 단일 -> 2개 -> 3개 (min-heap), 대표자: 신앙심이 가장 큰 사람 (max_heap) -> y가 작은 사람 (min-heap) -> x가 작은 사람 (min-heap)
+                heapq.heappush(locs, (len(graph[ny][nx]), -belive_graph[ny][nx], ny, nx))
+
+    return locs
+
+
+
+def dinner(groups):
+    '''
+    groups안의 각 group은 다음과 같이 정렬 : heap이라서 heappop()으로 빼야함. 
+    # (음식조합개수, -belive_graph[ny][nx], y, x): 음식조합개수 min, 신앙심이 max, y가 최소, x가 최소 
+
+    대표자(==전파자) 의 신앙심 전파
+    - 만약 전파하기 전에, 다른 전파자에게 전파 당한 경우 
+        - 그 날 전파하지 못함. 
+        - 추가로 전파를 받을 수는 있음. 
+    - 자신과 다른 음식을 좋아하는 학생이 있는 경우에 전파 방향으로 전파함.
+        - 전파 방향: 신앙심 % 4
+        - 0: 위, 1: 아래, 2: 왼쪽, 3: 오른쪽
+        - 전파자 update 
+            - 간절함: 신앙심-1, 신앙심: 1 
+    - 전파 방향으로 한 칸 씩 이동하면 전파 
+        - 1. 전파 대상의 신봉음식이 동일한 경우, 전파하지 않고 지나감 
+        - 2. 신봉음식이 다른 경우 
+            - 강한 전파: 전파자의 간절함 > 전파대상의 신앙심인 경우 
+                - 전파대상의 신봉 음식 = 전파자의 신봉 음식 
+                - 전파자 간절함: 간절함 - (전파대상의 신앙심 + 1)
+                    - 간절함이 0이 되면 전파 종료 
+                - 전파대상 신앙심: 전파대상의 신앙심 + 1  
+            - 약한 전파: 전파자의 간절함 <= 전파대상의 신앙심인 경우 
+                - 전파대상의 신봉 음식 += 전파자의 신봉 음식 
+                - 전파자 간절함 = 0
+                - 전파대상의 신앙심 += 전파자의 간절함 
+        - 종료: Graph 밖을 벗어나거나, '간절함' 0이 되면 종료 
+    '''
+    DY = [-1, 1, 0, 0]; DX = [0, 0, -1, 1]
+    is_propagated = [[False] * N for _ in range(N)]
+
+    # 모든 대표자의 위치 
+    all_representatives = set()
+    for group in groups:
+        # 대표자 
+        representative = group[0]
+        r_y = representative[2]
+        r_x = representative[3]
+        all_representatives.add((r_y, r_x))
+
+
+    # 이후 ordered 순서로 전파 실행
+    # for representative in ordered:
+    #     ...
+
+
+    # for group in groups: # 순서대로 뽑기 
+    while groups:
+        group = heapq.heappop(groups)
+
+
+        # 대표자 
+        representative = group[0]
+        r_y = representative[2]
+        r_x = representative[3]
+        # print(f'representative: ({representative[2], representative[3]})')
+
+        # 대표자가 전파당한 경우 전파할 수 없음 
+        if is_propagated[r_y][r_x]:
+            continue    
+
+        # 전파 시작 
+        '''
+        전파자 update 
+            - 간절함: 신앙심-1, 신앙심: 1 
+        '''
+        dir = belive_graph[r_y][r_x] % 4  # 빙행 설정 
+        desperate_graph[r_y][r_x] = belive_graph[r_y][r_x] -1
+        belive_graph[r_y][r_x] = 1
+        r_food = graph[r_y][r_x]
+
+
+        cur_y = r_y + DY[dir]
+        cur_x = r_x + DX[dir]
+        while desperate_graph[r_y][r_x] > 0 and in_range(cur_y, cur_x): # 간절함이 0이 되면 전파 종료 혹은 그래프를 나가면 종료 
+            # 전파 대상의 신봉음식이 동일한 경우, 전파하지 않고 지나감 
+            if r_food == graph[cur_y][cur_x]:
+                cur_y += DY[dir]
+                cur_x += DX[dir]
+                # print(f'after propgation with repre {r_y, r_x}')
+                # for row in belive_graph:
+                #     print(row[:])
+                continue 
+
+            # 신봉음식이 다른 경우 
+            if desperate_graph[r_y][r_x] > belive_graph[cur_y][cur_x]: # 강한전파 
+                '''
+                - 전파대상의 신봉 음식 = 전파자의 신봉 음식 
+                - 전파자 간절함: 간절함 - (전파대상의 신앙심 + 1)
+                - 전파대상 신앙심: 전파대상의 신앙심 + 1  
+                '''
+                graph[cur_y][cur_x] = r_food 
+                belive_graph[cur_y][cur_x] += 1
+                desperate_graph[r_y][r_x] -= belive_graph[cur_y][cur_x]
+            
+            else: # 약한 전파 
+                '''
+                전파대상의 신봉 음식 += 전파자의 신봉 음식 
+                - 전파자 간절함 = 0
+                - 전파대상의 신앙심 += 전파자의 간절함 
+                
+                'TCM' -> 'TC' -> 'TM' -> 'CM' -> 'M' -> 'C' -> 'T' 
+                민트초코우유 -> 민트초코 -> 민트우유 -> 초코우유 -> 우유 -> 초코 -> 민트 순서대로 각 음식의 신앙심 출력 
+                '''
+                cur_food = set(graph[cur_y][cur_x])
+                cur_food = cur_food.union(set(graph[r_y][r_x]))
+                
+                result_food = []
+                if 'T' in cur_food:
+                    result_food.append('T')
+                if 'C' in cur_food:
+                    result_food.append('C')
+                if 'M' in cur_food:
+                    result_food.append('M')
+                
+
+                graph[cur_y][cur_x] = ''.join(result_food)
+                # print(result_food)
+                belive_graph[cur_y][cur_x] += desperate_graph[r_y][r_x]
+                desperate_graph[r_y][r_x] = 0
+
+            ## update 
+            if check_representative_propagaged(cur_y, cur_x, all_representatives):
+                is_propagated[cur_y][cur_x] = True 
+
+            cur_y += DY[dir]
+            cur_x += DX[dir]
+
+            # print(f'after propgation with repre {r_y, r_x}')
+            # for row in belive_graph:
+            #     print(row[:])
+
+
+def check_representative_propagaged(y, x, repres_set):
+    return (y, x) in repres_set
+
+
+def print_believe(idx):
+    '''
+    'TCM' -> 'TC' -> 'TM' -> 'CM' -> 'M' -> 'C' -> 'T' 
+    민트초코우유 -> 민트초코 -> 민트우유 -> 초코우유 -> 우유 -> 초코 -> 민트 순서대로 각 음식의 신앙심 출력 
+    '''
+    my_dict = {
+        'TCM': 0,
+        'TC': 1,
+        'TM': 2,
+        'CM': 3,
+        'M': 4,
+        'C': 5,
+        'T': 6
+    }
+    believe_sums = [0] * 7
+
+    for y in range(N):
+        for x in range(N):
+            believe_sums[my_dict[graph[y][x]]] += belive_graph[y][x]
+
+    for i in believe_sums:
+        print(i, end=' ')
+    if idx != T-1:
+        print()
+
+def solve():
+    for t in range(T):
+        # 아침 
+        morning()
+        # print('after morning: ')
+        # for row in belive_graph:
+        #     print(row[:])
+
+        # 점심 
+        groups = lunch()
+        # print('after lunch belif: ')
+        # for row in belive_graph:
+        #     print(row[:])
+        # print('after lunch food: ')
+        # for row in graph:
+        #     print(row[:])
+
+        # 저녁 
+        dinner(groups)
+        # print('after dinner: ')
+        # for row in belive_graph:
+        #     print(row[:])
+
+        # 출력 
+        print_believe(t)
+
+if __name__ == '__main__':
+    solve()    
+```
+````
+
+
 ### 메두사와 전사들 
 
+`````{admonition} Bottleneck constraints 관리 
+:class: dropdown 
+
+이 문제에서는 전사의 명수가 메모리/시간 차원에서 가장 큰 bottleneck이 된다. 따라서, 이러한 전사들의 위치와 생사문제를 관리하는 것이 중요해진다. 따라서, 해당 warriors들은 class Warrior로 전사마다 하나씩 만드는 행위는 매우 위험하다. 클래스 자체는 메모리를 많이 차지하기 때문에, 이것보다는 list[idx]차원으로 관리해주는 것이 더 유리하다. 
+
+> war_ys: list[int] # war_ys[war_id] = y 
+> war_xs: list[int] # war_xs[war_id] = x
+> alive: list[bool] # alive[war_id] = True 
+> warriors_graph: dict[tuple(int, int), list[int]] defaultdict(list) # warriors_graph[(y, x)] = [war_id1, war_id2, ...]
+
+`````
+
+````{admonition} 메두사의 시야각 
+:class: dropdown 
+
+특정 전사에 의해 메두사에게 가려지는 범위는 메두사와 해당 전사의 상대적인 위치에 의해 결정된다. 상하좌우 대각선 8방향을 나누었을 때, 메두사로부터 8방향 중 한 방향에 전사가 위치해있다면, 그 전사가 "동일한 방향으로 바라본 범위"에 포함된 모든 칸은 메두사에게 보이지 않습니다. 
+
+![](../../assets/img/DFS_BFSPS/14.png)
+
+또한, 메두사의 전체 시야각을 계산할 때, 아래와 같은 상황이 있으므로, 순차적으로 메두사의 전체 시야각을 1로 지정한뒤, 전사들의 시야각을 바라보는 "방향"에 맞춰 0으로 제거해주는 것이 포인트가 된다. 
+
+![](../../assets/img/DFS_BFSPS/15.png)
+
+````
+
+````{admonition} Solution 
+:class: dropdown 
+
+```{code-block} python 
+from collections import deque, defaultdict 
+import sys 
+
+input = sys.stdin.readline 
+# sys.stdin = open("Input.txt")
+
+# 마을의 크기 N, 전사의 수 M
+N, M = map(int, input().split())
+# 메두사의 집 위치, 공원 위치 
+s_y, s_x, e_y, e_x = map(int, input().split())
+
+# 상하좌우 우선순위 
+DY = [-1, 1, 0, 0]; DX = [0, 0, -1, 1]
+'''
+필요한 자료구조
+'''
+
+warriors_graph = defaultdict(list) # dict((y, x) -> list of idx) 현재 전사들의 위치 관리, (y,x)위치에 -> idx 보관
+MAX = int(1e9)
+distances_graph = [[MAX] *N for _ in range(N)]
+war_ys = [0] * M 
+war_xs = [0] * M
+alive = [True] * M 
+visited = [[] for _ in range(M)] # 전사들이 이동할 때, 메두사의 매 turn마다 set()을 초기화하는 것은 메모리 사용량이 많아지므로, 계속 초기화 하면서 관리한다. 
+
+class Medusa:
+    def __init__(self, y:int, x:int):
+        self.y = y
+        self.x = x 
+    def set_loc(self, y, x):
+        self.y = y 
+        self.x = x 
+# --------------
+
+medusa_object = Medusa(s_y, s_x)
+
+# 전사의 시작 위치 
+warriors_locs = list(map(int, input().split()))
+cnt = 0
+for i in range(0, len(warriors_locs), 2):
+    y, x = warriors_locs[i], warriors_locs[i+1]
+    warriors_graph[(y, x)].append(cnt)
+    war_ys[cnt] = y 
+    war_xs[cnt] = x 
+    cnt += 1 
+    
+
+# 마을 도로 정보 
+graph = []
+for _ in range(N):
+    graph.append(list(map(int, input().split()))) # 도로 0, 비도로 1 
+
+def in_range(y, x):
+    global N 
+    return 0<=y < N and 0 <= x < N
+
+def build_distances():# distances_graph를 채움 
+    q = deque()
+    q.append((e_y, e_x))
+    distances_graph[e_y][e_x] = 0
+
+    while q:
+        y, x= q.popleft()
+        for t in range(4):
+            ny = y + DY[t]; nx = x + DX[t]
+
+            if in_range(ny,nx) and distances_graph[ny][nx] == MAX and graph[ny][nx] == 0:
+                distances_graph[ny][nx] = distances_graph[y][x] + 1 
+                q.append((ny, nx))
+
+
+# 메두사의 집에서 공원까지 최단 경로 파악, weight이 1인 graph에서는 BFS사용 가능 
+# 즉, dijkstra algorithm에서 graph의 edge weight=1인 특수 케이스가 BFS   
+def dijkstra():
+    global s_y, s_x , e_y, e_x, distances_graph
+    q = deque()
+    q.append((s_y, s_x))
+    path = deque()
+    path.append((s_y, s_x))
+    flag = 0 
+
+    while q:
+        cury, curx = q.popleft()
+        # path.append((cury, curx))
+        
+        if cury == e_y and curx == e_x:
+            flag = 1 
+            break 
+        
+        cur_dis = distances_graph[cury][curx]
+        for t in range(4):
+            ny = cury + DY[t]; nx = curx + DX[t]
+            if in_range(ny, nx) and graph[ny][nx] == 0 and \
+                cur_dis > distances_graph[ny][nx]: # 도로로만 이동가능, distances_graph는 0/1 도로/비도로 상황을 고려하여 도착점까지의 거리를 계산한 그래프로, 해당 길이 있다면, 항상 더 거리가 짧은 다음 노드가 존재하게 됨. 
+                q.append((ny, nx))
+                path.append((ny,nx))
+                break # 하나의 방향을 상/하/좌/우로 찾았으면 바로 다음 길 찾으면 됨. 
+                
+                    
+    return path if flag else deque()
+
+def calculate_vision(medusa_y, medusa_x):
+    # direction : 상하좌우 
+    max_cnt = -1
+    return_vision_map = None
+    best_dir = None 
+
+    VISION_DXYS = [
+        [(-1, -1), (-1, 0), (-1, 1)], # 상 t= 0, dy = -1
+        [(1, -1), (1, 0), (1, 1)], # 하 t= 1, dy = 1
+        [(-1, -1), (0, -1), (1, -1)], # 좌 t = 2 , dx = -1
+        [(-1, 1), (0, 1), (1, 1)] # 우 t = 3 , dx = 1 
+    ]
+    # 4가지 방향에 대해서 
+    for t in range(4):
+        '''
+        전사의 수는 최대 300명이 될 수 있는데, 그렇게 되면, 아래의 데이터 구조가 너무 많아서, 메모리가 터질 수 있다.
+        따라서, 하나의 vision map만 만들어서, 관리한다. 
+        즉, 별도의 Locs_set 두개는 사용하지 않음. 
+
+        Algorithm 
+        q는 BFS에서 현재 위치, 
+        warrior_pq는 시야각에 있던 전사들의 모음 
+        vision[y][x]는 메두사의 시야를 나타냄 1: 시야각에 존재. 
+        '''
+        # all_possible_locs_set = set()
+        # all_warrior_blocks_set = set()
+        q = deque()
+        vision = [[0]*N for _ in range(N)]  # 해당 격자가 메두사의 시야각에 위치하면 1이됨. 이걸로 visited 도 판별 가능 
+        warrior_pq = deque() 
+        warrior_cnt = 0 
+
+        # q INIT 
+        for dir in range(3):
+            ny = medusa_y + VISION_DXYS[t][dir][0]
+            nx = medusa_x + VISION_DXYS[t][dir][1]
+            
+            if in_range(ny, nx) and vision[ny][nx] == 0:
+                q.append((ny, nx, dir))
+                vision[ny][nx] = 1 
+                
+                if warriors_graph[(ny, nx)]:
+                    # lazy_deletion_warriors_graph(ny, nx)
+                    # if warriors_graph:
+                    warrior_pq.append((ny, nx, dir))
+
+        # 모든 시야각 vision에 채움 
+        while q:
+            cury, curx, curdir = q.popleft()
+
+            # 메두사로부터 내려온 방향에 그대로 사용하도록 
+            # NOTE: 각 cell을 방문할 때 중복이 없도록 하는 것이 포인트! 만약에 3방향 모두 허용하면, 겹쳐서 틀리게됨. 
+            if curdir == 0: # dy / dx = -1 
+                start = 0; end = 2 # inclusive ~ exclusive 
+            elif curdir == 1:
+                start = 1; end = 2 # exclusive 
+            else:
+                start = 1; end = 3 # exclusive 
+
+            for i in range(start, end): 
+                nxt_y = cury + VISION_DXYS[t][i][0]
+                nxt_x = curx + VISION_DXYS[t][i][1]
+                # 해당 격자가 아직 시야각에 없는 경우 0의 값을 가짐 
+                if in_range(nxt_y, nxt_x) and vision[nxt_y][nxt_x] == 0: 
+                    q.append((nxt_y, nxt_x, curdir)) # curdir는 계속 가지고 있음. 
+                    vision[nxt_y][nxt_x] = 1  # 메두사 시야각에 존재 
+                    # all_possible_locs_set.add((nxt_y, nxt_x))
+                if in_range(nxt_y, nxt_x) and warriors_graph[(nxt_y, nxt_x)]:
+                    # lazy_deletion_warriors_graph(nxt_y, nxt_x)
+                    # if warriors_graph:
+                    warrior_pq.append((nxt_y, nxt_x, curdir))
+
+        # 해당 warrior로부터 가려지는 부분 다시 지움 
+        while warrior_pq:
+            cury, curx, curdir = warrior_pq.popleft()
+
+            if curdir == 0: # dy / dx = -1 
+                start = 0; end = 2 # inclusive ~ exclusive 
+            elif curdir == 1:
+                start = 1; end = 2 # exclusive 
+            else:
+                start = 1; end = 3 # exclusive 
+            
+            for i in range(start, end): # 0, 1
+                nxt_y = cury + VISION_DXYS[t][i][0]
+                nxt_x = curx + VISION_DXYS[t][i][1]
+                if in_range(nxt_y, nxt_x) and vision[nxt_y][nxt_x] == 1: # 현재 코드에서 전개하는 방향들에 대해서 겹치는 부분이 있을 수 없으므로 (nxt_y, nxt_x) in all_possible_locs_set 조건 체크는 불필요 
+                    warrior_pq.append((nxt_y, nxt_x, curdir))
+                    vision[nxt_y][nxt_x] = 0 # 다시 가리기 
+
+        # 최종 방향 t에서 메두사 시야각은 vision에 담아있음 
+        for y in range(N):
+            for x in range(N):
+                if vision[y][x] == 1: # 시야에 있는데 
+                    if warriors_graph[(y, x)]: # 그 시야안에 전사들이 있다면, 
+                        cnt = len(warriors_graph[(y, x)]) # 이미 lazy deletion됐음. 
+                        warrior_cnt += cnt 
+        
+        if warrior_cnt > max_cnt:
+            max_cnt = warrior_cnt 
+            return_vision_map = vision 
+            best_dir = t
+
+
+    return max_cnt, return_vision_map, best_dir 
+        
+
+def calculate_mahattan_distance(y1, x1, y2, x2):
+    return abs(y1- y2) + abs(x1-x2)
+
+def reinit_visit(war_id):
+    global visited 
+    while visited[war_id]:
+        visited[war_id].pop()
+
+if __name__ == "__main__":
+    build_distances() # 끝점 (e_y, e_x)에서 시작점 까지의 최단 거리 disatnces_graph 채움 
+    path = dijkstra() # path는 (s_y, s_x)에서 끝점 (e_y, e_x)까지 최단 거리로 가는 길 반환 
+    if path:
+        path.popleft() # 맨 처음 위치 생략 
+        # path에 들어있는 길만큼 턴이 진행됨. 
+        while path:
+            # 살아있는 전사들은 모두 is_stoned에서 풀려남 
+
+            # step1. 메두사의 이동 
+            nxt_y, nxt_x = path.popleft()
+            if nxt_y == e_y and nxt_x == e_x:
+                print(0)
+                break # 메두사가 공원에 도착하면, 0을 출력 후 종료 
+            
+            medusa_object.set_loc(nxt_y, nxt_x)
+            # 메두사가 이동한 후 위치에 전사들이 있으면 공격을 받고 사라짐. 
+            warriors_ids = warriors_graph[(nxt_y, nxt_x)] 
+            if warriors_ids:
+                for w in warriors_ids:  
+                    alive[w] = False 
+                    
+                # 현재 위치는 다 동일하므로, 아래에 대해서는 한 번만 없애주면 됨.
+                warriors_graph[(nxt_y, nxt_x)] = [] # 빈 집합으로 전사들 모두 정리 
+            
+            # step2. 메두사의 시선 
+            num_stoned_warriors, vision_map, best_dir = calculate_vision(medusa_object.y, medusa_object.x)
+            
+            # step3. 전사들의 이동 
+            reached_warriors = []
+            total_steps = 0
+            
+            # 살아있는 전사들에 대해서
+            for war_id in range(M):
+
+                if not alive[war_id]: # 죽은 전사들 pass 
+                    continue 
+    
+                if vision_map[war_ys[war_id]][war_xs[war_id]] == 1: # 살아있지만, 메두사의 시야에 있는 전사들은 돌이됨. 
+                    continue # 이번 턴은 돌이 돼서 움직일 수 없음. 
+                
+                move_cnt = 0
+                q = deque()
+                w_y = war_ys[war_id]; w_x = war_xs[war_id]
+                
+                reinit_visit(war_id) # visited 관리, 메모리 사용량 줄이기 위해, 시작하기 전에 빈 리스트로 만들어줌. 
+            
+                cur_best_distance = calculate_mahattan_distance(w_y, w_x, medusa_object.y, medusa_object.x)
+                q.append((w_y, w_x, cur_best_distance))
+                
+                while move_cnt <= 2:
+                    cur_y, cur_x, cur_dis = q.popleft()
+                    # distance_between_medusa = calculate_mahattan_distance(cur_y, cur_x, medusa_object.y, medusa_object.x)
+                    
+                    if cur_dis == 0: # 0 <= move_cnt가 <= 2일 때 warriors가 메두사의 위치와 동일하면,
+                        reached_warriors.append(war_id)
+                        break 
+
+                    if move_cnt == 2: # 
+                        break 
+                    # if distance_between_medusa >= cur_best_distance:  # 상하좌우로 우선순위 선택 
+                    #     continue 
+                    flag = 0
+                    if move_cnt == 0:
+                        range_list = range(4)
+                    elif move_cnt == 1:
+                        range_list = range(2, 6 ,1)
+                    for t in range_list: # 상하좌우로 우선순위 선택 
+                        # print(f"range_list: {range_list}")
+                        ny = cur_y + DY[t%4] ; nx = cur_x + DX[t%4]
+                        if in_range(ny, nx) and \
+                        vision_map[ny][nx] == 0 and \
+                            not (ny, nx) in visited[war_id]:
+                            new_distance_between_medusa = calculate_mahattan_distance(ny, nx, medusa_object.y, medusa_object.x)
+                            # 한번 업데이트 하면 for loop break 
+                            if new_distance_between_medusa < cur_dis: # 상하좌우로 우선순위 선택 
+                                move_cnt += 1 
+                                q.append((ny, nx, new_distance_between_medusa))
+                                # warrior.loc = (ny, nx) # update
+                                war_ys[war_id] = ny 
+                                war_xs[war_id] = nx  
+                                flag = 1 
+                                visited[war_id].append((ny, nx))
+                                break # 찾으면 for loop 종료 
+                    if not flag:
+                        break # 현재 자리에서 이동할 것이 없으면 나와야함. 
+                     
+                    
+                # XXX: 
+                if move_cnt > 0: # 움직였으면, 데이터 업데이트 
+                    # 새로운 위치 업데이트 (더함)
+                    warriors_graph[(war_ys[war_id], war_xs[war_id])].append(war_id)
+                    # 기존 위치 (w_y, w_x) 삭제
+                    # XXX: 여기서 삭제하지 않으면 lazy deletion 필요 
+                    # XXX: O(1)로 삭제할 수 있으면 가능. 근데, 현재 war_id가 warriors_graph[(y, x)] 의 list 어디에 존재하는지 알아야 O(1)으로 삭제 가능 
+                    warriors_graph[(w_y, w_x)].remove(war_id)
+
+                total_steps += move_cnt 
+
+
+            # step4.: 메두사와 같은 칸에 도달한 전사들은 공격 후 사라짐. 
+            num_removed_war = len(reached_warriors)
+            for removed_war_id in reached_warriors:
+                alive[removed_war_id] = False 
+                warriors_graph[(war_ys[removed_war_id], war_xs[removed_war_id])].remove(removed_war_id)
+
+            
+            # print(total_steps, total_stoned_warriors, num_removed_war)
+            print(total_steps, num_stoned_warriors, num_removed_war)
+            
+            # 살아있는 전사가 없으면 while 문을 break하고 0 0 0 혹은 0을 남은 횟수까지 출력함. 
+            if sum(1 if alive[war_id] else 0 for war_id in range(M)) == 0:
+                break # while break 
+        
+        # path가 남아있으면 
+        while path:
+            ny, nx = path.popleft()
+            if ny == e_y and nx == e_x:
+                print(0)
+            else:
+                print(0, 0, 0)
+
+    else:
+        print(-1) # 메두사의 집으로부터 공원까지 도달하는 경로가 없는 경우 -1 출력 후 프로그램 종료 
+
+
+
+
+```
+````
+```{admonition} test case 
+:class: dropdown 
+
+1. case 1  <br>
+7 4 <br>
+1 1 5 0 <br>
+5 3 4 5 6 3 3 1 <br>
+0 0 0 0 0 1 0 <br>
+0 0 0 1 0 1 0 <br>
+0 1 1 0 0 0 0 <br>
+1 0 0 0 0 0 0 <br>
+0 0 1 0 0 0 0 <br>
+0 0 0 0 0 1 0 <br>
+0 0 0 0 1 0 0 <br>
+
+1-A.  <br>
+0 3 0 <br>
+0 3 0 <br>
+0 3 0 <br>
+0 3 0 <br>
+2 2 0 <br>
+2 2 1 <br>
+0 2 0 <br>
+1 1 1 <br>
+0 2 0 <br>
+0 1 0 <br>
+0 1 0 <br>
+0 1 0 <br>
+0 <br>
+
+2. case 2  <br>
+5 9 <br>
+2 1 1 2 <br>
+0 2 1 4 0 1 4 3 2 4 4 0 3 2 4 4 2 3 <br>
+1 0 0 0 1 <br>
+0 0 0 0 1 <br>
+0 0 1 0 0 <br>
+0 0 1 0 1 <br>
+0 0 0 0 0 <br>
+
+2-A.  <br>
+7 4 1 <br>
+0 <br>
+
+3. case 3 <br>
+5 10 <br>
+2 4 4 4 <br>
+0 3 3 2 2 1 3 3 0 4 2 2 1 2 1 0 2 0 2 3 <br>
+0 0 0 0 0 <br>
+0 0 1 1 1 <br>
+0 0 0 0 0 <br>
+0 0 0 0 0 <br>
+1 1 1 1 0 <br>
+
+3-A.  <br>
+14 2 2 <br>
+0 <br>
+```
 ### 마법의 숲 탐색
 
 ```{admonition} 문제 정리
