@@ -2242,9 +2242,368 @@ pair_set.add((id1, id2))</p></li>
 <section id="id10">
 <h3>메두사와 전사들<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
-<p class="admonition-title">메두사가 바라보는 방향대로 가려지는 격자 생성</p>
+<p class="admonition-title">Bottleneck constraints 관리</p>
+<p>이 문제에서는 전사의 명수가 메모리/시간 차원에서 가장 큰 bottleneck이 된다. 따라서, 이러한 전사들의 위치와 생사문제를 관리하는 것이 중요해진다. 따라서, 해당 warriors들은 class Warrior로 전사마다 하나씩 만드는 행위는 매우 위험하다. 클래스 자체는 메모리를 많이 차지하기 때문에, 이것보다는 list[idx]차원으로 관리해주는 것이 더 유리하다.</p>
+<blockquote>
+<div><p>war_ys: list[int] # war_ys[war_id] = y
+war_xs: list[int] # war_xs[war_id] = x
+alive: list[bool] # alive[war_id] = True
+warriors_graph: dict[tuple(int, int), list[int]] defaultdict(list) # warriors_graph[(y, x)] = [war_id1, war_id2, …]</p>
+</div></blockquote>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">메두사의 시야각</p>
 <p>특정 전사에 의해 메두사에게 가려지는 범위는 메두사와 해당 전사의 상대적인 위치에 의해 결정된다. 상하좌우 대각선 8방향을 나누었을 때, 메두사로부터 8방향 중 한 방향에 전사가 위치해있다면, 그 전사가 “동일한 방향으로 바라본 범위”에 포함된 모든 칸은 메두사에게 보이지 않습니다.</p>
 <p><img alt="" src="../../_images/145.png" /></p>
+<p>또한, 메두사의 전체 시야각을 계산할 때, 아래와 같은 상황이 있으므로, 순차적으로 메두사의 전체 시야각을 1로 지정한뒤, 전사들의 시야각을 바라보는 “방향”에 맞춰 0으로 제거해주는 것이 포인트가 된다.</p>
+<p><img alt="" src="../../_images/155.png" /></p>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">Solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span><span class="p">,</span> <span class="n">defaultdict</span> 
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span> 
+
+<span class="nb">input</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span> 
+<span class="c1"># sys.stdin = open(&quot;Input.txt&quot;)</span>
+
+<span class="c1"># 마을의 크기 N, 전사의 수 M</span>
+<span class="n">N</span><span class="p">,</span> <span class="n">M</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+<span class="c1"># 메두사의 집 위치, 공원 위치 </span>
+<span class="n">s_y</span><span class="p">,</span> <span class="n">s_x</span><span class="p">,</span> <span class="n">e_y</span><span class="p">,</span> <span class="n">e_x</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+
+<span class="c1"># 상하좌우 우선순위 </span>
+<span class="n">DY</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">];</span> <span class="n">DX</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">필요한 자료구조</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">warriors_graph</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span> <span class="c1"># dict((y, x) -&gt; list of idx) 현재 전사들의 위치 관리, (y,x)위치에 -&gt; idx 보관</span>
+<span class="n">MAX</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1e9</span><span class="p">)</span>
+<span class="n">distances_graph</span> <span class="o">=</span> <span class="p">[[</span><span class="n">MAX</span><span class="p">]</span> <span class="o">*</span><span class="n">N</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+<span class="n">war_ys</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">M</span> 
+<span class="n">war_xs</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">M</span>
+<span class="n">alive</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">]</span> <span class="o">*</span> <span class="n">M</span> 
+<span class="n">visited</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">)]</span> <span class="c1"># 전사들이 이동할 때, 메두사의 매 turn마다 set()을 초기화하는 것은 메모리 사용량이 많아지므로, 계속 초기화 하면서 관리한다. </span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Medusa</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span><span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span> 
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_loc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span> 
+<span class="c1"># --------------</span>
+
+<span class="n">medusa_object</span> <span class="o">=</span> <span class="n">Medusa</span><span class="p">(</span><span class="n">s_y</span><span class="p">,</span> <span class="n">s_x</span><span class="p">)</span>
+
+<span class="c1"># 전사의 시작 위치 </span>
+<span class="n">warriors_locs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+<span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">warriors_locs</span><span class="p">),</span> <span class="mi">2</span><span class="p">):</span>
+    <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">warriors_locs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">warriors_locs</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">warriors_graph</span><span class="p">[(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cnt</span><span class="p">)</span>
+    <span class="n">war_ys</span><span class="p">[</span><span class="n">cnt</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span> 
+    <span class="n">war_xs</span><span class="p">[</span><span class="n">cnt</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span> 
+    <span class="n">cnt</span> <span class="o">+=</span> <span class="mi">1</span> 
+    
+
+<span class="c1"># 마을 도로 정보 </span>
+<span class="n">graph</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+    <span class="n">graph</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())))</span> <span class="c1"># 도로 0, 비도로 1 </span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">in_range</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">N</span> 
+    <span class="k">return</span> <span class="mi">0</span><span class="o">&lt;=</span><span class="n">y</span> <span class="o">&lt;</span> <span class="n">N</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">N</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">build_distances</span><span class="p">():</span><span class="c1"># distances_graph를 채움 </span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">e_y</span><span class="p">,</span> <span class="n">e_x</span><span class="p">))</span>
+    <span class="n">distances_graph</span><span class="p">[</span><span class="n">e_y</span><span class="p">][</span><span class="n">e_x</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">while</span> <span class="n">q</span><span class="p">:</span>
+        <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+            <span class="n">ny</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">DY</span><span class="p">[</span><span class="n">t</span><span class="p">];</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">DX</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">in_range</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span><span class="n">nx</span><span class="p">)</span> <span class="ow">and</span> <span class="n">distances_graph</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="o">==</span> <span class="n">MAX</span> <span class="ow">and</span> <span class="n">graph</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">distances_graph</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="o">=</span> <span class="n">distances_graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> 
+                <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
+
+
+<span class="c1"># 메두사의 집에서 공원까지 최단 경로 파악, weight이 1인 graph에서는 BFS사용 가능 </span>
+<span class="c1"># 즉, dijkstra algorithm에서 graph의 edge weight=1인 특수 케이스가 BFS   </span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dijkstra</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">s_y</span><span class="p">,</span> <span class="n">s_x</span> <span class="p">,</span> <span class="n">e_y</span><span class="p">,</span> <span class="n">e_x</span><span class="p">,</span> <span class="n">distances_graph</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">s_y</span><span class="p">,</span> <span class="n">s_x</span><span class="p">))</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+    <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">s_y</span><span class="p">,</span> <span class="n">s_x</span><span class="p">))</span>
+    <span class="n">flag</span> <span class="o">=</span> <span class="mi">0</span> 
+
+    <span class="k">while</span> <span class="n">q</span><span class="p">:</span>
+        <span class="n">cury</span><span class="p">,</span> <span class="n">curx</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+        <span class="c1"># path.append((cury, curx))</span>
+        
+        <span class="k">if</span> <span class="n">cury</span> <span class="o">==</span> <span class="n">e_y</span> <span class="ow">and</span> <span class="n">curx</span> <span class="o">==</span> <span class="n">e_x</span><span class="p">:</span>
+            <span class="n">flag</span> <span class="o">=</span> <span class="mi">1</span> 
+            <span class="k">break</span> 
+        
+        <span class="n">cur_dis</span> <span class="o">=</span> <span class="n">distances_graph</span><span class="p">[</span><span class="n">cury</span><span class="p">][</span><span class="n">curx</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+            <span class="n">ny</span> <span class="o">=</span> <span class="n">cury</span> <span class="o">+</span> <span class="n">DY</span><span class="p">[</span><span class="n">t</span><span class="p">];</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">curx</span> <span class="o">+</span> <span class="n">DX</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">in_range</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span> <span class="ow">and</span> <span class="n">graph</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> \
+                <span class="n">cur_dis</span> <span class="o">&gt;</span> <span class="n">distances_graph</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]:</span> <span class="c1"># 도로로만 이동가능, distances_graph는 0/1 도로/비도로 상황을 고려하여 도착점까지의 거리를 계산한 그래프로, 해당 길이 있다면, 항상 더 거리가 짧은 다음 노드가 존재하게 됨. </span>
+                <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
+                <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ny</span><span class="p">,</span><span class="n">nx</span><span class="p">))</span>
+                <span class="k">break</span> <span class="c1"># 하나의 방향을 상/하/좌/우로 찾았으면 바로 다음 길 찾으면 됨. </span>
+                
+                    
+    <span class="k">return</span> <span class="n">path</span> <span class="k">if</span> <span class="n">flag</span> <span class="k">else</span> <span class="n">deque</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_vision</span><span class="p">(</span><span class="n">medusa_y</span><span class="p">,</span> <span class="n">medusa_x</span><span class="p">):</span>
+    <span class="c1"># direction : 상하좌우 </span>
+    <span class="n">max_cnt</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">return_vision_map</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">best_dir</span> <span class="o">=</span> <span class="kc">None</span> 
+
+    <span class="n">VISION_DXYS</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">[(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)],</span> <span class="c1"># 상 t= 0, dy = -1</span>
+        <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)],</span> <span class="c1"># 하 t= 1, dy = 1</span>
+        <span class="p">[(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)],</span> <span class="c1"># 좌 t = 2 , dx = -1</span>
+        <span class="p">[(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span> <span class="c1"># 우 t = 3 , dx = 1 </span>
+    <span class="p">]</span>
+    <span class="c1"># 4가지 방향에 대해서 </span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        전사의 수는 최대 300명이 될 수 있는데, 그렇게 되면, 아래의 데이터 구조가 너무 많아서, 메모리가 터질 수 있다.</span>
+<span class="sd">        따라서, 하나의 vision map만 만들어서, 관리한다. </span>
+<span class="sd">        즉, 별도의 Locs_set 두개는 사용하지 않음. </span>
+
+<span class="sd">        Algorithm </span>
+<span class="sd">        q는 BFS에서 현재 위치, </span>
+<span class="sd">        warrior_pq는 시야각에 있던 전사들의 모음 </span>
+<span class="sd">        vision[y][x]는 메두사의 시야를 나타냄 1: 시야각에 존재. </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># all_possible_locs_set = set()</span>
+        <span class="c1"># all_warrior_blocks_set = set()</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+        <span class="n">vision</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">N</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>  <span class="c1"># 해당 격자가 메두사의 시야각에 위치하면 1이됨. 이걸로 visited 도 판별 가능 </span>
+        <span class="n">warrior_pq</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span> 
+        <span class="n">warrior_cnt</span> <span class="o">=</span> <span class="mi">0</span> 
+
+        <span class="c1"># q INIT </span>
+        <span class="k">for</span> <span class="nb">dir</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="n">ny</span> <span class="o">=</span> <span class="n">medusa_y</span> <span class="o">+</span> <span class="n">VISION_DXYS</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="nb">dir</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">nx</span> <span class="o">=</span> <span class="n">medusa_x</span> <span class="o">+</span> <span class="n">VISION_DXYS</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="nb">dir</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            
+            <span class="k">if</span> <span class="n">in_range</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span> <span class="ow">and</span> <span class="n">vision</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="nb">dir</span><span class="p">))</span>
+                <span class="n">vision</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> 
+                
+                <span class="k">if</span> <span class="n">warriors_graph</span><span class="p">[(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">)]:</span>
+                    <span class="c1"># lazy_deletion_warriors_graph(ny, nx)</span>
+                    <span class="c1"># if warriors_graph:</span>
+                    <span class="n">warrior_pq</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="nb">dir</span><span class="p">))</span>
+
+        <span class="c1"># 모든 시야각 vision에 채움 </span>
+        <span class="k">while</span> <span class="n">q</span><span class="p">:</span>
+            <span class="n">cury</span><span class="p">,</span> <span class="n">curx</span><span class="p">,</span> <span class="n">curdir</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+
+            <span class="c1"># 메두사로부터 내려온 방향에 그대로 사용하도록 </span>
+            <span class="c1"># NOTE: 각 cell을 방문할 때 중복이 없도록 하는 것이 포인트! 만약에 3방향 모두 허용하면, 겹쳐서 틀리게됨. </span>
+            <span class="k">if</span> <span class="n">curdir</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># dy / dx = -1 </span>
+                <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">end</span> <span class="o">=</span> <span class="mi">2</span> <span class="c1"># inclusive ~ exclusive </span>
+            <span class="k">elif</span> <span class="n">curdir</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">end</span> <span class="o">=</span> <span class="mi">2</span> <span class="c1"># exclusive </span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">end</span> <span class="o">=</span> <span class="mi">3</span> <span class="c1"># exclusive </span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span> 
+                <span class="n">nxt_y</span> <span class="o">=</span> <span class="n">cury</span> <span class="o">+</span> <span class="n">VISION_DXYS</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">nxt_x</span> <span class="o">=</span> <span class="n">curx</span> <span class="o">+</span> <span class="n">VISION_DXYS</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                <span class="c1"># 해당 격자가 아직 시야각에 없는 경우 0의 값을 가짐 </span>
+                <span class="k">if</span> <span class="n">in_range</span><span class="p">(</span><span class="n">nxt_y</span><span class="p">,</span> <span class="n">nxt_x</span><span class="p">)</span> <span class="ow">and</span> <span class="n">vision</span><span class="p">[</span><span class="n">nxt_y</span><span class="p">][</span><span class="n">nxt_x</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> 
+                    <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">nxt_y</span><span class="p">,</span> <span class="n">nxt_x</span><span class="p">,</span> <span class="n">curdir</span><span class="p">))</span> <span class="c1"># curdir는 계속 가지고 있음. </span>
+                    <span class="n">vision</span><span class="p">[</span><span class="n">nxt_y</span><span class="p">][</span><span class="n">nxt_x</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># 메두사 시야각에 존재 </span>
+                    <span class="c1"># all_possible_locs_set.add((nxt_y, nxt_x))</span>
+                <span class="k">if</span> <span class="n">in_range</span><span class="p">(</span><span class="n">nxt_y</span><span class="p">,</span> <span class="n">nxt_x</span><span class="p">)</span> <span class="ow">and</span> <span class="n">warriors_graph</span><span class="p">[(</span><span class="n">nxt_y</span><span class="p">,</span> <span class="n">nxt_x</span><span class="p">)]:</span>
+                    <span class="c1"># lazy_deletion_warriors_graph(nxt_y, nxt_x)</span>
+                    <span class="c1"># if warriors_graph:</span>
+                    <span class="n">warrior_pq</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">nxt_y</span><span class="p">,</span> <span class="n">nxt_x</span><span class="p">,</span> <span class="n">curdir</span><span class="p">))</span>
+
+        <span class="c1"># 해당 warrior로부터 가려지는 부분 다시 지움 </span>
+        <span class="k">while</span> <span class="n">warrior_pq</span><span class="p">:</span>
+            <span class="n">cury</span><span class="p">,</span> <span class="n">curx</span><span class="p">,</span> <span class="n">curdir</span> <span class="o">=</span> <span class="n">warrior_pq</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">curdir</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># dy / dx = -1 </span>
+                <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">end</span> <span class="o">=</span> <span class="mi">2</span> <span class="c1"># inclusive ~ exclusive </span>
+            <span class="k">elif</span> <span class="n">curdir</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">end</span> <span class="o">=</span> <span class="mi">2</span> <span class="c1"># exclusive </span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">end</span> <span class="o">=</span> <span class="mi">3</span> <span class="c1"># exclusive </span>
+            
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span> <span class="c1"># 0, 1</span>
+                <span class="n">nxt_y</span> <span class="o">=</span> <span class="n">cury</span> <span class="o">+</span> <span class="n">VISION_DXYS</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">nxt_x</span> <span class="o">=</span> <span class="n">curx</span> <span class="o">+</span> <span class="n">VISION_DXYS</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">in_range</span><span class="p">(</span><span class="n">nxt_y</span><span class="p">,</span> <span class="n">nxt_x</span><span class="p">)</span> <span class="ow">and</span> <span class="n">vision</span><span class="p">[</span><span class="n">nxt_y</span><span class="p">][</span><span class="n">nxt_x</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="c1"># 현재 코드에서 전개하는 방향들에 대해서 겹치는 부분이 있을 수 없으므로 (nxt_y, nxt_x) in all_possible_locs_set 조건 체크는 불필요 </span>
+                    <span class="n">warrior_pq</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">nxt_y</span><span class="p">,</span> <span class="n">nxt_x</span><span class="p">,</span> <span class="n">curdir</span><span class="p">))</span>
+                    <span class="n">vision</span><span class="p">[</span><span class="n">nxt_y</span><span class="p">][</span><span class="n">nxt_x</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># 다시 가리기 </span>
+
+        <span class="c1"># 최종 방향 t에서 메두사 시야각은 vision에 담아있음 </span>
+        <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">vision</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="c1"># 시야에 있는데 </span>
+                    <span class="k">if</span> <span class="n">warriors_graph</span><span class="p">[(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)]:</span> <span class="c1"># 그 시야안에 전사들이 있다면, </span>
+                        <span class="n">cnt</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">warriors_graph</span><span class="p">[(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)])</span> <span class="c1"># 이미 lazy deletion됐음. </span>
+                        <span class="n">warrior_cnt</span> <span class="o">+=</span> <span class="n">cnt</span> 
+        
+        <span class="k">if</span> <span class="n">warrior_cnt</span> <span class="o">&gt;</span> <span class="n">max_cnt</span><span class="p">:</span>
+            <span class="n">max_cnt</span> <span class="o">=</span> <span class="n">warrior_cnt</span> 
+            <span class="n">return_vision_map</span> <span class="o">=</span> <span class="n">vision</span> 
+            <span class="n">best_dir</span> <span class="o">=</span> <span class="n">t</span>
+
+
+    <span class="k">return</span> <span class="n">max_cnt</span><span class="p">,</span> <span class="n">return_vision_map</span><span class="p">,</span> <span class="n">best_dir</span> 
+        
+
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_mahattan_distance</span><span class="p">(</span><span class="n">y1</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">x2</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">y1</span><span class="o">-</span> <span class="n">y2</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x1</span><span class="o">-</span><span class="n">x2</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">reinit_visit</span><span class="p">(</span><span class="n">war_id</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">visited</span> 
+    <span class="k">while</span> <span class="n">visited</span><span class="p">[</span><span class="n">war_id</span><span class="p">]:</span>
+        <span class="n">visited</span><span class="p">[</span><span class="n">war_id</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">build_distances</span><span class="p">()</span> <span class="c1"># 끝점 (e_y, e_x)에서 시작점 까지의 최단 거리 disatnces_graph 채움 </span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">dijkstra</span><span class="p">()</span> <span class="c1"># path는 (s_y, s_x)에서 끝점 (e_y, e_x)까지 최단 거리로 가는 길 반환 </span>
+    <span class="k">if</span> <span class="n">path</span><span class="p">:</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span> <span class="c1"># 맨 처음 위치 생략 </span>
+        <span class="c1"># path에 들어있는 길만큼 턴이 진행됨. </span>
+        <span class="k">while</span> <span class="n">path</span><span class="p">:</span>
+            <span class="c1"># 살아있는 전사들은 모두 is_stoned에서 풀려남 </span>
+
+            <span class="c1"># step1. 메두사의 이동 </span>
+            <span class="n">nxt_y</span><span class="p">,</span> <span class="n">nxt_x</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">nxt_y</span> <span class="o">==</span> <span class="n">e_y</span> <span class="ow">and</span> <span class="n">nxt_x</span> <span class="o">==</span> <span class="n">e_x</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="k">break</span> <span class="c1"># 메두사가 공원에 도착하면, 0을 출력 후 종료 </span>
+            
+            <span class="n">medusa_object</span><span class="o">.</span><span class="n">set_loc</span><span class="p">(</span><span class="n">nxt_y</span><span class="p">,</span> <span class="n">nxt_x</span><span class="p">)</span>
+            <span class="c1"># 메두사가 이동한 후 위치에 전사들이 있으면 공격을 받고 사라짐. </span>
+            <span class="n">warriors_ids</span> <span class="o">=</span> <span class="n">warriors_graph</span><span class="p">[(</span><span class="n">nxt_y</span><span class="p">,</span> <span class="n">nxt_x</span><span class="p">)]</span> 
+            <span class="k">if</span> <span class="n">warriors_ids</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">warriors_ids</span><span class="p">:</span>  
+                    <span class="n">alive</span><span class="p">[</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span> 
+                    
+                <span class="c1"># 현재 위치는 다 동일하므로, 아래에 대해서는 한 번만 없애주면 됨.</span>
+                <span class="n">warriors_graph</span><span class="p">[(</span><span class="n">nxt_y</span><span class="p">,</span> <span class="n">nxt_x</span><span class="p">)]</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># 빈 집합으로 전사들 모두 정리 </span>
+            
+            <span class="c1"># step2. 메두사의 시선 </span>
+            <span class="n">num_stoned_warriors</span><span class="p">,</span> <span class="n">vision_map</span><span class="p">,</span> <span class="n">best_dir</span> <span class="o">=</span> <span class="n">calculate_vision</span><span class="p">(</span><span class="n">medusa_object</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">medusa_object</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+            
+            <span class="c1"># step3. 전사들의 이동 </span>
+            <span class="n">reached_warriors</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">total_steps</span> <span class="o">=</span> <span class="mi">0</span>
+            
+            <span class="c1"># 살아있는 전사들에 대해서</span>
+            <span class="k">for</span> <span class="n">war_id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">alive</span><span class="p">[</span><span class="n">war_id</span><span class="p">]:</span> <span class="c1"># 죽은 전사들 pass </span>
+                    <span class="k">continue</span> 
+    
+                <span class="k">if</span> <span class="n">vision_map</span><span class="p">[</span><span class="n">war_ys</span><span class="p">[</span><span class="n">war_id</span><span class="p">]][</span><span class="n">war_xs</span><span class="p">[</span><span class="n">war_id</span><span class="p">]]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="c1"># 살아있지만, 메두사의 시야에 있는 전사들은 돌이됨. </span>
+                    <span class="k">continue</span> <span class="c1"># 이번 턴은 돌이 돼서 움직일 수 없음. </span>
+                
+                <span class="n">move_cnt</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+                <span class="n">w_y</span> <span class="o">=</span> <span class="n">war_ys</span><span class="p">[</span><span class="n">war_id</span><span class="p">];</span> <span class="n">w_x</span> <span class="o">=</span> <span class="n">war_xs</span><span class="p">[</span><span class="n">war_id</span><span class="p">]</span>
+                
+                <span class="n">reinit_visit</span><span class="p">(</span><span class="n">war_id</span><span class="p">)</span> <span class="c1"># visited 관리, 메모리 사용량 줄이기 위해, 시작하기 전에 빈 리스트로 만들어줌. </span>
+            
+                <span class="n">cur_best_distance</span> <span class="o">=</span> <span class="n">calculate_mahattan_distance</span><span class="p">(</span><span class="n">w_y</span><span class="p">,</span> <span class="n">w_x</span><span class="p">,</span> <span class="n">medusa_object</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">medusa_object</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+                <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">w_y</span><span class="p">,</span> <span class="n">w_x</span><span class="p">,</span> <span class="n">cur_best_distance</span><span class="p">))</span>
+                
+                <span class="k">while</span> <span class="n">move_cnt</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">cur_y</span><span class="p">,</span> <span class="n">cur_x</span><span class="p">,</span> <span class="n">cur_dis</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+                    <span class="c1"># distance_between_medusa = calculate_mahattan_distance(cur_y, cur_x, medusa_object.y, medusa_object.x)</span>
+                    
+                    <span class="k">if</span> <span class="n">cur_dis</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># 0 &lt;= move_cnt가 &lt;= 2일 때 warriors가 메두사의 위치와 동일하면,</span>
+                        <span class="n">reached_warriors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">war_id</span><span class="p">)</span>
+                        <span class="k">break</span> 
+
+                    <span class="k">if</span> <span class="n">move_cnt</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span> <span class="c1"># </span>
+                        <span class="k">break</span> 
+                    <span class="c1"># if distance_between_medusa &gt;= cur_best_distance:  # 상하좌우로 우선순위 선택 </span>
+                    <span class="c1">#     continue </span>
+                    <span class="n">flag</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="k">if</span> <span class="n">move_cnt</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">range_list</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">move_cnt</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">range_list</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span> <span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">range_list</span><span class="p">:</span> <span class="c1"># 상하좌우로 우선순위 선택 </span>
+                        <span class="c1"># print(f&quot;range_list: {range_list}&quot;)</span>
+                        <span class="n">ny</span> <span class="o">=</span> <span class="n">cur_y</span> <span class="o">+</span> <span class="n">DY</span><span class="p">[</span><span class="n">t</span><span class="o">%</span><span class="mi">4</span><span class="p">]</span> <span class="p">;</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">cur_x</span> <span class="o">+</span> <span class="n">DX</span><span class="p">[</span><span class="n">t</span><span class="o">%</span><span class="mi">4</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">in_range</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span> <span class="ow">and</span> \
+                        <span class="n">vision_map</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> \
+                            <span class="ow">not</span> <span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span> <span class="ow">in</span> <span class="n">visited</span><span class="p">[</span><span class="n">war_id</span><span class="p">]:</span>
+                            <span class="n">new_distance_between_medusa</span> <span class="o">=</span> <span class="n">calculate_mahattan_distance</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">medusa_object</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">medusa_object</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+                            <span class="c1"># 한번 업데이트 하면 for loop break </span>
+                            <span class="k">if</span> <span class="n">new_distance_between_medusa</span> <span class="o">&lt;</span> <span class="n">cur_dis</span><span class="p">:</span> <span class="c1"># 상하좌우로 우선순위 선택 </span>
+                                <span class="n">move_cnt</span> <span class="o">+=</span> <span class="mi">1</span> 
+                                <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">new_distance_between_medusa</span><span class="p">))</span>
+                                <span class="c1"># warrior.loc = (ny, nx) # update</span>
+                                <span class="n">war_ys</span><span class="p">[</span><span class="n">war_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">ny</span> 
+                                <span class="n">war_xs</span><span class="p">[</span><span class="n">war_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">nx</span>  
+                                <span class="n">flag</span> <span class="o">=</span> <span class="mi">1</span> 
+                                <span class="n">visited</span><span class="p">[</span><span class="n">war_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
+                                <span class="k">break</span> <span class="c1"># 찾으면 for loop 종료 </span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">flag</span><span class="p">:</span>
+                        <span class="k">break</span> <span class="c1"># 현재 자리에서 이동할 것이 없으면 나와야함. </span>
+                     
+                    
+                <span class="c1"># XXX: </span>
+                <span class="k">if</span> <span class="n">move_cnt</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># 움직였으면, 데이터 업데이트 </span>
+                    <span class="c1"># 새로운 위치 업데이트 (더함)</span>
+                    <span class="n">warriors_graph</span><span class="p">[(</span><span class="n">war_ys</span><span class="p">[</span><span class="n">war_id</span><span class="p">],</span> <span class="n">war_xs</span><span class="p">[</span><span class="n">war_id</span><span class="p">])]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">war_id</span><span class="p">)</span>
+                    <span class="c1"># 기존 위치 (w_y, w_x) 삭제</span>
+                    <span class="c1"># XXX: 여기서 삭제하지 않으면 lazy deletion 필요 </span>
+                    <span class="c1"># XXX: O(1)로 삭제할 수 있으면 가능. 근데, 현재 war_id가 warriors_graph[(y, x)] 의 list 어디에 존재하는지 알아야 O(1)으로 삭제 가능 </span>
+                    <span class="n">warriors_graph</span><span class="p">[(</span><span class="n">w_y</span><span class="p">,</span> <span class="n">w_x</span><span class="p">)]</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">war_id</span><span class="p">)</span>
+
+                <span class="n">total_steps</span> <span class="o">+=</span> <span class="n">move_cnt</span> 
+
+
+            <span class="c1"># step4.: 메두사와 같은 칸에 도달한 전사들은 공격 후 사라짐. </span>
+            <span class="n">num_removed_war</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">reached_warriors</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">removed_war_id</span> <span class="ow">in</span> <span class="n">reached_warriors</span><span class="p">:</span>
+                <span class="n">alive</span><span class="p">[</span><span class="n">removed_war_id</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span> 
+                <span class="n">warriors_graph</span><span class="p">[(</span><span class="n">war_ys</span><span class="p">[</span><span class="n">removed_war_id</span><span class="p">],</span> <span class="n">war_xs</span><span class="p">[</span><span class="n">removed_war_id</span><span class="p">])]</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">removed_war_id</span><span class="p">)</span>
+
+            
+            <span class="c1"># print(total_steps, total_stoned_warriors, num_removed_war)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">total_steps</span><span class="p">,</span> <span class="n">num_stoned_warriors</span><span class="p">,</span> <span class="n">num_removed_war</span><span class="p">)</span>
+            
+            <span class="c1"># 살아있는 전사가 없으면 while 문을 break하고 0 0 0 혹은 0을 남은 횟수까지 출력함. </span>
+            <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="n">alive</span><span class="p">[</span><span class="n">war_id</span><span class="p">]</span> <span class="k">else</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">war_id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">break</span> <span class="c1"># while break </span>
+        
+        <span class="c1"># path가 남아있으면 </span>
+        <span class="k">while</span> <span class="n">path</span><span class="p">:</span>
+            <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">ny</span> <span class="o">==</span> <span class="n">e_y</span> <span class="ow">and</span> <span class="n">nx</span> <span class="o">==</span> <span class="n">e_x</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># 메두사의 집으로부터 공원까지 도달하는 경로가 없는 경우 -1 출력 후 프로그램 종료 </span>
+
+
+
+</pre></div>
+</div>
 </div>
 <div class="dropdown admonition">
 <p class="admonition-title">test case</p>
