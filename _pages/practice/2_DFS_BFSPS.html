@@ -1078,7 +1078,7 @@ break # 넣을 수 있으면 현재 퍼즐 조각에 대해서 여기서 끝내�
 </ul>
 <p>마지막으로, constraints에 대한 time complexity계산을 어느 정도 한 뒤에 알고리즘을 짜야하는데, 너무 급하게 구현을 한 것 같다.</p>
 </div>
-<div class="dropdown admonition">
+<div class="admonition-solution admonition">
 <p class="admonition-title">Solution</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span> 
 <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span> 
@@ -1674,7 +1674,7 @@ pair_set.add((id1, id2))</p></li>
 <section id="id9">
 <h3>민트초코 우유<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
-<p class="admonition-title">solution</p>
+<p class="admonition-title">Solution</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">heapq</span>
@@ -1961,283 +1961,13 @@ pair_set.add((id1, id2))</p></li>
 </div>
 </div>
 <div class="dropdown admonition">
-<p class="admonition-title">틀린 답</p>
+<p class="admonition-title">list.sort() vs. heapq</p>
 <p>어디서 틀렸나? 사실 잘 모르겠음.</p>
-<p>중요한 건, 보통의 경우는 list.sort()를 사용하고 아래와 같은 부득이한 경우에만 min-heap을 쓴다. 왜냐면 min-heap의 pop()이후 다시 heapify하는데 시간이 걸리기 때문.</p>
+<p>중요한 건, 보통의 경우는 list.sort()를 사용하고 아래와 같은 경우에만 min-heap을 쓴다. 왜냐면 min-heap의 pop()이후 다시 heapify하는데 시간이 걸리기 때문.</p>
 <ul class="simple">
 <li><p>간선이 스트리밍으로 들어오거나 한 번에 다 만들기 어려운 상황(외부 입력/온라인 처리)</p></li>
 <li><p>“가장 싼 간선부터 일부만” 처리하며 중간에 조기 종료가 확실한 특수 케이스</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span> 
-
-<span class="n">sys</span><span class="o">.</span><span class="n">stdin</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;Input.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span> 
-<span class="kn">import</span><span class="w"> </span><span class="nn">heapq</span> 
-
-<span class="n">N</span><span class="p">,</span> <span class="n">T</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
-<span class="n">graph</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">belive_graph</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-    <span class="n">graph</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">input</span><span class="p">()))</span>
-
-<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-    <span class="n">belive_graph</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())))</span>
-
-<span class="c1"># 간절함 그래프 </span>
-<span class="n">desperate_graph</span> <span class="o">=</span><span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">morning</span><span class="p">():</span>
-    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-            <span class="n">belive_graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span> 
-
-<span class="k">def</span><span class="w"> </span><span class="nf">lunch</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    1. 인접한 학생들과 신봉 음식이 &quot;완전히 같은 경우&quot;에 그룹 형성 </span>
-<span class="sd">    2. 대표자 선정 </span>
-<span class="sd">        - 신앙심이 가장 큰 사람 -&gt; y가 작은 사람 -&gt; x가 작은 사람 </span>
-<span class="sd">    3. 그룹의 대표자에게 &lt;- 그룹 다른 학생들의 신앙심이 넘어감.</span>
-<span class="sd">        - 대표자는 +1, 그룹 내 다른 학생들 -1 </span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">visited</span> <span class="o">=</span> <span class="p">[[</span><span class="kc">False</span><span class="p">]</span><span class="o">*</span><span class="n">N</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
-    <span class="c1"># group을 넣을때 순서가 있음 </span>
-    <span class="n">groups</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">visited</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]:</span>
-                <span class="n">locs</span> <span class="o">=</span> <span class="n">BFS</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">visited</span><span class="p">)</span> <span class="c1"># 음식순서 -&gt; 대표자가 맨 앞에 있는 list반환, (len(음식), -belive_graph[ny][nx], ny, nx)</span>
-                <span class="n">heapq</span><span class="o">.</span><span class="n">heappush</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span> <span class="n">locs</span><span class="p">)</span>
-
-    <span class="c1"># 각 그룹을 돌면서 대표자(맨 처음)에게 신앙심 넘겨주기 </span>
-    <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">:</span>
-        <span class="c1"># 대표자 </span>
-        <span class="n">representative</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">group</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
-            <span class="n">belive_graph</span><span class="p">[</span><span class="n">other</span><span class="p">[</span><span class="mi">2</span><span class="p">]][</span><span class="n">other</span><span class="p">[</span><span class="mi">3</span><span class="p">]]</span> <span class="o">-=</span> <span class="mi">1</span>
-            <span class="n">belive_graph</span><span class="p">[</span><span class="n">representative</span><span class="p">[</span><span class="mi">2</span><span class="p">]][</span><span class="n">representative</span><span class="p">[</span><span class="mi">3</span><span class="p">]]</span> <span class="o">+=</span> <span class="mi">1</span>
-
-    <span class="k">return</span> <span class="n">groups</span> 
-
-<span class="k">def</span><span class="w"> </span><span class="nf">in_range</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-    <span class="k">return</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">N</span> <span class="ow">and</span> <span class="mi">0</span><span class="o">&lt;=</span><span class="n">x</span> <span class="o">&lt;</span><span class="n">N</span> 
-
-<span class="k">def</span><span class="w"> </span><span class="nf">BFS</span><span class="p">(</span><span class="n">cury</span><span class="p">,</span> <span class="n">curx</span><span class="p">,</span> <span class="n">visited</span><span class="p">):</span>
-    <span class="n">DY</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">];</span> <span class="n">DX</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">locs</span> <span class="o">=</span> <span class="p">[(</span><span class="nb">len</span><span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="n">cury</span><span class="p">][</span><span class="n">curx</span><span class="p">]),</span><span class="o">-</span><span class="n">belive_graph</span><span class="p">[</span><span class="n">cury</span><span class="p">][</span><span class="n">curx</span><span class="p">],</span><span class="n">cury</span><span class="p">,</span> <span class="n">curx</span><span class="p">)]</span>
-    <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">([(</span><span class="n">cury</span><span class="p">,</span> <span class="n">curx</span><span class="p">)])</span>
-    <span class="n">original_food</span> <span class="o">=</span> <span class="n">graph</span><span class="p">[</span><span class="n">cury</span><span class="p">][</span><span class="n">curx</span><span class="p">]</span>
-    <span class="n">visited</span><span class="p">[</span><span class="n">cury</span><span class="p">][</span><span class="n">curx</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span> 
-
-    <span class="k">while</span> <span class="n">q</span><span class="p">:</span>
-        <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
-
-        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
-            <span class="n">ny</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">DY</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
-            <span class="n">nx</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">DX</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
-            <span class="c1"># graph내에 있고, 신봉 음식 이름이 원래 (cury, curx)와 동일하고 visited안했다면</span>
-            <span class="k">if</span> <span class="n">in_range</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span> <span class="ow">and</span> <span class="n">graph</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span> <span class="o">==</span> <span class="n">original_food</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">visited</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]:</span>
-                <span class="n">visited</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]</span><span class="o">=</span><span class="kc">True</span> 
-                <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
-                <span class="c1"># 음식순서: 단일 -&gt; 2개 -&gt; 3개 (min-heap), 대표자: 신앙심이 가장 큰 사람 (max_heap) -&gt; y가 작은 사람 (min-heap) -&gt; x가 작은 사람 (min-heap)</span>
-                <span class="n">heapq</span><span class="o">.</span><span class="n">heappush</span><span class="p">(</span><span class="n">locs</span><span class="p">,</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">]),</span> <span class="o">-</span><span class="n">belive_graph</span><span class="p">[</span><span class="n">ny</span><span class="p">][</span><span class="n">nx</span><span class="p">],</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">))</span>
-
-    <span class="k">return</span> <span class="n">locs</span>
-
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">dinner</span><span class="p">(</span><span class="n">groups</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    groups안의 각 group은 다음과 같이 정렬 : heap이라서 heappop()으로 빼야함. </span>
-<span class="sd">    # (음식조합개수, -belive_graph[ny][nx], y, x): 음식조합개수 min, 신앙심이 max, y가 최소, x가 최소 </span>
-
-<span class="sd">    대표자(==전파자) 의 신앙심 전파</span>
-<span class="sd">    - 만약 전파하기 전에, 다른 전파자에게 전파 당한 경우 </span>
-<span class="sd">        - 그 날 전파하지 못함. </span>
-<span class="sd">        - 추가로 전파를 받을 수는 있음. </span>
-<span class="sd">    - 자신과 다른 음식을 좋아하는 학생이 있는 경우에 전파 방향으로 전파함.</span>
-<span class="sd">        - 전파 방향: 신앙심 % 4</span>
-<span class="sd">        - 0: 위, 1: 아래, 2: 왼쪽, 3: 오른쪽</span>
-<span class="sd">        - 전파자 update </span>
-<span class="sd">            - 간절함: 신앙심-1, 신앙심: 1 </span>
-<span class="sd">    - 전파 방향으로 한 칸 씩 이동하면 전파 </span>
-<span class="sd">        - 1. 전파 대상의 신봉음식이 동일한 경우, 전파하지 않고 지나감 </span>
-<span class="sd">        - 2. 신봉음식이 다른 경우 </span>
-<span class="sd">            - 강한 전파: 전파자의 간절함 &gt; 전파대상의 신앙심인 경우 </span>
-<span class="sd">                - 전파대상의 신봉 음식 = 전파자의 신봉 음식 </span>
-<span class="sd">                - 전파자 간절함: 간절함 - (전파대상의 신앙심 + 1)</span>
-<span class="sd">                    - 간절함이 0이 되면 전파 종료 </span>
-<span class="sd">                - 전파대상 신앙심: 전파대상의 신앙심 + 1  </span>
-<span class="sd">            - 약한 전파: 전파자의 간절함 &lt;= 전파대상의 신앙심인 경우 </span>
-<span class="sd">                - 전파대상의 신봉 음식 += 전파자의 신봉 음식 </span>
-<span class="sd">                - 전파자 간절함 = 0</span>
-<span class="sd">                - 전파대상의 신앙심 += 전파자의 간절함 </span>
-<span class="sd">        - 종료: Graph 밖을 벗어나거나, &#39;간절함&#39; 0이 되면 종료 </span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">DY</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">];</span> <span class="n">DX</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-    <span class="n">is_propagated</span> <span class="o">=</span> <span class="p">[[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
-
-    <span class="c1"># 모든 대표자의 위치 </span>
-    <span class="n">all_representatives</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">:</span>
-        <span class="c1"># 대표자 </span>
-        <span class="n">representative</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">r_y</span> <span class="o">=</span> <span class="n">representative</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-        <span class="n">r_x</span> <span class="o">=</span> <span class="n">representative</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
-        <span class="n">all_representatives</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">r_y</span><span class="p">,</span> <span class="n">r_x</span><span class="p">))</span>
-
-
-    <span class="c1"># 이후 ordered 순서로 전파 실행</span>
-    <span class="c1"># for representative in ordered:</span>
-    <span class="c1">#     ...</span>
-
-
-    <span class="c1"># for group in groups: # 순서대로 뽑기 </span>
-    <span class="k">while</span> <span class="n">groups</span><span class="p">:</span>
-        <span class="n">group</span> <span class="o">=</span> <span class="n">heapq</span><span class="o">.</span><span class="n">heappop</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span>
-
-
-        <span class="c1"># 대표자 </span>
-        <span class="n">representative</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">r_y</span> <span class="o">=</span> <span class="n">representative</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-        <span class="n">r_x</span> <span class="o">=</span> <span class="n">representative</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
-        <span class="c1"># print(f&#39;representative: ({representative[2], representative[3]})&#39;)</span>
-
-        <span class="c1"># 대표자가 전파당한 경우 전파할 수 없음 </span>
-        <span class="k">if</span> <span class="n">is_propagated</span><span class="p">[</span><span class="n">r_y</span><span class="p">][</span><span class="n">r_x</span><span class="p">]:</span>
-            <span class="k">continue</span>    
-
-        <span class="c1"># 전파 시작 </span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        전파자 update </span>
-<span class="sd">            - 간절함: 신앙심-1, 신앙심: 1 </span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="nb">dir</span> <span class="o">=</span> <span class="n">belive_graph</span><span class="p">[</span><span class="n">r_y</span><span class="p">][</span><span class="n">r_x</span><span class="p">]</span> <span class="o">%</span> <span class="mi">4</span>  <span class="c1"># 빙행 설정 </span>
-        <span class="n">desperate_graph</span><span class="p">[</span><span class="n">r_y</span><span class="p">][</span><span class="n">r_x</span><span class="p">]</span> <span class="o">=</span> <span class="n">belive_graph</span><span class="p">[</span><span class="n">r_y</span><span class="p">][</span><span class="n">r_x</span><span class="p">]</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="n">belive_graph</span><span class="p">[</span><span class="n">r_y</span><span class="p">][</span><span class="n">r_x</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="n">r_food</span> <span class="o">=</span> <span class="n">graph</span><span class="p">[</span><span class="n">r_y</span><span class="p">][</span><span class="n">r_x</span><span class="p">]</span>
-
-
-        <span class="n">cur_y</span> <span class="o">=</span> <span class="n">r_y</span> <span class="o">+</span> <span class="n">DY</span><span class="p">[</span><span class="nb">dir</span><span class="p">]</span>
-        <span class="n">cur_x</span> <span class="o">=</span> <span class="n">r_x</span> <span class="o">+</span> <span class="n">DX</span><span class="p">[</span><span class="nb">dir</span><span class="p">]</span>
-        <span class="k">while</span> <span class="n">desperate_graph</span><span class="p">[</span><span class="n">r_y</span><span class="p">][</span><span class="n">r_x</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">in_range</span><span class="p">(</span><span class="n">cur_y</span><span class="p">,</span> <span class="n">cur_x</span><span class="p">):</span> <span class="c1"># 간절함이 0이 되면 전파 종료 혹은 그래프를 나가면 종료 </span>
-            <span class="c1"># 전파 대상의 신봉음식이 동일한 경우, 전파하지 않고 지나감 </span>
-            <span class="k">if</span> <span class="n">r_food</span> <span class="o">==</span> <span class="n">graph</span><span class="p">[</span><span class="n">cur_y</span><span class="p">][</span><span class="n">cur_x</span><span class="p">]:</span>
-                <span class="n">cur_y</span> <span class="o">+=</span> <span class="n">DY</span><span class="p">[</span><span class="nb">dir</span><span class="p">]</span>
-                <span class="n">cur_x</span> <span class="o">+=</span> <span class="n">DX</span><span class="p">[</span><span class="nb">dir</span><span class="p">]</span>
-                <span class="c1"># print(f&#39;after propgation with repre {r_y, r_x}&#39;)</span>
-                <span class="c1"># for row in belive_graph:</span>
-                <span class="c1">#     print(row[:])</span>
-                <span class="k">continue</span> 
-
-            <span class="c1"># 신봉음식이 다른 경우 </span>
-            <span class="k">if</span> <span class="n">desperate_graph</span><span class="p">[</span><span class="n">r_y</span><span class="p">][</span><span class="n">r_x</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">belive_graph</span><span class="p">[</span><span class="n">cur_y</span><span class="p">][</span><span class="n">cur_x</span><span class="p">]:</span> <span class="c1"># 강한전파 </span>
-<span class="w">                </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">                - 전파대상의 신봉 음식 = 전파자의 신봉 음식 </span>
-<span class="sd">                - 전파자 간절함: 간절함 - (전파대상의 신앙심 + 1)</span>
-<span class="sd">                - 전파대상 신앙심: 전파대상의 신앙심 + 1  </span>
-<span class="sd">                &#39;&#39;&#39;</span>
-                <span class="n">graph</span><span class="p">[</span><span class="n">cur_y</span><span class="p">][</span><span class="n">cur_x</span><span class="p">]</span> <span class="o">=</span> <span class="n">r_food</span> 
-                <span class="n">belive_graph</span><span class="p">[</span><span class="n">cur_y</span><span class="p">][</span><span class="n">cur_x</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="n">desperate_graph</span><span class="p">[</span><span class="n">r_y</span><span class="p">][</span><span class="n">r_x</span><span class="p">]</span> <span class="o">-=</span> <span class="n">belive_graph</span><span class="p">[</span><span class="n">cur_y</span><span class="p">][</span><span class="n">cur_x</span><span class="p">]</span>
-            
-            <span class="k">else</span><span class="p">:</span> <span class="c1"># 약한 전파 </span>
-<span class="w">                </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">                전파대상의 신봉 음식 += 전파자의 신봉 음식 </span>
-<span class="sd">                - 전파자 간절함 = 0</span>
-<span class="sd">                - 전파대상의 신앙심 += 전파자의 간절함 </span>
-<span class="sd">                </span>
-<span class="sd">                &#39;TCM&#39; -&gt; &#39;TC&#39; -&gt; &#39;TM&#39; -&gt; &#39;CM&#39; -&gt; &#39;M&#39; -&gt; &#39;C&#39; -&gt; &#39;T&#39; </span>
-<span class="sd">                민트초코우유 -&gt; 민트초코 -&gt; 민트우유 -&gt; 초코우유 -&gt; 우유 -&gt; 초코 -&gt; 민트 순서대로 각 음식의 신앙심 출력 </span>
-<span class="sd">                &#39;&#39;&#39;</span>
-                <span class="n">cur_food</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="n">cur_y</span><span class="p">][</span><span class="n">cur_x</span><span class="p">])</span>
-                <span class="n">cur_food</span> <span class="o">=</span> <span class="n">cur_food</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="n">r_y</span><span class="p">][</span><span class="n">r_x</span><span class="p">]))</span>
-                
-                <span class="n">result_food</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="k">if</span> <span class="s1">&#39;T&#39;</span> <span class="ow">in</span> <span class="n">cur_food</span><span class="p">:</span>
-                    <span class="n">result_food</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;T&#39;</span><span class="p">)</span>
-                <span class="k">if</span> <span class="s1">&#39;C&#39;</span> <span class="ow">in</span> <span class="n">cur_food</span><span class="p">:</span>
-                    <span class="n">result_food</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
-                <span class="k">if</span> <span class="s1">&#39;M&#39;</span> <span class="ow">in</span> <span class="n">cur_food</span><span class="p">:</span>
-                    <span class="n">result_food</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;M&#39;</span><span class="p">)</span>
-                
-
-                <span class="n">graph</span><span class="p">[</span><span class="n">cur_y</span><span class="p">][</span><span class="n">cur_x</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">result_food</span><span class="p">)</span>
-                <span class="c1"># print(result_food)</span>
-                <span class="n">belive_graph</span><span class="p">[</span><span class="n">cur_y</span><span class="p">][</span><span class="n">cur_x</span><span class="p">]</span> <span class="o">+=</span> <span class="n">desperate_graph</span><span class="p">[</span><span class="n">r_y</span><span class="p">][</span><span class="n">r_x</span><span class="p">]</span>
-                <span class="n">desperate_graph</span><span class="p">[</span><span class="n">r_y</span><span class="p">][</span><span class="n">r_x</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-
-            <span class="c1">## update </span>
-            <span class="k">if</span> <span class="n">check_representative_propagaged</span><span class="p">(</span><span class="n">cur_y</span><span class="p">,</span> <span class="n">cur_x</span><span class="p">,</span> <span class="n">all_representatives</span><span class="p">):</span>
-                <span class="n">is_propagated</span><span class="p">[</span><span class="n">cur_y</span><span class="p">][</span><span class="n">cur_x</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span> 
-
-            <span class="n">cur_y</span> <span class="o">+=</span> <span class="n">DY</span><span class="p">[</span><span class="nb">dir</span><span class="p">]</span>
-            <span class="n">cur_x</span> <span class="o">+=</span> <span class="n">DX</span><span class="p">[</span><span class="nb">dir</span><span class="p">]</span>
-
-            <span class="c1"># print(f&#39;after propgation with repre {r_y, r_x}&#39;)</span>
-            <span class="c1"># for row in belive_graph:</span>
-            <span class="c1">#     print(row[:])</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">check_representative_propagaged</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">repres_set</span><span class="p">):</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="ow">in</span> <span class="n">repres_set</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">print_believe</span><span class="p">(</span><span class="n">idx</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    &#39;TCM&#39; -&gt; &#39;TC&#39; -&gt; &#39;TM&#39; -&gt; &#39;CM&#39; -&gt; &#39;M&#39; -&gt; &#39;C&#39; -&gt; &#39;T&#39; </span>
-<span class="sd">    민트초코우유 -&gt; 민트초코 -&gt; 민트우유 -&gt; 초코우유 -&gt; 우유 -&gt; 초코 -&gt; 민트 순서대로 각 음식의 신앙심 출력 </span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">my_dict</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;TCM&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="s1">&#39;TC&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="s1">&#39;TM&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-        <span class="s1">&#39;CM&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-        <span class="s1">&#39;M&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
-        <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
-        <span class="s1">&#39;T&#39;</span><span class="p">:</span> <span class="mi">6</span>
-    <span class="p">}</span>
-    <span class="n">believe_sums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">7</span>
-
-    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-            <span class="n">believe_sums</span><span class="p">[</span><span class="n">my_dict</span><span class="p">[</span><span class="n">graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]]]</span> <span class="o">+=</span> <span class="n">belive_graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
-
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">believe_sums</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">idx</span> <span class="o">!=</span> <span class="n">T</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">()</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">():</span>
-    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
-        <span class="c1"># 아침 </span>
-        <span class="n">morning</span><span class="p">()</span>
-        <span class="c1"># print(&#39;after morning: &#39;)</span>
-        <span class="c1"># for row in belive_graph:</span>
-        <span class="c1">#     print(row[:])</span>
-
-        <span class="c1"># 점심 </span>
-        <span class="n">groups</span> <span class="o">=</span> <span class="n">lunch</span><span class="p">()</span>
-        <span class="c1"># print(&#39;after lunch belif: &#39;)</span>
-        <span class="c1"># for row in belive_graph:</span>
-        <span class="c1">#     print(row[:])</span>
-        <span class="c1"># print(&#39;after lunch food: &#39;)</span>
-        <span class="c1"># for row in graph:</span>
-        <span class="c1">#     print(row[:])</span>
-
-        <span class="c1"># 저녁 </span>
-        <span class="n">dinner</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span>
-        <span class="c1"># print(&#39;after dinner: &#39;)</span>
-        <span class="c1"># for row in belive_graph:</span>
-        <span class="c1">#     print(row[:])</span>
-
-        <span class="c1"># 출력 </span>
-        <span class="n">print_believe</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">solve</span><span class="p">()</span>    
-</pre></div>
-</div>
 </div>
 </section>
 <section id="id10">
@@ -2602,150 +2332,613 @@ warriors_graph: dict[tuple(int, int), list[int]] defaultdict(list) # warriors_gr
         <span class="nb">print</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># 메두사의 집으로부터 공원까지 도달하는 경로가 없는 경우 -1 출력 후 프로그램 종료 </span>
 
 
-
 </pre></div>
 </div>
 </div>
 <div class="dropdown admonition">
 <p class="admonition-title">test case</p>
-<ol class="arabic simple">
-<li><p>case 1  <br>
-7 4 <br>
-1 1 5 0 <br>
-5 3 4 5 6 3 3 1 <br>
-0 0 0 0 0 1 0 <br>
-0 0 0 1 0 1 0 <br>
-0 1 1 0 0 0 0 <br>
-1 0 0 0 0 0 0 <br>
-0 0 1 0 0 0 0 <br>
-0 0 0 0 0 1 0 <br>
-0 0 0 0 1 0 0 <br></p></li>
-</ol>
-<p>1-A.  <br>
-0 3 0 <br>
-0 3 0 <br>
-0 3 0 <br>
-0 3 0 <br>
-2 2 0 <br>
-2 2 1 <br>
-0 2 0 <br>
-1 1 1 <br>
-0 2 0 <br>
-0 1 0 <br>
-0 1 0 <br>
-0 1 0 <br>
-0 <br></p>
-<ol class="arabic simple" start="2">
-<li><p>case 2  <br>
-5 9 <br>
-2 1 1 2 <br>
-0 2 1 4 0 1 4 3 2 4 4 0 3 2 4 4 2 3 <br>
-1 0 0 0 1 <br>
-0 0 0 0 1 <br>
-0 0 1 0 0 <br>
-0 0 1 0 1 <br>
-0 0 0 0 0 <br></p></li>
-</ol>
-<p>2-A.  <br>
-7 4 1 <br>
-0 <br></p>
-<ol class="arabic simple" start="3">
-<li><p>case 3 <br>
-5 10 <br>
-2 4 4 4 <br>
-0 3 3 2 2 1 3 3 0 4 2 2 1 2 1 0 2 0 2 3 <br>
-0 0 0 0 0 <br>
-0 0 1 1 1 <br>
-0 0 0 0 0 <br>
-0 0 0 0 0 <br>
-1 1 1 1 0 <br></p></li>
-</ol>
-<p>3-A.  <br>
-14 2 2 <br>
-0 <br></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Test case: 
+
+7 4
+1 1 5 0
+5 3 4 5 6 3 3 1
+0 0 0 0 0 1 0
+0 0 0 1 0 1 0
+0 1 1 0 0 0 0
+1 0 0 0 0 0 0
+0 0 1 0 0 0 0
+0 0 0 0 0 1 0
+0 0 0 0 1 0 0
+
+Answer: 
+0 3 0
+0 3 0
+0 3 0
+0 3 0
+2 2 0
+2 2 1
+0 2 0
+1 1 1
+0 2 0
+0 1 0
+0 1 0
+0 1 0
+0
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Test case: 
+5 9
+2 1 1 2
+0 2 1 4 0 1 4 3 2 4 4 0 3 2 4 4 2 3
+1 0 0 0 1
+0 0 0 0 1
+0 0 1 0 0
+0 0 1 0 1
+0 0 0 0 0
+
+Answer: 
+7 4 1
+0
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Test case:
+5 10
+2 4 4 4
+0 3 3 2 2 1 3 3 0 4 2 2 1 2 1 0 2 0 2 3
+0 0 0 0 0
+0 0 1 1 1
+0 0 0 0 0
+0 0 0 0 0
+1 1 1 1 0
+
+Answer:
+14 2 2
+0
+</pre></div>
+</div>
 </div>
 </section>
 <section id="id11">
 <h3>미지의 공간 탈출<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
 <p class="admonition-title">Solution</p>
-<p><a class="reference download internal" download="" href="../../_downloads/b5b641ad6576c6f9d7998c99129883c3/1.py"><span class="xref download myst">sol3</span></a></p>
+<p><a class="reference download internal" download="" href="../../_downloads/63c817e5c1b8c0f5ea73ae1e475579c1/5.py"><span class="xref download myst">sol3</span></a></p>
+<div class="literal-block-wrapper docutils container" id="id16">
+<div class="code-block-caption"><span class="caption-number">예시 42 </span><span class="caption-text">미지의 공간 탈출 Solution Code</span><a class="headerlink" href="#id16" title="Link to this code">#</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span> 
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span> 
+
+<span class="nb">input</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span> 
+<span class="c1"># sys.stdin = open(&quot;Input.txt&quot;)</span>
+<span class="n">N</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">F</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">필요한 데이터 구조</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="n">MAX</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1e9</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="c1"># 시간의 벽면도 </span>
+<span class="n">wall_graph</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">5</span><span class="p">]</span><span class="o">*</span><span class="mi">3</span><span class="o">*</span><span class="n">M</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="n">M</span><span class="p">)]</span> <span class="c1"># 5 (없는 공간) 장애물로 초기화 </span>
+<span class="n">distance_wall_graph</span> <span class="o">=</span> <span class="p">[[</span><span class="n">MAX</span><span class="p">]</span><span class="o">*</span><span class="mi">3</span><span class="o">*</span><span class="n">M</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="n">M</span><span class="p">)]</span>
+<span class="n">distance_graph</span> <span class="o">=</span> <span class="p">[[</span><span class="n">MAX</span><span class="p">]</span><span class="o">*</span><span class="n">N</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+<span class="n">weird_time_graph</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">N</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+<span class="n">weird_time_wall_graph</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mi">3</span><span class="o">*</span><span class="n">M</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="n">M</span><span class="p">)]</span>
+<span class="n">f_v_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">f_d_list</span> <span class="o">=</span> <span class="p">[]</span> 
+<span class="n">f_y_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">f_x_list</span><span class="o">=</span> <span class="p">[]</span> 
+<span class="n">is_f_id_in_wall</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span><span class="o">*</span><span class="n">F</span> 
+<span class="n">has_diffusion_stopped</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span><span class="o">*</span><span class="n">F</span> 
+<span class="n">howmany_time_diffused</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">F</span> 
+<span class="n">s_y</span><span class="p">,</span> <span class="n">s_x</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span> <span class="c1"># 시간의 벽 윗면에서 시작 위치 </span>
+<span class="n">e_y_first</span><span class="p">,</span> <span class="n">e_x_first</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span> <span class="c1"># 시간의 벽에서 도착 위치 </span>
+<span class="n">s_y_second</span><span class="p">,</span> <span class="n">s_x_second</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span> <span class="c1"># 단면도에서 시작 위치 </span>
+<span class="n">e_y_final</span><span class="p">,</span> <span class="n">e_x_final</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span> <span class="c1"># 단면도 최종 도착 위치 </span>
+<span class="n">DY</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">];</span> <span class="n">DX</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="c1"># 첫번째 도착지점이 여기에 있음 </span>
+<span class="n">flag</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">flag2</span> <span class="o">=</span> <span class="mi">0</span> 
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+    <span class="n">row</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+    <span class="n">graph</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">[:])</span>
+    
+    <span class="c1"># 두번째 시작 지점 찾기 </span>
+    <span class="k">if</span> <span class="n">flag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">upper_left_most_y</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span> 
+                <span class="n">upper_left_most_x</span> <span class="o">=</span> <span class="n">idx</span> 
+                <span class="n">flag</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># 한번찾으면 안찾아도 됨. </span>
+                <span class="k">break</span> 
+
+    <span class="c1"># 두번째 도착지점 찾기 </span>
+    <span class="k">if</span> <span class="n">flag2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="n">e_y_final</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span> 
+                <span class="n">e_x_final</span> <span class="o">=</span> <span class="n">idx</span> 
+                <span class="n">flag2</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># 한번찾으면 안찾아도 됨. </span>
+                <span class="k">break</span> 
+
+
+<span class="c1"># 처음 3을 찾고, MxM에서 옆에 0이 있는 그지점이 단면도까지의 도착 위치 </span>
+<span class="n">flag</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="c1"># print(f&quot;upper y, x{upper_left_most_y, upper_left_most_x}&quot;)</span>
+<span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">upper_left_most_y</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">upper_left_most_y</span><span class="o">+</span><span class="n">M</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">upper_left_most_x</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">upper_left_most_x</span><span class="o">+</span><span class="n">M</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        
+        <span class="k">if</span> <span class="n">graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">s_y_second</span> <span class="o">=</span> <span class="n">y</span>  
+            <span class="n">s_x_second</span> <span class="o">=</span> <span class="n">x</span> 
+            <span class="n">flag</span> <span class="o">=</span> <span class="mi">1</span> 
+            <span class="k">break</span> 
+    <span class="k">if</span> <span class="n">flag</span><span class="p">:</span>
+        <span class="k">break</span> 
+
+<span class="c1"># 단면도상 (N) 에서의 첫번째 도착위치 -&gt; 시간의 벽 상(3*M) 에서의 도착 위치 </span>
+<span class="k">def</span><span class="w"> </span><span class="nf">transform_second_start_to_first_end</span><span class="p">(</span><span class="n">cur_y</span><span class="p">,</span> <span class="n">cur_x</span><span class="p">):</span>
+    <span class="c1"># global s_y_second, cur_x, e_y_first, e_x_first </span>
+
+    <span class="c1"># # 단면도에서 의 최외곽 </span>
+    <span class="c1"># outer_list = []</span>
+    <span class="c1"># for i in range(M): # 맨 윗줄 </span>
+    <span class="c1">#     outer_list.append((upper_left_most_y-1, upper_left_most_x+i))</span>
+    <span class="c1"># for i in range(M): # 맨 아랫줄 </span>
+    <span class="c1">#     outer_list.append((upper_left_most_y+M, upper_left_most_x+i))</span>
+    <span class="c1"># for i in range(M): # 맨 왼쪽 줄 </span>
+    <span class="c1">#     outer_list.append((upper_left_most_y+i, upper_left_most_x-1))</span>
+    <span class="c1"># for i in range(M): # 맨 오른쪽 </span>
+    <span class="c1">#     outer_list.append((upper_left_most_y+i, upper_left_most_x+M))</span>
+
+    <span class="c1"># print(f&quot;outer_list: {outer_list}&quot;) # 4*M 의 length </span>
+
+    <span class="n">returny</span><span class="p">,</span> <span class="n">returnx</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span> 
+    <span class="c1"># 위 </span>
+    <span class="k">if</span> <span class="n">cur_y</span> <span class="o">==</span> <span class="n">upper_left_most_y</span><span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">upper_left_most_x</span> <span class="o">&lt;=</span> <span class="n">cur_x</span> <span class="o">&lt;</span> <span class="n">upper_left_most_x</span> <span class="o">+</span> <span class="n">M</span><span class="p">:</span>
+        <span class="n">returny</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">cur_x</span> <span class="o">-</span> <span class="n">upper_left_most_x</span>
+        <span class="n">returnx</span> <span class="o">=</span> <span class="n">M</span> <span class="o">+</span> <span class="n">diff</span> 
+    <span class="c1"># 아래 </span>
+    <span class="k">elif</span> <span class="n">cur_y</span> <span class="o">==</span> <span class="n">upper_left_most_y</span> <span class="o">+</span> <span class="n">M</span> <span class="ow">and</span> <span class="n">upper_left_most_x</span><span class="o">&lt;=</span><span class="n">cur_x</span> <span class="o">&lt;</span> <span class="n">upper_left_most_x</span> <span class="o">+</span> <span class="n">M</span><span class="p">:</span>
+        <span class="n">returny</span> <span class="o">=</span> <span class="mi">3</span><span class="o">*</span><span class="n">M</span> <span class="o">-</span><span class="mi">1</span> 
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">cur_x</span> <span class="o">-</span> <span class="n">upper_left_most_x</span>
+        <span class="n">returnx</span> <span class="o">=</span> <span class="n">M</span> <span class="o">+</span> <span class="n">diff</span> 
+    <span class="c1"># 왼쪽 </span>
+    <span class="k">elif</span> <span class="n">upper_left_most_y</span> <span class="o">&lt;=</span> <span class="n">cur_y</span> <span class="o">&lt;</span> <span class="n">upper_left_most_y</span> <span class="o">+</span> <span class="n">M</span> <span class="ow">and</span> <span class="n">cur_x</span> <span class="o">==</span> <span class="n">upper_left_most_x</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">cur_y</span> <span class="o">-</span> <span class="n">upper_left_most_y</span>
+        <span class="n">returny</span> <span class="o">=</span> <span class="n">M</span> <span class="o">+</span> <span class="n">diff</span> 
+        <span class="n">returnx</span> <span class="o">=</span> <span class="mi">0</span> 
+    <span class="c1"># 오른쪽 </span>
+    <span class="k">elif</span> <span class="n">upper_left_most_y</span> <span class="o">&lt;=</span> <span class="n">cur_y</span> <span class="o">&lt;</span> <span class="n">upper_left_most_y</span> <span class="o">+</span> <span class="n">M</span> <span class="ow">and</span> <span class="n">cur_x</span> <span class="o">==</span> <span class="n">upper_left_most_x</span> <span class="o">+</span> <span class="n">M</span><span class="p">:</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">cur_y</span> <span class="o">-</span> <span class="n">upper_left_most_y</span>
+        <span class="n">returny</span> <span class="o">=</span> <span class="n">M</span> <span class="o">+</span> <span class="n">diff</span> 
+        <span class="n">returnx</span> <span class="o">=</span> <span class="mi">3</span><span class="o">*</span><span class="n">M</span> <span class="o">-</span><span class="mi">1</span> 
+
+    <span class="k">return</span> <span class="n">returny</span><span class="p">,</span> <span class="n">returnx</span>
+ 
+
+    
+<span class="n">e_y_first</span><span class="p">,</span> <span class="n">e_x_first</span> <span class="o">=</span> <span class="n">transform_second_start_to_first_end</span><span class="p">(</span><span class="n">s_y_second</span><span class="p">,</span> <span class="n">s_x_second</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">rotation_90CCW</span><span class="p">(</span><span class="n">original_graph</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    (y, x) -&gt; (M-x-1, y)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">new_graph</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">M</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+            <span class="n">new_graph</span><span class="p">[</span><span class="n">M</span><span class="o">-</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">original_graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
+    
+    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+        <span class="n">original_graph</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_graph</span><span class="p">[</span><span class="n">idx</span><span class="p">][:]</span> <span class="c1"># update </span>
+
+<span class="n">new_graph</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">M</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">)]</span>
+<span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span> <span class="c1"># 동서남북윗면 평면도 순 </span>
+    <span class="k">if</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># 동쪽이면, 왼쪽으로 90도 회전 </span>
+        
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+            <span class="c1"># wall_graph[M+i][2*M:] = list(map(int, input().split()))</span>
+            <span class="n">new_graph</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+        <span class="n">rotation_90CCW</span><span class="p">(</span><span class="n">new_graph</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+            <span class="n">wall_graph</span><span class="p">[</span><span class="n">M</span><span class="o">+</span><span class="n">i</span><span class="p">][</span><span class="mi">2</span><span class="o">*</span><span class="n">M</span><span class="p">:]</span> <span class="o">=</span> <span class="n">new_graph</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="c1"># 서쪽이면, 왼쪽으로 270도 회전 </span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+            <span class="c1"># wall_graph[M+i][:M] = list(map(int, input().split()))</span>
+            <span class="n">new_graph</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+        <span class="n">rotation_90CCW</span><span class="p">(</span><span class="n">new_graph</span><span class="p">)</span>
+        <span class="n">rotation_90CCW</span><span class="p">(</span><span class="n">new_graph</span><span class="p">)</span>
+        <span class="n">rotation_90CCW</span><span class="p">(</span><span class="n">new_graph</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+            <span class="n">wall_graph</span><span class="p">[</span><span class="n">M</span><span class="o">+</span><span class="n">i</span><span class="p">][:</span><span class="n">M</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_graph</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># 남쪽 그대로 </span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+            <span class="n">wall_graph</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">M</span><span class="o">+</span><span class="n">i</span><span class="p">][</span><span class="n">M</span><span class="p">:</span><span class="mi">2</span><span class="o">*</span><span class="n">M</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+
+    <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span> <span class="c1"># 북쪽이면, 왼쪽으로 180도 회전 </span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+            <span class="c1"># wall_graph[i][M:2*M] = list(map(int, input().split()))</span>
+            <span class="n">new_graph</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+
+        <span class="n">rotation_90CCW</span><span class="p">(</span><span class="n">new_graph</span><span class="p">)</span>
+        <span class="n">rotation_90CCW</span><span class="p">(</span><span class="n">new_graph</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+            <span class="n">wall_graph</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">M</span><span class="p">:</span><span class="mi">2</span><span class="o">*</span><span class="n">M</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_graph</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+
+    <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span> <span class="c1"># 윗면 </span>
+        <span class="c1"># 이 윗면에 시작점이 존재함. </span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+            <span class="n">wall_graph</span><span class="p">[</span><span class="n">M</span><span class="o">+</span><span class="n">i</span><span class="p">][</span><span class="n">M</span><span class="p">:</span><span class="mi">2</span><span class="o">*</span><span class="n">M</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+        
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">M</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">wall_graph</span><span class="p">[</span><span class="n">M</span><span class="o">+</span><span class="n">i</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">s_y</span> <span class="o">=</span> <span class="n">M</span><span class="o">+</span><span class="n">i</span> 
+                    <span class="n">s_x</span> <span class="o">=</span> <span class="n">x</span> 
+
+
+<span class="c1"># 각 Cell마다 dy, dx 설정</span>
+<span class="n">DY</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># 동서남북  0/1/2/3</span>
+<span class="n">DX</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">find_next_cell</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    특정 셀이 아니면 (-1, -1)를 반환 </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># 좌측상단 설정 </span>
+    <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">M</span> <span class="ow">and</span> <span class="n">x</span> <span class="o">==</span> <span class="n">M</span><span class="p">:</span>
+        <span class="n">nxty</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="n">nxtx</span> <span class="o">=</span> <span class="n">y</span>
+    <span class="k">elif</span> <span class="mi">0</span><span class="o">&lt;=</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">M</span> <span class="ow">and</span> <span class="n">y</span> <span class="o">==</span> <span class="n">M</span><span class="p">:</span>
+        <span class="n">nxty</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="n">nxtx</span> <span class="o">=</span> <span class="n">y</span>
+    <span class="c1"># 우측상단설정 </span>
+    <span class="k">elif</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">M</span> <span class="ow">and</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">2</span><span class="o">*</span><span class="n">M</span> <span class="o">-</span><span class="mi">1</span> <span class="p">:</span>
+        <span class="n">nxty</span> <span class="o">=</span> <span class="mi">3</span><span class="o">*</span><span class="n">M</span><span class="o">-</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span> 
+        <span class="n">nxtx</span> <span class="o">=</span> <span class="mi">3</span><span class="o">*</span><span class="n">M</span><span class="o">-</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span>
+    <span class="k">elif</span> <span class="n">y</span> <span class="o">==</span> <span class="n">M</span> <span class="ow">and</span> <span class="mi">2</span><span class="o">*</span><span class="n">M</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="o">*</span><span class="n">M</span><span class="p">:</span>
+        <span class="n">nxty</span> <span class="o">=</span> <span class="mi">3</span><span class="o">*</span><span class="n">M</span><span class="o">-</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span>
+        <span class="n">nxtx</span> <span class="o">=</span> <span class="mi">3</span><span class="o">*</span><span class="n">M</span><span class="o">-</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span>
+    <span class="c1"># 우측하단 설정 </span>
+    <span class="k">elif</span> <span class="n">y</span> <span class="o">==</span> <span class="mi">2</span><span class="o">*</span><span class="n">M</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="mi">2</span><span class="o">*</span><span class="n">M</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="o">*</span><span class="n">M</span><span class="p">:</span>
+        <span class="n">nxty</span> <span class="o">=</span> <span class="n">x</span> 
+        <span class="n">nxtx</span> <span class="o">=</span> <span class="n">y</span> 
+    <span class="k">elif</span> <span class="mi">2</span><span class="o">*</span><span class="n">M</span> <span class="o">&lt;=</span> <span class="n">y</span> <span class="o">&lt;=</span> <span class="mi">3</span><span class="o">*</span><span class="n">M</span> <span class="ow">and</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">2</span><span class="o">*</span><span class="n">M</span> <span class="o">-</span><span class="mi">1</span> <span class="p">:</span>
+        <span class="n">nxty</span> <span class="o">=</span> <span class="n">x</span> 
+        <span class="n">nxtx</span> <span class="o">=</span> <span class="n">y</span> 
+    <span class="c1"># 좌측하단 설정 </span>
+    <span class="k">elif</span> <span class="n">y</span> <span class="o">==</span> <span class="mi">2</span><span class="o">*</span><span class="n">M</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">M</span><span class="p">:</span>
+        <span class="n">nxty</span> <span class="o">=</span> <span class="mi">3</span><span class="o">*</span><span class="n">M</span> <span class="o">-</span> <span class="n">x</span> <span class="o">-</span><span class="mi">1</span> 
+        <span class="n">nxtx</span> <span class="o">=</span> <span class="mi">3</span><span class="o">*</span><span class="n">M</span> <span class="o">-</span> <span class="n">y</span> <span class="o">-</span><span class="mi">1</span> 
+    <span class="k">elif</span> <span class="mi">2</span><span class="o">*</span><span class="n">M</span> <span class="o">&lt;=</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="o">*</span><span class="n">M</span> <span class="ow">and</span>  <span class="n">x</span> <span class="o">==</span> <span class="n">M</span><span class="p">:</span>
+        <span class="n">nxty</span> <span class="o">=</span> <span class="mi">3</span><span class="o">*</span><span class="n">M</span> <span class="o">-</span> <span class="n">x</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">nxtx</span> <span class="o">=</span> <span class="mi">3</span><span class="o">*</span><span class="n">M</span> <span class="o">-</span> <span class="n">y</span> <span class="o">-</span><span class="mi">1</span> 
+    <span class="k">else</span><span class="p">:</span> <span class="c1"># 그외의 공간은 방향이 없음 </span>
+        <span class="n">nxty</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> 
+        <span class="n">nxtx</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> 
+    <span class="k">return</span> <span class="n">nxty</span><span class="p">,</span> <span class="n">nxtx</span> 
+
+
+<span class="c1"># print(find_next_cell(0, 3)) # (3,0)</span>
+<span class="c1"># print(find_next_cell(1, 3)) # (3,1)</span>
+<span class="c1"># print(find_next_cell(0, 5)) # (3, 8)</span>
+<span class="c1"># print(find_next_cell(1, 5)) # (3, 7)</span>
+<span class="c1"># print(find_next_cell(3, 0)) # (0, 3)</span>
+<span class="c1"># print(find_next_cell(5, 6)) # (6, 5)</span>
+<span class="c1"># print(find_next_cell(5, 8)) # (8, 5)</span>
+<span class="c1"># print(find_next_cell(5, 0)) # (8, 3)</span>
+<span class="c1"># print(find_next_cell(5, 1)) # (7, 3)</span>
+<span class="c1"># print(find_next_cell(0, 0)) # (-1, -1)</span>
+<span class="c1"># print(find_next_cell(3, 3)) # (-1, -1)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">wall_in_range</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">M</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="o">&lt;=</span><span class="n">y</span><span class="o">&lt;</span><span class="mi">3</span><span class="o">*</span><span class="n">M</span> <span class="ow">and</span> <span class="mi">0</span><span class="o">&lt;=</span><span class="n">x</span><span class="o">&lt;</span><span class="mi">3</span><span class="o">*</span><span class="n">M</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">graph_in_range</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">N</span> 
+    <span class="k">return</span> <span class="mi">0</span><span class="o">&lt;=</span><span class="n">y</span><span class="o">&lt;</span><span class="n">N</span> <span class="ow">and</span> <span class="mi">0</span><span class="o">&lt;=</span><span class="n">x</span> <span class="o">&lt;</span> <span class="n">N</span> 
+
+<span class="k">for</span> <span class="n">f_id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">F</span><span class="p">):</span>  
+    <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">time_d</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+    <span class="c1"># 미지의 바닥 공간에만 존재. </span>
+    <span class="n">weird_time_graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">f_id</span> 
+    <span class="n">f_v_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> 
+    <span class="n">f_d_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">time_d</span><span class="p">)</span>
+    <span class="n">f_y_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">f_x_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="c1"># 단면도 -&gt; wall안에서 확산하는 과정을 list에 저장  </span>
+<span class="c1"># idx로 돌면서, 해당 시간이 지나면, 그 idx에 있도록 하기 </span>
+<span class="k">def</span><span class="w"> </span><span class="nf">diffusion_f</span><span class="p">(</span><span class="n">time</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">F</span><span class="p">,</span> <span class="n">f_v_list</span>
+
+    <span class="k">if</span> <span class="n">time</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># 확산 필요 없음 </span>
+        <span class="k">return</span> 
+
+    <span class="k">for</span> <span class="n">f_id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">F</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">has_diffusion_stopped</span><span class="p">[</span><span class="n">f_id</span><span class="p">]:</span>
+            <span class="k">continue</span> 
+
+        <span class="c1"># XXX: 0으로 나눌때마다 diffusion하면 안됨 </span>
+        <span class="c1"># BFS에서는 같은 시간 curtime 이 7번이 여러번 나올수도 있음. </span>
+        <span class="c1"># 현재 시간 5//5 == 1 이면, 기존 diffusion 횟수가 0번이여야 diffusion 가능 </span>
+        <span class="k">if</span> <span class="n">time</span> <span class="o">%</span> <span class="n">f_v_list</span><span class="p">[</span><span class="n">f_id</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">time</span> <span class="o">//</span> <span class="n">f_v_list</span><span class="p">[</span><span class="n">f_id</span><span class="p">]</span> <span class="o">==</span> <span class="n">howmany_time_diffused</span><span class="p">[</span><span class="n">f_id</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_f_id_in_wall</span><span class="p">[</span><span class="n">f_id</span><span class="p">]:</span> <span class="c1"># 단면도에서 확산 </span>
+                <span class="c1"># 확산해야함. 확산 방향 1개 </span>
+                <span class="n">f_dir</span> <span class="o">=</span> <span class="n">f_d_list</span><span class="p">[</span><span class="n">f_id</span><span class="p">]</span> <span class="c1"># 0/1/2/3 동서남북 </span>
+                <span class="n">f_y</span> <span class="o">=</span> <span class="n">f_y_list</span><span class="p">[</span><span class="n">f_id</span><span class="p">]</span>
+                <span class="n">f_x</span> <span class="o">=</span> <span class="n">f_x_list</span><span class="p">[</span><span class="n">f_id</span><span class="p">]</span>
+                <span class="n">nxty</span> <span class="o">=</span> <span class="n">f_y</span> <span class="o">+</span> <span class="n">DY</span><span class="p">[</span><span class="n">f_dir</span><span class="p">]</span> <span class="p">;</span> <span class="n">nxtx</span> <span class="o">=</span> <span class="n">f_x</span> <span class="o">+</span> <span class="n">DX</span><span class="p">[</span><span class="n">f_dir</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">graph_in_range</span><span class="p">(</span><span class="n">nxty</span><span class="p">,</span> <span class="n">nxtx</span><span class="p">):</span> <span class="c1"># 범위밖 </span>
+                    <span class="n">has_diffusion_stopped</span><span class="p">[</span><span class="n">f_id</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span> 
+                    <span class="k">continue</span> 
+                <span class="k">if</span> <span class="n">graph</span><span class="p">[</span><span class="n">nxty</span><span class="p">][</span><span class="n">nxtx</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">graph</span><span class="p">[</span><span class="n">nxty</span><span class="p">][</span><span class="n">nxtx</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                    <span class="n">has_diffusion_stopped</span><span class="p">[</span><span class="n">f_id</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span> 
+                    <span class="k">continue</span> <span class="c1"># 장애물과 탈출구가 있으면 움직일 수 없음. </span>
+                    
+                <span class="c1"># 확산 가능 </span>
+                <span class="k">if</span> <span class="n">graph</span><span class="p">[</span><span class="n">nxty</span><span class="p">][</span><span class="n">nxtx</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span> <span class="c1"># 다음 방향이 벽면임 </span>
+                    <span class="c1"># ㅋㅋㅋㅋㅋ </span>
+                    <span class="n">is_f_id_in_wall</span><span class="p">[</span><span class="n">f_id</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span> 
+                    <span class="c1"># 현재 단면도 -&gt; 시간의 벽 상의 포지션으로 바꿈 </span>
+                    <span class="n">wally</span><span class="p">,</span> <span class="n">wallx</span> <span class="o">=</span> <span class="n">transform_second_start_to_first_end</span><span class="p">(</span><span class="n">nxty</span><span class="p">,</span> <span class="n">nxtx</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="n">wall_graph</span><span class="p">[</span><span class="n">wally</span><span class="p">][</span><span class="n">wallx</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="c1"># 그래프상 1이면 </span>
+                        <span class="n">has_diffusion_stopped</span><span class="p">[</span><span class="n">f_id</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span> 
+                        <span class="k">continue</span> <span class="c1"># 확산 stop </span>
+                    <span class="k">else</span><span class="p">:</span> <span class="c1"># 그래프에 0이나 2면, 확산 가능 </span>
+                        <span class="n">weird_time_wall_graph</span><span class="p">[</span><span class="n">wally</span><span class="p">][</span><span class="n">wallx</span><span class="p">]</span> <span class="o">=</span> <span class="n">f_id</span> 
+                        <span class="n">f_y_list</span><span class="p">[</span><span class="n">f_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">wally</span> 
+                        <span class="n">f_x_list</span><span class="p">[</span><span class="n">f_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">wallx</span> 
+                        <span class="n">howmany_time_diffused</span><span class="p">[</span><span class="n">f_id</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span> 
+
+                <span class="k">elif</span> <span class="n">graph</span><span class="p">[</span><span class="n">nxty</span><span class="p">][</span><span class="n">nxtx</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">weird_time_graph</span><span class="p">[</span><span class="n">nxty</span><span class="p">][</span><span class="n">nxtx</span><span class="p">]</span> <span class="o">=</span> <span class="n">f_id</span> <span class="c1"># 확산 </span>
+                    <span class="n">f_y_list</span><span class="p">[</span><span class="n">f_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">nxty</span> 
+                    <span class="n">f_x_list</span><span class="p">[</span><span class="n">f_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">nxtx</span> 
+                    <span class="n">howmany_time_diffused</span><span class="p">[</span><span class="n">f_id</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span> 
+
+            <span class="k">else</span><span class="p">:</span> <span class="c1"># 시간의 벽에서 확산 </span>
+                <span class="c1"># 확산해야함. 확산 방향 1개 </span>
+                <span class="n">f_dir</span> <span class="o">=</span> <span class="n">f_d_list</span><span class="p">[</span><span class="n">f_id</span><span class="p">]</span> <span class="c1"># 0/1/2/3 동서남북 </span>
+                <span class="n">f_y</span> <span class="o">=</span> <span class="n">f_y_list</span><span class="p">[</span><span class="n">f_id</span><span class="p">]</span>
+                <span class="n">f_x</span> <span class="o">=</span> <span class="n">f_x_list</span><span class="p">[</span><span class="n">f_id</span><span class="p">]</span>
+                <span class="n">nxty</span> <span class="o">=</span> <span class="n">f_y</span> <span class="o">+</span> <span class="n">DY</span><span class="p">[</span><span class="n">f_dir</span><span class="p">]</span> <span class="p">;</span> <span class="n">nxtx</span> <span class="o">=</span> <span class="n">f_x</span> <span class="o">+</span> <span class="n">DX</span><span class="p">[</span><span class="n">f_dir</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">wall_in_range</span><span class="p">(</span><span class="n">nxty</span><span class="p">,</span> <span class="n">nxtx</span><span class="p">):</span> <span class="c1"># 범위밖 </span>
+                    <span class="n">has_diffusion_stopped</span><span class="p">[</span><span class="n">f_id</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span> 
+                    <span class="k">continue</span> 
+                <span class="k">if</span> <span class="n">wall_graph</span><span class="p">[</span><span class="n">nxty</span><span class="p">][</span><span class="n">nxtx</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">has_diffusion_stopped</span><span class="p">[</span><span class="n">f_id</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span> 
+                    <span class="k">continue</span> <span class="c1"># 장애물이있으면 움직일 수 없음. </span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">weird_time_wall_graph</span><span class="p">[</span><span class="n">nxty</span><span class="p">][</span><span class="n">nxtx</span><span class="p">]</span><span class="o">=</span> <span class="n">f_id</span> 
+                    <span class="n">f_y_list</span><span class="p">[</span><span class="n">f_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">nxty</span> 
+                    <span class="n">f_x_list</span><span class="p">[</span><span class="n">f_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">nxtx</span> 
+                    <span class="n">howmany_time_diffused</span><span class="p">[</span><span class="n">f_id</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span> 
+
+            
+
+<span class="k">def</span><span class="w"> </span><span class="nf">debug</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">wall_graph</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Start point: </span><span class="si">{</span><span class="n">s_y</span><span class="p">,</span><span class="w"> </span><span class="n">s_x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;First End point on time wall: </span><span class="si">{</span><span class="n">e_y_first</span><span class="p">,</span><span class="w"> </span><span class="n">e_x_first</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Second Start point: </span><span class="si">{</span><span class="n">s_y_second</span><span class="p">,</span><span class="w"> </span><span class="n">s_x_second</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Second End point: </span><span class="si">{</span><span class="n">e_y_final</span><span class="p">,</span><span class="w"> </span><span class="n">e_x_final</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;first total time: </span><span class="si">{</span><span class="n">first_total_time</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;total_time : </span><span class="si">{</span><span class="n">total_time</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c1"># Step1: 시간의 벽에서 미지의 공간의 바닥의 출구로 경로 탐색 </span>
+    <span class="n">total_time</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">s_y</span><span class="p">,</span> <span class="n">s_x</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="c1"># 타임머신 위치, 현재 시간 </span>
+    <span class="n">distance_wall_graph</span><span class="p">[</span><span class="n">s_y</span><span class="p">][</span><span class="n">s_x</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># 3*M x 3xM에서 여행 </span>
+    
+    <span class="n">find_first_path</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">q</span><span class="p">:</span>
+        <span class="n">cury</span><span class="p">,</span> <span class="n">curx</span><span class="p">,</span> <span class="n">curtime</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">cury</span> <span class="o">==</span> <span class="n">e_y_first</span> <span class="ow">and</span> <span class="n">curx</span> <span class="o">==</span> <span class="n">e_x_first</span><span class="p">:</span>
+            <span class="n">find_first_path</span> <span class="o">=</span> <span class="mi">1</span> 
+            <span class="n">total_time</span> <span class="o">=</span> <span class="n">curtime</span> 
+            <span class="k">break</span> 
+
+        <span class="c1"># sumF = sum(1 if has_diffusion_stopped[f_id] else 0 for f_id in range(F))</span>
+        <span class="c1"># if sumF == F and </span>
+        <span class="c1"># 시간이상현상 확산 </span>
+        <span class="c1"># 만약 현재 시간이 v_i의 배수이면, 타임머신이 이동해있음 </span>
+        <span class="n">diffusion_f</span><span class="p">(</span><span class="n">curtime</span><span class="p">)</span>
+
+        <span class="c1"># 만약 현재 시간에 시간의 벽에 출구를 통해 시간 이상 현상이 확산되면, 길이 없음 </span>
+        <span class="k">if</span> <span class="n">weird_time_wall_graph</span><span class="p">[</span><span class="n">e_y_first</span><span class="p">][</span><span class="n">e_x_first</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># print(-1)</span>
+            <span class="k">break</span> 
+
+        <span class="c1"># 타임머신 이동 </span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span> <span class="c1"># 동서남북 </span>
+            <span class="n">nxty</span> <span class="o">=</span> <span class="n">cury</span> <span class="o">+</span> <span class="n">DY</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+            <span class="n">nxtx</span> <span class="o">=</span> <span class="n">curx</span> <span class="o">+</span> <span class="n">DX</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">wall_in_range</span><span class="p">(</span><span class="n">nxty</span><span class="p">,</span> <span class="n">nxtx</span><span class="p">):</span> <span class="c1"># 격자 밖인 경우 </span>
+                <span class="k">continue</span> 
+
+            <span class="k">if</span> <span class="n">wall_graph</span><span class="p">[</span><span class="n">nxty</span><span class="p">][</span><span class="n">nxtx</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">:</span> <span class="c1"># 장애물이 있는 경우 </span>
+                <span class="k">continue</span> 
+            
+            <span class="k">if</span> <span class="n">wall_graph</span><span class="p">[</span><span class="n">nxty</span><span class="p">][</span><span class="n">nxtx</span><span class="p">]</span> <span class="o">==</span> <span class="mi">5</span> <span class="p">:</span> <span class="c1"># 원래 범위가 아닌 경우 </span>
+                <span class="k">continue</span> 
+
+            <span class="k">if</span> <span class="n">weird_time_wall_graph</span><span class="p">[</span><span class="n">nxty</span><span class="p">][</span><span class="n">nxtx</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="c1"># 시간 이상 현상 존재 </span>
+                <span class="k">continue</span> 
+            <span class="c1"># 위의 경우가 아니면 이동 가능 </span>
+            <span class="k">if</span> <span class="n">distance_wall_graph</span><span class="p">[</span><span class="n">nxty</span><span class="p">][</span><span class="n">nxtx</span><span class="p">]</span> <span class="o">==</span> <span class="n">MAX</span><span class="p">:</span>
+                <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">nxty</span><span class="p">,</span> <span class="n">nxtx</span><span class="p">,</span> <span class="n">curtime</span> <span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+                <span class="n">distance_wall_graph</span><span class="p">[</span><span class="n">nxty</span><span class="p">][</span><span class="n">nxtx</span><span class="p">]</span> <span class="o">=</span> <span class="n">curtime</span> <span class="o">+</span> <span class="mi">1</span> 
+                <span class="c1"># wall_graph[nxty][nxtx] = 2 ### DEBUG </span>
+
+        <span class="n">nxty</span><span class="p">,</span> <span class="n">nxtx</span> <span class="o">=</span> <span class="n">find_next_cell</span><span class="p">(</span><span class="n">cury</span><span class="p">,</span> <span class="n">curx</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">nxty</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">nxtx</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">continue</span> <span class="c1"># 벽면을 타고 움직일 수 없음 </span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">wall_graph</span><span class="p">[</span><span class="n">nxty</span><span class="p">][</span><span class="n">nxtx</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">continue</span> <span class="c1"># 장애물이 있음 </span>
+            <span class="k">if</span> <span class="n">weird_time_wall_graph</span><span class="p">[</span><span class="n">nxty</span><span class="p">][</span><span class="n">nxtx</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="c1"># 시간이상현상 존재 </span>
+                <span class="k">continue</span> 
+            <span class="c1"># 위의 경우가 아니면 이동 가능 </span>
+            <span class="k">if</span> <span class="n">distance_wall_graph</span><span class="p">[</span><span class="n">nxty</span><span class="p">][</span><span class="n">nxtx</span><span class="p">]</span> <span class="o">==</span> <span class="n">MAX</span><span class="p">:</span>
+                <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">nxty</span><span class="p">,</span> <span class="n">nxtx</span><span class="p">,</span> <span class="n">curtime</span> <span class="o">+</span><span class="mi">1</span> <span class="p">))</span>
+                <span class="n">distance_wall_graph</span><span class="p">[</span><span class="n">nxty</span><span class="p">][</span><span class="n">nxtx</span><span class="p">]</span> <span class="o">=</span> <span class="n">curtime</span> <span class="o">+</span> <span class="mi">1</span> 
+                <span class="c1"># weird_time_wall_graph[nxty][nxtx] = 2 </span>
+                <span class="c1"># wall_graph[nxty][nxtx]= 2 </span>
+
+    <span class="k">if</span> <span class="n">find_first_path</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span> <span class="c1"># 시간의 벽에서 탈출 성공 </span>
+        <span class="c1"># print(total_time)</span>
+        <span class="n">first_total_time</span> <span class="o">=</span> <span class="n">total_time</span> 
+        <span class="c1"># 첫번째 도착지점에서 -&gt; 두번째 도착지점까지 1시간 걸림 </span>
+        <span class="n">total_time</span> <span class="o">+=</span> <span class="mi">1</span> 
+        <span class="c1"># 바닥에서 탈출하기 </span>
+
+        <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+        <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">s_y_second</span><span class="p">,</span> <span class="n">s_x_second</span><span class="p">,</span> <span class="n">total_time</span><span class="p">))</span>
+        <span class="n">distance_graph</span><span class="p">[</span><span class="n">s_y_second</span><span class="p">][</span><span class="n">s_x_second</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span> 
+        <span class="n">find_second_path</span> <span class="o">=</span> <span class="mi">0</span> 
+
+        <span class="k">while</span> <span class="n">q</span><span class="p">:</span>
+            <span class="n">cury</span><span class="p">,</span> <span class="n">curx</span><span class="p">,</span> <span class="n">curtime</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+
+            <span class="c1"># 현재 시간, 현재 위치에 이상 현상 있으면 제거 </span>
+            <span class="k">if</span> <span class="n">weird_time_graph</span><span class="p">[</span><span class="n">cury</span><span class="p">][</span><span class="n">curx</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="k">continue</span> 
+            <span class="c1"># if cury == e_y_final and curx == e_x_final:</span>
+            <span class="k">if</span> <span class="n">graph</span><span class="p">[</span><span class="n">cury</span><span class="p">][</span><span class="n">curx</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span> <span class="c1"># 도착지점 </span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">curtime</span><span class="p">)</span>
+                <span class="n">total_time</span> <span class="o">=</span> <span class="n">curtime</span> 
+                <span class="n">find_second_path</span> <span class="o">=</span> <span class="mi">1</span> 
+                <span class="k">break</span> 
+            
+            <span class="n">diffusion_f</span><span class="p">(</span><span class="n">curtime</span><span class="p">)</span>
+
+            <span class="c1"># 타임머신 이동 </span>
+            <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span> <span class="c1"># 동서남북 </span>
+                <span class="n">nxty</span> <span class="o">=</span> <span class="n">cury</span> <span class="o">+</span> <span class="n">DY</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+                <span class="n">nxtx</span> <span class="o">=</span> <span class="n">curx</span> <span class="o">+</span> <span class="n">DX</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">graph_in_range</span><span class="p">(</span><span class="n">nxty</span><span class="p">,</span> <span class="n">nxtx</span><span class="p">):</span> <span class="c1"># 격자 밖인 경우 </span>
+                    <span class="k">continue</span> 
+
+                <span class="k">if</span> <span class="n">graph</span><span class="p">[</span><span class="n">nxty</span><span class="p">][</span><span class="n">nxtx</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="c1"># 장애물이 있는 경우 </span>
+                    <span class="k">continue</span> 
+
+                <span class="k">if</span> <span class="n">graph</span><span class="p">[</span><span class="n">nxty</span><span class="p">][</span><span class="n">nxtx</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span> <span class="c1"># 다시 시간의 벽으로 들어감 </span>
+                    <span class="k">continue</span> 
+
+                <span class="k">if</span> <span class="n">weird_time_graph</span><span class="p">[</span><span class="n">nxty</span><span class="p">][</span><span class="n">nxtx</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="c1"># 시간 이상 현상 존재 </span>
+                    <span class="k">continue</span> 
+
+                <span class="c1"># 위의 경우가 아니면 이동 가능 </span>
+                <span class="k">if</span> <span class="n">distance_graph</span><span class="p">[</span><span class="n">nxty</span><span class="p">][</span><span class="n">nxtx</span><span class="p">]</span> <span class="o">==</span> <span class="n">MAX</span><span class="p">:</span>
+                    <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">nxty</span><span class="p">,</span> <span class="n">nxtx</span><span class="p">,</span> <span class="n">curtime</span> <span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+                    <span class="n">distance_graph</span><span class="p">[</span><span class="n">nxty</span><span class="p">][</span><span class="n">nxtx</span><span class="p">]</span> <span class="o">=</span> <span class="n">curtime</span> <span class="o">+</span> <span class="mi">1</span> 
+                    <span class="c1"># wall_graph[nxty][nxtx] = 2 ### DEBUG </span>
+
+        <span class="k">if</span> <span class="n">find_first_path</span> <span class="ow">and</span> <span class="n">find_second_path</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                
+    <span class="c1"># debug()   </span>
+</pre></div>
+</div>
+</div>
 </div>
 <div class="dropdown admonition">
 <p class="admonition-title">test case</p>
-<ol class="arabic">
-<li><br>
-</li>
-</ol>
-<p>10 2 2 <br>
-0 0 0 0 1 0 0 0 0 0 <br>
-1 0 0 0 0 1 0 0 1 1 <br>
-0 0 0 0 1 0 1 0 0 1 <br>
-0 0 0 0 0 1 1 1 1 0 <br>
-0 0 4 1 0 1 3 3 1 1 <br>
-0 0 0 1 1 1 3 3 1 1 <br>
-0 0 0 0 1 1 0 1 1 0 <br>
-0 0 0 0 0 0 0 0 1 1 <br>
-0 0 1 0 0 0 0 1 1 0 <br>
-0 0 0 1 0 0 1 0 1 1 <br>
-1 1 <br>
-1 1 <br>
-1 1 <br>
-1 1 <br>
-0 1 <br>
-0 1 <br>
-1 0 <br>
-1 1 <br>
-0 1 <br>
-2 0 <br>
-9 1 2 11 <br>
-8 4 3 15 <br></p>
-<ol class="arabic" start="2">
-<li><br>
-</li>
-</ol>
-<p>13 5 3 <br>
-1 0 0 0 0 0 0 0 0 0 0 0 1 <br>
-0 0 0 0 0 0 0 0 0 1 0 1 0 <br>
-0 0 0 0 1 0 0 0 0 0 0 0 1 <br>
-0 1 0 0 1 0 0 0 0 0 0 0 1 <br>
-4 0 0 0 0 0 0 0 0 0 0 0 1 <br>
-0 0 0 1 1 1 1 0 1 1 1 0 1 <br>
-0 0 0 1 1 3 3 3 3 3 1 1 0 <br>
-0 0 1 0 1 3 3 3 3 3 1 0 0 <br>
-1 0 0 0 1 3 3 3 3 3 1 1 0 <br>
-1 0 0 1 1 3 3 3 3 3 1 0 0 <br>
-0 0 0 1 1 3 3 3 3 3 1 0 1 <br>
-0 0 0 0 1 1 1 1 1 1 1 0 0 <br>
-0 0 0 1 0 1 1 0 1 0 1 0 1 <br>
-1 1 1 1 1 <br>
-1 0 0 0 0 <br>
-1 1 1 1 1 <br>
-1 1 1 1 1 <br>
-1 1 1 1 1 <br>
-0 0 1 1 1 <br>
-0 1 1 1 1 <br>
-0 1 1 1 1 <br>
-1 1 1 1 1 <br>
-1 1 1 1 1 <br>
-1 1 1 1 1 <br>
-1 1 1 1 1 <br>
-1 1 1 1 1 <br>
-1 1 1 1 1 <br>
-1 1 1 1 1 <br>
-0 0 0 0 0 <br>
-0 0 0 0 0 <br>
-0 0 0 0 1 <br>
-0 0 0 1 1 <br>
-1 1 0 1 1 <br>
-0 0 0 0 0 <br>
-0 0 0 0 0 <br>
-1 1 1 1 2 <br>
-1 1 1 1 0 <br>
-1 1 1 1 0 <br>
-7 1 3 12 <br>
-2 2 0 24 <br>
-0 8 0 20 <br></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Test case: 
+10 2 2
+0 0 0 0 1 0 0 0 0 0
+1 0 0 0 0 1 0 0 1 1
+0 0 0 0 1 0 1 0 0 1
+0 0 0 0 0 1 1 1 1 0
+0 0 4 1 0 1 3 3 1 1
+0 0 0 1 1 1 3 3 1 1
+0 0 0 0 1 1 0 1 1 0
+0 0 0 0 0 0 0 0 1 1
+0 0 1 0 0 0 0 1 1 0
+0 0 0 1 0 0 1 0 1 1
+1 1
+1 1
+1 1
+1 1
+0 1
+0 1
+1 0
+1 1
+0 1
+2 0
+9 1 2 11
+8 4 3 15
+
+Answer:
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Test case: 
+13 5 3
+1 0 0 0 0 0 0 0 0 0 0 0 1
+0 0 0 0 0 0 0 0 0 1 0 1 0
+0 0 0 0 1 0 0 0 0 0 0 0 1
+0 1 0 0 1 0 0 0 0 0 0 0 1
+4 0 0 0 0 0 0 0 0 0 0 0 1
+0 0 0 1 1 1 1 0 1 1 1 0 1
+0 0 0 1 1 3 3 3 3 3 1 1 0
+0 0 1 0 1 3 3 3 3 3 1 0 0
+1 0 0 0 1 3 3 3 3 3 1 1 0
+1 0 0 1 1 3 3 3 3 3 1 0 0
+0 0 0 1 1 3 3 3 3 3 1 0 1
+0 0 0 0 1 1 1 1 1 1 1 0 0
+0 0 0 1 0 1 1 0 1 0 1 0 1
+1 1 1 1 1
+1 0 0 0 0
+1 1 1 1 1
+1 1 1 1 1
+1 1 1 1 1
+0 0 1 1 1
+0 1 1 1 1
+0 1 1 1 1
+1 1 1 1 1
+1 1 1 1 1
+1 1 1 1 1
+1 1 1 1 1
+1 1 1 1 1
+1 1 1 1 1
+1 1 1 1 1
+0 0 0 0 0
+0 0 0 0 0
+0 0 0 0 1
+0 0 0 1 1
+1 1 0 1 1
+0 0 0 0 0
+0 0 0 0 0
+1 1 1 1 2
+1 1 1 1 0
+1 1 1 1 0
+7 1 3 12
+2 2 0 24
+0 8 0 20
+</pre></div>
+</div>
 </div>
 </section>
 <section id="id12">
@@ -3094,8 +3287,8 @@ The grid size is <span class="math notranslate nohighlight">\(N \times N\)</span
 <p>Consequently, the overall time complexity is <span class="math notranslate nohighlight">\(O(N^2)\)</span>, and the space complexity is also <span class="math notranslate nohighlight">\(O(N^2)\)</span>.</p>
 </div>
 <div class="toggle docutils container">
-<div class="literal-block-wrapper docutils container" id="id16">
-<div class="code-block-caption"><span class="caption-number">예시 42 </span><span class="caption-text">Solution</span><a class="headerlink" href="#id16" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id17">
+<div class="code-block-caption"><span class="caption-number">예시 43 </span><span class="caption-text">Solution</span><a class="headerlink" href="#id17" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">제한사항 </span>
 <span class="sd">5 &lt;= N &lt;= 100 </span>
@@ -3228,8 +3421,8 @@ center가 (2,1)일때 CW 90도 회전 이후 결과
 <div class="dropdown admonition">
 <p class="admonition-title"><a class="reference external" href="http://rotation.py">rotation.py</a> degugging file</p>
 <p>아래 파일을 따로 만들어서, 실제 로테이션이 잘 되는지 확인하였다. 문제를 풀 때 solve()함수는 다양한 함수들로 이루어져있어, 디버깅이 복잡하다. 따라서, 하나의 함수마다 degugging은 이런 식으로 별도로 output을 출력해서 확인하면 쉬워진다.</p>
-<div class="literal-block-wrapper docutils container" id="id17">
-<div class="code-block-caption"><span class="caption-number">예시 43 </span><span class="caption-text"><a class="reference external" href="http://rotation.py">rotation.py</a> (debug)</span><a class="headerlink" href="#id17" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id18">
+<div class="code-block-caption"><span class="caption-number">예시 44 </span><span class="caption-text"><a class="reference external" href="http://rotation.py">rotation.py</a> (debug)</span><a class="headerlink" href="#id18" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">in_circle</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">cx</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">cy</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">y</span> <span class="o">&lt;=</span> <span class="n">cy</span> <span class="o">+</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">cx</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">cx</span> <span class="o">+</span> <span class="mi">1</span>
 
@@ -3275,8 +3468,8 @@ center가 (2,1)일때 CW 90도 회전 이후 결과
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id18">
-<div class="code-block-caption"><span class="caption-number">예시 44 </span><span class="caption-text">Output of <a class="reference external" href="http://rotation.py">rotation.py</a></span><a class="headerlink" href="#id18" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id19">
+<div class="code-block-caption"><span class="caption-number">예시 45 </span><span class="caption-text">Output of <a class="reference external" href="http://rotation.py">rotation.py</a></span><a class="headerlink" href="#id19" title="Link to this code">#</a></div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>    Original Graph
     [1, 2, 3, 10, 11]
     [4, 5, 6, 12, 13]

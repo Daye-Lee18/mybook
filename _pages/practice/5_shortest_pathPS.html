@@ -2400,7 +2400,7 @@ dictionary 안의 object안의 variable을 변환해주면, 이를 가지고 있
 <p class="admonition-title">coding and decoding for each state</p>
 <p>공간상으로 3D Matrix을 만드는 것이 가장 쉬운 접근법이지만, (y, x, jump)에 대하여 unique한 index를 만드는 함수를 구현하여 코드를 작성할 수도 있다.</p>
 <div class="literal-block-wrapper docutils container" id="id9">
-<div class="code-block-caption"><span class="caption-number">예시 45 </span><span class="caption-text">3D 공간 (행, 열, 점프력)을 하나의 stateID로 coding하는 함수. (row, col, jump)가 1-indexed이기 때문에, 0-indexed로 변환한 후 계산하고 있음에 주의하자.</span><a class="headerlink" href="#id9" title="Link to this code">#</a></div>
+<div class="code-block-caption"><span class="caption-number">예시 46 </span><span class="caption-text">3D 공간 (행, 열, 점프력)을 하나의 stateID로 coding하는 함수. (row, col, jump)가 1-indexed이기 때문에, 0-indexed로 변환한 후 계산하고 있음에 주의하자.</span><a class="headerlink" href="#id9" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 각 상태는 (행, 열, 점프력)으로 저장된다. </span>
 <span class="c1"># 상태를 하나의 정수 인덱스로 변환하기 위한 함수이다. </span>
 <span class="c1"># 상태 인덱스는 MAX_JUMP_POWER * (row-1) </span>

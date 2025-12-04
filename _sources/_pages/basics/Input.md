@@ -17,7 +17,10 @@ sys 라이브러리를 사용할때는 입력 후 엔터<font size='2'>Enter</fo
 ```python
 import sys 
 
-sys.stdin = open('input.txt')
+try:
+    sys.stdin = open("input.txt")
+except:
+    pass
 
 n, m = map(int, input().split())
 ```
