@@ -873,10 +873,16 @@ constraints:
 
 ### 미지의 공간 탈출 
 
+````{admonition} Idea 
+:class: dropdown 
+
+```{literalinclude} ../solutions/DFS_BFSPS/5.md
+:language: md 
+
+````
 ````{admonition} Solution 
 :class: dropdown 
 
-[sol3](../solutions/DFS_BFSPS/5.py)
 
 ```{literalinclude} ../solutions/DFS_BFSPS/5.py
 :language: python

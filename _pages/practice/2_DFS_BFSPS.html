@@ -2401,8 +2401,40 @@ Answer:
 <section id="id11">
 <h3>미지의 공간 탈출<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
+<p class="admonition-title">Idea</p>
+<div class="highlight-md notranslate"><div class="highlight"><pre><span></span><span class="k">1.</span> BFS에서 도착지점에 있는 수가 명확하다면, 굳이 graph에서 먼저 찾을 필요 없음 
+<span class="w">   </span><span class="k">-</span><span class="w"> </span>예를 들어, 단면도의 도착지점 graph[y][x] = 4 로 이미 있으므로, 굳이 시간들여 찾을 필요 없음 
+<span class="w">   </span><span class="k">-</span><span class="w"> </span>bfs의 while loop에서 graph[cury][curx] == 4 이면 멈추면 되기 때문
+<span class="w">  </span>
+<span class="k">2.</span> 시간의 벽 5개의 단면도를 3<span class="ge">*M x 3*</span>M 으로 그릴때 아래처럼 변환해서 붙여야함. 
+<span class="w">   </span><span class="k">1.</span> 동: 90도 rotation 
+<span class="w">   </span><span class="k">2.</span> 서: 270도 rotation 
+<span class="w">   </span><span class="k">3.</span> 남: 그대로 
+<span class="w">   </span><span class="k">4.</span> 북: 180도 rotation 
+
+```{python}
+N = len(original_graph) # 정방형 행렬일 때 
+new_graph[N-x-1][y] = original_graph[y][x]
+```
+
+<span class="k">3.</span> cur_time 이 지나면 시간이상자 확산 
+<span class="w">   </span><span class="k">-</span><span class="w"> </span>while loop안에서 돌면, 같은 시간에 여러 time 이 있을 수 있게 되는데
+<span class="w">   </span><span class="k">-</span><span class="w"> </span>time % f_v == 0이라고 해서 무조건 확산하게 되면 큰 오류가 된다. 
+<span class="w">   </span><span class="k">-</span><span class="w"> </span>예를 들어, f<span class="ge">_v = 14이고 cur_</span>time = 14여서 한 번만 확산해야하는데, BFS의 특성상 같은 시간에 여러 좌표에 있을 수 있어 확산이 2, 3번 더 되는 것이다. 
+<span class="w">   </span><span class="k">-</span><span class="w"> </span>또한, BFS를 돌릴때 q.popleft() 직후에도 현재 위치에 시간 이상자가 있는지 확인해줘야 함. 
+<span class="w">  </span>
+<span class="k">4.</span> 단면도 -&gt; 시간의 벽에 대한 좌표로 변환 <span class="sb">`transform_second_start_to_first_end()`</span>
+<span class="w">   </span><span class="k">1.</span> 시간이상자가 확산될 때 단면도에서 시간의 벽으로 이동 가능 
+<span class="w">   </span><span class="k">2.</span> 단면도에서의 시작점 -&gt; 시간의 벽에서의 도착점으로 변환해야함. 
+
+<span class="k">5.</span> <span class="sb">`find_next_cell()`</span> 시간의 벽 (3M x 3M )그래프에서 4방향 말고, 변끼리 닿는 격자끼리 이동할 수 있도록 해야함. 
+
+<span class="k">6.</span> <span class="sb">`debug()`</span> : test case에서 잘못 된 경우, 디버깅을 한 후 코드 제출할 때 debug() 실행만 지워서 편하게 코드 제출할 수 있도록 print() 명령들을 모아놓음. 
+</pre></div>
+</div>
+</div>
+<div class="dropdown admonition">
 <p class="admonition-title">Solution</p>
-<p><a class="reference download internal" download="" href="../../_downloads/63c817e5c1b8c0f5ea73ae1e475579c1/5.py"><span class="xref download myst">sol3</span></a></p>
 <div class="literal-block-wrapper docutils container" id="id16">
 <div class="code-block-caption"><span class="caption-number">예시 42 </span><span class="caption-text">미지의 공간 탈출 Solution Code</span><a class="headerlink" href="#id16" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span> 
@@ -2523,7 +2555,7 @@ Answer:
 
 <span class="k">def</span><span class="w"> </span><span class="nf">rotation_90CCW</span><span class="p">(</span><span class="n">original_graph</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    (y, x) -&gt; (M-x-1, y)</span>
+<span class="sd">    new_graph[M-x-1][y] = original_graph[y][x]</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">new_graph</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">M</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">)]</span>
     <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
