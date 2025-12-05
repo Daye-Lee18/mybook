@@ -4067,6 +4067,479 @@ center가 (2,1)일때 CW 90도 회전 이후 결과
 </section>
 <section id="id16">
 <h3>포탑 부수기<a class="headerlink" href="#id16" title="Link to this heading">#</a></h3>
+<div class="dropdown admonition">
+<p class="admonition-title">주의</p>
+<ol class="arabic simple">
+<li><p>lazer에 의한 경로 계산</p></li>
+</ol>
+<ul class="simple">
+<li><p>주의해야할 것은 distance_graph를 구할때 첫 시작점을 <em><strong>도착지점</strong></em>으로 하고 distance_graph[도착지점] = 0으로 해준다.</p></li>
+<li><p>그 이후에 path를 찾을 때,실제 시작점으로 하여, distance가 더 낮은 쪽으로 경로 탐색을 하면 된다. (이때, 우하좌상의 방향 우선순위 적용하면됨.)</p></li>
+</ul>
+<ol class="arabic simple" start="2">
+<li><p>2D map을 3D의 구평면으로</p></li>
+</ol>
+<ul class="simple">
+<li></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">make_direction</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">N</span><span class="p">,</span><span class="n">M</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">x</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">x</span> <span class="o">&gt;=</span> <span class="n">N</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">y</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">M</span><span class="o">-</span><span class="mi">1</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">y</span> <span class="o">&gt;=</span> <span class="n">M</span><span class="p">):</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>공격자 선정</p></li>
+</ol>
+<ul class="simple">
+<li><p>if min_heap: 으로 하면, 빈 것이면 안되는 거 아닌가?</p></li>
+</ul>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">Solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span> 
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span> 
+<span class="kn">from</span><span class="w"> </span><span class="nn">heapq</span><span class="w"> </span><span class="kn">import</span> <span class="n">heappush</span><span class="p">,</span> <span class="n">heappop</span> 
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span> 
+
+<span class="nb">input</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span> 
+<span class="c1"># sys.stdin = open(&quot;Input.txt&quot;)</span>
+
+<span class="n">N</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">K</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+<span class="n">MAX</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1e9</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+    <span class="n">graph</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())))</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">필요한 데이터 구조 </span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="n">max_heap</span> <span class="o">=</span> <span class="p">[]</span><span class="c1"># 피공격자선정, lazy deletion 필요 </span>
+<span class="n">min_heap</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># 공격자선정, lazy deletion 필요, # 공격력이 낮고, 가장 최근에 공격(max), y+x(max), x(max), potop_id </span>
+<span class="c1"># is_potop_alive = [True]*N*M # lazy deletion때 현재 살아있는지아닌지 확인 , graph에 그대로 기록됨. </span>
+<span class="c1"># potop_p_list = [0] * N*M  # 이거 다 그래프에 있는 것들임, 데이터 중복  </span>
+<span class="n">potop_recent_attack_time</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span><span class="o">*</span><span class="n">M</span> 
+<span class="n">distance_graph</span> <span class="o">=</span> <span class="p">[[</span><span class="n">MAX</span><span class="p">]</span><span class="o">*</span><span class="n">M</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span> <span class="c1"># BFS 경로를 계속 돌 때마다 만들면, 메모리 사용량이 증가해서 reinit시켜서 사용 </span>
+<span class="c1"># 레이저 최단 경로 우선순위: 우/하/좌/상 인데,그다음 대각선 4개 </span>
+<span class="n">DY</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">DX</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">reinit_distance_graph</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">distance_graph</span> 
+
+    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+            <span class="n">distance_graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">MAX</span> 
+
+<span class="k">def</span><span class="w"> </span><span class="nf">in_range</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">N</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">M</span> 
+
+<span class="c1"># 해당 NxM는 구라고 생각하면 쉽다. </span>
+<span class="c1"># 즉, 모든 격자에서 4방향/8방향 다 이어져 있다고 생각할 수 있다. </span>
+<span class="k">def</span><span class="w"> </span><span class="nf">convert_cell_into_2Dgraph</span><span class="p">(</span><span class="n">cury</span><span class="p">,</span> <span class="n">curx</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    모든 격자 위치를 받아서, 현재 cell이 graph안이면 그대로 반환, </span>
+<span class="sd">    아니면, 해당 cell을 graph안에 해당하는 cell로 변환해서 반환 </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">in_range</span><span class="p">(</span><span class="n">cury</span><span class="p">,</span> <span class="n">curx</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">cury</span><span class="p">,</span> <span class="n">curx</span> 
+    <span class="c1"># 만약 현재 위치가 범위 밖인 경우 범위 안으로 만들어줘야함. </span>
+    <span class="c1"># 8가지 범위에 대해서 먼저 대각선 cell이 범위가 더 특정되므로 먼저 해줌. </span>
+
+    <span class="c1">##### 대각선 cell에 대해서도 </span>
+    <span class="k">if</span> <span class="n">cury</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">curx</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="c1"># 좌측상단 </span>
+        <span class="k">return</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">M</span><span class="o">-</span><span class="mi">1</span> 
+    <span class="k">if</span> <span class="n">cury</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">curx</span> <span class="o">==</span> <span class="n">M</span><span class="p">:</span> <span class="c1"># 우측상단 </span>
+        <span class="k">return</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">cury</span> <span class="o">==</span> <span class="n">N</span> <span class="ow">and</span> <span class="n">curx</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="c1"># 좌측하단 </span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="n">M</span><span class="o">-</span><span class="mi">1</span> 
+    <span class="k">if</span> <span class="n">cury</span> <span class="o">==</span> <span class="n">N</span> <span class="ow">and</span> <span class="n">curx</span> <span class="o">==</span> <span class="n">M</span><span class="p">:</span> <span class="c1"># 우측하단 </span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+    
+    <span class="c1"># 범위 밖 맨 위 -&gt; graph 안 맨 아래 </span>
+    <span class="k">if</span> <span class="n">cury</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span> 
+        <span class="k">return</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">curx</span> 
+
+    <span class="c1"># 범위 밖 맨 아래 -&gt; graph 안 맨 위 </span>
+    <span class="k">if</span> <span class="n">cury</span> <span class="o">==</span> <span class="n">N</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="n">curx</span> 
+    
+    <span class="c1"># 범위밖 맨 왼쪽 -&gt; graph 안 오른쪽 </span>
+    <span class="k">if</span> <span class="n">curx</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">cury</span><span class="p">,</span> <span class="n">M</span><span class="o">-</span><span class="mi">1</span> 
+    <span class="c1"># 범위밖 맨 오른쪽 -&gt; graph 안 맨 왼쪽 </span>
+    <span class="k">if</span> <span class="n">curx</span> <span class="o">==</span> <span class="n">M</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">cury</span><span class="p">,</span> <span class="mi">0</span> 
+    
+<span class="k">def</span><span class="w"> </span><span class="nf">make_direction</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">N</span><span class="p">,</span><span class="n">M</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">x</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">x</span> <span class="o">&gt;=</span> <span class="n">N</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">y</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">M</span><span class="o">-</span><span class="mi">1</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">y</span> <span class="o">&gt;=</span> <span class="n">M</span><span class="p">):</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">convert_locs_to_id</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">M</span>
+    <span class="k">return</span> <span class="n">y</span><span class="o">*</span><span class="n">M</span> <span class="o">+</span> <span class="n">x</span> 
+
+<span class="k">def</span><span class="w"> </span><span class="nf">convert_id_to_locs</span><span class="p">(</span><span class="nb">id</span><span class="p">):</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="nb">id</span> <span class="o">//</span> <span class="n">M</span> 
+    <span class="n">x</span> <span class="o">=</span> <span class="nb">id</span> <span class="o">-</span> <span class="n">y</span> <span class="o">*</span> <span class="n">M</span> 
+    <span class="k">return</span> <span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">init</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">max_heap</span><span class="p">,</span> <span class="n">min_heap</span>
+    <span class="n">max_heap</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">min_heap</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span> 
+    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+            <span class="n">potop_id</span> <span class="o">=</span> <span class="n">convert_locs_to_id</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="c1"># if graph[y][x] == 0:</span>
+            <span class="c1">#     is_potop_alive[potop_id] = False </span>
+            <span class="c1"># else:</span>
+            <span class="k">if</span> <span class="n">graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">cnt</span> <span class="o">+=</span> <span class="mi">1</span> 
+                <span class="c1"># potop_p_list[potop_id] = graph[y][x]</span>
+                <span class="n">heappush</span><span class="p">(</span><span class="n">max_heap</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="n">graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">],</span> <span class="n">potop_recent_attack_time</span><span class="p">[</span><span class="n">potop_id</span><span class="p">],</span> <span class="n">y</span><span class="o">+</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">potop_id</span><span class="p">))</span> <span class="c1"># 정확히 반대 </span>
+                <span class="n">heappush</span><span class="p">(</span><span class="n">min_heap</span><span class="p">,</span> <span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">],</span> <span class="n">potop_recent_attack_time</span><span class="p">[</span><span class="n">potop_id</span><span class="p">]</span><span class="o">*-</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">y</span><span class="o">+</span><span class="n">x</span><span class="p">)</span><span class="o">*-</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="o">*-</span><span class="mi">1</span><span class="p">,</span> <span class="n">potop_id</span><span class="p">))</span> <span class="c1"># 공격력이 낮고, 가장 최근에 공격(max), y+x(max), x(max), potop_id </span>
+    <span class="k">return</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">cnt</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="kc">False</span>  
+
+<span class="k">def</span><span class="w"> </span><span class="nf">determine_attacker</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    현재 공격자를 제외하고 남아있는 포탑의 개수가 없으면, </span>
+<span class="sd">    당장 중지 </span>
+<span class="sd">    (has_to_be_stopped, attacker_id)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">while</span> <span class="n">min_heap</span><span class="p">:</span>
+        <span class="n">power</span><span class="p">,</span> <span class="n">recent_attack_time</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">attacker_id</span> <span class="o">=</span> <span class="n">heappop</span><span class="p">(</span><span class="n">min_heap</span><span class="p">)</span>
+        <span class="n">recent_attack_time</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span> 
+        <span class="c1"># lazy deletion </span>
+        <span class="c1"># if is_potop_alive[attacker_id]:</span>
+        <span class="n">cury</span><span class="p">,</span> <span class="n">curx</span> <span class="o">=</span> <span class="n">convert_id_to_locs</span><span class="p">(</span><span class="n">attacker_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">graph</span><span class="p">[</span><span class="n">cury</span><span class="p">][</span><span class="n">curx</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">:</span> <span class="c1"># 아직 살아있음. </span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">min_heap</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span><span class="c1"># 남아있는 포탑의 개수가 1이 되면 바로 중지함. </span>
+                <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">attacker_id</span> 
+            
+            <span class="k">if</span> <span class="n">graph</span><span class="p">[</span><span class="n">cury</span><span class="p">][</span><span class="n">curx</span><span class="p">]</span> <span class="o">!=</span> <span class="n">power</span><span class="p">:</span>
+                <span class="k">continue</span> <span class="c1"># 실제 공격력과 heap에 있는 공격력이 다르면 제거 </span>
+            <span class="k">if</span> <span class="n">potop_recent_attack_time</span><span class="p">[</span><span class="n">attacker_id</span><span class="p">]</span> <span class="o">!=</span> <span class="n">recent_attack_time</span><span class="p">:</span>
+                <span class="k">continue</span> <span class="c1"># 실제 가장 최신 공격 시간과 다르면 제거 </span>
+
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">attacker_id</span> 
+    
+
+<span class="k">def</span><span class="w"> </span><span class="nf">determine_vitim</span><span class="p">(</span><span class="n">cannot_be_vitim_id</span><span class="p">):</span>
+
+    <span class="k">while</span> <span class="n">max_heap</span><span class="p">:</span>
+        <span class="n">power</span><span class="p">,</span> <span class="n">recent_attack_time</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">victim_id</span> <span class="o">=</span> <span class="n">heappop</span><span class="p">(</span><span class="n">max_heap</span><span class="p">)</span>
+        <span class="n">power</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span> 
+        <span class="c1"># lazy deletion </span>
+        <span class="n">cury</span><span class="p">,</span> <span class="n">curx</span> <span class="o">=</span> <span class="n">convert_id_to_locs</span><span class="p">(</span><span class="n">victim_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">graph</span><span class="p">[</span><span class="n">cury</span><span class="p">][</span><span class="n">curx</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># 죽은 친구는 안됨. </span>
+            <span class="k">continue</span> 
+        <span class="k">if</span> <span class="n">victim_id</span> <span class="o">==</span> <span class="n">cannot_be_vitim_id</span><span class="p">:</span>
+            <span class="c1"># 자신과 같아지는 경우는 1명만 남았을 때임 </span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">cannot_be_vitim_id</span>
+        <span class="c1"># if potop_p_list[victim_id] != power :</span>
+        <span class="k">if</span> <span class="n">graph</span><span class="p">[</span><span class="n">cury</span><span class="p">][</span><span class="n">curx</span><span class="p">]</span> <span class="o">!=</span> <span class="n">power</span> <span class="p">:</span>
+            <span class="k">continue</span> <span class="c1"># 공격력이 실제와 다르면 제거 </span>
+        <span class="k">if</span> <span class="n">potop_recent_attack_time</span><span class="p">[</span><span class="n">victim_id</span><span class="p">]</span> <span class="o">!=</span> <span class="n">recent_attack_time</span><span class="p">:</span>
+            <span class="k">continue</span> <span class="c1"># 공격시간도 실제로 다르면 제거 </span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">victim_id</span> 
+
+<span class="c1"># print(convert_locs_to_id(0,0)) # 0</span>
+<span class="c1"># print(convert_locs_to_id(1,3)) # 7</span>
+<span class="c1"># print(convert_locs_to_id(3,3)) # 15 </span>
+<span class="c1"># print(convert_id_to_locs(7)) # (1, 3)</span>
+<span class="c1"># print(convert_id_to_locs(14)) # (3, 2)</span>
+<span class="c1"># print(convert_id_to_locs(10)) # (2, 2)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">can_attack_by_lazer</span><span class="p">(</span><span class="n">attacker_id</span><span class="p">,</span> <span class="n">victim_id</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    레이저는 상하좌우 방향으로 움직임 가능. </span>
+<span class="sd">    부서진 포탑 즉, 그래프에서 0이된 지점은 움직일 수 없음. </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+    <span class="n">s_y</span><span class="p">,</span> <span class="n">s_x</span> <span class="o">=</span> <span class="n">convert_id_to_locs</span><span class="p">(</span><span class="n">attacker_id</span><span class="p">)</span>
+    <span class="n">e_y</span><span class="p">,</span> <span class="n">e_x</span> <span class="o">=</span> <span class="n">convert_id_to_locs</span><span class="p">(</span><span class="n">victim_id</span><span class="p">)</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">e_y</span><span class="p">,</span> <span class="n">e_x</span><span class="p">))</span>
+    <span class="n">reinit_distance_graph</span><span class="p">()</span> <span class="c1"># XXX: 반드시 먼저 해줘야함. </span>
+    <span class="n">distance_graph</span><span class="p">[</span><span class="n">e_y</span><span class="p">][</span><span class="n">e_x</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="k">while</span> <span class="n">q</span><span class="p">:</span>
+        <span class="n">cury</span><span class="p">,</span> <span class="n">curx</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">cury</span> <span class="o">==</span> <span class="n">s_y</span> <span class="ow">and</span> <span class="n">curx</span> <span class="o">==</span> <span class="n">s_x</span><span class="p">:</span>
+            <span class="k">break</span> 
+            
+        
+        <span class="c1"># 우/하/좌/상의 우선순위대로 먼저 움직인 경로 선택 </span>
+        <span class="c1"># XXX: 도착점에서 -&gt; 출발점까지의 거리를 나타낸 것이므로, </span>
+        <span class="c1"># 상/좌/하/우순으로 바라봐야함. 거꾸로!  </span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+            <span class="n">nxt_y</span> <span class="o">=</span> <span class="n">cury</span> <span class="o">+</span> <span class="n">DY</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+            <span class="n">nxt_x</span> <span class="o">=</span> <span class="n">curx</span> <span class="o">+</span> <span class="n">DX</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+
+            <span class="c1"># 해당 맵은 &quot;구&quot;이기 때문에 graph밖으로 벗어날 수 없고 무조건 통과됨. </span>
+            <span class="n">nxt_y</span><span class="p">,</span> <span class="n">nxt_x</span> <span class="o">=</span> <span class="n">convert_cell_into_2Dgraph</span><span class="p">(</span><span class="n">nxt_y</span><span class="p">,</span> <span class="n">nxt_x</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">graph</span><span class="p">[</span><span class="n">nxt_y</span><span class="p">][</span><span class="n">nxt_x</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># 부서진 포탑의 위치로는 갈 수 없음 </span>
+                <span class="k">continue</span> 
+            
+            <span class="c1"># 이미 지나온 경로인지, 파악하려면, distance list를 따로 만들어야하지만, </span>
+            <span class="c1"># 어차피 이때까지의 경로도 같이 출력해야함. </span>
+            <span class="k">if</span> <span class="n">distance_graph</span><span class="p">[</span><span class="n">nxt_y</span><span class="p">][</span><span class="n">nxt_x</span><span class="p">]</span> <span class="o">==</span> <span class="n">MAX</span><span class="p">:</span> <span class="c1"># 한 번 지나간 경로가 아님. </span>
+                <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">nxt_y</span><span class="p">,</span> <span class="n">nxt_x</span><span class="p">))</span>
+                <span class="n">distance_graph</span><span class="p">[</span><span class="n">nxt_y</span><span class="p">][</span><span class="n">nxt_x</span><span class="p">]</span> <span class="o">=</span> <span class="n">distance_graph</span><span class="p">[</span><span class="n">cury</span><span class="p">][</span><span class="n">curx</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> 
+    
+    <span class="n">result</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">distance_graph</span><span class="p">[</span><span class="n">s_y</span><span class="p">][</span><span class="n">s_x</span><span class="p">]</span> <span class="o">==</span> <span class="n">MAX</span><span class="p">:</span> <span class="c1"># 도달 불가능 </span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">result</span> <span class="c1"># 레이저 공격 불가능, 아무것도 업는 deque 반환 </span>
+    
+    <span class="c1"># 시작점에서 끝 점까지 path 경로를 알아야함. </span>
+    <span class="c1"># 이때 경로의 순서를 알필요는 없음. </span>
+    <span class="c1"># XXX: 공격자와 피공격자를 제외한 경로에 있는 애들만 알면 됨.</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span> 
+    <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">s_y</span><span class="p">,</span> <span class="n">s_x</span><span class="p">))</span>
+
+    <span class="k">while</span> <span class="n">q</span><span class="p">:</span>
+        <span class="n">cury</span><span class="p">,</span> <span class="n">curx</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">cury</span> <span class="o">==</span> <span class="n">e_y</span> <span class="ow">and</span> <span class="n">curx</span> <span class="o">==</span> <span class="n">e_x</span><span class="p">:</span>
+            <span class="c1"># 마지막 victim_id는 result에 넣지 않음. </span>
+            <span class="k">break</span> 
+
+        <span class="c1"># 우/하/좌/상의 우선순위대로 먼저 움직인 경로 선택 </span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+            <span class="n">nxt_y</span> <span class="o">=</span> <span class="n">cury</span> <span class="o">+</span> <span class="n">DY</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+            <span class="n">nxt_x</span> <span class="o">=</span> <span class="n">curx</span> <span class="o">+</span> <span class="n">DX</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+
+            <span class="c1"># 해당 맵은 &quot;구&quot;이기 때문에 graph밖으로 벗어날 수 없고 무조건 통과됨. </span>
+            <span class="n">nxt_y</span><span class="p">,</span> <span class="n">nxt_x</span> <span class="o">=</span> <span class="n">convert_cell_into_2Dgraph</span><span class="p">(</span><span class="n">nxt_y</span><span class="p">,</span> <span class="n">nxt_x</span><span class="p">)</span>
+
+            <span class="c1"># 0인 위치는 이미 distance가 MAX여서 아래 조건만 만족시키면 됨. </span>
+            <span class="c1"># if graph[nxt_y][nxt_x] == 0: # 부서진 포탑의 위치로는 갈 수 없음 </span>
+            <span class="c1">#     continue </span>
+            <span class="c1"># cost가 작아지는 경로로 이동 </span>
+            <span class="k">if</span> <span class="n">distance_graph</span><span class="p">[</span><span class="n">nxt_y</span><span class="p">][</span><span class="n">nxt_x</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">distance_graph</span><span class="p">[</span><span class="n">cury</span><span class="p">][</span><span class="n">curx</span><span class="p">]:</span> <span class="c1"># 한 번 지나간 경로가 아님. </span>
+                <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">nxt_y</span><span class="p">,</span> <span class="n">nxt_x</span><span class="p">))</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">nxt_y</span><span class="p">,</span> <span class="n">nxt_x</span><span class="p">))</span>
+                <span class="k">break</span> <span class="c1"># 한 번 넣으면 다음 경로 </span>
+    <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">result</span> <span class="c1"># 레이저 공격 가능, 최소 경로 반환  </span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">debug</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;potop 공격력: &quot;</span><span class="p">,</span> <span class="n">graph</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;min_heap: &quot;</span><span class="p">,</span> <span class="n">min_heap</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;max_heap: &quot;</span><span class="p">,</span> <span class="n">max_heap</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c1"># start_time = time.time()</span>
+    <span class="n">init</span><span class="p">()</span> <span class="c1"># 포탑과 관련한 필요한 데이터 정리 </span>
+    <span class="c1"># debug()</span>
+    <span class="k">for</span> <span class="n">cur_time</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">K</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span> <span class="c1"># O(1000)</span>
+        <span class="c1"># step 1: 공격자 선정 </span>
+        <span class="n">has_to_be_stopped</span><span class="p">,</span> <span class="n">current_attacker_id</span> <span class="o">=</span> <span class="n">determine_attacker</span><span class="p">()</span> <span class="c1"># O(log(N*M))</span>
+
+        <span class="k">if</span> <span class="n">has_to_be_stopped</span><span class="p">:</span>
+            <span class="k">break</span> 
+        
+        <span class="n">attacker_y</span><span class="p">,</span> <span class="n">attacker_x</span> <span class="o">=</span> <span class="n">convert_id_to_locs</span><span class="p">(</span><span class="n">current_attacker_id</span><span class="p">)</span>
+        <span class="c1"># 공격자가 선정된 후에는, max_heap과 min_heap은 (남아있는 공격력, 공격 시간)에 의존하므로, update 필요하게 되는데, </span>
+        <span class="c1"># 일단 공격자의 공격시간이 정해졌으므로 업데이트 </span>
+        <span class="n">graph</span><span class="p">[</span><span class="n">attacker_y</span><span class="p">][</span><span class="n">attacker_x</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="n">M</span><span class="p">)</span>
+        <span class="n">potop_recent_attack_time</span><span class="p">[</span><span class="n">current_attacker_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">cur_time</span> 
+        
+
+        <span class="c1"># action 2: 피공격자 선정: 공격자를 제외한 가장 강한 포탑을 공격해야함. </span>
+        <span class="n">has_to_be_stopped</span><span class="p">,</span> <span class="n">victim_id</span> <span class="o">=</span> <span class="n">determine_vitim</span><span class="p">(</span><span class="n">current_attacker_id</span><span class="p">)</span> <span class="c1"># O(log(N*M))</span>
+        <span class="n">victim_y</span><span class="p">,</span> <span class="n">victim_x</span> <span class="o">=</span> <span class="n">convert_id_to_locs</span><span class="p">(</span><span class="n">victim_id</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">has_to_be_stopped</span><span class="p">:</span>
+            <span class="k">break</span> 
+
+        <span class="c1"># action 2-1. 레이저 공격이 가능한지 확인 </span>
+        <span class="n">yes_you_can</span><span class="p">,</span> <span class="n">lazer_path</span> <span class="o">=</span> <span class="n">can_attack_by_lazer</span><span class="p">(</span><span class="n">current_attacker_id</span><span class="p">,</span> <span class="n">victim_id</span><span class="p">)</span>
+
+
+        <span class="k">if</span> <span class="n">yes_you_can</span><span class="p">:</span>
+            <span class="c1"># action2-1.: 레이저 공격 실시 </span>
+
+            <span class="c1"># 공격대상은 공격력만큼 피해를 받음, 최소 0이여야함. </span>
+            <span class="n">graph</span><span class="p">[</span><span class="n">victim_y</span><span class="p">][</span><span class="n">victim_x</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">graph</span><span class="p">[</span><span class="n">victim_y</span><span class="p">][</span><span class="n">victim_x</span><span class="p">]</span><span class="o">-</span><span class="n">graph</span><span class="p">[</span><span class="n">attacker_y</span><span class="p">][</span><span class="n">attacker_x</span><span class="p">])</span>
+            <span class="c1"># 공격대상 제외 공격경로에 있는 피해자들 </span>
+            <span class="k">for</span> <span class="n">vy</span><span class="p">,</span> <span class="n">vx</span> <span class="ow">in</span> <span class="n">lazer_path</span><span class="p">:</span>
+                <span class="c1"># vy, vx= convert_id_to_locs(in_a_way_victim_id)</span>
+                <span class="k">if</span> <span class="n">vy</span> <span class="o">==</span> <span class="n">victim_y</span> <span class="ow">and</span> <span class="n">vx</span> <span class="o">==</span> <span class="n">victim_x</span><span class="p">:</span>
+                    <span class="k">continue</span> 
+                <span class="n">graph</span><span class="p">[</span><span class="n">vy</span><span class="p">][</span><span class="n">vx</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="n">vy</span><span class="p">][</span><span class="n">vx</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="n">attacker_y</span><span class="p">][</span><span class="n">attacker_x</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="c1"># action 2-2. 포탄 공격 </span>
+            <span class="c1"># graph안의 값과 power_list모두 업데이트 해줘야함. </span>
+            <span class="n">graph</span><span class="p">[</span><span class="n">victim_y</span><span class="p">][</span><span class="n">victim_x</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">graph</span><span class="p">[</span><span class="n">victim_y</span><span class="p">][</span><span class="n">victim_x</span><span class="p">]</span><span class="o">-</span><span class="n">graph</span><span class="p">[</span><span class="n">attacker_y</span><span class="p">][</span><span class="n">attacker_x</span><span class="p">])</span>
+            <span class="c1"># 공격&quot;비대상자&quot;의 8개 주의 위치에 대해서 절반 만큼의 피해를 받는다. </span>
+            <span class="c1"># 하지만 &quot;공격자 자신&quot;은 포탄의 피해를 받지 않는다. </span>
+            <span class="c1"># 아래의 정보도 계속 가지고 있어야함. </span>
+            <span class="n">eight_cells_except_attacker</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span> 
+            <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
+                <span class="n">nxty</span> <span class="o">=</span> <span class="n">victim_y</span> <span class="o">+</span> <span class="n">DY</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+                <span class="n">nxtx</span> <span class="o">=</span> <span class="n">victim_x</span> <span class="o">+</span> <span class="n">DX</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+
+                <span class="n">nxty</span><span class="p">,</span> <span class="n">nxtx</span> <span class="o">=</span> <span class="n">convert_cell_into_2Dgraph</span><span class="p">(</span><span class="n">nxty</span><span class="p">,</span> <span class="n">nxtx</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">nxty</span> <span class="o">==</span> <span class="n">attacker_y</span> <span class="ow">and</span> <span class="n">nxtx</span> <span class="o">==</span> <span class="n">attacker_x</span><span class="p">:</span>
+                    <span class="k">continue</span> 
+                <span class="n">graph</span><span class="p">[</span><span class="n">nxty</span><span class="p">][</span><span class="n">nxtx</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span>  <span class="n">graph</span><span class="p">[</span><span class="n">nxty</span><span class="p">][</span><span class="n">nxtx</span><span class="p">]</span><span class="o">-</span><span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="n">attacker_y</span><span class="p">][</span><span class="n">attacker_x</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span><span class="p">))</span>
+                <span class="n">eight_cells_except_attacker</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">nxty</span><span class="p">,</span> <span class="n">nxtx</span><span class="p">))</span>
+
+
+            
+        <span class="c1"># action 4: 포탑 정비. 포탑과 무관한 포탑의 공격력은 1을 받음 </span>
+        <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">continue</span> 
+                <span class="k">if</span> <span class="n">y</span> <span class="o">==</span> <span class="n">attacker_y</span> <span class="ow">and</span> <span class="n">x</span> <span class="o">==</span> <span class="n">attacker_x</span><span class="p">:</span>
+                    <span class="k">continue</span> 
+                <span class="k">if</span> <span class="n">y</span> <span class="o">==</span> <span class="n">victim_y</span> <span class="ow">and</span> <span class="n">x</span> <span class="o">==</span> <span class="n">victim_x</span><span class="p">:</span>
+                    <span class="k">continue</span>  
+                <span class="c1"># 레이저 공격을 했으면, lazer경로에 있으면 안됨. </span>
+                <span class="k">if</span> <span class="n">yes_you_can</span> <span class="ow">and</span> <span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="ow">in</span> <span class="n">lazer_path</span><span class="p">:</span>
+                    <span class="k">continue</span> 
+                <span class="c1"># 포탄 공격에는 그 영향력 안에 있으면 안됨. </span>
+                <span class="k">elif</span> <span class="ow">not</span> <span class="n">yes_you_can</span> <span class="ow">and</span> <span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="ow">in</span> <span class="n">eight_cells_except_attacker</span><span class="p">:</span>
+                    <span class="k">continue</span> 
+                <span class="c1"># 위의 모든 것이 아닐 때 </span>
+                <span class="n">graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span> 
+        
+        <span class="c1"># step 4: </span>
+        <span class="c1"># 다음 턴으로 들어가기 전에, max_heap, min_heap의 정보를 다시 정리하는 것이 필요함. </span>
+        <span class="c1"># 즉, 공격자와 이번 턴에서 죽은 친구들을 제외하고, 공격받은 친구들은 다 graph안의 공격력이 변해있음. </span>
+        <span class="c1"># 또, 공격자도 최신 공격시간이 변했기 때문에, 데이터가 변함. </span>
+        <span class="n">can_go_nxt_turn</span> <span class="o">=</span> <span class="n">init</span><span class="p">()</span> <span class="c1"># max_heap과 min_heap에 대해 데이터를 새로이 넣어줌. </span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">can_go_nxt_turn</span><span class="p">:</span>
+            <span class="k">break</span> <span class="c1"># turn이 더이상 종료되지 못함. 남아있는 포탑이 1개 이하임. </span>
+
+    
+    <span class="c1"># 최종적으로 가장 강한 포탑의 공격력 (max_heap)의 맨 처음 원소 </span>
+    <span class="n">has_to_be_stopped</span><span class="p">,</span> <span class="n">last_victim_id</span> <span class="o">=</span> <span class="n">determine_vitim</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># 공격자의 아이디는 -1로 아예 존재하지 않는 것 추가 </span>
+    <span class="n">final_y</span><span class="p">,</span> <span class="n">final_x</span> <span class="o">=</span> <span class="n">convert_id_to_locs</span><span class="p">(</span><span class="n">last_victim_id</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="n">final_y</span><span class="p">][</span><span class="n">final_x</span><span class="p">])</span>
+
+    <span class="c1"># end_time = time.time()</span>
+    <span class="c1"># print(f&quot;time collapse: {(end_time - start_time)*1e3}&quot;)</span>
+</pre></div>
+</div>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">Explanation</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">NxM 격자 </span>
+<span class="sd">- 모든 위치에 포탑 존재 (총 포탑 개수 NxM) &lt;= 10 </span>
+<span class="sd">- 1~N (1-indexed)</span>
+<span class="sd">- 포탑 </span>
+<span class="sd">    - 공격력: 줄어들거나 늘 수 있음 </span>
+<span class="sd">    - 공격력이 0 이하가 되면 (음수도 가능), 해당 포탑은 부서지며 더 이상 공격 불가능 </span>
+<span class="sd">    - 최초에 공격력이 0인, 부서진 포탑도 존재할 수 있다. </span>
+
+<span class="sd">총 K번의 턴  &lt;= 1000</span>
+<span class="sd">한 턴당 4가지 액션을 순서대로 수행하며 NOTE: 부서지지 않은 포탑이 1개가 되면 그 즉시 중지된다. </span>
+<span class="sd">액션 1. 공격자 선정 </span>
+<span class="sd">- 부서지지 않은 포탑 중 가장 약한 포탑이 공격자가 됨. </span>
+<span class="sd">- 이 포탑의 공격력이 N+M만큼 증가함 </span>
+<span class="sd">- 선정 기준 </span>
+<span class="sd">    - 공격력이 가장 낮음 </span>
+<span class="sd">    - 같은 공격력이면, 가장 최근에 공격한 포탑 (모든 포탑은 시점 0에는 공격한 경험이 있다고 가정)</span>
+<span class="sd">    - 그래도 같다면, 행+열의 합이 가장 큰 포탑 (y+x) </span>
+<span class="sd">    - 그래도 같다면, 열 값이 가장 큰 포탑 (x) </span>
+
+<span class="sd">액션 2. 공격자 공격 : </span>
+<span class="sd">- XXX: 공격을 당한 &quot;피공격자&quot;의 정보를 모두 가지고 있어야 공격력들을 뺄 수 있음. </span>
+<span class="sd">- 공격자는 &quot;자신을 제외한&quot; 가장 강한 포탑을 공격 </span>
+<span class="sd">- 선정 기준 </span>
+<span class="sd">    - 공격력이 가장 높음 (NOTE: max_heap은 - 값을 붙여야함.)</span>
+<span class="sd">    - 같으면, 공격한지 가장 오래된 포탑 (모든 포탑은 시점 0에는 공격한 경험 존재)</span>
+<span class="sd">    - 그래도 같다면, 행 + 열의 합이 가장 작은 포탑 </span>
+<span class="sd">    - 그래도 같다면 열 값이 가장 작은 포탑 (x) </span>
+
+<span class="sd">NOTE: 공격자와 피공격자은 완전히 반대되는 입장임. </span>
+<span class="sd">근데, class Top은 하나의 __lt__를 가질 수 있어서, 클래스 기반으로 이중 pq를 구현하기에는 어려울 것 같음. </span>
+<span class="sd">sort()로 하면 좋긴한데, 삭제되고 난 이후에 검색을 할 때 최대 O(N^2)이 걸릴 수 있음. </span>
+<span class="sd">따라서, 이중 pq로 진행하된, class를 구현하기보다 Tuple로 데이터를 운용하는게 좋을 수도 있겠음. </span>
+
+<span class="sd">- 레이저 공격 먼저 시도하고 안되면 -&gt; 포탄 공격 (XXX: 두개다 하면 안됨. )</span>
+<span class="sd">- 1. 최단 경로 설정  XXX: 여기가 bottleneck일것같음. </span>
+<span class="sd">- 레이저는 </span>
+<span class="sd">    - 상하좌우의 4개 방향으로 움직일 수 있음 </span>
+<span class="sd">    - 부서진 포탑이 있는 위치는 지날 수 없음 </span>
+<span class="sd">    - 가장자리에서 막힌 방향으로 진행하고자 하면, 반대편으로 나옴 (오른쪽 -&gt; 맨 처음, 맨 왼쪽 -&gt; 맨 뒤, 맨 위-&gt; 맨아래, 맨 아래 -&gt; 맨위)</span>
+<span class="sd">- 위의 방향대로 최단 경로가 존재하면, 이 경로대로 공격 </span>
+<span class="sd">    - 만약 최단경로가 2개 이상이면, </span>
+<span class="sd">        - NOTE: 우/하/좌/상의 우선순위대로 먼저 움직인 경로가 선택됨. </span>
+<span class="sd">- NOTE: 최단 경로를 tracking해놔야함. </span>
+<span class="sd">    - 포탑이 죽은 경우에는 미리 tracking해놓은 걸 쓸 수 없어서, </span>
+<span class="sd">    - 그때그때 경로 추적해야할 것 같음. </span>
+<span class="sd">2. 최단 경로 설정 후에, </span>
+<span class="sd">    - 공격대상은 공격자의 공격력 만큼의 피해를 입으며, 공격력이 줄어듦. </span>
+<span class="sd">    - 공격 대상을 제외한 &quot;경로&quot;에 있는 포탑도 공격을 받게 되는데, 이 포탑은 공격자의 공격력의 &quot;절반&quot;만큼의 공격을 받은 </span>
+<span class="sd">        - 절반: 2로 나는 몫 (//)</span>
+<span class="sd">3.  존재하지 않으면, 포탄 공격 진행. </span>
+<span class="sd">- 공격 대상에 포탄을 던짐. </span>
+<span class="sd">- 추가적으로 주위 8개 의 방향에 있는 포탑도 피해를 입음 (피해 반경). </span>
+<span class="sd">- 공격자의 절반 만큼의 피해를 받음. </span>
+<span class="sd">- 공격자 자신은 해당 공격의 영향을 받지 않음. </span>
+<span class="sd">- 만약, 가장자리의 경우에는 포탄의 추가 피해가 반대편 격자에 미치게 됨. </span>
+<span class="sd">    - 즉, 격자는 NxN 2D graph라기 보다, 서로 연결된 지구같은 느낌임. </span>
+<span class="sd">    - NOTE: 이때도 공격받은 포탑들의 위치를 알아야함. </span>
+
+
+
+<span class="sd">액션 3: </span>
+<span class="sd">- 공격을 받아 공격력이 0 이하가 된 포탑은 부서진다. </span>
+<span class="sd">- 이미 graph안에 정보가 저장되어 있음. </span>
+
+<span class="sd">액션 4: 포탑 정비 </span>
+<span class="sd">- 공격 후에 부서지지 않은 포탑 중 &quot;공격과 무관했던 포탑&quot;은 공격력이 1씩 올라감. </span>
+<span class="sd">    - 공격자와 공격에 피해를 입은 포탑도 아님 </span>
+<span class="sd">    - 즉, 공격자 + 피공격자 + 레이저의 경우 그 경로에 있던 포탑들  + 포탄 공격의 경우 주위 8개 피해 반경 </span>
+
+
+<span class="sd">Return: </span>
+<span class="sd">- 전체 과정이 종료된 후, 남아잇는 포탑 중 가장 강한 포탑의 공격력을 출력하는 프로그램. </span>
+
+<span class="sd">constraints: </span>
+<span class="sd">K &lt;= 1000 : 1000개의 turn이 있어서, 포탑 선정 -&gt; 공격자 선정 -&gt; 공격 (레이저 -&gt; 포탄)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Top</span><span class="p">:</span> <span class="c1"># 26 KM (최대 100개)</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="nb">id</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">p</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">attack_time</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="n">top1</span> <span class="o">=</span> <span class="n">Top</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span> 
+
+<span class="n">N</span> <span class="o">=</span> <span class="mi">10</span> 
+<span class="nb">print</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">top1</span><span class="p">)</span> <span class="o">+</span> <span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">top1</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span> <span class="o">+</span> <span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">top1</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="o">+</span> <span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">top1</span><span class="o">.</span><span class="n">y</span><span class="p">)</span><span class="o">+</span><span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">top1</span><span class="o">.</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">top1</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>   <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="mi">264</span><span class="o">*</span><span class="mi">10</span><span class="o">*</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 </section>
 </section>
 </section>

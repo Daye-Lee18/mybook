@@ -1557,3 +1557,46 @@ caption: Output of rotation.py
 
 ### 포탑 부수기 
 
+````{admonition} 주의 
+:class: dropdown 
+
+1. lazer에 의한 경로 계산 
+- 주의해야할 것은 distance_graph를 구할때 첫 시작점을 ***도착지점***으로 하고 distance_graph[도착지점] = 0으로 해준다. 
+- 그 이후에 path를 찾을 때,실제 시작점으로 하여, distance가 더 낮은 쪽으로 경로 탐색을 하면 된다. (이때, 우하좌상의 방향 우선순위 적용하면됨.)
+
+2. 2D map을 3D의 구평면으로 
+- 
+```{code-block} python 
+def make_direction(x,y):
+    global N,M
+    if(x < 0):
+        x = N-1
+    if(x >= N):
+        x = 0
+    if (y < 0):
+        y = M-1
+    if (y >= M):
+        y = 0
+    return x,y
+```
+
+3. 공격자 선정 
+- if min_heap: 으로 하면, 빈 것이면 안되는 거 아닌가?
+
+````
+
+````{admonition} Solution 
+:class: dropdown 
+
+```{literalinclude} ../solutions/DFS_BFSPS/8.py
+:language: python 
+```
+````
+
+````{admonition} Explanation
+:class: dropdown 
+
+```{literalinclude} ../solutions/DFS_BFSPS/8_explanation.py
+:language: python 
+```
+````
