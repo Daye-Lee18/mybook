@@ -13,14 +13,20 @@ kernelspec:
 ---
 # Lecture 4-2. DP 실습
 
-예시 문제 링크 
+<!-- - DP 고득점 Kit 
+  - [N으로 표현]()
+  - [정수 삼각형]()
+  - [등굣길]()
+  - [사칙연산]()
+  - [도둑질]() -->
 
-- [1번: 색깔 트리](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/color-tree/description)
-  - [TreeDP 1: 서브트리에 포함된 정점의 개수 세기](https://www.acmicpc.net/problem/15681): [정답](https://wikidocs.net/272872)
-  - [TreeDP 2](https://www.acmicpc.net/problem/1949): [정답](https://wikidocs.net/274552)
-  - [TreeDP 3](https://www.acmicpc.net/problem/2533): [정답](https://wikidocs.net/273100)
-- [2번: 코드트리 메신저](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/codetree-messenger/description)
-- [3번: String Compression II](https://leetcode.com/problems/string-compression-ii/description/)
+- 코테 기출 
+  - [색깔 트리](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/color-tree/description)
+    - [TreeDP 1: 서브트리에 포함된 정점의 개수 세기](https://www.acmicpc.net/problem/15681): [정답](https://wikidocs.net/272872)
+    - [TreeDP 2](https://www.acmicpc.net/problem/1949): [정답](https://wikidocs.net/274552)
+    - [TreeDP 3](https://www.acmicpc.net/problem/2533): [정답](https://wikidocs.net/273100)
+  - [코드트리 메신저](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/codetree-messenger/description)
+  - [String Compression II](https://leetcode.com/problems/string-compression-ii/description/)
 
 ## 1번: 색깔 트리 
 ### TreeDP 1

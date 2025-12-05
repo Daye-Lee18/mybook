@@ -9,25 +9,26 @@ N, M, F = map(int, input().split())
 필요한 데이터 구조
 '''
 MAX = int(1e9)
-graph = []
-# 시간의 벽면도 
-wall_graph = [[5]*3*M for _ in range(3*M)] # 5 (없는 공간) 장애물로 초기화 
-distance_wall_graph = [[MAX]*3*M for _ in range(3*M)]
-distance_graph = [[MAX]*N for _ in range(N)]
-weird_time_graph = [[-1]*N for _ in range(N)]
-weird_time_wall_graph = [[-1]*3*M for _ in range(3*M)]
-f_v_list = []
-f_d_list = [] 
-f_y_list = []
-f_x_list= [] 
-is_f_id_in_wall = [False]*F 
-has_diffusion_stopped = [False]*F 
-howmany_time_diffused = [0]*F 
+graph = [] # 단면도 
+wall_graph = [[5]*3*M for _ in range(3*M)] # 5 (없는 공간) 장애물로 초기화 , 시간의 벽 그래프 
+distance_wall_graph = [[MAX]*3*M for _ in range(3*M)] # 3Mx3M BFS를 위한 도착지까지의 path cost 그래프  
+distance_graph = [[MAX]*N for _ in range(N)] # NxN BFS에서 채울 도착지까지의 path cost 그래프 
+weird_time_graph = [[-1]*N for _ in range(N)] # 시간이상자 단면도 그래프 
+weird_time_wall_graph = [[-1]*3*M for _ in range(3*M)] # 시간이상자 시간의 벽 그래프 
+f_v_list = [] # f_v_list[f_id] = v 속도 
+f_d_list = [] # f_d_list[f_id] = dir 확산 방향 
+f_y_list = [] # f_y_list[f_id] = y 위치 
+f_x_list= []  # f_s_list[f_id]= x 위치 
+is_f_id_in_wall = [False]*F  # is_f_id_in_wall[f_id]가 시간의 벽으로 흘러들어갔는지 
+has_diffusion_stopped = [False]*F # has_diffusion_stopped[f_id] 시간이상자의 확산이 멈추었는지 
+howmany_time_diffused = [0]*F  # howmany_time_diffused[f_id], 현재 시간에 확산이 이미 되었는지 아닌지 확인 (0초, v초, 2*v초,,,)
 s_y, s_x = None, None # 시간의 벽 윗면에서 시작 위치 
 e_y_first, e_x_first = None, None # 시간의 벽에서 도착 위치 
 s_y_second, s_x_second = None, None # 단면도에서 시작 위치 
 e_y_final, e_x_final = None, None # 단면도 최종 도착 위치 
 DY = [-1, 1, 0, 0]; DX = [0, 0, -1, 1]
+
+
 # 첫번째 도착지점이 여기에 있음 
 flag = 0
 flag2 = 0 
@@ -69,7 +70,7 @@ for y in range(upper_left_most_y-1, upper_left_most_y+M+1):
         break 
 
 # 단면도상 (N) 에서의 첫번째 도착위치 -> 시간의 벽 상(3*M) 에서의 도착 위치 
-def transform_second_start_to_first_end(cur_y, cur_x):
+def transform_2D_to_3D_wall(cur_y, cur_x):
     # global s_y_second, cur_x, e_y_first, e_x_first 
 
     # # 단면도에서 의 최외곽 
@@ -111,12 +112,12 @@ def transform_second_start_to_first_end(cur_y, cur_x):
  
 
     
-e_y_first, e_x_first = transform_second_start_to_first_end(s_y_second, s_x_second)
+e_y_first, e_x_first = transform_2D_to_3D_wall(s_y_second, s_x_second)
 
 
 def rotation_90CCW(original_graph):
     '''
-    (y, x) -> (M-x-1, y)
+    new_graph[M-x-1][y] = original_graph[y][x]
     '''
     new_graph = [[0]*M for _ in range(M)]
     for y in range(M):
@@ -281,7 +282,7 @@ def diffusion_f(time):
                     # ㅋㅋㅋㅋㅋ 
                     is_f_id_in_wall[f_id] = True 
                     # 현재 단면도 -> 시간의 벽 상의 포지션으로 바꿈 
-                    wally, wallx = transform_second_start_to_first_end(nxty, nxtx)
+                    wally, wallx = transform_2D_to_3D_wall(nxty, nxtx)
 
                     if wall_graph[wally][wallx] == 1: # 그래프상 1이면 
                         has_diffusion_stopped[f_id] = True 
