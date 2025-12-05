@@ -390,6 +390,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">마법의 숲 탐색</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">블록 이동하기</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">고대 문명 유적 탐사</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">포탑 부수기</a></li>
 </ul>
 </li>
 </ul>
@@ -2401,49 +2402,160 @@ Answer:
 <section id="id11">
 <h3>미지의 공간 탈출<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
-<p class="admonition-title">Idea</p>
-<div class="highlight-md notranslate"><div class="highlight"><pre><span></span><span class="k">1.</span> BFS에서 도착지점에 있는 수가 명확하다면, 굳이 graph에서 먼저 찾을 필요 없음 
-<span class="w">   </span><span class="k">-</span><span class="w"> </span>예를 들어, 단면도의 도착지점 graph[y][x] = 4 로 이미 있으므로, 굳이 시간들여 찾을 필요 없음 
-<span class="w">   </span><span class="k">-</span><span class="w"> </span>bfs의 while loop에서 graph[cury][curx] == 4 이면 멈추면 되기 때문
-<span class="w">   </span><span class="k">-</span><span class="w"> </span>하지만 시간의 벽에서는 탈출구가 명확하지 않으므로 단면도에서 시작점을 찾아 그 시간의 벽쪽방향에 위치한 옆의 셀을 3D상에서의 도착지점으로 찾아놓을 필요가 있다. 
-<span class="w">  </span>
-<span class="k">2.</span> 시간의 벽 5개의 단면도를 3<span class="ge">*M x 3*</span>M 으로 그릴때 아래처럼 변환해서 붙여야함. 
-<span class="w">   </span><span class="k">1.</span> 동: 90도 rotation 
-<span class="w">   </span><span class="k">2.</span> 서: 270도 rotation 
-<span class="w">   </span><span class="k">3.</span> 남: 그대로 
-<span class="w">   </span><span class="k">4.</span> 북: 180도 rotation 
+<p class="admonition-title">Explanation</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">NXN 미지의 공간 </span>
 
-<span class="sb">```python</span>
-<span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">original_graph</span><span class="p">)</span> <span class="c1"># 정방형 행렬일 때 </span>
-<span class="n">new_graph</span><span class="p">[</span><span class="n">N</span><span class="o">-</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">original_graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
-<span class="sb">```</span>
+<span class="sd">타임머신 기능으로 공간의 지리 정보를 파악할 수 있음. </span>
+<span class="sd">스캔 기능 </span>
+<span class="sd">1. 미지의 공간의 평면도: 위에서 내려다본 전체 맵 </span>
+<span class="sd">    - &quot;시간의 벽의 위치 3&quot; 과 &quot;탈출구 4&quot;가 추가로 표시됨. </span>
+<span class="sd">    - 탈출구는 시간의 벽 외부에 있는 미지의 공간의 바닥에 위치함. </span>
+<span class="sd">    - 미지의 공간 바닥 :</span>
+<span class="sd">        - 총 F개의 시간 이상 현상 존재 </span>
+<span class="sd">        - 시간 이상 현상은 바닥의 빈 공간 (r, c)에서 시작하여 매 v_i의 배수 턴마다 방향 d_i로 한 칸씩 &quot;확산&quot;되며, </span>
+<span class="sd">        - NOTE: 확산 된 이후에도 기존 위치의 시간 이상 현상은 사라지지 않고 남아있음. </span>
+<span class="sd">            - 방향 동서남북 (0,1,2,3)</span>
+<span class="sd">        - 시간 이상 현상은 장애물과 탈출구가 없는 빈 공간으로만 확산되며, 더 이상 확산할 수 없을 경우 멈춤. </span>
+<span class="sd">            - FIXME: 시간 이상 현상은 시간의 벽을 타고 확산될 수 있는가? YES (시간의 벽의 빈 공간도 빈공간인 것같음.)</span>
+<span class="sd">        - 모든 시간 이상 현상은 서로 독립적이며 동시에 확산된다. </span>
+<span class="sd">            - 동시에 계산해야함. </span>
+<span class="sd">    - 가능한 상태 </span>
+<span class="sd">        - 빈 공간(0), 시간 이상 현상(???), 시간의 벽(3), 탈출구(4), 장애물 (1)</span>
+<span class="sd">            - 5 (원래없는 부분) </span>
+<span class="sd">        - NOTE: 시간 이상 현상을 나타내는 graph가 하나 더 있어야 함.</span>
 
-<span class="k">3.</span> cur_time 이 지나면 시간이상자 확산 
-<span class="w">   </span><span class="k">-</span><span class="w"> </span>while loop안에서 돌면, 같은 시간에 여러 time 이 있을 수 있게 되는데
-<span class="w">   </span><span class="k">-</span><span class="w"> </span>time % f_v == 0이라고 해서 무조건 확산하게 되면 큰 오류가 된다. 
-<span class="w">   </span><span class="k">-</span><span class="w"> </span>예를 들어, f<span class="ge">_v = 14이고 cur_</span>time = 14여서 한 번만 확산해야하는데, BFS의 특성상 같은 시간에 여러 좌표에 있을 수 있어 확산이 2, 3번 더 되는 것이다. 
-<span class="w">   </span><span class="k">-</span><span class="w"> </span>또한, BFS를 돌릴때 q.popleft() 직후에도 현재 위치에 시간 이상자가 있는지 확인해줘야 함. 
-<span class="w">     </span><span class="k">-</span><span class="w"> </span>T=13일때 다음 t=14에 대한 타임머신 위치가 업데이트되는데, 이에 대해서 우선적으로 시간이상자가 그쪽까지 도달했는지 확인하는 
-<span class="w">  </span>
-<span class="k">4.</span> 단면도 -&gt; 시간의 벽에 대한 좌표로 변환 <span class="sb">`transform_2D_to_3D_wall()`</span>
-<span class="w">   </span><span class="k">1.</span> 시간이상자가 확산될 때 단면도에서 시간의 벽으로 이동 가능 
-<span class="w">   </span><span class="k">2.</span> 단면도에서의 시작점 -&gt; 시간의 벽에서의 도착점으로 변환해야함. 
+<span class="sd">2. 시간의 벽 단면도: 시간의 벽의 윗면과 동서남북 네 면의 단면도 </span>
+<span class="sd">    - 총 5면 -&gt; NOTE: 2차원 그래프로 만듦. </span>
+<span class="sd">    - 윗면: </span>
+<span class="sd">        - 타임머신은 시간의 벽 &quot;윗면&quot; 어딘가에 위치 </span>
+<span class="sd">        - 시간의 벽 윗면 단면도에서는 타임머신의 위치 (2) 가 추가로 표시된다. </span>
+<span class="sd">            - FIXME: 위치 2 -&gt; 숫자 2로 나타나짐. </span>
+<span class="sd">        - 빈 공간(0), 장애물(1), 타임머신 시작위치(2) </span>
+<span class="sd">    - 시간의 벽 아랫면은??? -&gt; 없음. 벽면을 타고만 이동하는 것 같음. </span>
 
-![](../../../assets/img/DFS_BFSPS/17.png)
+<span class="sd">- 타임머신은 빈 공간만 이동할 수 있다. 장애물의 위치로는 이동할 수 없음 </span>
+<span class="sd">- 시간의 벽과 (변이) 맞닿은 미지의 공간의 바닥은 기본적으로 장애물이고, 단 한 칸만 빈 공간으로 뚫려있어서 </span>
+<span class="sd">    시간의 벽에서 미지의 공간의 바닥으로 이어질 수 있는 출구는 단 하나 </span>
+<span class="sd">    - NOTE: </span>
+<span class="sd">    - Step 1: 시간의 벽에서 미지의 공간의 바닥의 출구로 경로 탐색 </span>
+<span class="sd">        - 2차원 time_graph에서 타임머신 시작위치 (2) 에서 바닥의 출구 (도착지점:단면도에서 3의 주변에 0인 곳 하나) 찾기  </span>
+<span class="sd">        - BFS</span>
+<span class="sd">            - 1. 시간이상현상 (y, x, d, v(속도)) 확산 후에 타임머신 이동   </span>
+<span class="sd">                - 장애물(1)과 탈출구(4)가 없는 빈 공간(0)으로만 확산</span>
+<span class="sd">                - XXX: 시간의 벽(3)주변에는 1로 벽이 쳐져있어서 이동안해도 괜찮음 휴... graph의 위치에서 time_graph로 이동해야함.....</span>
+<span class="sd">            - 2. status: (cury, curx, time, )</span>
+<span class="sd">            - 내 생각에는 시간에 따라서, 가지 못하는 부분이 생기고, 그냥 경로를 찾는 BFS 문제인 것 같음. </span>
+<span class="sd">    - Step 2: 미지의 공간 출구에서 탈출구로 경로 탐색 </span>
+<span class="sd">    - NOTE: 탈출구까지 가는 경로는 다양하나, 시간 이상 현상과 마주치지 않는 경로 중 최단 경로에 걸리는 시간을 출력해야함. </span>
+
+<span class="sd">필요한 데이터 구조 </span>
+<span class="sd">graph: 단면도 </span>
+<span class="sd">wall_graph: 시간의 벽 </span>
+<span class="sd">weird_time_graph: 시간이상현상 단면도, 없으면 -1, 있으면 f_id </span>
+<span class="sd">weird_time_Wall_Graph : 시간이상현상 시간의 벽, 기본값 -1 , 있으면 f_id </span>
+<span class="sd">f_v[f_id] = v_id</span>
+<span class="sd">f_dir[f_id] = dir_id</span>
+
+<span class="sd">상태: </span>
+<span class="sd">graph: 0(빈공간), 1(장애물), 2 (시작 위치), 탈출구 (4, 도착지점), 시간의 벽(3, 1로 둘러싸이고 한곳만 0 출구)</span>
+<span class="sd">wall graph:  5: 원래그래프에 없는 곳 </span>
 
 
-<span class="k">1.</span>  <span class="sb">`find_next_cell()`</span> 시간의 벽 (3M x 3M )그래프에서 4방향 말고, 변끼리 닿는 격자끼리 이동할 수 있도록 해야함. 
+<span class="sd">목적: </span>
+<span class="sd">- 당신의 타임머신은 매 턴마다 상하좌우로 한 칸씩 이동할 수 있으며, &quot;장애물&quot;과 &quot;시간 이상 현상&quot;을 피해 &quot;탈출구&quot;까지 도달해야한다.</span>
+<span class="sd">- 타임 머신이 시작점에서 탈출구까지 이동하는데 필요한 최소 시간 (턴 수)를 출력하는 프로그램 </span>
+<span class="sd">- 탈출할 수 없다면 -1를 출력. </span>
+<span class="sd">- 시간 이상 현상이 확산된 직후 타임머신이 이동하므로, 타임머신은 시간 이상 현상이 확산되는 곳으로 이동할 수 없음에 유의  </span>
 
-![](../../../assets/img/DFS_BFSPS/16.png)
+<span class="sd">Constraints: </span>
+<span class="sd">- 5 &lt;= N &lt;= 20 </span>
+<span class="sd">- 2 &lt;= M &lt;= min(N-2, 10): 시간의 벽 크기 </span>
+<span class="sd">- 1 &lt;= F &lt;= 10 : 시간 이상 현상 개수 </span>
+<span class="sd">- 1 &lt;= v_i &lt;= 1000 </span>
+<span class="sd">- Time: 1 sec </span>
+<span class="sd">- Memory: 80 MB </span>
 
-<span class="k">6.</span> <span class="sb">`debug()`</span> : test case에서 잘못 된 경우, 디버깅을 한 후 코드 제출할 때 debug() 실행만 지워서 편하게 코드 제출할 수 있도록 print() 명령들을 모아놓음. 
+<span class="sd">위의 constraints에서 bottleneck은? </span>
+<span class="sd">- 메모리 사용은 기존 맵이랑 시간이상현상을 표현하는 맵 2개라고 해도 1MB도 안됨</span>
+<span class="sd">- 시간 복잡도가 중요할 것 같음. </span>
+<span class="sd">    - 최단 경로를 찾으려면, 3차원에서의 경로를 구하고 그 중에서 거리가 짧고 + 시간 이상 현상에 걸리지 않는 경로를 찾아야함. </span>
+<span class="sd">    - 최단 경로가 없을 수도 있음. </span>
+<span class="sd">    - 동/서/남/북/윗면: 윗면에 2 타임머신 시작 위치 존재 </span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">N</span><span class="o">=</span> <span class="mi">20</span> 
+<span class="n">M</span> <span class="o">=</span> <span class="mi">10</span> 
+<span class="n">list1</span><span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">N</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+<span class="n">list2</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mi">3</span><span class="o">*</span><span class="n">M</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="n">M</span><span class="p">)]</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span> 
+
+<span class="nb">print</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">list1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">/</span> <span class="mf">1e6</span><span class="p">)</span> <span class="c1"># 0.0005 MB </span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">list2</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="o">/</span> <span class="mf">1e6</span><span class="p">)</span> <span class="c1"># 0.0006 MB </span>
+
+<span class="n">list1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="n">list1</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">list1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="dropdown admonition">
+<p class="admonition-title">Idea</p>
+<ol class="arabic simple">
+<li><p>BFS에서 도착지점에 있는 수가 명확하다면, 굳이 graph에서 먼저 찾을 필요 없음</p>
+<ul class="simple">
+<li><p>예를 들어, 단면도의 도착지점 graph[y][x] = 4 로 이미 있으므로, 굳이 시간들여 찾을 필요 없음</p></li>
+<li><p>bfs의 while loop에서 graph[cury][curx] == 4 이면 멈추면 되기 때문</p></li>
+<li><p>하지만 시간의 벽에서는 탈출구가 명확하지 않으므로 단면도에서 시작점을 찾아 그 시간의 벽쪽방향에 위치한 옆의 셀을 3D상에서의 도착지점으로 찾아놓을 필요가 있다.</p></li>
+</ul>
+</li>
+<li><p>시간의 벽 5개의 단면도를 3<em>M x 3</em>M 으로 그릴때 아래처럼 변환해서 붙여야함.</p>
+<ol class="arabic simple">
+<li><p>동: 90도 rotation</p></li>
+<li><p>서: 270도 rotation</p></li>
+<li><p>남: 그대로</p></li>
+<li><p>북: 180도 rotation</p></li>
+</ol>
+</li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">original_graph</span><span class="p">)</span> <span class="c1"># 정방형 행렬일 때 </span>
+<span class="n">new_graph</span><span class="p">[</span><span class="n">N</span><span class="o">-</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">original_graph</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>cur_time 이 지나면 시간이상자 확산</p>
+<ul class="simple">
+<li><p>while loop안에서 돌면, 같은 시간에 여러 time 이 있을 수 있게 되는데</p></li>
+<li><p>time % f_v == 0이라고 해서 무조건 확산하게 되면 큰 오류가 된다.</p></li>
+<li><p>예를 들어, f_v = 14이고 cur_time = 14여서 한 번만 확산해야하는데, BFS의 특성상 같은 시간에 여러 좌표에 있을 수 있어 확산이 2, 3번 더 되는 것이다.</p></li>
+<li><p>또한, BFS를 돌릴때 q.popleft() 직후에도 현재 위치에 시간 이상자가 있는지 확인해줘야 함.</p>
+<ul>
+<li><p>T=13일때 다음 t=14에 대한 타임머신 위치가 업데이트되는데, 이에 대해서 우선적으로 시간이상자가 그쪽까지 도달했는지 확인하는</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>단면도 -&gt; 시간의 벽에 대한 좌표로 변환 <code class="docutils literal notranslate"><span class="pre">transform_2D_to_3D_wall()</span></code></p>
+<ol class="arabic simple">
+<li><p>시간이상자가 확산될 때 단면도에서 시간의 벽으로 이동 가능</p></li>
+<li><p>단면도에서의 시작점 -&gt; 시간의 벽에서의 도착점으로 변환해야함.</p></li>
+</ol>
+</li>
+</ol>
+<p><img alt="" src="../../_images/174.png" /></p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">find_next_cell()</span></code> 시간의 벽 (3M x 3M )그래프에서 4방향 말고, 변끼리 닿는 격자끼리 이동할 수 있도록 해야함.</p></li>
+</ol>
+<p><img alt="" src="../../_images/165.png" /></p>
+<ol class="arabic simple" start="6">
+<li><p><code class="docutils literal notranslate"><span class="pre">debug()</span></code> : test case에서 잘못 된 경우, 디버깅을 한 후 코드 제출할 때 debug() 실행만 지워서 편하게 코드 제출할 수 있도록 print() 명령들을 모아놓음.</p></li>
+</ol>
+</div>
+<div class="dropdown admonition">
 <p class="admonition-title">Solution</p>
-<div class="literal-block-wrapper docutils container" id="id16">
-<div class="code-block-caption"><span class="caption-number">예시 42 </span><span class="caption-text">미지의 공간 탈출 Solution Code</span><a class="headerlink" href="#id16" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id17">
+<div class="code-block-caption"><span class="caption-number">예시 42 </span><span class="caption-text">미지의 공간 탈출 Solution Code</span><a class="headerlink" href="#id17" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span> 
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span> 
 
@@ -3327,8 +3439,8 @@ The grid size is <span class="math notranslate nohighlight">\(N \times N\)</span
 <p>Consequently, the overall time complexity is <span class="math notranslate nohighlight">\(O(N^2)\)</span>, and the space complexity is also <span class="math notranslate nohighlight">\(O(N^2)\)</span>.</p>
 </div>
 <div class="toggle docutils container">
-<div class="literal-block-wrapper docutils container" id="id17">
-<div class="code-block-caption"><span class="caption-number">예시 43 </span><span class="caption-text">Solution</span><a class="headerlink" href="#id17" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id18">
+<div class="code-block-caption"><span class="caption-number">예시 43 </span><span class="caption-text">Solution</span><a class="headerlink" href="#id18" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">제한사항 </span>
 <span class="sd">5 &lt;= N &lt;= 100 </span>
@@ -3461,8 +3573,8 @@ center가 (2,1)일때 CW 90도 회전 이후 결과
 <div class="dropdown admonition">
 <p class="admonition-title"><a class="reference external" href="http://rotation.py">rotation.py</a> degugging file</p>
 <p>아래 파일을 따로 만들어서, 실제 로테이션이 잘 되는지 확인하였다. 문제를 풀 때 solve()함수는 다양한 함수들로 이루어져있어, 디버깅이 복잡하다. 따라서, 하나의 함수마다 degugging은 이런 식으로 별도로 output을 출력해서 확인하면 쉬워진다.</p>
-<div class="literal-block-wrapper docutils container" id="id18">
-<div class="code-block-caption"><span class="caption-number">예시 44 </span><span class="caption-text"><a class="reference external" href="http://rotation.py">rotation.py</a> (debug)</span><a class="headerlink" href="#id18" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id19">
+<div class="code-block-caption"><span class="caption-number">예시 44 </span><span class="caption-text"><a class="reference external" href="http://rotation.py">rotation.py</a> (debug)</span><a class="headerlink" href="#id19" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">in_circle</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">cx</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">cy</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">y</span> <span class="o">&lt;=</span> <span class="n">cy</span> <span class="o">+</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">cx</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">cx</span> <span class="o">+</span> <span class="mi">1</span>
 
@@ -3508,8 +3620,8 @@ center가 (2,1)일때 CW 90도 회전 이후 결과
 </pre></div>
 </div>
 </div>
-<div class="literal-block-wrapper docutils container" id="id19">
-<div class="code-block-caption"><span class="caption-number">예시 45 </span><span class="caption-text">Output of <a class="reference external" href="http://rotation.py">rotation.py</a></span><a class="headerlink" href="#id19" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id20">
+<div class="code-block-caption"><span class="caption-number">예시 45 </span><span class="caption-text">Output of <a class="reference external" href="http://rotation.py">rotation.py</a></span><a class="headerlink" href="#id20" title="Link to this code">#</a></div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>    Original Graph
     [1, 2, 3, 10, 11]
     [4, 5, 6, 12, 13]
@@ -3730,7 +3842,8 @@ center가 (2,1)일때 CW 90도 회전 이후 결과
 </div>
 </div>
 </div>
-<div class="toggle docutils container">
+<div class="dropdown admonition">
+<p class="admonition-title">Solution</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 5x5중에서 3x3격자 선택 및 회전 CW: 90도, 180도, 270도 </span>
 <span class="c1"># 향상 회전 : 중심좌표를 기준으로 90도 회전 </span>
 <span class="sd">&#39;&#39;&#39;</span>
@@ -3952,6 +4065,9 @@ center가 (2,1)일때 CW 90도 회전 이후 결과
 </div>
 </div>
 </section>
+<section id="id16">
+<h3>포탑 부수기<a class="headerlink" href="#id16" title="Link to this heading">#</a></h3>
+</section>
 </section>
 </section>
 
@@ -4038,6 +4154,7 @@ center가 (2,1)일때 CW 90도 회전 이후 결과
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">마법의 숲 탐색</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">블록 이동하기</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">고대 문명 유적 탐사</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">포탑 부수기</a></li>
 </ul>
 </li>
 </ul>
