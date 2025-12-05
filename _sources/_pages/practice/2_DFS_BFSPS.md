@@ -828,10 +828,10 @@ constraints:
 
 이 문제에서는 전사의 명수가 메모리/시간 차원에서 가장 큰 bottleneck이 된다. 따라서, 이러한 전사들의 위치와 생사문제를 관리하는 것이 중요해진다. 따라서, 해당 warriors들은 class Warrior로 전사마다 하나씩 만드는 행위는 매우 위험하다. 클래스 자체는 메모리를 많이 차지하기 때문에, 이것보다는 list[idx]차원으로 관리해주는 것이 더 유리하다. 
 
-> war_ys: list[int] # war_ys[war_id] = y 
-> war_xs: list[int] # war_xs[war_id] = x
-> alive: list[bool] # alive[war_id] = True 
-> warriors_graph: dict[tuple(int, int), list[int]] defaultdict(list) # warriors_graph[(y, x)] = [war_id1, war_id2, ...]
+> war_ys: list[int] # war_ys[war_id] = y <br>
+> war_xs: list[int] # war_xs[war_id] = x<br>
+> alive: list[bool] # alive[war_id] = True <br>
+> warriors_graph: dict[tuple(int, int), list[int]] defaultdict(list) # warriors_graph[(y, x)] = [war_id1, war_id2, ...]<br>
 
 `````
 
@@ -878,8 +878,9 @@ constraints:
 
 ```{literalinclude} ../solutions/DFS_BFSPS/5.md
 :language: md 
-
+```
 ````
+
 ````{admonition} Solution 
 :class: dropdown 
 
