@@ -51,17 +51,23 @@ def solve(...):
   - [사칙연산](https://school.programmers.co.kr/learn/courses/30/lessons/1843)
   - [도둑질](https://school.programmers.co.kr/learn/courses/30/lessons/42897)
 
+- Tree DP 
+  - [서브트리에 포함된 정점의 개수 세기](https://www.acmicpc.net/problem/15681): [정답](https://wikidocs.net/272872)
+  - [우수 마을](https://www.acmicpc.net/problem/1949): [정답](https://wikidocs.net/274552)
+  - [사회망 서비스](https://www.acmicpc.net/problem/2533): [정답](https://wikidocs.net/273100)
+  - [Diameter of Binary Tree](https://leetcode.com/problems/diameter-of-binary-tree/description/)
+  - [Binary Tree Max Path Sum](https://leetcode.com/problems/binary-tree-maximum-path-sum/description/)
+  - [House Robber 3](https://leetcode.com/problems/house-robber-iii/description/)
+
 - 코테 기출 
   - [색깔 트리](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/color-tree/description)
-    - [TreeDP 1: 서브트리에 포함된 정점의 개수 세기](https://www.acmicpc.net/problem/15681): [정답](https://wikidocs.net/272872)
-    - [TreeDP 2](https://www.acmicpc.net/problem/1949): [정답](https://wikidocs.net/274552)
-    - [TreeDP 3](https://www.acmicpc.net/problem/2533): [정답](https://wikidocs.net/273100)
   - [코드트리 메신저](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/codetree-messenger/description)
   - [String Compression II](https://leetcode.com/problems/string-compression-ii/description/)
 
-## 1번: 색깔 트리 
-### TreeDP 1
 
+## TreeDP
+
+### 서브트리의 정점 개수 세기 
 ````{admonition} Tree DP에서 Bottom-up 방식으로 구현하는 이유
 :class: dropdown 
 
