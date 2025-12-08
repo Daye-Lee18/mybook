@@ -13,6 +13,37 @@ kernelspec:
 ---
 # Lecture 4-2. DP 실습
 
+들어가기전, DP 문제를 풀 때 아래 정보들에 유념해서 문제를 푼다면 훨씬 도움이 될 것이다. 
+
+````{admonition} Things to think for a DP problem 
+:class: important 
+
+```{code-block} python 
+# 6개 checklist 
+# 1) State: dp[...]
+# 2) What to store: min/max/count/bool/value (필요시 prev/choice)
+# 3) Base case init
+# 4) Fill order: 작은 상태 → 큰 상태
+# 5) Transition
+# 6) Read answer
+
+def solve(...):
+    # 예: 2D (i, j)
+    dp = [[INF]* (n+1) for _ in range(m+1)]
+    # base cases
+    dp[0][0] = 0
+
+    for i in range(0, m+1):
+        for j in range(0, n+1):
+            if i>0:
+                dp[i][j] = min(dp[i][j], f(dp[i-1][j], ...))
+            if j>0:
+                dp[i][j] = min(dp[i][j], g(dp[i][j-1], ...))
+
+    return dp[m][n]
+```
+````
+
 - DP 고득점 Kit 
   - [N으로 표현](https://school.programmers.co.kr/learn/courses/30/lessons/42895)
   - [정수 삼각형](https://school.programmers.co.kr/learn/courses/30/lessons/43105)
