@@ -1600,3 +1600,6 @@ def make_direction(x,y):
 :language: python 
 ```
 ````
+
+### 회전하는 빙하 
+
