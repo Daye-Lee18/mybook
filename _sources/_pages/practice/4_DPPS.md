@@ -13,12 +13,12 @@ kernelspec:
 ---
 # Lecture 4-2. DP 실습
 
-<!-- - DP 고득점 Kit 
-  - [N으로 표현]()
-  - [정수 삼각형]()
-  - [등굣길]()
-  - [사칙연산]()
-  - [도둑질]() -->
+- DP 고득점 Kit 
+  - [N으로 표현](https://school.programmers.co.kr/learn/courses/30/lessons/42895)
+  - [정수 삼각형](https://school.programmers.co.kr/learn/courses/30/lessons/43105)
+  - [등굣길](https://school.programmers.co.kr/learn/courses/30/lessons/42898)
+  - [사칙연산](https://school.programmers.co.kr/learn/courses/30/lessons/1843)
+  - [도둑질](https://school.programmers.co.kr/learn/courses/30/lessons/42897)
 
 - 코테 기출 
   - [색깔 트리](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/color-tree/description)
@@ -198,7 +198,7 @@ print("\n".join(out))
 
 ### TreeDP 2 
 
-````{admonition} DP 설정
+````{admonition} Top-down Solution 
 :class: dropdown 
 
 이것을 DP로 구현하기 위해서 두 가지 경우를 생각하면 됩니다. 자신이 우수 마을인 경우와, 자신이 일반 마을인 경우 입니다.
@@ -206,13 +206,11 @@ print("\n".join(out))
 
 ![2](../../assets/img/DPPS/2.png)
 
-위 그림에서 초록색은 우수 마을, 파란색은 일반 마을이라 생각해 보겠습니다. 1번이 우수 마을이라면 자신의 자식 마을인 2번, 3번은 반드시 일반 마을이어야 합니다. 반대로 2번이 일반 마을인 경우에는 자식 마을 4번, 5번이 우수 마을일 필요는 없습니다. 그림과 같이 6번, 7번이 우수 마을이기 때문에 조건에 위배되지 않습니다.
-이와 같은 규칙으로 우리는 인구수가 최대한 많은 경우만 따져주면 됩니다.
+위 그림에서 회색 우수 마을, 파란색은 흰색을 마을이라 생각해 보겠습니다. 1번이 우수 마을이라면 자신의 자식 마을인 2번은 반드시 일반 마을이어야 합니다. 반대로 2번이 일반 마을인 경우에는 자식 마을 3번, 6번이 우수 마을일 필요는 없습니다. 이와 같은 규칙으로 우리는 인구수가 최대한 많은 경우만 따져주면 됩니다.
 
-즉,
+즉, 아래의 규칙을 따르는 프로그램을 구현하면 된다. 
 - 현재 노드가 우수마을이면 자식 마을은 반드시 일반 마을 
 - 현재 노드가 일반 마을이라면, 자식 마을은 일반 마을/우수 마을 둘 다 가능 
-
 
 - state: dp[node] = the node id 
 - what to store: (현재 노드가 우수 마을인 경우 'subtree'의 전체 인구수 , 현재 노드가 일반 마을인 경우 'subtree'의 전체 인구수)
@@ -221,38 +219,8 @@ print("\n".join(out))
     dp[parent][0] += dp[child][1]
     dp[parent][1] += max(dp[child][0], dp[child][1])
 
-```{code-block} python
-import sys
-sys.setrecursionlimit(10**4)
-input = sys.stdin.readline
-mii = lambda : map(int, input().split())
-
-N = int(input())
-towns = [0] + list(mii())
-
-tree = [[] for _ in range(N+1)]
-for _ in range(N-1):
-    u, v = mii()
-    tree[u].append(v)
-    tree[v].append(u)
-
-visited = [False] * (N + 1)
-dp = [[towns[i], 0] for i in range(N+1)]
-
-def dfs(node):
-    visited[node] = True 
-
-    for child in tree[node]:
-        if visited[child]:
-            continue
-
-        dfs(child)
-        dp[node][0] += dp[child][1]
-        dp[node][1] += max(dp[child][0], dp[child][1])
-
-dfs(1) # 아무 노드나 root로 설정 
-print(max(dp[1][0], dp[1][1]))
-
+```{literalinclude} ../solutions/DPPS/2.py
+:language: python
 ```
 ````
 
@@ -262,61 +230,10 @@ print(max(dp[1][0], dp[1][1]))
 
 ## 3번: String Compression II 
 
-````{admonition} problems
+````{admonition} Problems
 :class: dropdown 
 
-String Compression with Removal 
-
-Strings with long blocks of repeating characters take up much less space if stored in a compressed representation. To obtain the  compressed representation, we replace each segment of equal characters in the string with the number of characters in the segment followed by the character. 
-
-For example, 
-- "CCCC" -> "4C" 
-- A single character is left unchanged (e.g. "B" -> "B")
-- "BC" -> "BC" (since there are no repeats)
-
-<Example>
-- The compressed representation of "ABBCCDDCCC" is "A3B2C2D3C".
-- The compressed representation of "AAAAAAAAAABXXAAAAAAAAAA" is "11AB2X10A".
-
-<Observation>
-In the second example above, if we removed the "BXX" segment from the middle of the word before compression, we would obtain a much shorter compressed representation "21A". 
-
-To take advantage of this, we modify our compression algorithm:
-- Before compressing, we remove **exactly K consecutive letters** from the input string. 
-- Then we compress the remaining stirng. 
-
-We want to know the shortest compressed length possible after this operation. 
-
-<Task>
-
-Write a function `def solution(S, K):` that, given:
-
-- a string S of length N,
-- and an integer K,
-
-return **the shortest possible length of the compressed representation of S** after removing exactly K consecutive characters. 
-
-<Examples>
-
-1. S = "ABBCCDDCCC", K = 3
-    - Remove "DDC" → string becomes "ABBCCCC".
-    - Compressed form = "A3B4C", length = 5.
-    - Function should return 5.
-
-2. S = "AAAAAAAAAABXXAAAAAAAAAA", K = 3
-    - Remove "BXX" → string becomes "AAAAAAAAAAAAAAAAAAAAAA".
-    - Compressed form = "21A", length = 3.
-    - Function should return 3.
-
-3. S = "ABCDDDDEFG", K = 2
-    - Remove "EF" → string becomes "ABCDDDDG".
-    - Compressed form = "ABC3DG", length = 6.
-    - Function should return 6.
-
-<Constraints>
-- N is an integer within the range [1 .. 100,000]
-- K is an integer within the range [0 .. 100,000]
-- K <= N
-- S consists only of uppercase English letters (A-Z)
+```{literalinclude} ../solutions/DPPS/4.md
+:language: md 
+```
 ````
-

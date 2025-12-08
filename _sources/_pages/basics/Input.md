@@ -24,3 +24,10 @@ except:
 
 n, m = map(int, input().split())
 ```
+
+재귀를 이용할때, RecursionError가 날 수도 있다. 이 경우, 아래처럼 재귀의 한계를 늘려주는 코드를 추가할 수 있다. 
+
+```python
+print(sys.getrecursionlimit()) # 백준의 경우 기본 1000으로 설정되어있음. 
+sys.setrecursionlimit(1_000_000)
+```

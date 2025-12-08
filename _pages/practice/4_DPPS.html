@@ -389,13 +389,16 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="lecture-4-2-dp">
 <h1>Lecture 4-2. DP 실습<a class="headerlink" href="#lecture-4-2-dp" title="Link to this heading">#</a></h1>
-<!-- - DP 고득점 Kit 
-  - [N으로 표현]()
-  - [정수 삼각형]()
-  - [등굣길]()
-  - [사칙연산]()
-  - [도둑질]() -->
 <ul class="simple">
+<li><p>DP 고득점 Kit</p>
+<ul>
+<li><p><a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/lessons/42895">N으로 표현</a></p></li>
+<li><p><a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/lessons/43105">정수 삼각형</a></p></li>
+<li><p><a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/lessons/42898">등굣길</a></p></li>
+<li><p><a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/lessons/1843">사칙연산</a></p></li>
+<li><p><a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/lessons/42897">도둑질</a></p></li>
+</ul>
+</li>
 <li><p>코테 기출</p>
 <ul>
 <li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/color-tree/description">색깔 트리</a></p>
@@ -566,13 +569,12 @@ print(f”children list: {children_list}”)</p>
 <section id="treedp-2">
 <h3>TreeDP 2<a class="headerlink" href="#treedp-2" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
-<p class="admonition-title">DP 설정</p>
+<p class="admonition-title">Top-down Solution</p>
 <p>이것을 DP로 구현하기 위해서 두 가지 경우를 생각하면 됩니다. 자신이 우수 마을인 경우와, 자신이 일반 마을인 경우 입니다.
 첫 번째로 자신이 우수 마을이라면 자신의 자식 마을은 무조건 일반 마을이어야 합니다. 우수 마을끼리는 인접할 수 없기 때문에 자식 마을이 우수 마을일 수는 없습니다. 반대로 자신이 일반 마을이라면 자식 마을이 꼭 우수 마을일 필요는 없습니다. 부모 마을이 우수 마을이면 되기 때문 입니다.</p>
 <p><img alt="2" src="../../_images/23.png" /></p>
-<p>위 그림에서 초록색은 우수 마을, 파란색은 일반 마을이라 생각해 보겠습니다. 1번이 우수 마을이라면 자신의 자식 마을인 2번, 3번은 반드시 일반 마을이어야 합니다. 반대로 2번이 일반 마을인 경우에는 자식 마을 4번, 5번이 우수 마을일 필요는 없습니다. 그림과 같이 6번, 7번이 우수 마을이기 때문에 조건에 위배되지 않습니다.
-이와 같은 규칙으로 우리는 인구수가 최대한 많은 경우만 따져주면 됩니다.</p>
-<p>즉,</p>
+<p>위 그림에서 회색 우수 마을, 파란색은 흰색을 마을이라 생각해 보겠습니다. 1번이 우수 마을이라면 자신의 자식 마을인 2번은 반드시 일반 마을이어야 합니다. 반대로 2번이 일반 마을인 경우에는 자식 마을 3번, 6번이 우수 마을일 필요는 없습니다. 이와 같은 규칙으로 우리는 인구수가 최대한 많은 경우만 따져주면 됩니다.</p>
+<p>즉, 아래의 규칙을 따르는 프로그램을 구현하면 된다.</p>
 <ul class="simple">
 <li><p>현재 노드가 우수마을이면 자식 마을은 반드시 일반 마을</p></li>
 <li><p>현재 노드가 일반 마을이라면, 자식 마을은 일반 마을/우수 마을 둘 다 가능</p></li>
@@ -583,35 +585,63 @@ print(f”children list: {children_list}”)</p>
 dp[parent][0] += dp[child][1]
 dp[parent][1] += max(dp[child][0], dp[child][1])</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
-<span class="n">sys</span><span class="o">.</span><span class="n">setrecursionlimit</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="mi">4</span><span class="p">)</span>
-<span class="nb">input</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span>
-<span class="n">mii</span> <span class="o">=</span> <span class="k">lambda</span> <span class="p">:</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span> 
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">1-indexed (1~N)나라 </span>
+<span class="sd">- N-1개 길 (edge): tree</span>
+<span class="sd">- 방향성 없음 </span>
+
+<span class="sd">우수마을 선정 </span>
+<span class="sd">- 우수 마을로 선정된 마을 주민 수의 총 합을 최대로 함 </span>
+<span class="sd">- 우수 마을끼리는 서로 인접하지 않음 </span>
+<span class="sd">- 우수 마을로 선정되지 못한 마을은 적어도 &#39;하나의&#39; 우수 마을과는 인접해 있다. </span>
+
+<span class="sd">constraints </span>
+<span class="sd">1 &lt;= N &lt;= 1e4 </span>
+<span class="sd">마을주민수 &lt;= 1e4 </span>
+
+<span class="sd">- 마을끼리 그룹을 이루어서 떨어져있다면? </span>
+<span class="sd">-&gt; 불가능. 문제에서 마을과 마을사이를 직접 잇는 N-1개의 길이 있다고 하였음. 즉, 이 문제는 트리 문제이고, 떨어져있는 마을들이 없다고 가정함. </span>
+<span class="sd">-&gt; cycle도 없음. N개의 마을을 N-1개의 선으로 이을때 cycle을 만들 수 없음. </span>
+
+<span class="sd">문제를 읽어보면, 작은 subtree를 먼저 계산해야 최종적으로 큰 트리에서 최대 합을 구할 수 있으므로, DFS (top-down)방식을 이용해 문제를 푼다. </span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span> 
+
+<span class="c1"># sys.stdin = open(&#39;Input.txt&#39;)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">setrecursionlimit</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mf">1e4</span><span class="p">))</span> <span class="c1"># 마을의 개수가 최대 1e4개 이므로 재귀를 N까지 올려줌. </span>
 
 <span class="n">N</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">())</span>
-<span class="n">towns</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">mii</span><span class="p">())</span>
 
-<span class="n">tree</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+<span class="n">populations</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">populations</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())))</span>
+<span class="n">visited</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">graph</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
 <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-    <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">mii</span><span class="p">()</span>
-    <span class="n">tree</span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-    <span class="n">tree</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+    <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+    <span class="n">graph</span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="n">graph</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
 
-<span class="n">visited</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">dp</span> <span class="o">=</span> <span class="p">[[</span><span class="n">towns</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+<span class="c1"># status: each node </span>
+<span class="c1"># (현재 노드가 우수노드, 현재 노드가 우수노드아님.)</span>
+<span class="n">dp</span> <span class="o">=</span> <span class="p">[[</span><span class="n">populations</span><span class="p">[</span><span class="n">_</span><span class="p">],</span> <span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+
 
 <span class="k">def</span><span class="w"> </span><span class="nf">dfs</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">dp</span> 
     <span class="n">visited</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span> 
 
-    <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">tree</span><span class="p">[</span><span class="n">node</span><span class="p">]:</span>
+    <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">[</span><span class="n">node</span><span class="p">]:</span>
         <span class="k">if</span> <span class="n">visited</span><span class="p">[</span><span class="n">child</span><span class="p">]:</span>
-            <span class="k">continue</span>
+            <span class="k">continue</span> 
 
         <span class="n">dfs</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
         <span class="n">dp</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">dp</span><span class="p">[</span><span class="n">child</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">dp</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">max</span><span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="n">child</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">dp</span><span class="p">[</span><span class="n">child</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
 
-<span class="n">dfs</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># 아무 노드나 root로 설정 </span>
+<span class="n">dfs</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># 아무 노드나 root로 선정 </span>
 <span class="nb">print</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">dp</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]))</span>
 </pre></div>
 </div>
@@ -624,62 +654,62 @@ dp[parent][1] += max(dp[child][0], dp[child][1])</p></li>
 <section id="string-compression-ii">
 <h2>3번: String Compression II<a class="headerlink" href="#string-compression-ii" title="Link to this heading">#</a></h2>
 <div class="dropdown admonition">
-<p class="admonition-title">problems</p>
-<p>String Compression with Removal</p>
-<p>Strings with long blocks of repeating characters take up much less space if stored in a compressed representation. To obtain the  compressed representation, we replace each segment of equal characters in the string with the number of characters in the segment followed by the character.</p>
-<p>For example,</p>
-<ul class="simple">
-<li><p>“CCCC” -&gt; “4C”</p></li>
-<li><p>A single character is left unchanged (e.g. “B” -&gt; “B”)</p></li>
-<li><p>“BC” -&gt; “BC” (since there are no repeats)</p></li>
-</ul>
-<Example>
-- The compressed representation of "ABBCCDDCCC" is "A3B2C2D3C".
-- The compressed representation of "AAAAAAAAAABXXAAAAAAAAAA" is "11AB2X10A".
-<Observation>
-In the second example above, if we removed the "BXX" segment from the middle of the word before compression, we would obtain a much shorter compressed representation "21A". 
-<p>To take advantage of this, we modify our compression algorithm:</p>
-<ul class="simple">
-<li><p>Before compressing, we remove <strong>exactly K consecutive letters</strong> from the input string.</p></li>
-<li><p>Then we compress the remaining stirng.</p></li>
-</ul>
-<p>We want to know the shortest compressed length possible after this operation.</p>
-<Task>
-<p>Write a function <code class="docutils literal notranslate"><span class="pre">def</span> <span class="pre">solution(S,</span> <span class="pre">K):</span></code> that, given:</p>
-<ul class="simple">
-<li><p>a string S of length N,</p></li>
-<li><p>and an integer K,</p></li>
-</ul>
-<p>return <strong>the shortest possible length of the compressed representation of S</strong> after removing exactly K consecutive characters.</p>
-<Examples>
-<ol class="arabic simple">
-<li><p>S = “ABBCCDDCCC”, K = 3</p>
-<ul class="simple">
-<li><p>Remove “DDC” → string becomes “ABBCCCC”.</p></li>
-<li><p>Compressed form = “A3B4C”, length = 5.</p></li>
-<li><p>Function should return 5.</p></li>
-</ul>
-</li>
-<li><p>S = “AAAAAAAAAABXXAAAAAAAAAA”, K = 3</p>
-<ul class="simple">
-<li><p>Remove “BXX” → string becomes “AAAAAAAAAAAAAAAAAAAAAA”.</p></li>
-<li><p>Compressed form = “21A”, length = 3.</p></li>
-<li><p>Function should return 3.</p></li>
-</ul>
-</li>
-<li><p>S = “ABCDDDDEFG”, K = 2</p>
-<ul class="simple">
-<li><p>Remove “EF” → string becomes “ABCDDDDG”.</p></li>
-<li><p>Compressed form = “ABC3DG”, length = 6.</p></li>
-<li><p>Function should return 6.</p></li>
-</ul>
-</li>
-</ol>
-<Constraints>
-- N is an integer within the range [1 .. 100,000]
-- K is an integer within the range [0 .. 100,000]
-- K <= N
-- S consists only of uppercase English letters (A-Z)
+<p class="admonition-title">Problems</p>
+<div class="highlight-md notranslate"><div class="highlight"><pre><span></span>String Compression with Removal 
+
+Strings with long blocks of repeating characters take up much less space if stored in a compressed representation. To obtain the  compressed representation, we replace each segment of equal characters in the string with the number of characters in the segment followed by the character. 
+
+For example, 
+<span class="k">-</span><span class="w"> </span>&quot;CCCC&quot; -&gt; &quot;4C&quot; 
+<span class="k">-</span><span class="w"> </span>A single character is left unchanged (e.g. &quot;B&quot; -&gt; &quot;B&quot;)
+<span class="k">-</span><span class="w"> </span>&quot;BC&quot; -&gt; &quot;BC&quot; (since there are no repeats)
+
+&lt;Example&gt;
+<span class="k">-</span><span class="w"> </span>The compressed representation of &quot;ABBCCDDCCC&quot; is &quot;A3B2C2D3C&quot;.
+<span class="k">-</span><span class="w"> </span>The compressed representation of &quot;AAAAAAAAAABXXAAAAAAAAAA&quot; is &quot;11AB2X10A&quot;.
+
+&lt;Observation&gt;
+In the second example above, if we removed the &quot;BXX&quot; segment from the middle of the word before compression, we would obtain a much shorter compressed representation &quot;21A&quot;. 
+
+To take advantage of this, we modify our compression algorithm:
+<span class="k">-</span><span class="w"> </span>Before compressing, we remove <span class="gs">**exactly K consecutive letters**</span> from the input string. 
+<span class="k">-</span><span class="w"> </span>Then we compress the remaining stirng. 
+
+We want to know the shortest compressed length possible after this operation. 
+
+&lt;Task&gt;
+
+Write a function <span class="sb">`def solution(S, K):`</span> that, given:
+
+<span class="k">-</span><span class="w"> </span>a string S of length N,
+<span class="k">-</span><span class="w"> </span>and an integer K,
+
+return <span class="gs">**the shortest possible length of the compressed representation of S**</span> after removing exactly K consecutive characters. 
+
+&lt;Examples&gt;
+
+<span class="k">1.</span> S = &quot;ABBCCDDCCC&quot;, K = 3
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>Remove &quot;DDC&quot; → string becomes &quot;ABBCCCC&quot;.
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>Compressed form = &quot;A3B4C&quot;, length = 5.
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>Function should return 5.
+
+<span class="k">2.</span> S = &quot;AAAAAAAAAABXXAAAAAAAAAA&quot;, K = 3
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>Remove &quot;BXX&quot; → string becomes &quot;AAAAAAAAAAAAAAAAAAAAAA&quot;.
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>Compressed form = &quot;21A&quot;, length = 3.
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>Function should return 3.
+
+<span class="k">3.</span> S = &quot;ABCDDDDEFG&quot;, K = 2
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>Remove &quot;EF&quot; → string becomes &quot;ABCDDDDG&quot;.
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>Compressed form = &quot;ABC3DG&quot;, length = 6.
+<span class="w">    </span><span class="k">-</span><span class="w"> </span>Function should return 6.
+
+&lt;Constraints&gt;
+<span class="k">-</span><span class="w"> </span>N is an integer within the range [1 .. 100,000]
+<span class="k">-</span><span class="w"> </span>K is an integer within the range [0 .. 100,000]
+<span class="k">-</span><span class="w"> </span>K &lt;= N
+<span class="k">-</span><span class="w"> </span>S consists only of uppercase English letters (A-Z)
+</pre></div>
+</div>
 </div>
 </section>
 </section>
