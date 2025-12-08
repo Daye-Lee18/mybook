@@ -23,7 +23,7 @@ kernelspec:
 # 1) State: dp[...]
 # 2) What to store: min/max/count/bool/value (필요시 prev/choice)
 # 3) Base case init
-# 4) Fill order: 작은 상태 → 큰 상태
+# 4) Fill order: 작은 상태 → 큰 상태 (Top-down/Bottom-up)
 # 5) Transition
 # 6) Read answer
 
@@ -257,7 +257,44 @@ print("\n".join(out))
 
 ### TreeDP 3 
 
+````{admonition} Idea 
+:class: dropdown 
 
+![](../../assets/img/DPPS/3.png)
+
+Top-down으로 풀 경우, 트리에 3개의 노드가 있는 경우 위의 그림처럼 경우의수를 구할 수 있다. 
+즉, 현재 노드가 early adopter여야만 하는 경우는 딱 한 가지 경우이다. 
+반면, 현재 노드가 early adopter인 경우에는 children노드가 어떤 상황인지 전혀 상관없고, 그저 최소한의 경우를 가지고 오면 된다. 
+
+그러나, 재귀함수를 이용해 답안을 적으면, 겨우 통과되는데, 파이썬으로는 재귀를 이용하여 문제를 풀면, 잘 메모리나 재귀횟수때문에 통과가 안되는 일이 많다. 따라서, 위의 DFS 방식을 BFS 방식으로 바꿔야한다. 
+
+<DFS를 BFS로 바꾸는 스텝> 
+- 먼저 BFS로 모든 트리를 탐색하며 부모와 자식 노드들을 stack에 넣어준다. 
+- `stack.pop()`을 하면서 자연스럽게 말단 노드의 값부터 가져온다. 
+- DFS()의 로직을 그대로 따라한다. 
+````
+
+````{admonition} DFS Solution 
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/3.py
+:language: python 
+````
+````{admonition} DFS Solution 
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/3.py
+:language: python 
+````
+
+````{admonition} BFS Solution 
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/3_2.py
+:language: python 
+````
+
+### 색깔 트리 
 
 ## 3번: String Compression II 
 
@@ -268,3 +305,4 @@ print("\n".join(out))
 :language: md 
 ```
 ````
+

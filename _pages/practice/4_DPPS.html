@@ -373,6 +373,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#treedp-1">TreeDP 1</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#treedp-2">TreeDP 2</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#treedp-3">TreeDP 3</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">색깔 트리</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#string-compression-ii">3번: String Compression II</a></li>
@@ -396,7 +397,7 @@ document.write(`
 <span class="c1"># 1) State: dp[...]</span>
 <span class="c1"># 2) What to store: min/max/count/bool/value (필요시 prev/choice)</span>
 <span class="c1"># 3) Base case init</span>
-<span class="c1"># 4) Fill order: 작은 상태 → 큰 상태</span>
+<span class="c1"># 4) Fill order: 작은 상태 → 큰 상태 (Top-down/Bottom-up)</span>
 <span class="c1"># 5) Transition</span>
 <span class="c1"># 6) Read answer</span>
 
@@ -677,6 +678,159 @@ dp[parent][1] += max(dp[child][0], dp[child][1])</p></li>
 </section>
 <section id="treedp-3">
 <h3>TreeDP 3<a class="headerlink" href="#treedp-3" title="Link to this heading">#</a></h3>
+<div class="dropdown admonition">
+<p class="admonition-title">Idea</p>
+<p><img alt="" src="../../_images/315.png" /></p>
+<p>Top-down으로 풀 경우, 트리에 3개의 노드가 있는 경우 위의 그림처럼 경우의수를 구할 수 있다.
+즉, 현재 노드가 early adopter여야만 하는 경우는 딱 한 가지 경우이다.
+반면, 현재 노드가 early adopter인 경우에는 children노드가 어떤 상황인지 전혀 상관없고, 그저 최소한의 경우를 가지고 오면 된다.</p>
+<p>그러나, 재귀함수를 이용해 답안을 적으면, 겨우 통과되는데, 파이썬으로는 재귀를 이용하여 문제를 풀면, 잘 메모리나 재귀횟수때문에 통과가 안되는 일이 많다. 따라서, 위의 DFS 방식을 BFS 방식으로 바꿔야한다.</p>
+<p>&lt;DFS를 BFS로 바꾸는 스텝&gt;</p>
+<ul class="simple">
+<li><p>먼저 BFS로 모든 트리를 탐색하며 부모와 자식 노드들을 stack에 넣어준다.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stack.pop()</span></code>을 하면서 자연스럽게 말단 노드의 값부터 가져온다.</p></li>
+<li><p>DFS()의 로직을 그대로 따라한다.</p></li>
+</ul>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">DFS Solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">사람-노드, 에지-친구 </span>
+<span class="sd">- SNS에 속한 사람은 얼리 어답터/얼리 어답터가 아니다. </span>
+<span class="sd">- 가능한 한 최소의 수의 얼리 어답터를 확보하여 &#39;모든 사람이&#39; 이 아이디어를 받아들이게 하기 위한 &quot;최소한의&quot; 얼리 어답터의 수를 구하라.  </span>
+<span class="sd">- SNS가 트리임을 가정 (graph without a cycle)</span>
+
+<span class="sd">constraints </span>
+<span class="sd">- N: 정점의 수 2 &lt;= N &lt;= 1e6 , 1-indexed </span>
+<span class="sd">- 엣지수: N-1 </span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span> 
+<span class="n">sys</span><span class="o">.</span><span class="n">setrecursionlimit</span><span class="p">(</span><span class="mi">1_000_001</span><span class="p">)</span>
+<span class="nb">input</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span> 
+
+<span class="c1"># sys.stdin = open(&#39;Input.txt&#39;)</span>
+<span class="n">N</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">())</span>
+
+<span class="n">graph</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">s</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+    <span class="n">graph</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="n">graph</span><span class="p">[</span><span class="n">d</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+<span class="c1"># dp[node][0] = 현재 node가 early adopter가 아닐때, 필요한 최소한의 얼리어답터 수 </span>
+<span class="c1"># dp[node][1] = 현재 node가 early adopter일 때, 필요한 최소한의 얼리어답터 수 </span>
+<span class="n">dp</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span> 
+<span class="n">visited</span><span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">dfs</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+    <span class="n">visited</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span> 
+
+    <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">[</span><span class="n">node</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">visited</span><span class="p">[</span><span class="n">child</span><span class="p">]:</span>
+            <span class="k">continue</span> 
+
+        <span class="n">dfs</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+        <span class="n">dp</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">dp</span><span class="p">[</span><span class="n">child</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># subtree의 root가 얼리어답터가 아닌 경우, child nodes들이 다 얼리어답터여야함. </span>
+        <span class="n">dp</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">min</span><span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="n">child</span><span class="p">])</span> <span class="c1"># subtree의 root가 얼리어답터인 경우, 모든 경우의 수인 경우에서 가능하므로, 가장 작은 것을 더해주면 됨. </span>
+    
+<span class="n">dfs</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+<span class="c1"># print(dp)</span>
+</pre></div>
+</div>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">DFS Solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">사람-노드, 에지-친구 </span>
+<span class="sd">- SNS에 속한 사람은 얼리 어답터/얼리 어답터가 아니다. </span>
+<span class="sd">- 가능한 한 최소의 수의 얼리 어답터를 확보하여 &#39;모든 사람이&#39; 이 아이디어를 받아들이게 하기 위한 &quot;최소한의&quot; 얼리 어답터의 수를 구하라.  </span>
+<span class="sd">- SNS가 트리임을 가정 (graph without a cycle)</span>
+
+<span class="sd">constraints </span>
+<span class="sd">- N: 정점의 수 2 &lt;= N &lt;= 1e6 , 1-indexed </span>
+<span class="sd">- 엣지수: N-1 </span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span> 
+<span class="n">sys</span><span class="o">.</span><span class="n">setrecursionlimit</span><span class="p">(</span><span class="mi">1_000_001</span><span class="p">)</span>
+<span class="nb">input</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span> 
+
+<span class="c1"># sys.stdin = open(&#39;Input.txt&#39;)</span>
+<span class="n">N</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">())</span>
+
+<span class="n">graph</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">s</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+    <span class="n">graph</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="n">graph</span><span class="p">[</span><span class="n">d</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+<span class="c1"># dp[node][0] = 현재 node가 early adopter가 아닐때, 필요한 최소한의 얼리어답터 수 </span>
+<span class="c1"># dp[node][1] = 현재 node가 early adopter일 때, 필요한 최소한의 얼리어답터 수 </span>
+<span class="n">dp</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span> 
+<span class="n">visited</span><span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">dfs</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+    <span class="n">visited</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span> 
+
+    <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">[</span><span class="n">node</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">visited</span><span class="p">[</span><span class="n">child</span><span class="p">]:</span>
+            <span class="k">continue</span> 
+
+        <span class="n">dfs</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+        <span class="n">dp</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">dp</span><span class="p">[</span><span class="n">child</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># subtree의 root가 얼리어답터가 아닌 경우, child nodes들이 다 얼리어답터여야함. </span>
+        <span class="n">dp</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">min</span><span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="n">child</span><span class="p">])</span> <span class="c1"># subtree의 root가 얼리어답터인 경우, 모든 경우의 수인 경우에서 가능하므로, 가장 작은 것을 더해주면 됨. </span>
+    
+<span class="n">dfs</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+<span class="c1"># print(dp)</span>
+</pre></div>
+</div>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">BFS Solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span> 
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span> 
+
+<span class="n">N</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">())</span>
+
+<span class="n">tree</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+    <span class="n">tree</span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="n">tree</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+
+<span class="n">dp</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">():</span>
+    <span class="n">visited</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="mi">1</span> 
+    <span class="n">que</span> <span class="o">=</span> <span class="n">deque</span><span class="p">([</span><span class="n">start</span><span class="p">])</span>
+    <span class="n">stack</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">while</span> <span class="n">que</span><span class="p">:</span>
+        <span class="n">parent</span> <span class="o">=</span> <span class="n">que</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+        <span class="n">visited</span><span class="p">[</span><span class="n">parent</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span> 
+
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">tree</span><span class="p">[</span><span class="n">parent</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">visited</span><span class="p">[</span><span class="n">child</span><span class="p">]:</span>
+                <span class="n">que</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+                <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">parent</span><span class="p">,</span> <span class="n">child</span><span class="p">])</span>
+    
+    <span class="k">while</span> <span class="n">stack</span><span class="p">:</span>
+        <span class="n">parent</span><span class="p">,</span> <span class="n">child</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="n">dp</span><span class="p">[</span><span class="n">parent</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">dp</span><span class="p">[</span><span class="n">child</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">dp</span><span class="p">[</span><span class="n">parent</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">min</span><span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="n">child</span><span class="p">])</span>
+
+<span class="n">solve</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="id2">
+<h3>색깔 트리<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
 </section>
 </section>
 <section id="string-compression-ii">
@@ -810,6 +964,7 @@ return <span class="gs">**the shortest possible length of the compressed represe
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#treedp-1">TreeDP 1</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#treedp-2">TreeDP 2</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#treedp-3">TreeDP 3</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">색깔 트리</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#string-compression-ii">3번: String Compression II</a></li>
