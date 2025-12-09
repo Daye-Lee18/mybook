@@ -589,6 +589,9 @@ document.write(`
 <p>또한, <code class="docutils literal notranslate"><span class="pre">while</span> <span class="pre">res</span> <span class="pre">and</span> <span class="pre">not</span> <span class="pre">res[-1]:</span></code> 이라고 하면 res[-1] 가 0일때도 삭제되어서 안되므로 <code class="docutils literal notranslate"><span class="pre">while</span> <span class="pre">res</span> <span class="pre">and</span> <span class="pre">res[-1]</span> <span class="pre">==</span> <span class="pre">None</span></code>이라고 명시해줘야한다.</p>
 <div class="dropdown admonition">
 <p class="admonition-title">helper function for Tree</p>
+<p>아래 <code class="docutils literal notranslate"><span class="pre">build_tree()</span></code> 함수는 LeetCode 스타일 (level-order + 필요한 None만)로 배열이 들어올 때, 트리를 만드는 구조이다.
+즉, [1, None, 2, 3, 4]의 형태로, 필요한 부분만 None으로 채워져있고, 그 뒤의 None은 사용하지 않은 배열을 argument로 받았을 때이다.</p>
+<p><img alt="" src="../../_images/87.png" /></p>
 <div class="literal-block-wrapper docutils container" id="id9">
 <div class="code-block-caption"><span class="caption-number">예시 40 </span><span class="caption-text">Helper Functions for Tree Problems. This script provides utility functions to build a binary tree from a level-order list representation (<code class="docutils literal notranslate"><span class="pre">build_tree</span></code>) and convert a tree back into a list (<code class="docutils literal notranslate"><span class="pre">tree_to_list</span></code>). It is commonly used when solving tree problems on LeetCode or similar platforms for easy input/output handling.</span><a class="headerlink" href="#id9" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span> 
@@ -656,6 +659,24 @@ document.write(`
     <span class="nb">print</span><span class="p">(</span><span class="n">tree_to_list</span><span class="p">(</span><span class="n">root</span><span class="p">))</span>
 </pre></div>
 </div>
+</div>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">helper function for Tree 2</p>
+<p>반면, None도 인덱스로 사용할 때는 완전이진트리 배열 표현 (힙 표현)을 사용하겠다는 것으로, 인덱스 i의 왼쪽 자식 -&gt; 2<em>i + 1, 인덱스 i의 오른쪽 자식 -&gt; 2</em>i +2 를 사용한다. 즉, 값이 None이어도 자식 칸 두개는 인덱스로 “존재”한다고 치는 방식에서는 다음 코드를 이용할 수 있다.</p>
+<p><img alt="" src="../../_images/96.png" /></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">build_tree</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">idx</span> <span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="c1"># 범위 밖이거나, 해당 위치가 None이면 노드 없음 </span>
+    <span class="k">if</span> <span class="n">idx</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="ow">or</span> <span class="n">arr</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span> 
+    
+    <span class="n">node</span> <span class="o">=</span> <span class="n">TreeNode</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+    <span class="n">node</span><span class="o">.</span><span class="n">left</span> <span class="o">=</span> <span class="n">build_tree</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">node</span><span class="o">.</span><span class="n">right</span> <span class="o">=</span> <span class="n">build_tree</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">node</span> 
+
+<span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+</pre></div>
 </div>
 </div>
 </section>

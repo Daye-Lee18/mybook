@@ -233,7 +233,7 @@ print("\n".join(out))
 ```
 ````
 
-### TreeDP 2 
+### 우수 마을 
 
 ````{admonition} Top-down Solution 
 :class: dropdown 
@@ -261,7 +261,7 @@ print("\n".join(out))
 ```
 ````
 
-### TreeDP 3 
+### 사회망 서비스 
 
 ````{admonition} Idea 
 :class: dropdown 
@@ -299,6 +299,10 @@ Top-down으로 풀 경우, 트리에 3개의 노드가 있는 경우 위의 그�
 ```{literalinclude} ../solutions/DPPS/3_2.py
 :language: python 
 ````
+
+### Diameter of Binary Tree
+
+## 코테 기출 
 
 ### 색깔 트리 
 
