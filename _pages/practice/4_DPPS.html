@@ -374,6 +374,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">우수 마을</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">사회망 서비스</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#diameter-of-binary-tree">Diameter of Binary Tree</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#binary-tree-max-path-sum">Binary Tree Max Path Sum</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">코테 기출</a><ul class="nav section-nav flex-column">
@@ -438,7 +439,9 @@ document.write(`
 <li><p><a class="reference external" href="https://www.acmicpc.net/problem/1949">우수 마을</a>: <a class="reference external" href="https://wikidocs.net/274552">정답</a></p></li>
 <li><p><a class="reference external" href="https://www.acmicpc.net/problem/2533">사회망 서비스</a>: <a class="reference external" href="https://wikidocs.net/273100">정답</a></p></li>
 <li><p><a class="reference external" href="https://leetcode.com/problems/diameter-of-binary-tree/description/">Diameter of Binary Tree</a></p></li>
+<li><p><a class="reference external" href="https://leetcode.com/problems/longest-path-with-different-adjacent-characters/description/">Longest Path with Different Adjacent Character</a></p></li>
 <li><p><a class="reference external" href="https://leetcode.com/problems/binary-tree-maximum-path-sum/description/">Binary Tree Max Path Sum</a></p></li>
+<li><p><a class="reference external" href="https://leetcode.com/problems/binary-tree-maximum-path-sum/description/">Difference Between Maximum and Minimum Price Sum</a></p></li>
 <li><p><a class="reference external" href="https://leetcode.com/problems/house-robber-iii/description/">House Robber 3</a></p></li>
 </ul>
 </li>
@@ -839,6 +842,135 @@ dp[parent][1] += max(dp[child][0], dp[child][1])</p></li>
 </section>
 <section id="diameter-of-binary-tree">
 <h3>Diameter of Binary Tree<a class="headerlink" href="#diameter-of-binary-tree" title="Link to this heading">#</a></h3>
+<div class="dropdown admonition">
+<p class="admonition-title">Solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">The diameter</span>
+<span class="sd">- is the length of the &quot;longest path&quot; between any two nodes in a tree </span>
+<span class="sd">- the length of a path between two nodes is represented by the number of edges between them</span>
+<span class="sd">- This path may or may not pass through the root</span>
+
+<span class="sd">Idea</span>
+<span class="sd">- 현재 노드의 height를 dp에 다 저장한다. </span>
+<span class="sd">- 현재 노드에서 최대 diameterd의 후보는 현재 노드의 양쪽 children의 높이를 더한 것이 된다.</span>
+
+<span class="sd">Constarints </span>
+<span class="sd">- 1 &lt;= the number of nodes &lt;= 1e4 </span>
+<span class="sd">- -100 &lt;= Node.val &lt;= 100 </span>
+
+
+<span class="sd">-&gt; 노드의 개수는 최대 1e4인데, node.val은 최대 201개이므로, 다른 위치에 있는 노드라도 중복된 값을 가질 수 있다. </span>
+<span class="sd">-&gt; 따라서, visited를 설정할 때, node.val은 unique하지 않으므로 object별로 방문해는지 확인해야한다. </span>
+
+<span class="sd">Time Complexity:</span>
+<span class="sd">- O(N): 모든 노드를 정확히 한 번 방문 </span>
+<span class="sd">Space Complexity:</span>
+<span class="sd">- O(H): 재귀 호출 스택, H=트리 높이, 최악의 경우 O(N)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span> 
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span> 
+
+<span class="c1"># dp = defaultdict(int) # INIT to 0, node height (the # of edges)</span>
+
+<span class="c1"># Definition for a binary tree node.</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TreeNode</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">=</span> <span class="n">val</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">left</span> <span class="o">=</span> <span class="n">left</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right</span> <span class="o">=</span> <span class="n">right</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Node(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">diameterOfBinaryTree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TreeNode</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        
+        <span class="n">subtree_size</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">max_diameter</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">calculate_subtree_size</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+            <span class="k">nonlocal</span> <span class="n">subtree_size</span><span class="p">,</span> <span class="n">max_diameter</span> 
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">0</span>
+            
+            <span class="c1"># 이거 없어도 DFS는 맨 아래서부터 위로 올라감. </span>
+            <span class="c1"># if node in subtree_size: </span>
+            <span class="c1">#     return subtree_size[node]</span>
+
+            
+            <span class="n">left</span> <span class="o">=</span> <span class="n">calculate_subtree_size</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">left</span><span class="p">)</span>
+            <span class="n">right</span> <span class="o">=</span> <span class="n">calculate_subtree_size</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">right</span><span class="p">)</span>
+            
+            <span class="n">subtree_size</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> 
+            <span class="c1"># node를 가운데로 했을 때의 지름 후보 left + right </span>
+            <span class="n">max_diameter</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_diameter</span><span class="p">,</span> <span class="n">left</span><span class="o">+</span><span class="n">right</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">subtree_size</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+        
+        <span class="n">calculate_subtree_size</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+        <span class="c1"># print(subtree_size)</span>
+        <span class="k">return</span> <span class="n">max_diameter</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">build_tree</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span> 
+    <span class="n">root</span> <span class="o">=</span> <span class="n">TreeNode</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+    <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span> 
+
+    <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+    <span class="k">while</span> <span class="n">q</span> <span class="ow">and</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="ow">and</span> <span class="n">arr</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">left</span> <span class="o">=</span> <span class="n">TreeNode</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+            <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">left</span><span class="p">)</span>
+        <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span> 
+        <span class="k">if</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="ow">and</span> <span class="n">arr</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">right</span> <span class="o">=</span> <span class="n">TreeNode</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+            <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">right</span><span class="p">)</span>
+        <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span> 
+
+    <span class="k">return</span> <span class="n">root</span> 
+
+<span class="k">def</span><span class="w"> </span><span class="nf">tree_to_arr</span><span class="p">(</span><span class="n">root</span><span class="p">:</span><span class="n">TreeNode</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">root</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+    
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="n">q</span><span class="p">:</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">node</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+            <span class="k">continue</span> 
+        
+        <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">left</span><span class="p">)</span>
+        <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">right</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="n">result</span> <span class="ow">and</span> <span class="n">result</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">result</span> 
+
+    
+<span class="c1"># tree = [1,None, 2,None, None, 3,4] </span>
+<span class="c1"># tree = [1, 2, 3, 4, 5] # 3 </span>
+<span class="c1"># tree = [1, 2] # 1 </span>
+<span class="n">tree</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span> <span class="c1"># 6</span>
+<span class="n">root</span> <span class="o">=</span> <span class="n">build_tree</span><span class="p">(</span><span class="n">tree</span><span class="p">)</span>
+<span class="c1"># print(tree_to_arr(root))</span>
+<span class="n">sol</span> <span class="o">=</span> <span class="n">Solution</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">diameterOfBinaryTree</span><span class="p">(</span><span class="n">root</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="binary-tree-max-path-sum">
+<h3>Binary Tree Max Path Sum<a class="headerlink" href="#binary-tree-max-path-sum" title="Link to this heading">#</a></h3>
 </section>
 </section>
 <section id="id4">
@@ -979,6 +1111,7 @@ return <span class="gs">**the shortest possible length of the compressed represe
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">우수 마을</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">사회망 서비스</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#diameter-of-binary-tree">Diameter of Binary Tree</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#binary-tree-max-path-sum">Binary Tree Max Path Sum</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">코테 기출</a><ul class="nav section-nav flex-column">

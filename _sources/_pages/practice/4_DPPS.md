@@ -56,7 +56,9 @@ def solve(...):
   - [우수 마을](https://www.acmicpc.net/problem/1949): [정답](https://wikidocs.net/274552)
   - [사회망 서비스](https://www.acmicpc.net/problem/2533): [정답](https://wikidocs.net/273100)
   - [Diameter of Binary Tree](https://leetcode.com/problems/diameter-of-binary-tree/description/)
+  - [Longest Path with Different Adjacent Character](https://leetcode.com/problems/longest-path-with-different-adjacent-characters/description/)
   - [Binary Tree Max Path Sum](https://leetcode.com/problems/binary-tree-maximum-path-sum/description/)
+  - [Difference Between Maximum and Minimum Price Sum](https://leetcode.com/problems/binary-tree-maximum-path-sum/description/)
   - [House Robber 3](https://leetcode.com/problems/house-robber-iii/description/)
 
 - 코테 기출 
@@ -302,6 +304,17 @@ Top-down으로 풀 경우, 트리에 3개의 노드가 있는 경우 위의 그�
 
 ### Diameter of Binary Tree
 
+````{admonition} Solution
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/4.py
+:language: python 
+```
+````
+
+### Binary Tree Max Path Sum 
+
+
 ## 코테 기출 
 
 ### 색깔 트리 
@@ -311,7 +324,7 @@ Top-down으로 풀 경우, 트리에 3개의 노드가 있는 경우 위의 그�
 ````{admonition} Problems
 :class: dropdown 
 
-```{literalinclude} ../solutions/DPPS/4.md
+```{literalinclude} ../solutions/DPPS/7.md
 :language: md 
 ```
 ````
