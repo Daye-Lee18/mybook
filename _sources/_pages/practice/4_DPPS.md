@@ -312,6 +312,16 @@ Top-down으로 풀 경우, 트리에 3개의 노드가 있는 경우 위의 그�
 ```
 ````
 
+### Longest Path with Different Adjacent Character
+
+````{admonition} Solution 
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/5.py
+:language: python 
+```
+
+````
 ### Binary Tree Max Path Sum 
 
 
