@@ -442,7 +442,7 @@ document.write(`
 <li><p><a class="reference external" href="https://leetcode.com/problems/diameter-of-binary-tree/description/">Diameter of Binary Tree</a></p></li>
 <li><p><a class="reference external" href="https://leetcode.com/problems/longest-path-with-different-adjacent-characters/description/">Longest Path with Different Adjacent Character</a></p></li>
 <li><p><a class="reference external" href="https://leetcode.com/problems/binary-tree-maximum-path-sum/description/">Binary Tree Max Path Sum</a></p></li>
-<li><p><a class="reference external" href="https://leetcode.com/problems/binary-tree-maximum-path-sum/description/">Difference Between Maximum and Minimum Price Sum</a></p></li>
+<li><p><a class="reference external" href="https://leetcode.com/problems/difference-between-maximum-and-minimum-price-sum/description/">Difference Between Maximum and Minimum Price Sum</a></p></li>
 <li><p><a class="reference external" href="https://leetcode.com/problems/house-robber-iii/description/">House Robber 3</a></p></li>
 </ul>
 </li>
@@ -1037,6 +1037,97 @@ dp[parent][1] += max(dp[child][0], dp[child][1])</p></li>
 </section>
 <section id="binary-tree-max-path-sum">
 <h3>Binary Tree Max Path Sum<a class="headerlink" href="#binary-tree-max-path-sum" title="Link to this heading">#</a></h3>
+<div class="dropdown admonition">
+<p class="admonition-title">Solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">- the path does not need to pass through the root. </span>
+<span class="sd">- the path sum of a path is a sum of the node&#39;s values in the path </span>
+
+<span class="sd">- Given the `root` of a binary tree, return the maximum path sum of any non-empty path </span>
+
+<span class="sd">Constraints</span>
+<span class="sd">- 1&lt;= # of nodes &lt;= 3*1e4 </span>
+<span class="sd">- -1000 &lt;= Node.val &lt;= 1000 </span>
+<span class="sd">-&gt; node.val은 overlap될 수 있음. </span>
+
+<span class="sd">edge cases </span>
+<span class="sd">- node number 1 </span>
+<span class="sd">- node number 3*1e4 ~ O(N)</span>
+<span class="sd">- node.val이 모두 양수 </span>
+<span class="sd">- node.val이 모두 음수 </span>
+<span class="sd">- node.val이 양수, 음수 섞여 있는 경우 </span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span> 
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span><span class="p">,</span> <span class="n">deque</span> 
+
+<span class="c1"># Definition for a binary tree node.</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TreeNode</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">=</span> <span class="n">val</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">left</span> <span class="o">=</span> <span class="n">left</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right</span> <span class="o">=</span> <span class="n">right</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">maxPathSum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TreeNode</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        
+        <span class="n">dp</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">max_sum</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1e9</span><span class="p">)</span><span class="o">*-</span><span class="mi">1</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">dfs</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+            <span class="k">nonlocal</span> <span class="n">max_sum</span> 
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">0</span>
+            
+            <span class="c1"># Binary Tree </span>
+            <span class="n">left</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">left</span><span class="p">)</span>
+            <span class="n">right</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">right</span><span class="p">)</span>
+
+            <span class="c1"># Node.val은 겹칠 수 있으므로, object를 key로 사용 </span>
+            <span class="c1"># NOTE: leaf노드에서 현재 노드까지의 path의 최대값, 왼쪽과 오른쪽 모두 음수인 경우, 현재 값과 더했을 때 더 작아지므로 0과 비교해준다. </span>
+            <span class="n">dp</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">node</span><span class="o">.</span><span class="n">val</span> 
+            <span class="c1"># max_sum 후보 </span>
+            <span class="c1"># 1. 현재 노드까지 path에서 가장 큰 값 </span>
+            <span class="n">max_sum</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="n">node</span><span class="p">],</span> <span class="n">max_sum</span><span class="p">)</span>
+            <span class="c1"># 2. 왼쪽 -&gt; 현재 노드 -&gt; 오른쪽을 잇는 path와 현재 max_sum값 비교 </span>
+            <span class="n">max_sum</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">left</span><span class="o">+</span><span class="n">right</span><span class="o">+</span><span class="n">node</span><span class="o">.</span><span class="n">val</span> <span class="p">,</span> <span class="n">max_sum</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">dp</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+        
+        <span class="n">dfs</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">max_sum</span> 
+
+<span class="k">def</span><span class="w"> </span><span class="nf">build_tree</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">arr</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span> 
+    
+    <span class="n">root</span> <span class="o">=</span> <span class="n">TreeNode</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span> 
+    <span class="k">while</span> <span class="n">q</span><span class="p">:</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span> 
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="ow">and</span> <span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">left</span> <span class="o">=</span> <span class="n">TreeNode</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">left</span><span class="p">)</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span> 
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="ow">and</span> <span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">right</span> <span class="o">=</span> <span class="n">TreeNode</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">right</span><span class="p">)</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span> 
+    <span class="k">return</span> <span class="n">root</span> 
+
+<span class="c1"># arr = [-10,9,20,None, None,15,7] # 42 </span>
+<span class="c1"># arr = [1, 2, 3] # 6 </span>
+<span class="c1"># arr = [-10, -1, -3] # 6 </span>
+<span class="c1"># arr = [2, -1] # 2</span>
+<span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="c1"># 2</span>
+<span class="n">root</span> <span class="o">=</span> <span class="n">build_tree</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+<span class="n">sol</span> <span class="o">=</span> <span class="n">Solution</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">maxPathSum</span><span class="p">(</span><span class="n">root</span><span class="p">))</span>
+
+</pre></div>
+</div>
+</div>
 </section>
 </section>
 <section id="id4">
