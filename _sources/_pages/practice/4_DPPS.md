@@ -332,6 +332,25 @@ Top-down으로 풀 경우, 트리에 3개의 노드가 있는 경우 위의 그�
 ```
 ````
 
+### Difference Between Maximum and Minimum Price Sum 
+
+````{admonition} Explanation 
+:class: dropdown 
+
+이 문제를 트리 + DP(DFS) + rerooting 으로 풀면 O(N*N)으로 Time out 된다. 
+
+관찰
+- "한쪽 끝을 제외한다" -> 결국 경로의 '내부 노드' 합을 계산하는 문제 
+- 방향성 없음 -> 트리 DP가능 
+````
+
+````{admonition} Solution 
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/7.py
+:language: python 
+```
+````
 ## 코테 기출 
 
 ### 색깔 트리 

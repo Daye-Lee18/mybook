@@ -376,6 +376,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#diameter-of-binary-tree">Diameter of Binary Tree</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#longest-path-with-different-adjacent-character">Longest Path with Different Adjacent Character</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#binary-tree-max-path-sum">Binary Tree Max Path Sum</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#difference-between-maximum-and-minimum-price-sum">Difference Between Maximum and Minimum Price Sum</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">코테 기출</a><ul class="nav section-nav flex-column">
@@ -1129,6 +1130,114 @@ dp[parent][1] += max(dp[child][0], dp[child][1])</p></li>
 </div>
 </div>
 </section>
+<section id="difference-between-maximum-and-minimum-price-sum">
+<h3>Difference Between Maximum and Minimum Price Sum<a class="headerlink" href="#difference-between-maximum-and-minimum-price-sum" title="Link to this heading">#</a></h3>
+<div class="dropdown admonition">
+<p class="admonition-title">Explanation</p>
+<p>이 문제를 트리 + DP(DFS) + rerooting 으로 풀면 O(N*N)으로 Time out 된다.</p>
+<p>관찰</p>
+<ul class="simple">
+<li><p>“한쪽 끝을 제외한다” -&gt; 결국 경로의 ‘내부 노드’ 합을 계산하는 문제</p></li>
+<li><p>방향성 없음 -&gt; 트리 DP가능</p></li>
+</ul>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">Solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">unrooted tree with `n` nodes</span>
+<span class="sd">- 0-indexed (0 ~ n-1)</span>
+<span class="sd">- edges[i] = [a, b]</span>
+<span class="sd">- each node &lt;-&gt; price </span>
+<span class="sd">- price[i] = ith node price </span>
+
+<span class="sd">- the tree can be rooted at any node `root` of your choice. </span>
+<span class="sd">- The incurred `cost` after choosing `root` is the difference between the maximum and minimum price sum amongst all paths starting at root. </span>
+
+<span class="sd">Return </span>
+<span class="sd">- the maximum possible cost amongst all possible root choices </span>
+
+<span class="sd">Constraints </span>
+<span class="sd">- 1 &lt; = n &lt;= 1e5 ~ O(N), O(NlogN)</span>
+<span class="sd">- edges.length == n - 1</span>
+<span class="sd">- 0 &lt;= a, b &lt;= n -1</span>
+<span class="sd">- 1 &lt;= price[i] &lt;= 1e5 : 가격에는 음수가 없음. 최소 1부터 시작 </span>
+
+<span class="sd">Idea </span>
+<span class="sd">- 원래 DFS는 leaf node로부터 root까지로 가는 path를 계산한다. 그리고 O((N+N-1))의 시간 복잡도를 가지는데, </span>
+<span class="sd">- 이 path는 root를 꼭 거쳐야해서, </span>
+<span class="sd">- 문제는, root로 가는 길에서의 최대 max sum을 구하는 것이라 모든 노드에 대해서 계산하지 못한다. </span>
+<span class="sd">- 따라서, 2번의 dfs를 따로 실행하여 O(N)의 시간 복잡도를 가지게 할 수 있는데, </span>
+<span class="sd">    - DFS1() 에서 root 0 의 tree에서 아래로 가는 dp[node][0], dp[node][1]을 만들어서 top 2 의 path sum을 저장</span>
+<span class="sd">    - DFS2() 에서 각 노드가 root노드가 되도록 re-rooting 했을 때 가질 수 있는 최대값을 갱신한다. </span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span> 
+<span class="kn">import</span><span class="w"> </span><span class="nn">collections</span> 
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">maxOutput</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">edges</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">price</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">dp</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+        <span class="n">graph</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
+            <span class="n">graph</span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="n">graph</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+
+        <span class="c1"># Step 1. Downward DP with the root 0 </span>
+        <span class="c1"># 0을 루트로 했을 때, 자식으로만 갈 수 있는 최댓값 계산 </span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">dfs1</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">next_node</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">[</span><span class="n">node</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">next_node</span> <span class="o">==</span> <span class="n">parent</span><span class="p">:</span> 
+                    <span class="k">continue</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">dfs1</span><span class="p">(</span><span class="n">next_node</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span> <span class="o">+</span> <span class="n">price</span><span class="p">[</span><span class="n">next_node</span><span class="p">]</span>
+                
+                <span class="c1"># dp[node][0], dp[node][1] : cur_node - next_node .... 에서,&quot;U자신은 제외하고&quot; next_node -&gt; ...의 최대 path sum 2개 저장 </span>
+                <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;=</span> <span class="n">dp</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span> 
+                    <span class="n">dp</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">dp</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="p">,</span> <span class="n">dp</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="n">dp</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">dp</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+            <span class="k">return</span> <span class="n">dp</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Step 2. re-rooting </span>
+        <span class="c1"># 부모 쪽 (트리의 나머지 방향)도 하나의 자식처럼 취급해서 각 노드가 루트가 될 때의 최댓값 dp[node][0]을 완성 </span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        parent (rooted at 0) -&gt; node -&gt; children </span>
+<span class="sd">        -&gt; </span>
+<span class="sd">        node - parent (consider it as another child)</span>
+<span class="sd">             - chldren </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">dfs2</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">parent</span> <span class="o">!=</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">dp</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">price</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">==</span> <span class="n">dp</span><span class="p">[</span><span class="n">parent</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span> <span class="c1"># 현재 parent에서 node로 가는 길이 가장 큰 path인 경우 </span>
+                    <span class="c1"># 현재 node가 root가 될 경우, 가장 큰 path sum의 candidate은</span>
+                    <span class="c1"># 현재 노드를 포함하지 않은 2등을 사용해서 계산 </span>
+                    <span class="n">parent_subtree_max_value</span> <span class="o">=</span> <span class="n">dp</span><span class="p">[</span><span class="n">parent</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">price</span><span class="p">[</span><span class="n">parent</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span> <span class="c1"># 현재 parent에서 node로 가는 길이 현재 노드로 가는 길이 아닌 경우, </span>
+                    <span class="c1"># 현재 node로 re-rooting할때 가장 큰 값은 현재 node를 포함하지 않은 1등 path를 이용하여 계산 </span>
+                    <span class="n">parent_subtree_max_value</span> <span class="o">=</span> <span class="n">dp</span><span class="p">[</span><span class="n">parent</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">price</span><span class="p">[</span><span class="n">parent</span><span class="p">]</span>
+                
+                <span class="c1"># update </span>
+                <span class="k">if</span> <span class="n">parent_subtree_max_value</span> <span class="o">&gt;=</span> <span class="n">dp</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="n">dp</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">dp</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">parent_subtree_max_value</span><span class="p">,</span> <span class="n">dp</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="n">parent_subtree_max_value</span> <span class="o">&gt;</span> <span class="n">dp</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">dp</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">parent_subtree_max_value</span>
+
+            <span class="k">for</span> <span class="n">next_node</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">[</span><span class="n">node</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">next_node</span> <span class="o">==</span> <span class="n">parent</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">dfs2</span><span class="p">(</span><span class="n">next_node</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span>
+
+        <span class="n">dfs1</span><span class="p">()</span> 
+        <span class="n">dfs2</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dp</span><span class="p">)</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">6</span><span class="p">;</span> <span class="n">edges</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">]];</span> <span class="n">price</span> <span class="o">=</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
+<span class="n">sol</span> <span class="o">=</span> <span class="n">Solution</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">maxOutput</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">price</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</section>
 </section>
 <section id="id4">
 <h2>코테 기출<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
@@ -1270,6 +1379,7 @@ return <span class="gs">**the shortest possible length of the compressed represe
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#diameter-of-binary-tree">Diameter of Binary Tree</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#longest-path-with-different-adjacent-character">Longest Path with Different Adjacent Character</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#binary-tree-max-path-sum">Binary Tree Max Path Sum</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#difference-between-maximum-and-minimum-price-sum">Difference Between Maximum and Minimum Price Sum</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">코테 기출</a><ul class="nav section-nav flex-column">
