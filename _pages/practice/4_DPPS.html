@@ -379,6 +379,8 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#binary-tree-max-path-sum">Binary Tree Max Path Sum</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#difference-between-maximum-and-minimum-price-sum">Difference Between Maximum and Minimum Price Sum</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#house-robber-3">House Robber 3</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#maximum-sum-bst-in-binary-tree">Maximum Sum BST in Binary Tree</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#binary-tree-cameras">Binary Tree Cameras</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">코테 기출</a><ul class="nav section-nav flex-column">
@@ -1327,6 +1329,134 @@ dp[parent][1] += max(dp[child][0], dp[child][1])</p></li>
 </div>
 </div>
 </section>
+<section id="maximum-sum-bst-in-binary-tree">
+<h3>Maximum Sum BST in Binary Tree<a class="headerlink" href="#maximum-sum-bst-in-binary-tree" title="Link to this heading">#</a></h3>
+<div class="dropdown admonition">
+<p class="admonition-title">Solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">the maximum sum of all &quot;keys&quot; of &quot;any&quot; sub-tree which is also a Binary Search Tree (BST)</span>
+<span class="sd">- keys가 뭐지? = Node.val </span>
+<span class="sd">- </span>
+<span class="sd">Constraints </span>
+<span class="sd">- 1 &lt;= N &lt;= 4*1e4 </span>
+<span class="sd">- -4*1e4 &lt;= Node.val &lt;= 4*1e4</span>
+
+<span class="sd">예시:</span>
+<span class="sd">root = [-4, -2, -5]</span>
+<span class="sd">Output= 0 </span>
+<span class="sd">-&gt; 모든 값이 음수라서 빈 BST를 반환한다...</span>
+<span class="sd">-&gt; return 값은 0보다는 커야한다는 건가? </span>
+
+<span class="sd">Hint </span>
+<span class="sd">1. Create a datastructure with 4 parameters: (sum, isBST, mostLeft, mostRight).</span>
+<span class="sd">    -&gt; 예를 들어, [1, None, 10, -5, 20]을 보면, node 10에서는 BST이지만, root 1에서는 BST가 아닌 이유는, right subtree의 mostLeft값이 현재 노드 값인 1보다 작기 때문이다. </span>
+<span class="sd">    -&gt; 즉, post-order로 tree를 돌때, 다음 아래의 2가지 조건을 만족해야, 현재 노드에서도 BST를 만족한다.  </span>
+<span class="sd">        - right subtree의 mostLeft 값 &gt; Node.val </span>
+<span class="sd">        - left subtree의 mostRight값 &lt; Node.val</span>
+<span class="sd">    -&gt; </span>
+<span class="sd">2. In each node compute theses parameters, following the conditions of a Binary Search Tree.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span> 
+<span class="c1"># Definition for a binary tree node.</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TreeNode</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">=</span> <span class="n">val</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">left</span> <span class="o">=</span> <span class="n">left</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right</span> <span class="o">=</span> <span class="n">right</span>
+
+    
+<span class="k">def</span><span class="w"> </span><span class="nf">build_tree</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TreeNode</span><span class="p">]:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span> 
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">arr</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span> 
+    <span class="n">root</span> <span class="o">=</span> <span class="n">TreeNode</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="mi">1</span> 
+
+    <span class="k">while</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="ow">and</span> <span class="n">arr</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">left</span> <span class="o">=</span> <span class="n">TreeNode</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+            <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">left</span><span class="p">)</span>
+        <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span> 
+        <span class="k">if</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="ow">and</span> <span class="n">arr</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">right</span> <span class="o">=</span> <span class="n">TreeNode</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+            <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">right</span><span class="p">)</span>
+        <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span> 
+    
+    <span class="k">return</span> <span class="n">root</span> 
+
+
+<span class="n">MAX</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1e9</span><span class="p">)</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">NodeState</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">isBST</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isBST</span> <span class="o">=</span> <span class="n">isBST</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mostLeft</span> <span class="o">=</span> <span class="n">MAX</span> <span class="c1"># 현재 노드의 left subtree중 가장 큰 값</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mostRight</span> <span class="o">=</span> <span class="o">-</span><span class="n">MAX</span> <span class="c1"># 현재 노드의 right subtree중 가장 작은 값 </span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">maxSumBST</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TreeNode</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+
+        <span class="n">maxsum</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">postorder_dfs</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+            <span class="k">nonlocal</span> <span class="n">maxsum</span> 
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">NodeState</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># None node는 BST로 확정 </span>
+            
+            <span class="n">leftState</span> <span class="o">=</span> <span class="n">postorder_dfs</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">left</span><span class="p">)</span>
+            <span class="n">rightState</span> <span class="o">=</span> <span class="n">postorder_dfs</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">right</span><span class="p">)</span>
+
+            <span class="n">curNodeState</span> <span class="o">=</span> <span class="n">NodeState</span><span class="p">()</span> <span class="c1"># leaf node부터는 isBST = False 기본값 </span>
+            
+            <span class="k">if</span> <span class="n">leftState</span><span class="o">.</span><span class="n">isBST</span> <span class="ow">and</span> <span class="n">rightState</span><span class="o">.</span><span class="n">isBST</span><span class="p">:</span>
+                <span class="c1"># 비교할때는 </span>
+                <span class="c1"># left subtree의 가장 큰 값 &lt; node.val &lt; right subtree의 가장 작은 값 </span>
+                <span class="k">if</span> <span class="n">leftState</span><span class="o">.</span><span class="n">mostRight</span> <span class="o">&lt;</span> <span class="n">node</span><span class="o">.</span><span class="n">val</span> <span class="o">&lt;</span> <span class="n">rightState</span><span class="o">.</span><span class="n">mostLeft</span><span class="p">:</span> <span class="c1"># 현재노드가 BST일 조건 </span>
+                    <span class="n">curNodeState</span><span class="o">.</span><span class="n">isBST</span><span class="o">=</span> <span class="kc">True</span> 
+                    <span class="n">curNodeState</span><span class="o">.</span><span class="n">sum</span> <span class="o">=</span> <span class="n">leftState</span><span class="o">.</span><span class="n">sum</span> <span class="o">+</span> <span class="n">rightState</span><span class="o">.</span><span class="n">sum</span> <span class="o">+</span> <span class="n">node</span><span class="o">.</span><span class="n">val</span> 
+                    <span class="c1"># 현재 노드가 BST일때만, maxsum update </span>
+                    <span class="n">maxsum</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">maxsum</span><span class="p">,</span> <span class="n">curNodeState</span><span class="o">.</span><span class="n">sum</span><span class="p">)</span>
+            <span class="c1"># 현재노드가 BST임과 상관없이, 이 값들은 계속 갱신됨</span>
+            <span class="c1"># 갱신할때는, 다음 노드를 위해 현재 노드의 가장 왼쪽 값은 left 트리의 가장 작은 값이 되어야함. </span>
+            <span class="n">curNodeState</span><span class="o">.</span><span class="n">mostLeft</span> <span class="o">=</span> <span class="n">leftState</span><span class="o">.</span><span class="n">mostLeft</span> <span class="k">if</span> <span class="n">leftState</span><span class="o">.</span><span class="n">mostLeft</span> <span class="o">!=</span> <span class="n">MAX</span> <span class="k">else</span> <span class="n">node</span><span class="o">.</span><span class="n">val</span>
+            <span class="n">curNodeState</span><span class="o">.</span><span class="n">mostRight</span> <span class="o">=</span> <span class="n">rightState</span><span class="o">.</span><span class="n">mostRight</span> <span class="k">if</span> <span class="n">rightState</span><span class="o">.</span><span class="n">mostRight</span> <span class="o">!=</span> <span class="o">-</span><span class="n">MAX</span> <span class="k">else</span> <span class="n">node</span><span class="o">.</span><span class="n">val</span>
+
+            <span class="k">return</span> <span class="n">curNodeState</span>
+        
+        <span class="n">postorder_dfs</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">maxsum</span>
+
+
+
+<span class="c1"># arr = [-4, -2, -5] # False, 0</span>
+<span class="c1"># arr = [3, 1, 4, 0, 2, 1, 6] # 11 </span>
+<span class="c1"># arr = [1, None, 3] # True, 4</span>
+<span class="c1"># arr = [1, 2, None] # False, 2</span>
+<span class="c1"># arr = [1, 2, 3] # False , 3</span>
+<span class="c1"># arr = [2, 1, 3] # True, 6</span>
+<span class="c1"># arr = [1, 4, 3, 2, 4, 2, 5, None, None, None, None, None, None, 4, 6 ] # False, 20 </span>
+<span class="c1"># arr = [4, 3, None, 1, 2] # False, 2 </span>
+<span class="c1"># arr = [5, 4, 8, 3, None, 6, 3] # 7</span>
+<span class="c1"># arr = [1, None,10,-5,20] # 25</span>
+<span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">17</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">15</span><span class="p">]</span> <span class="c1"># 84 </span>
+
+<span class="n">root</span> <span class="o">=</span> <span class="n">build_tree</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+<span class="n">sol</span> <span class="o">=</span> <span class="n">Solution</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">maxSumBST</span><span class="p">(</span><span class="n">root</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="binary-tree-cameras">
+<h3>Binary Tree Cameras<a class="headerlink" href="#binary-tree-cameras" title="Link to this heading">#</a></h3>
+</section>
 </section>
 <section id="id4">
 <h2>코테 기출<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
@@ -1470,6 +1600,8 @@ return <span class="gs">**the shortest possible length of the compressed represe
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#binary-tree-max-path-sum">Binary Tree Max Path Sum</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#difference-between-maximum-and-minimum-price-sum">Difference Between Maximum and Minimum Price Sum</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#house-robber-3">House Robber 3</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#maximum-sum-bst-in-binary-tree">Maximum Sum BST in Binary Tree</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#binary-tree-cameras">Binary Tree Cameras</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">코테 기출</a><ul class="nav section-nav flex-column">
