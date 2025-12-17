@@ -378,7 +378,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#longest-path-with-different-adjacent-character">Longest Path with Different Adjacent Character</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#binary-tree-max-path-sum">Binary Tree Max Path Sum</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#difference-between-maximum-and-minimum-price-sum">Difference Between Maximum and Minimum Price Sum</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#house-roober-3">House Roober 3</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#house-robber-3">House Robber 3</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">코테 기출</a><ul class="nav section-nav flex-column">
@@ -1240,8 +1240,87 @@ dp[parent][1] += max(dp[child][0], dp[child][1])</p></li>
 </div>
 </div>
 </section>
-<section id="house-roober-3">
-<h3>House Roober 3<a class="headerlink" href="#house-roober-3" title="Link to this heading">#</a></h3>
+<section id="house-robber-3">
+<h3>House Robber 3<a class="headerlink" href="#house-robber-3" title="Link to this heading">#</a></h3>
+<div class="dropdown admonition">
+<p class="admonition-title">Solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">entrance: root </span>
+<span class="sd">- binary tree </span>
+<span class="sd">- automatic contact to the polic </span>
+<span class="sd">    - if two directly-linked houses were broken into on the same night </span>
+<span class="sd">- given the root of the binary tree, return the maximum amount of money the thief can rob without alerting the police </span>
+
+<span class="sd">Idea </span>
+<span class="sd">- postorder DFS, children을 모두 계산한 후에 현재 그 children의 parent를 계산 </span>
+<span class="sd">- parent를 rob한 경우: children 반드시 들르면 안됨. </span>
+<span class="sd">- parent를 rob하지 않은 경우: children의 rob/unrob 상관없음. </span>
+
+
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span> 
+
+<span class="c1"># Definition for a binary tree node.</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TreeNode</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">=</span> <span class="n">val</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">left</span> <span class="o">=</span> <span class="n">left</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right</span> <span class="o">=</span> <span class="n">right</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rob</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TreeNode</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        
+        <span class="k">def</span><span class="w"> </span><span class="nf">dfs</span><span class="p">(</span><span class="n">node</span><span class="p">):</span> <span class="c1"># post-order </span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+            
+            
+            <span class="n">left_wo</span><span class="p">,</span> <span class="n">left_w</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">left</span><span class="p">)</span>
+            <span class="n">right_wo</span><span class="p">,</span> <span class="n">right_w</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">right</span><span class="p">)</span>
+
+            <span class="c1"># 현재 노드 계산 </span>
+            <span class="n">cur_node_wo</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">left_wo</span><span class="p">,</span> <span class="n">left_w</span><span class="p">)</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="n">right_wo</span><span class="p">,</span> <span class="n">right_w</span><span class="p">)</span>
+            <span class="n">cur_node_w</span> <span class="o">=</span> <span class="n">left_wo</span> <span class="o">+</span> <span class="n">right_wo</span> <span class="o">+</span> <span class="n">node</span><span class="o">.</span><span class="n">val</span> 
+            <span class="k">return</span> <span class="n">cur_node_wo</span><span class="p">,</span> <span class="n">cur_node_w</span>
+        
+        <span class="n">wo_best</span><span class="p">,</span> <span class="n">w_best</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">wo_best</span><span class="p">,</span> <span class="n">w_best</span><span class="p">)</span>
+    
+<span class="k">def</span><span class="w"> </span><span class="nf">build_tree</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span> 
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">arr</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span> 
+    
+    <span class="n">root</span> <span class="o">=</span> <span class="n">TreeNode</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="mi">1</span> 
+    <span class="k">while</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="ow">and</span> <span class="n">arr</span><span class="p">[</span><span class="n">idx</span><span class="p">]:</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">left</span> <span class="o">=</span> <span class="n">TreeNode</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+            <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">left</span><span class="p">)</span>
+        <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span> 
+        <span class="k">if</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="ow">and</span> <span class="n">arr</span><span class="p">[</span><span class="n">idx</span><span class="p">]:</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">right</span> <span class="o">=</span> <span class="n">TreeNode</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+            <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">right</span><span class="p">)</span>
+        <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span> 
+    <span class="k">return</span> <span class="n">root</span> 
+
+<span class="c1"># arr = [3, 2, 3, None, 3, None, 1] # 7</span>
+<span class="c1"># arr = [3, 4, 5, 1, 3, None, 1] # 9</span>
+<span class="c1"># arr = [1] # 1 </span>
+<span class="c1"># arr = [1, 100, 2] # 102</span>
+<span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="c1"># 7</span>
+<span class="n">root</span> <span class="o">=</span> <span class="n">build_tree</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+
+<span class="n">sol</span> <span class="o">=</span> <span class="n">Solution</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">rob</span><span class="p">(</span><span class="n">root</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
 </section>
 </section>
 <section id="id4">
@@ -1385,7 +1464,7 @@ return <span class="gs">**the shortest possible length of the compressed represe
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#longest-path-with-different-adjacent-character">Longest Path with Different Adjacent Character</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#binary-tree-max-path-sum">Binary Tree Max Path Sum</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#difference-between-maximum-and-minimum-price-sum">Difference Between Maximum and Minimum Price Sum</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#house-roober-3">House Roober 3</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#house-robber-3">House Robber 3</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">코테 기출</a><ul class="nav section-nav flex-column">

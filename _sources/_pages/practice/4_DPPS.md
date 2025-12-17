@@ -352,7 +352,15 @@ Top-down으로 풀 경우, 트리에 3개의 노드가 있는 경우 위의 그�
 ```
 ````
 
-### House Roober 3 
+### House Robber 3 
+
+````{admonition} Solution
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/8.py
+:language: python
+```
+````
 
 
 ## 코테 기출 
