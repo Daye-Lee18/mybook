@@ -60,7 +60,11 @@ def solve(...):
   - [Binary Tree Max Path Sum](https://leetcode.com/problems/binary-tree-maximum-path-sum/description/)
   - [Difference Between Maximum and Minimum Price Sum](https://leetcode.com/problems/difference-between-maximum-and-minimum-price-sum/description/)
   - [House Robber 3](https://leetcode.com/problems/house-robber-iii/description/)
-
+  - [Maximum Sum BST in Binary Tree](https://leetcode.com/problems/maximum-sum-bst-in-binary-tree/description/?envType=problem-list-v2&envId=50v8rtm7)
+  - [Binary Tree Cameras](https://leetcode.com/problems/binary-tree-cameras/description/?envType=problem-list-v2&envId=50v8rtm7)
+  - [Kth Ancestor of a Tree Node](https://leetcode.com/problems/kth-ancestor-of-a-tree-node/?envType=problem-list-v2&envId=50v8rtm7)
+  - [Find the Shortest Superstring](https://leetcode.com/problems/find-the-shortest-superstring/description/?envType=problem-list-v2&envId=50v8rtm7)
+  - [Number of Ways to Reorder Array to Get Same BST](https://leetcode.com/problems/number-of-ways-to-reorder-array-to-get-same-bst/description/?envType=problem-list-v2&envId=50v8rtm7)
 - 코테 기출 
   - [색깔 트리](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/color-tree/description)
   - [코드트리 메신저](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/codetree-messenger/description)
