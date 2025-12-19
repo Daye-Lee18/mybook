@@ -377,6 +377,22 @@ Top-down으로 풀 경우, 트리에 3개의 노드가 있는 경우 위의 그�
 
 ### Binary Tree Cameras 
 
+````{admonition} Solution 
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/10.py
+:language: python
+```
+````
+
+````{admonition} Solution2
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/10-2.py
+:language: python
+```
+````
+
 ## 코테 기출 
 
 ### 색깔 트리 

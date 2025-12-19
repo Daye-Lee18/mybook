@@ -1456,6 +1456,158 @@ dp[parent][1] += max(dp[child][0], dp[child][1])</p></li>
 </section>
 <section id="binary-tree-cameras">
 <h3>Binary Tree Cameras<a class="headerlink" href="#binary-tree-cameras" title="Link to this heading">#</a></h3>
+<div class="dropdown admonition">
+<p class="admonition-title">Solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">install cameras on the tree nodes where each camera at a node can monitor its parent, itself, </span>
+<span class="sd">and its immediate children </span>
+<span class="sd">- Binary Tree에서는 총 4개 (parent, itself, left, right)</span>
+
+<span class="sd">Return </span>
+<span class="sd">- the minmum number of cameras needed to monitor all nodes of the tree </span>
+
+<span class="sd">Constraints </span>
+<span class="sd">- 1&lt;= the number of nodes &lt;= 1000</span>
+<span class="sd">- Node.val == 0  </span>
+
+<span class="sd">Idea</span>
+<span class="sd">-  when deciding to place a camera at a node, </span>
+<span class="sd">we might have placed cameras to cover some &quot;subset of this node&quot;, its left child, and its right child already. </span>
+<span class="sd">- `solve(node)` function returns -&gt; how many cameras it takes to cover the subtree at this node in various states. </span>
+<span class="sd">- covered vs. camera placement </span>
+<span class="sd">- 3 states for dp table </span>
+<span class="sd">    - Assumption: All the nodes below this node are covered </span>
+<span class="sd">    [State 0] Strict subtree: The current node is not covered = 부모가 나중에 덮어줄 수 있다. </span>
+<span class="sd">    [State 1] Normal subtree: The current node is covered but there is no camera here (on the node)</span>
+<span class="sd">    [Stete 2] Placed camera: The current node is covered but there is a camera here (which may cover nodes above this node. -&gt; 위쪽도 커버 가능)</span>
+
+<span class="sd">- Once we frame the problem in this way, the answer falls out: </span>
+<span class="sd">    - To cover a strict subtree, the children of this node must be in state 1. </span>
+<span class="sd">    - To cover a normal subtree without placing a camera here,</span>
+<span class="sd">        - the children of this node must be in states 1 or 2, and at least one of those children must be in state 2 </span>
+<span class="sd">    - To cover the subtree when placing a camera here, </span>
+<span class="sd">        - the children can be in any state.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="c1"># Definition for a binary tree node.</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TreeNode</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">=</span> <span class="n">val</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">left</span> <span class="o">=</span> <span class="n">left</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right</span> <span class="o">=</span> <span class="n">right</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">minCameraCover</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TreeNode</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        
+        <span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TreeNode</span><span class="p">],</span> <span class="n">parent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TreeNode</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span> <span class="c1"># 불가능한 상태를 INF로 저장함으로써, 최종값으로 선택되지 못하도록 함.</span>
+            
+            <span class="n">left</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span>
+            <span class="n">right</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">right</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span>
+
+            <span class="n">dp0</span> <span class="o">=</span> <span class="n">left</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">right</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># state 0</span>
+            <span class="n">dp1</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">left</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="nb">min</span><span class="p">(</span><span class="n">right</span><span class="p">[</span><span class="mi">1</span><span class="p">:]),</span> <span class="nb">min</span><span class="p">(</span><span class="n">left</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span><span class="o">+</span> <span class="n">right</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="c1"># state 1 </span>
+            <span class="n">dp2</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">+</span> <span class="nb">min</span><span class="p">(</span><span class="n">right</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="c1"># state 2 </span>
+            
+            <span class="k">return</span> <span class="n">dp0</span><span class="p">,</span> <span class="n">dp1</span><span class="p">,</span> <span class="n">dp2</span>
+        
+        <span class="n">dp0</span><span class="p">,</span> <span class="n">dp1</span><span class="p">,</span> <span class="n">dp2</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="c1"># return min(max(1, dp[root][1]), max(1,dp[root][2]))</span>
+        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">dp1</span><span class="p">,</span> <span class="n">dp2</span><span class="p">)</span>
+    
+<span class="k">def</span><span class="w"> </span><span class="nf">build_tree</span><span class="p">(</span><span class="n">arr</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TreeNode</span><span class="p">]:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span> 
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">arr</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span> 
+    
+    <span class="n">root</span> <span class="o">=</span> <span class="n">TreeNode</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+
+    <span class="n">idx</span> <span class="o">=</span> <span class="mi">1</span> 
+    <span class="k">while</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="ow">and</span> <span class="n">arr</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">left</span> <span class="o">=</span> <span class="n">TreeNode</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+            <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">left</span><span class="p">)</span>
+        <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span> 
+        <span class="k">if</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="ow">and</span> <span class="n">arr</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">right</span> <span class="o">=</span> <span class="n">TreeNode</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+            <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">right</span><span class="p">)</span>
+        <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span> 
+    
+    <span class="k">return</span> <span class="n">root</span> 
+
+
+<span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># 1 </span>
+<span class="c1"># arr = [0, 0] # 1</span>
+<span class="c1"># arr = [0, 0, None, 0, 0] # 1 </span>
+<span class="c1"># arr = [0, 0, None, 0, None, 0, None, None, 0] # 2</span>
+<span class="c1"># arr = [0,0,None,None,0,0,None,None,0,0] # 2</span>
+<span class="n">root</span> <span class="o">=</span> <span class="n">build_tree</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+<span class="n">sol</span> <span class="o">=</span> <span class="n">Solution</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">minCameraCover</span><span class="p">(</span><span class="n">root</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">Solution2</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span> 
+
+<span class="k">class</span><span class="w"> </span><span class="nc">TreeNode</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">=</span> <span class="n">val</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">left</span> <span class="o">=</span> <span class="n">left</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right</span> <span class="o">=</span> <span class="n">right</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">minCameraCover</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TreeNode</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">root</span><span class="p">:</span> <span class="k">return</span> <span class="mi">0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cameras</span> <span class="o">=</span> <span class="mi">0</span> 
+
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        dfs function returns the number of nodes covered and </span>
+<span class="sd">        `self.cameras` keeps track on the overall camera </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">dfs</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TreeNode</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">0</span>
+            
+            <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">left</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">right</span><span class="p">):</span>
+                <span class="k">return</span> <span class="mi">1</span> 
+            
+            <span class="n">left</span> <span class="o">=</span> <span class="mi">3</span> <span class="p">;</span><span class="n">right</span><span class="o">=</span> <span class="mi">3</span>  <span class="c1"># default value </span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">left</span><span class="p">):</span>
+                <span class="n">left</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">left</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">right</span><span class="p">):</span>
+                <span class="n">right</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">right</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">left</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">right</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cameras</span> <span class="o">+=</span> <span class="mi">1</span> 
+                <span class="k">return</span> <span class="mi">2</span> 
+            
+            <span class="k">if</span> <span class="n">left</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">right</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">1</span> 
+            
+            <span class="k">if</span> <span class="n">left</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">right</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">3</span> 
+        
+        <span class="c1">## run </span>
+        <span class="n">cover</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cover</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cameras</span> <span class="o">+=</span> <span class="mi">1</span> 
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cameras</span> 
+
+</pre></div>
+</div>
+</div>
 </section>
 </section>
 <section id="id4">
