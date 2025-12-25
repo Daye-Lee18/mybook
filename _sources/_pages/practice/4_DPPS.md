@@ -393,9 +393,34 @@ Top-down으로 풀 경우, 트리에 3개의 노드가 있는 경우 위의 그�
 ```
 ````
 
+### Kth Ancestor of a node 
+
+````{admonition} Solution 
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/11.py
+:language: python
+````
+
 ## 코테 기출 
 
 ### 색깔 트리 
+
+````{admonition} Explanation
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/12_ex.py
+:language: python 
+````
+
+````{admonition} Solution 
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/12.py
+:language: python 
+````
+
+
 
 ## 3번: String Compression II 
 

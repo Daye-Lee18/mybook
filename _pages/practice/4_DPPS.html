@@ -381,6 +381,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#house-robber-3">House Robber 3</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#maximum-sum-bst-in-binary-tree">Maximum Sum BST in Binary Tree</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#binary-tree-cameras">Binary Tree Cameras</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kth-ancestor-of-a-node">Kth Ancestor of a node</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">코테 기출</a><ul class="nav section-nav flex-column">
@@ -1609,11 +1610,260 @@ dp[parent][1] += max(dp[child][0], dp[child][1])</p></li>
 </div>
 </div>
 </section>
+<section id="kth-ancestor-of-a-node">
+<h3>Kth Ancestor of a node<a class="headerlink" href="#kth-ancestor-of-a-node" title="Link to this heading">#</a></h3>
+<div class="dropdown admonition">
+<p class="admonition-title">Solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span> 
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Idea:</span>
+<span class="sd">- binary lifing (a.k.a. doubling / sparse table): store only ancestors at distances 2*j</span>
+<span class="sd">    - Use sparse table (dp application) to tralvel the tree upwards in a fast way</span>
+<span class="sd">- memory: O(nlogn)</span>
+<span class="sd">- time: O(nlogn)</span>
+
+<span class="sd">Constraints:</span>
+<span class="sd">- 1 &lt;= k, n &lt;= 5*1e4 </span>
+<span class="sd">- there will be at most 5*1e4 queries ~ O(5*1e4)</span>
+
+<span class="sd">NOTE: k-ary tree (not binary)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">TreeAncestor</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        parent[i] = the parent of `ith` node </span>
+<span class="sd">        the root node = 0 </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">LOG</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">bit_length</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">up</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">n</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">LOG</span><span class="p">)]</span> <span class="c1"># self.up[j][v] = 2^j-th ancestor of v, or -1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">up</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">parent</span><span class="p">[:]</span> <span class="c1"># 2^0 = 1st parent </span>
+
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">LOG</span><span class="p">):</span>
+            <span class="n">prev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">up</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">cur</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">up</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">prev</span><span class="p">[</span><span class="n">v</span><span class="p">]</span>
+                <span class="n">cur</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="n">p</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="n">prev</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> 
+
+
+
+
+    <span class="c1"># Time Complexity : O(1)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getKthAncestor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span> 
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Find the `kth` ancestor of a given node </span>
+<span class="sd">        -&gt; `kth` ancestor of a tree nodei s the `kth` node in the path that node to the root node</span>
+<span class="sd">        -&gt; if there is no such ancestor return -1  </span>
+<span class="sd">        -&gt; 1 &lt;= k &lt;= 5*1e4 </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># jump using bits of k </span>
+        <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">node</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">k</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">k</span><span class="o">&amp;</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">up</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">node</span><span class="p">]</span>
+            <span class="n">k</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span> <span class="c1"># at most 16 jumps </span>
+            <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span> 
+        <span class="k">return</span> <span class="n">node</span> 
+        
+        
+
+<span class="c1"># n = 7; parent = [-1, 0, 0, 1, 1, 2 ,2]; node = 3; k=1 # 1 </span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">7</span><span class="p">;</span> <span class="n">parent</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="p">,</span><span class="mi">2</span><span class="p">];</span> <span class="n">node</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span> <span class="c1"># 0</span>
+<span class="c1"># n = 7; parent = [-1, 0, 0, 1, 1, 2 ,2]; node = 6; k=3 # -1</span>
+<span class="c1"># Your TreeAncestor object will be instantiated and called as such:</span>
+<span class="n">obj</span> <span class="o">=</span> <span class="n">TreeAncestor</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>
+<span class="n">param_1</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">getKthAncestor</span><span class="p">(</span><span class="n">node</span><span class="p">,</span><span class="n">k</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">param_1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
 </section>
 <section id="id4">
 <h2>코테 기출<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
 <section id="id5">
 <h3>색깔 트리<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<div class="dropdown admonition">
+<p class="admonition-title">Explanation</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">색깔 트리 </span>
+
+<span class="sd">Constraints: </span>
+<span class="sd">- Time: 10 sec </span>
+<span class="sd">- Memory: 200 MB </span>
+
+<span class="sd">필요한 자료 구조:</span>
+<span class="sd">direct_parents = list()</span>
+<span class="sd">colors = list()</span>
+<span class="sd">max_depths = list()</span>
+<span class="sd">dicret_childrens = list(list()) # 이거 보관하는게 쉽징않을수도 있엄. </span>
+<span class="sd">possible_dpeths = list()</span>
+
+<span class="sd">- 동적으로 노드를 추가하고, 색깔을 변경할 수 있는 명령 존재 </span>
+<span class="sd">- k-ary tree (binary트리라고 안되어 있음.)</span>
+<span class="sd">- 처음에는 아무 노드도 존재하지 않음. </span>
+<span class="sd">- 노드 속성 </span>
+<span class="sd">    - 고유 번호 id </span>
+<span class="sd">    - 부모 노드 번호 p_id : -1이면 새로운 트리의 루트 노드</span>
+<span class="sd">    - 색깔 color: 1빨, 2주, 3노, 4초, 5파 </span>
+<span class="sd">    - 최대 깊이 max_depth : 해당 노드를 루트로 하는 서브트리의 최대 깊이 </span>
+<span class="sd">        - 자기 자신 노드의 깊이는 1</span>
+<span class="sd">    - TODO 가능 깊이:</span>
+<span class="sd">        - min(parent노드의 possible depth - 1, 자신의 max_depth)</span>
+<span class="sd">        - root node의 경우 = max_depth </span>
+
+<span class="sd">cmd (1): 트리에 노드 추가</span>
+<span class="sd">- 기존 노드들의 Max_depth값으로 인해 새로운 노드가 추가됨으로써 &quot;모순이 발생&quot;하면, </span>
+<span class="sd">    &gt; TODO: 모순 체크 </span>
+<span class="sd">        - 현재 노드의 부모 possible depth == 1 인 경우 모순 </span>
+<span class="sd">- 현재 노드는 추가하지 않는다. </span>
+<span class="sd">&gt; 현재 노드에서 possible depth를 계산할 수 있을 것 같음. </span>
+<span class="sd">- 최대 2*1e4 번 진행 </span>
+
+<span class="sd">cmd (2): 색깔 변경 </span>
+<span class="sd">- 특정 노드 m_id 를 루트로 하는 서브트리의 &quot;모든&quot; 노드의 색깔을 지정된 색 color 로 변경 </span>
+<span class="sd">- 최대 5*1e4 번 주어짐. </span>
+<span class="sd">&gt; XXX : 서브 트리의 모든 노드를 효율적으로 색깔 변경하는 방법 고안 </span>
+<span class="sd">    - 서브 트리는 해당 노드의 children 전체 집합을 의미 </span>
+<span class="sd">    - children = [[] for _ in range(n)]으로 함</span>
+<span class="sd">    - time complexity : ~O(N) * 5*1e4 </span>
+
+<span class="sd">cmd (3): 색깔 조회 </span>
+<span class="sd">- 특정 노드 m_id의 현재 색깔을 조회 </span>
+<span class="sd">&gt; O(1) 시간 복잡도로 조회하는 방법 있을까? </span>
+<span class="sd">&gt; node_color[m_id] </span>
+
+<span class="sd">cmd (4): 점수 조회 </span>
+<span class="sd">- 모든 노드의 가치를 계산한여, 가치 &quot;제곱&quot;의 합을 출력 </span>
+<span class="sd">- 각 노드의 가치: </span>
+<span class="sd">    : 해당 노드를 루트로 하는 서브트리 내 서로 다른 색깔의 &quot;수&quot; </span>
+<span class="sd">- DFS로 leaf node부터 수를 계산해서 하면 될 것 같음 </span>
+<span class="sd">    - time complexity O(N) ~ O(2*1e4)</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">N</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="mf">1e4</span> <span class="p">)</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="mf">1e5</span> 
+
+<span class="nb">print</span><span class="p">(</span><span class="n">N</span><span class="o">*</span><span class="n">Q</span><span class="p">)</span> <span class="c1"># 2*1e9 &gt;= 1 sec </span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span> 
+
+<span class="n">childrens</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span> <span class="c1"># 0.1 MB </span>
+<span class="n">childrens</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="n">childrens</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">*</span><span class="n">N</span>
+<span class="n">childrens</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">4</span><span class="p">]</span><span class="o">*</span><span class="n">N</span><span class="p">)</span>
+<span class="n">childrens</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">4</span><span class="p">]</span><span class="o">*</span><span class="n">N</span><span class="p">)</span>
+<span class="c1"># print(childrens)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">childrens</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">dir</span><span class="p">(</span><span class="n">childrens</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">childrens</span><span class="o">.</span><span class="fm">__hash__</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">childrens</span><span class="o">.</span><span class="n">__sizeof__</span><span class="p">))</span>
+
+<span class="n">visited1</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="n">v2</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="mi">2</span><span class="p">])</span>
+
+<span class="n">visited1</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">visited1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">Solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span> 
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span> <span class="p">,</span> <span class="n">deque</span> 
+
+<span class="c1"># sys.stdin = open(&#39;Input.txt&#39;)</span>
+<span class="nb">input</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span>
+
+<span class="n">Q</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">())</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">필요한 자료구조 </span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="n">direct_parents</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<span class="n">max_depths</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<span class="n">direct_childrens</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+<span class="n">possible_depths</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<span class="n">ROOT</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># tree전체의 Root node , 여러개 일 수 있음. 점수 조회를 위해서 필요 </span>
+<span class="n">total_point</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># 점수 조회시 최종 점수 계산 </span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">dfs</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">total_point</span> 
+
+    <span class="c1"># if not direct_childrens[node]: # leaf node인 경우 </span>
+    <span class="c1">#     total_point += 1 </span>
+    <span class="c1">#     return </span>
+    
+    <span class="n">visited</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="c1"># post-order dfs </span>
+    <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">direct_childrens</span><span class="p">[</span><span class="n">node</span><span class="p">]:</span> <span class="c1"># leaf node인 경우 자연스럽게 pass </span>
+        <span class="c1"># visited.add(colors[child])</span>
+        <span class="n">child_point</span><span class="p">,</span> <span class="n">child_visited</span> <span class="o">=</span>  <span class="n">dfs</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+        <span class="n">total_point</span> <span class="o">+=</span> <span class="n">child_point</span>
+        <span class="n">visited</span> <span class="o">=</span> <span class="n">visited</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">child_visited</span><span class="p">)</span>
+
+    <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">colors</span><span class="p">[</span><span class="n">node</span><span class="p">])</span>
+    <span class="n">cur_color_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">visited</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">cur_color_num</span> <span class="o">*</span> <span class="n">cur_color_num</span><span class="p">,</span> <span class="n">visited</span> <span class="c1"># 제곱의 합, 있는 색깔 </span>
+    
+
+
+
+
+<span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Q</span><span class="p">):</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+    <span class="k">if</span> <span class="n">cmd</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">100</span><span class="p">:</span> <span class="c1"># 노드 추가: O(1)</span>
+        <span class="n">m_id</span><span class="p">,</span> <span class="n">p_id</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">max_depth</span> <span class="o">=</span> <span class="n">cmd</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+        <span class="k">if</span> <span class="n">p_id</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">ROOT</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m_id</span><span class="p">)</span> <span class="c1"># NOTE: ROOT 는 하나가 아닐 수 있음. </span>
+        
+        <span class="c1"># root나 모순이 없는 경우에만 추가 </span>
+        <span class="k">if</span> <span class="n">p_id</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">possible_depths</span><span class="p">[</span><span class="n">p_id</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">direct_parents</span><span class="p">[</span><span class="n">m_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">p_id</span> 
+            <span class="n">colors</span><span class="p">[</span><span class="n">m_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">color</span> 
+            <span class="n">max_depths</span><span class="p">[</span><span class="n">m_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_depth</span> 
+            <span class="k">if</span> <span class="n">p_id</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">direct_childrens</span><span class="p">[</span><span class="n">p_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m_id</span><span class="p">)</span> <span class="c1"># linked list </span>
+            <span class="k">if</span> <span class="n">p_id</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">possible_depths</span><span class="p">[</span><span class="n">m_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_depth</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">possible_depths</span><span class="p">[</span><span class="n">m_id</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">max_depth</span><span class="p">,</span> <span class="n">possible_depths</span><span class="p">[</span><span class="n">p_id</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">cmd</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span> <span class="c1"># 색깔 변경 </span>
+        <span class="n">m_id</span><span class="p">,</span> <span class="n">color_changed</span> <span class="o">=</span> <span class="n">cmd</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+        <span class="n">q</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+        <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m_id</span><span class="p">)</span>
+
+        <span class="k">while</span> <span class="n">q</span><span class="p">:</span>
+            <span class="n">cur_id</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+
+            <span class="n">colors</span><span class="p">[</span><span class="n">cur_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">color_changed</span> <span class="c1"># 색깔 변경 </span>
+
+            <span class="n">q</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">direct_childrens</span><span class="p">[</span><span class="n">cur_id</span><span class="p">])</span>
+
+    <span class="k">elif</span> <span class="n">cmd</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">300</span><span class="p">:</span>
+        <span class="n">m_id</span> <span class="o">=</span> <span class="n">cmd</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">colors</span><span class="p">[</span><span class="n">m_id</span><span class="p">])</span>
+    
+    <span class="k">else</span><span class="p">:</span> <span class="c1"># cmd[0] == 400: 점수 조회</span>
+        <span class="c1"># print(&#39;a&#39;) </span>
+        <span class="n">total_point</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">root</span> <span class="ow">in</span> <span class="n">ROOT</span><span class="p">:</span>
+            <span class="n">root_point</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">dfs</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+            <span class="n">total_point</span> <span class="o">+=</span> <span class="n">root_point</span> 
+        <span class="nb">print</span><span class="p">(</span><span class="n">total_point</span><span class="p">)</span>
+
+</pre></div>
+</div>
+</div>
 </section>
 </section>
 <section id="string-compression-ii">
@@ -1754,6 +2004,7 @@ return <span class="gs">**the shortest possible length of the compressed represe
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#house-robber-3">House Robber 3</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#maximum-sum-bst-in-binary-tree">Maximum Sum BST in Binary Tree</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#binary-tree-cameras">Binary Tree Cameras</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kth-ancestor-of-a-node">Kth Ancestor of a node</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">코테 기출</a><ul class="nav section-nav flex-column">
