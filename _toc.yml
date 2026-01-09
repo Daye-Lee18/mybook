@@ -38,6 +38,7 @@ parts:
   - file: _pages/practice/5_shortest_pathPS
   - file: _pages/practice/6_sortPS
   - file: _pages/practice/11_linked_listPS
+  - file: _pages/practice/12_hash_tablesPS
 
 
 - caption: 시험 

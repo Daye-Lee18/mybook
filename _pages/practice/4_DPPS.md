@@ -13,6 +13,37 @@ kernelspec:
 ---
 # Lecture 4-2. DP 실습
 
+들어가기전, DP 문제를 풀 때 아래 정보들에 유념해서 문제를 푼다면 훨씬 도움이 될 것이다. 
+
+````{admonition} Things to think for a DP problem 
+:class: important 
+
+```{code-block} python 
+# 6개 checklist 
+# 1) State: dp[...]
+# 2) What to store: min/max/count/bool/value (필요시 prev/choice)
+# 3) Base case init
+# 4) Fill order: 작은 상태 → 큰 상태 (Top-down/Bottom-up)
+# 5) Transition
+# 6) Read answer
+
+def solve(...):
+    # 예: 2D (i, j)
+    dp = [[INF]* (n+1) for _ in range(m+1)]
+    # base cases
+    dp[0][0] = 0
+
+    for i in range(0, m+1):
+        for j in range(0, n+1):
+            if i>0:
+                dp[i][j] = min(dp[i][j], f(dp[i-1][j], ...))
+            if j>0:
+                dp[i][j] = min(dp[i][j], g(dp[i][j-1], ...))
+
+    return dp[m][n]
+```
+````
+
 - DP 고득점 Kit 
   - [N으로 표현](https://school.programmers.co.kr/learn/courses/30/lessons/42895)
   - [정수 삼각형](https://school.programmers.co.kr/learn/courses/30/lessons/43105)
@@ -20,17 +51,36 @@ kernelspec:
   - [사칙연산](https://school.programmers.co.kr/learn/courses/30/lessons/1843)
   - [도둑질](https://school.programmers.co.kr/learn/courses/30/lessons/42897)
 
+- Tree DP 
+  - [서브트리에 포함된 정점의 개수 세기](https://www.acmicpc.net/problem/15681): [정답](https://wikidocs.net/272872)
+  - [우수 마을](https://www.acmicpc.net/problem/1949): [정답](https://wikidocs.net/274552)
+  - [사회망 서비스](https://www.acmicpc.net/problem/2533): [정답](https://wikidocs.net/273100)
+  - [Diameter of Binary Tree](https://leetcode.com/problems/diameter-of-binary-tree/description/)
+  - [Longest Path with Different Adjacent Character](https://leetcode.com/problems/longest-path-with-different-adjacent-characters/description/)
+  - [Binary Tree Max Path Sum](https://leetcode.com/problems/binary-tree-maximum-path-sum/description/)
+  - [Difference Between Maximum and Minimum Price Sum](https://leetcode.com/problems/difference-between-maximum-and-minimum-price-sum/description/)
+  - [House Robber 3](https://leetcode.com/problems/house-robber-iii/description/)
+  - [Maximum Sum BST in Binary Tree](https://leetcode.com/problems/maximum-sum-bst-in-binary-tree/description/?envType=problem-list-v2&envId=50v8rtm7)
+  - [Binary Tree Cameras](https://leetcode.com/problems/binary-tree-cameras/description/?envType=problem-list-v2&envId=50v8rtm7)
+  - [Kth Ancestor of a Tree Node](https://leetcode.com/problems/kth-ancestor-of-a-tree-node/?envType=problem-list-v2&envId=50v8rtm7)
+  - [Find the Shortest Superstring](https://leetcode.com/problems/find-the-shortest-superstring/description/?envType=problem-list-v2&envId=50v8rtm7)
+  - [Number of Ways to Reorder Array to Get Same BST](https://leetcode.com/problems/number-of-ways-to-reorder-array-to-get-same-bst/description/?envType=problem-list-v2&envId=50v8rtm7)
+  
 - 코테 기출 
   - [색깔 트리](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/color-tree/description)
-    - [TreeDP 1: 서브트리에 포함된 정점의 개수 세기](https://www.acmicpc.net/problem/15681): [정답](https://wikidocs.net/272872)
-    - [TreeDP 2](https://www.acmicpc.net/problem/1949): [정답](https://wikidocs.net/274552)
-    - [TreeDP 3](https://www.acmicpc.net/problem/2533): [정답](https://wikidocs.net/273100)
   - [코드트리 메신저](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/codetree-messenger/description)
+    - [리트코드 1483. Kth Ancestor of a Tree Node](https://leetcode.com/problems/kth-ancestor-of-a-tree-node/description/)
+    - [리트코드 1993. Operations on Tree](https://leetcode.com/problems/operations-on-tree/description/)
+    - [백준 15681 트리와 쿼리](https://www.acmicpc.net/problem/15681)
+    - [백준 14267 회사 문화 1](https://www.acmicpc.net/problem/14267)
+    - [백준 17435 합성함수와 쿼리](https://www.acmicpc.net/problem/17435) 
+    - [백준 13511 트리와 쿼리 2](https://www.acmicpc.net/problem/13511) 
   - [String Compression II](https://leetcode.com/problems/string-compression-ii/description/)
 
-## 1번: 색깔 트리 
-### TreeDP 1
 
+## TreeDP
+
+### 서브트리의 정점 개수 세기 
 ````{admonition} Tree DP에서 Bottom-up 방식으로 구현하는 이유
 :class: dropdown 
 
@@ -196,7 +246,7 @@ print("\n".join(out))
 ```
 ````
 
-### TreeDP 2 
+### 우수 마을 
 
 ````{admonition} Top-down Solution 
 :class: dropdown 
@@ -224,16 +274,171 @@ print("\n".join(out))
 ```
 ````
 
-### TreeDP 3 
+### 사회망 서비스 
+
+````{admonition} Idea 
+:class: dropdown 
+
+![](../../assets/img/DPPS/3.png)
+
+Top-down으로 풀 경우, 트리에 3개의 노드가 있는 경우 위의 그림처럼 경우의수를 구할 수 있다. 
+즉, 현재 노드가 early adopter여야만 하는 경우는 딱 한 가지 경우이다. 
+반면, 현재 노드가 early adopter인 경우에는 children노드가 어떤 상황인지 전혀 상관없고, 그저 최소한의 경우를 가지고 오면 된다. 
+
+그러나, 재귀함수를 이용해 답안을 적으면, 겨우 통과되는데, 파이썬으로는 재귀를 이용하여 문제를 풀면, 잘 메모리나 재귀횟수때문에 통과가 안되는 일이 많다. 따라서, 위의 DFS 방식을 BFS 방식으로 바꿔야한다. 
+
+<DFS를 BFS로 바꾸는 스텝> 
+- 먼저 BFS로 모든 트리를 탐색하며 부모와 자식 노드들을 stack에 넣어준다. 
+- `stack.pop()`을 하면서 자연스럽게 말단 노드의 값부터 가져온다. 
+- DFS()의 로직을 그대로 따라한다. 
+````
+
+````{admonition} DFS Solution 
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/3.py
+:language: python 
+````
+````{admonition} DFS Solution 
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/3.py
+:language: python 
+````
+
+````{admonition} BFS Solution 
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/3_2.py
+:language: python 
+````
+
+### Diameter of Binary Tree
+
+````{admonition} Solution
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/4.py
+:language: python 
+```
+````
+
+### Longest Path with Different Adjacent Character
+
+````{admonition} Solution 
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/5.py
+:language: python 
+```
+
+````
+### Binary Tree Max Path Sum 
+
+````{admonition} Solution 
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/6.py
+:language: python 
+```
+````
+
+### Difference Between Maximum and Minimum Price Sum 
+
+````{admonition} Explanation 
+:class: dropdown 
+
+이 문제를 트리 + DP(DFS) + rerooting 으로 풀면 O(N*N)으로 Time out 된다. 
+
+관찰
+- "한쪽 끝을 제외한다" -> 결국 경로의 '내부 노드' 합을 계산하는 문제 
+- 방향성 없음 -> 트리 DP가능 
+````
+
+````{admonition} Solution 
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/7.py
+:language: python 
+```
+````
+
+### House Robber 3 
+
+````{admonition} Solution
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/8.py
+:language: python
+```
+````
+
+### Maximum Sum BST in Binary Tree 
+
+````{admonition} Solution 
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/9.py
+:language: python 
+````
+
+### Binary Tree Cameras 
+
+````{admonition} Solution 
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/10.py
+:language: python
+```
+````
+
+````{admonition} Solution2
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/10-2.py
+:language: python
+```
+````
+
+### Kth Ancestor of a node 
+
+````{admonition} Solution 
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/11.py
+:language: python
+````
+
+## 코테 기출 
+
+### 색깔 트리 
+
+````{admonition} Explanation
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/12_ex.py
+:language: python 
+````
+
+````{admonition} Solution 
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/12.py
+:language: python 
+````
 
 
+### 코드트리 메신저 
+
+- 중요: depth가 최대 O(20)이고, N은 최대 1e5이므로, depth를 이용해 알고리즘을 구현해야 시간초과를 안나는 것을 간접적으로 말해준다. 
 
 ## 3번: String Compression II 
 
 ````{admonition} Problems
 :class: dropdown 
 
-```{literalinclude} ../solutions/DPPS/4.md
+```{literalinclude} ../solutions/DPPS/7.md
 :language: md 
 ```
 ````
+

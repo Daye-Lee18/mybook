@@ -218,6 +218,11 @@ Tree <br>
 ````{admonition} helper function for Tree 
 :class: dropdown 
 
+아래 `build_tree()` 함수는 LeetCode 스타일 (level-order + 필요한 None만)로 배열이 들어올 때, 트리를 만드는 구조이다. 
+즉, [1, None, 2, 3, 4]의 형태로, 필요한 부분만 None으로 채워져있고, 그 뒤의 None은 사용하지 않은 배열을 argument로 받았을 때이다. 
+
+![](../../assets/img/binarySearch/8.png)
+
 ```{code-block} python 
 ---
 caption: Helper Functions for Tree Problems. This script provides utility functions to build a binary tree from a level-order list representation (`build_tree`) and convert a tree back into a list (`tree_to_list`). It is commonly used when solving tree problems on LeetCode or similar platforms for easy input/output handling.
@@ -289,6 +294,27 @@ if __name__ == "__main__":
 ```
 ````
 
+````{admonition} helper function for Tree 2
+:class: dropdown 
+
+반면, None도 인덱스로 사용할 때는 완전이진트리 배열 표현 (힙 표현)을 사용하겠다는 것으로, 인덱스 i의 왼쪽 자식 -> 2*i + 1, 인덱스 i의 오른쪽 자식 -> 2*i +2 를 사용한다. 즉, 값이 None이어도 자식 칸 두개는 인덱스로 "존재"한다고 치는 방식에서는 다음 코드를 이용할 수 있다. 
+
+![](../../assets/img/binarySearch/9.png)
+
+```{code-block} python 
+def build_tree(arr, idx =0):
+    # 범위 밖이거나, 해당 위치가 None이면 노드 없음 
+    if idx >= len(arr) or arr[idx] is None:
+        return None 
+    
+    node = TreeNode(arr[idx])
+    node.left = build_tree(arr, 2*idx + 1)
+    node.right = build_tree(arr, 2*idx + 1)
+    return node 
+
+arr = [1, None, 2, None, None, 3, 4]
+```
+````
 ### 트리 생성 코드: edges to list (parent, children)
 
 트리에는 부모와 자식 관계가 있으므로, 각 정점별로 부모가 누구인지, 자식들의 목록은 어떻게 되는지를 저장해두면 요긴하게 쓰인다. 이를 아래와 같이 구현할 수 있다. 
