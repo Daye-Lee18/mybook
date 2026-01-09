@@ -65,9 +65,16 @@ def solve(...):
   - [Kth Ancestor of a Tree Node](https://leetcode.com/problems/kth-ancestor-of-a-tree-node/?envType=problem-list-v2&envId=50v8rtm7)
   - [Find the Shortest Superstring](https://leetcode.com/problems/find-the-shortest-superstring/description/?envType=problem-list-v2&envId=50v8rtm7)
   - [Number of Ways to Reorder Array to Get Same BST](https://leetcode.com/problems/number-of-ways-to-reorder-array-to-get-same-bst/description/?envType=problem-list-v2&envId=50v8rtm7)
+  
 - 코테 기출 
   - [색깔 트리](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/color-tree/description)
   - [코드트리 메신저](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/codetree-messenger/description)
+    - [리트코드 1483. Kth Ancestor of a Tree Node](https://leetcode.com/problems/kth-ancestor-of-a-tree-node/description/)
+    - [리트코드 1993. Operations on Tree](https://leetcode.com/problems/operations-on-tree/description/)
+    - [백준 15681 트리와 쿼리](https://www.acmicpc.net/problem/15681)
+    - [백준 14267 회사 문화 1](https://www.acmicpc.net/problem/14267)
+    - [백준 17435 합성함수와 쿼리](https://www.acmicpc.net/problem/17435) 
+    - [백준 13511 트리와 쿼리 2](https://www.acmicpc.net/problem/13511) 
   - [String Compression II](https://leetcode.com/problems/string-compression-ii/description/)
 
 
@@ -421,6 +428,9 @@ Top-down으로 풀 경우, 트리에 3개의 노드가 있는 경우 위의 그�
 ````
 
 
+### 코드트리 메신저 
+
+- 중요: depth가 최대 O(20)이고, N은 최대 1e5이므로, depth를 이용해 알고리즘을 구현해야 시간초과를 안나는 것을 간접적으로 말해준다. 
 
 ## 3번: String Compression II 
 
