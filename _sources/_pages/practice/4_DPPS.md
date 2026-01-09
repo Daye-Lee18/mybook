@@ -402,12 +402,68 @@ Top-down으로 풀 경우, 트리에 3개의 노드가 있는 경우 위의 그�
 
 ### Kth Ancestor of a node 
 
-````{admonition} Solution 
+````{admonition} Idea
 :class: dropdown 
 
+```{table} 10진수의 성질 
+:class: full-width-table
+:widths: auto
+:align: center 
+
+| 10진수 (decimal) | bits (이진수) | K&1 | 
+|---|---|---|
+| 1 | 1 | 1 |
+| 2 | 10 | 0|
+| 3 | 11 | 1|
+| 4 | 100 | 0|
+| 5 | 101 | 1|
+| 6 | 110 |  0| 
+| 7 | 111 | 1 |
+| 8 | 1000 | 0 |
+| 9 | 1001 | 1 |
+```
+
+위와 같이 bits 자리 (j)가 1인 경우, $2^j$th ancestor로 이동하면 된다. `k & 1`은 항상 현재 LSB (Least Significant Bit) 만 검사하지만, `k >>= 1`로 비트를 하나씩 밀어내기 때문에
+결과적으로 k의 모든 비트를 낮은 자리부터 차례대로 처리한다.
+
+예를 들어, 아래 예시를 보자. 
+
+![img](../../assets/img/DPPS/4.png)
+
+그래서, j = "지금보고 있는 비트의 원래 위치" 이므로, k>>= 1로 비트를 하나 없앴기 때문에, "다음 비트로 넘어간다"는 의미로 j+=1이 항상 필요하다. 만약 이 과정을 안하면 계속 2^0 점프만 시도하게 돼서 틀리게 됨. 
+````
+
+````{admonition} LSB (Least Significant Bit)
+:class: note 
+
+- 정의: 이진수에서 가장 오른쪽 비트 ($2^0$ 자리)
+- k & 1 로 LSB가 1인지 확인 
+- 짝수/홀수 판별 가능 
+- binary lifting, bitmask, DP에서 "지금 처리할 비트"를 가리킴. 
+````
+
+````{admonition} Solution1
+:class: dropdown 
+
+- 현재 마지막 위치를 `k&1`로 처리한 후, `k >>= 1`로 상위 비트까지 처리.
+- "작은 점프" -> "큰 점프" 
 ```{literalinclude} ../solutions/DPPS/11.py
 :language: python
 ````
+
+````{admonition} Solution2 
+:class: dropdown 
+
+- "큰 점프부터" -> 작은 점프
+- 주로 사용되는 방식 
+- k를 이진수로 보고, 1이 서있는 비트 위치 j마다 한 번에 $2^j$만큼 점프한다. 
+
+![img](../../assets/img/DPPS/5.png)
+
+```{literalinclude} ../solutions/DPPS/13.py
+:language: python
+````
+
 
 ## 코테 기출 
 

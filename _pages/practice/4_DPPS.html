@@ -60,6 +60,8 @@
     <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_pages/practice/4_DPPS';</script>
     <script src="https://unpkg.com/jupyterquiz@1.1.8/dist/jupyterquiz.min.js"></script>
     <link rel="icon" href="../../_static/favicon.png"/>
@@ -1623,61 +1625,141 @@ dp[parent][1] += max(dp[child][0], dp[child][1])</p></li>
 <section id="kth-ancestor-of-a-node">
 <h3>Kth Ancestor of a node<a class="headerlink" href="#kth-ancestor-of-a-node" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
-<p class="admonition-title">Solution</p>
+<p class="admonition-title">Idea</p>
+<div class="pst-scrollable-table-container"><table class="full-width-table table table-center" id="id7">
+<caption><span class="caption-number">표 29 </span><span class="caption-text">10진수의 성질</span><a class="headerlink" href="#id7" title="Link to this table">#</a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>10진수 (decimal)</p></th>
+<th class="head"><p>bits (이진수)</p></th>
+<th class="head"><p>K&amp;1</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>1</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>10</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>3</p></td>
+<td><p>11</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>4</p></td>
+<td><p>100</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>5</p></td>
+<td><p>101</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>6</p></td>
+<td><p>110</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>7</p></td>
+<td><p>111</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>8</p></td>
+<td><p>1000</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>9</p></td>
+<td><p>1001</p></td>
+<td><p>1</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>위와 같이 bits 자리 (j)가 1인 경우, <span class="math notranslate nohighlight">\(2^j\)</span>th ancestor로 이동하면 된다. <code class="docutils literal notranslate"><span class="pre">k</span> <span class="pre">&amp;</span> <span class="pre">1</span></code>은 항상 현재 LSB (Least Significant Bit) 만 검사하지만, <code class="docutils literal notranslate"><span class="pre">k</span> <span class="pre">&gt;&gt;=</span> <span class="pre">1</span></code>로 비트를 하나씩 밀어내기 때문에
+결과적으로 k의 모든 비트를 낮은 자리부터 차례대로 처리한다.</p>
+<p>예를 들어, 아래 예시를 보자.</p>
+<p><img alt="img" src="../../_images/410.png" /></p>
+<p>그래서, j = “지금보고 있는 비트의 원래 위치” 이므로, k&gt;&gt;= 1로 비트를 하나 없앴기 때문에, “다음 비트로 넘어간다”는 의미로 j+=1이 항상 필요하다. 만약 이 과정을 안하면 계속 2^0 점프만 시도하게 돼서 틀리게 됨.</p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">LSB (Least Significant Bit)</p>
+<ul class="simple">
+<li><p>정의: 이진수에서 가장 오른쪽 비트 (<span class="math notranslate nohighlight">\(2^0\)</span> 자리)</p></li>
+<li><p>k &amp; 1 로 LSB가 1인지 확인</p></li>
+<li><p>짝수/홀수 판별 가능</p></li>
+<li><p>binary lifting, bitmask, DP에서 “지금 처리할 비트”를 가리킴.</p></li>
+</ul>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">Solution1</p>
+<ul class="simple">
+<li><p>현재 마지막 위치를 <code class="docutils literal notranslate"><span class="pre">k&amp;1</span></code>로 처리한 후, <code class="docutils literal notranslate"><span class="pre">k</span> <span class="pre">&gt;&gt;=</span> <span class="pre">1</span></code>로 상위 비트까지 처리.</p></li>
+<li><p>“작은 점프” -&gt; “큰 점프”</p></li>
+</ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span> 
+
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Idea:</span>
-<span class="sd">- binary lifing (a.k.a. doubling / sparse table): store only ancestors at distances 2*j</span>
-<span class="sd">    - Use sparse table (dp application) to tralvel the tree upwards in a fast way</span>
+<span class="sd">- binary lifting (a.k.a. doubling / sparse table): store only ancestors at distances 2*j </span>
+<span class="sd">    - Use sparse table (dp application) to travel the tree &quot;upwards&quot; in a fast way </span>
 <span class="sd">- memory: O(nlogn)</span>
 <span class="sd">- time: O(nlogn)</span>
 
 <span class="sd">Constraints:</span>
-<span class="sd">- 1 &lt;= k, n &lt;= 5*1e4 </span>
-<span class="sd">- there will be at most 5*1e4 queries ~ O(5*1e4)</span>
+<span class="sd">- 1 &lt;= k, n &lt;= 5*1e4</span>
+<span class="sd">- there will be at most 5*1e4 queries  ~ O(5*1e4)</span>
 
-<span class="sd">NOTE: k-ary tree (not binary)</span>
+<span class="sd">Note: k-ary tree (not binary)</span>
 <span class="sd">&#39;&#39;&#39;</span>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">TreeAncestor</span><span class="p">:</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        parent[i] = the parent of `ith` node </span>
-<span class="sd">        the root node = 0 </span>
+<span class="sd">        the root node = 0</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">LOG</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">bit_length</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">up</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">n</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">LOG</span><span class="p">)]</span> <span class="c1"># self.up[j][v] = 2^j-th ancestor of v, or -1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">LOG</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">bit_length</span><span class="p">()</span> <span class="c1"># log2 </span>
+
+        <span class="c1"># self.up INIT </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">up</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">LOG</span><span class="p">)]</span> <span class="c1"># self.up[j][v] = 2^j-th ancestor of v, or -1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">up</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">parent</span><span class="p">[:]</span> <span class="c1"># 2^0 = 1st parent </span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">LOG</span><span class="p">):</span> <span class="c1"># j&#39;th 행 </span>
+            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span> <span class="c1"># i&#39;th 열 </span>
+<span class="w">                </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">                dynamic programming </span>
+<span class="sd">                self.up[j][v] = 2^j-th ancestor of v, or -1</span>
+<span class="sd">                - 2^1 th parent of v = 2^0 th parent of v 의 2^0 th parent </span>
+<span class="sd">                - 2^2 th parent of v = 2^1 th parent of v 의 2^1 th parent </span>
+<span class="sd">                - 2^3 th parent of v = 2^2 th parent of v 의 2^2 th parent </span>
+<span class="sd">                .... </span>
 
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">LOG</span><span class="p">):</span>
-            <span class="n">prev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">up</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">cur</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">up</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-                <span class="n">p</span> <span class="o">=</span> <span class="n">prev</span><span class="p">[</span><span class="n">v</span><span class="p">]</span>
-                <span class="n">cur</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="n">p</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="n">prev</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> 
-
-
-
-
-    <span class="c1"># Time Complexity : O(1)</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">getKthAncestor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span> 
+<span class="sd">                즉, </span>
+<span class="sd">                # 0~j-1까지 채워졌다고 가정하면, </span>
+<span class="sd">                # 2^j = 2^j-1 + 2^j-1 이므로, </span>
+<span class="sd">                # 즉,v의 2^j-1의 parent의 2^j-1 parent가 됨. </span>
+<span class="sd">                &#39;&#39;&#39;</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">up</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">v</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">up</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">up</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">up</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">v</span><span class="p">]]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">up</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> 
+    <span class="c1"># Time complexity: O(LOG)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getKthAncestor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Find the `kth` ancestor of a given node </span>
-<span class="sd">        -&gt; `kth` ancestor of a tree nodei s the `kth` node in the path that node to the root node</span>
-<span class="sd">        -&gt; if there is no such ancestor return -1  </span>
+<span class="sd">        -&gt; `kth` ancestor of a tree node is the `kth` node in the path that node to the root node </span>
+<span class="sd">        -&gt; If there is no such ancestor return -1 </span>
 <span class="sd">        -&gt; 1 &lt;= k &lt;= 5*1e4 </span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="c1"># jump using bits of k </span>
+        <span class="c1"># jump using bits of k</span>
         <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">while</span> <span class="n">node</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">k</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">k</span><span class="o">&amp;</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">k</span><span class="o">&amp;</span><span class="mi">1</span><span class="p">:</span> <span class="c1"># k가 1인 경우에만 점프 </span>
                 <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">up</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">node</span><span class="p">]</span>
+            <span class="c1"># </span>
             <span class="n">k</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span> <span class="c1"># at most 16 jumps </span>
-            <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span> 
-        <span class="k">return</span> <span class="n">node</span> 
-        
-        
+            <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span> <span class="c1"># self.up의 2^j+1 번째 depth로 이동 </span>
+        <span class="k">return</span> <span class="n">node</span>  
+    
 
 <span class="c1"># n = 7; parent = [-1, 0, 0, 1, 1, 2 ,2]; node = 3; k=1 # 1 </span>
 <span class="n">n</span> <span class="o">=</span> <span class="mi">7</span><span class="p">;</span> <span class="n">parent</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="p">,</span><span class="mi">2</span><span class="p">];</span> <span class="n">node</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span> <span class="c1"># 0</span>
@@ -1686,6 +1768,48 @@ dp[parent][1] += max(dp[child][0], dp[child][1])</p></li>
 <span class="n">obj</span> <span class="o">=</span> <span class="n">TreeAncestor</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>
 <span class="n">param_1</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">getKthAncestor</span><span class="p">(</span><span class="n">node</span><span class="p">,</span><span class="n">k</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">param_1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">Solution2</p>
+<ul class="simple">
+<li><p>“큰 점프부터” -&gt; 작은 점프</p></li>
+<li><p>주로 사용되는 방식</p></li>
+<li><p>k를 이진수로 보고, 1이 서있는 비트 위치 j마다 한 번에 <span class="math notranslate nohighlight">\(2^j\)</span>만큼 점프한다.</p></li>
+</ul>
+<p><img alt="img" src="../../_images/510.png" /></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span> 
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">TreeAncestor</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">LOG</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">bit_length</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">up</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">n</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">LOG</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">up</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">parent</span><span class="p">[:]</span> <span class="c1"># self.up[j][v] = node v를 2^j번 점프했을때 parent </span>
+
+        <span class="c1"># self.up INIT </span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">LOG</span><span class="p">):</span> <span class="c1"># 각 이진수 자리 j에 대해 </span>
+            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span> <span class="c1"># v</span>
+                <span class="c1"># 0~j-1까지 채워졌다고 가정하면, </span>
+                <span class="c1"># 2^j = 2^j-1 + 2^j-1 즉,v의 2^j-1의 parent의 2^j-1 parent가 됨. </span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">up</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">v</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">up</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">up</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">up</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">v</span><span class="p">]]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">up</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> 
+
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">getKthAncestor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span> 
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">LOG</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">node</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="c1"># 이미 루트를 넘었으면 더 볼 필요 없음</span>
+                <span class="k">break</span> 
+            <span class="k">if</span> <span class="n">k</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">j</span><span class="p">):</span> <span class="c1"># k의 j번째 비트가 1인지 확인, 즉 &quot;2^j&quot; 점프가 필요한가?</span>
+                <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">up</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">node</span><span class="p">]</span> <span class="c1"># 필요하다면, 한 번에 2^j 조상으로 이동 </span>
+
+        <span class="k">return</span> <span class="n">node</span> 
 </pre></div>
 </div>
 </div>
