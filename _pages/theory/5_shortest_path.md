@@ -545,9 +545,9 @@ def heapify(pq: List):
 
 요약하면:
 
-간단한 dijkstra 구현방식에서는 get_smallest_node()가 “아직 확정(visit)되지 않은 노드들 중” 최소 거리 노드를 골라야 하므로 visited가 필수이다. 방문(=최단거리 확정)한 노드를 다시 고르는 걸 막아야 하니까요. 다익스트라의 성질상, 음수 간선이 없을 때 최소 거리로 뽑힌 순간 그 노드는 최단거리 확정 → 곧바로 visited[now]=True.
+간단한 dijkstra 구현방식에서는 get_smallest_node()가 “아직 확정(visit)되지 않은 노드들 중” 최소 거리 노드를 골라야 하므로 visited가 필수이다. 방문(=최단거리 확정)한 노드를 다시 고르는 걸 막아야 하기 때문이다. <u>다익스트라의 성질상, 음수 간선이 없을 때 최소 거리로 뽑힌 순간 그 노드는 최단거리 확정되고</u> → 곧바로 visited[now]=True로 처리해준다. 
 
-그러나 힙/우선순위큐 버전의 dijkstra algorithm에서는 visited 없이도 동작한다. 이는 지연 삭제(lazy deletion) 패턴 때문인데, 힙에서 (거리, 노드)를 꺼낼 때 if cur_dis > distance[node]: continue로 오래된(더 긴) 후보를 무시합니다. 이 체크가 사실상 “이미 더 짧은 값으로 확정됨”을 검사하는 역할을 하므로, 별도의 visited가 없어도 됩니다. 
+그러나 힙/우선순위큐 버전의 dijkstra algorithm에서는 visited 없이도 동작한다. 이는 지연 삭제(lazy deletion) 패턴 때문인데, 힙에서 (거리, 노드)를 꺼낼 때 if cur_dis > distance[node]: continue로 오래된(더 긴) 후보를 무시한다. 이 체크가 사실상 “이미 더 짧은 값으로 확정됨”을 검사하는 역할을 하므로, 별도의 visited가 없어도 된다.
 
 둘 다 같은 원리(비음수 가중치에서 “처음 확정되는 경로가 최단”)를 쓰는데, 배열 버전은 명시적 visited 집합을 둬서 재선택을 막고, 힙 버전은 힙에 중복 후보를 허용하되, 거리 비교로 무시해서 visited가 필요 없습니다.
 
@@ -580,11 +580,14 @@ def dijkstra(start):
     heapq.heappush(q, (0, start))
 
     while q:
+        # O(Vlog(V)): 모든 정점(V)에 대해 pop(=log(V))
         cur_dis, node = heapq.heappop(q)
 
         if cur_dis > distance[node]:
             continue 
 
+        # O(Elog(V)): 현재 정점과 연결되어 있는 노드,
+        # 즉 현재 노드에서 나가는 간선의 개수 (E)에 대해 push(=log(V))
         for nxt_node, weight in graph[node]:
             if cur_dis + weight < distance[nxt_node]:
                 distance[nxt_node] = cur_dis + weight # 현재 node까지 온 비용 + nxt_node로 가는 비용 
@@ -607,9 +610,7 @@ for i in range(1, n+1):
 :class: attention
 
 1. heappop()
-정점의 개수가 V개 이므로, 힙에서 의미있는 heapq.heappop() 연산 횟수는 V번이고, 각 pop연산의 시간 복잡도는 O(logV) 이므로, 
-
-pop 전체 비용은 ~ Vlog(V) 이다. 
+정점의 개수가 V개 이므로, 힙에서 의미있는 heapq.heappop() 연산 횟수는 V번이고, 각 pop연산의 시간 복잡도는 O(logV) 이므로, pop 전체 비용은 ~ Vlog(V) 이다. 
 
 2. heappush()
 현재의 정점 u에서 나가는 간선 (edge)를 볼때마다 새거리 (new distance)를 계산하고 갱신한다. 즉, 간선마다 최대 한 번씩 push가 발생하며, 간선 수 E개이고, push의 한 번 비용은 O(logV)이므로 push 전체 비용이 E*log(V)이다. 
@@ -622,11 +623,11 @@ pop 전체 비용은 ~ Vlog(V) 이다.
 
 플로이드 워셜 알고리즘은 "모든 지점에서 다른 모든 지점까지의 최단 경로를 모두 구해야 하는 경우"에 사용할 수 있는 알고리즘이다. 다익스트라 알고리즘은 단계마다 최단 거리를 가지는 노드를 하나씩 반복적으로 선택한다. 그리고 해당 노드를 거쳐 가는 경로를 확인하며, 최단 거리 테이블을 갱신하는 방식으로 동작한다. 플로이드 워셜 알고리즘 또한 단계마다 '거쳐 가는 노드'를 기준으로 알고리즘을 수행한다. 하지만 **매번 방문하지 않은 노드 중에서 최단 거리를 갖는 노드를 찾을 필요가 없다**는 점이 다르다. 
 
-노드의 개수가 N개 일 때 알고리즘상 N번의 단계를 수행하며, 단계마다 O($N^2$)의 연산을 통해 '현재 노드를 거쳐 가는' 모든 경로를 고려한다. 따라서 총 ***시간 복잡도는 O($N^3$)***이다. 
+노드의 개수가 N개 일 때 알고리즘상 N번의 단계를 수행하며, 단계마다 O($N^2$)의 연산을 통해 '현재 노드를 거쳐 가는' 모든 경로를 고려한다. 따라서 총 **시간 복잡도는 O($N^3$)**이다. 
 
 플로이드 워셜 알고리즘은 **2차원 리스트**에 '최단 거리'정보를 저장한다. 다익스트라 알고리즘은 그리디 알고리즘인 반면, 플로이드 워셜 알고리즘은 **다이나믹 프로그래밍**이다. 노드의 개수가 N개 일 때, N번 만큼의 단계를 반복하며 '점화식에 맞게' 2차원 리스트를 갱신하기 때문이다. 
 
-## 플로이드 워셜 알고리즘 핵심 아이디어 
+### Core Idea of Floyd-Warshall Algorithm  
 
 At each step, we take into account ***the case of going through that node***. 
 
@@ -636,21 +637,23 @@ At each step, we take into account ***the case of going through that node***.
 
 ````{admonition} Floyd Warshall Algorithm 
 :class: important 
-**Algorithm Steps (Dynamic Programming)**
-- Step 1: 즉, 알고리즘에서는 현재 확인하고 있는 노드를 제외한 N-1개의 노드 중에서 서로 다른 노드 (A, B) 쌍을 선택한다. 
-- Step 2: 이후에 A -> 현재 노드 -> B로 가는 비용과 현재 최단 거리 테이블 A -> B 비용을 확인하여 최단 거리 갱신 
 
-**Time complexity**: 
-$_{N-1}P_{2}$ 쌍을 단계마다 반복해서 확인 -> 이를 O($N^2$)라고 생각하면 총 time complexity는 O($N^3$)
+- **Algorithm Steps (Dynamic Programming)**
+    - Step 1: 즉, 알고리즘에서는 현재 확인하고 있는 노드를 제외한 N-1개의 노드 중에서 서로 다른 노드 (A, B) 쌍을 선택한다. 
+    - Step 2: 이후에 A -> 현재 노드 -> B로 가는 비용과 현재 최단 거리 테이블 A -> B 비용을 확인하여 최단 거리 갱신 
 
-**점화식**: 
-$D_{ab} = \min(D_{ab}, D_{ak}+D_{kb})$
+- **Time complexity**: 
+    - 현재 intermidiate node에 대해 (O(N)), $_{N-1}P_{2}$ 쌍을 단계마다 반복해서 확인 -> 이를 O($N^2$)라고 생각하면 총 time complexity는 O($N^3$)
 
-'A에서 B로 가는 최소 비용'과 'A에서 K를 거쳐 B로 가는 비용'을 비교하여 더 작은 값으로 갱신한다. 즉, '바로 이동하는 거리'가 '특정한 노드를 거쳐서 이동하는 거리'보다 더 많은 비용을 가진다면 이를 더 짧은 것으로 갱신한다. 
+- **점화식**: 
+    - $D_{ab} = \min(D_{ab}, D_{ak}+D_{kb})$
+    - 'A에서 B로 가는 최소 비용'과 'A에서 K를 거쳐 B로 가는 비용'을 비교하여 더 작은 값으로 갱신한다. 즉, '바로 이동하는 거리'가 '특정한 노드를 거쳐서 이동하는 거리'보다 더 많은 비용을 가진다면 이를 더 짧은 것으로 갱신한다. 
 
-구현:
-- 3중 반복문을 이용하여 위의 점화식에 따라 최단 거리 테이블을 갱신 
+- 구현:
+    - 3중 반복문을 이용하여 위의 점화식에 따라 최단 거리 테이블을 갱신 
 ````
+
+### Floyd-Warshall Algorihtm Example 
 
 아래의 예시를 공부해보자. 
 
@@ -658,7 +661,7 @@ $D_{ab} = \min(D_{ab}, D_{ak}+D_{kb})$
 
 ![19](../../assets/img/shortest_path/19.png)
 
-````{admonition} code for Floyd Warshall Algorithm
+````{admonition} Code for Floyd Warshall Algorithm
 :class: dropdown 
 
 위 예시에 해당하는 알고리즘을 파이썬으로 작성하였다. 
