@@ -7,6 +7,7 @@ root: intro
 parts:
 - caption: 기초 
   chapters:
+  - file: _pages/basics/list
   - file: _pages/basics/Input
   - file: _pages/basics/oop
   - file: _pages/basics/oop-classes_instances_objects
