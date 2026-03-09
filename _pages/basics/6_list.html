@@ -386,14 +386,24 @@ document.write(`
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#slicing">슬라이싱(Slicing)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">리스트 주요 메서드</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">아이템 추가</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">아이템 삽입</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">아이템 인덱스 번호 찾기</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">아이템 제거</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">리스트 정렬</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#sort-vs-sorted">1. <code class="docutils literal notranslate"><span class="pre">sort()</span></code> vs <code class="docutils literal notranslate"><span class="pre">sorted()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#sort-return">2. sort()는 return 값이 없다.</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#key-paramter">3. key paramter 는 변환 함수이다.</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#tuple-multi-key-sorting">4. tuple을 이용한 multi-key sorting</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#python-sort-stable-sort">5. Python sort는 stable sort이다.</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">6. 서로 다른 타입은 비교할 수 없다.</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#reverse-true">7. reverse = True</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">리스트 연산자</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">마무리</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">아이템 추가</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">아이템 삽입</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">아이템 인덱스 번호 찾기</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">아이템 제거</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">리스트 연산자</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">마무리</a></li>
 </ul>
             </nav>
         </div>
@@ -1079,6 +1089,14 @@ start &lt; end 이므로 이동할 수 없어 결과는</p>
 </div>
 </div>
 </div>
+<div class="important admonition">
+<p class="admonition-title">Slicing Summary</p>
+<ol class="arabic simple">
+<li><p>end는 포함되지 않는다.</p></li>
+<li><p>step 방향과 start/end 방향이 맞아야 한다.</p></li>
+<li><p>slicing은 범위를 벗어나도 에러가 나지 않는다.</p></li>
+</ol>
+</div>
 </section>
 <section id="id7">
 <h2>리스트 주요 메서드<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
@@ -1141,8 +1159,244 @@ start &lt; end 이므로 이동할 수 없어 결과는</p>
 </tbody>
 </table>
 </div>
+<div class="dropdown admonition">
+<p class="admonition-title">리스트 거꾸로 뒤집기</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">list1</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">list1</span><span class="o">.</span><span class="n">reverse</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">list1</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">list의 shallow copy vs. deep copy</p>
+<p>“얕은 복사 (shallow copy)”란 객체의 최상위 수준만 복사하고, 중첩된 객체나 참조형 데이터는 메모리 주소만 공유하여 원본과 복사본이 같은 데이터를 가리키는 방식이다.</p>
+<p>핵심 특징은:</p>
+<ul class="simple">
+<li><p>주소값 복사: 객체의 1단계 깊이만 복사하고 중첩된 구조는 참조를 유지함.</p></li>
+<li><p>원본 영향: 복사본의 내부 객체를 수정하면 원본 객체도 함께 변경됨.</p></li>
+<li><p>효율성: 깊은 복사에 비해 메모리 사용량이 적고 속도가 빠르다.</p></li>
+<li><p>사용 예시: 단순한 1차원 배열이나 객체를 복사할 때 사용하며, 중첩된 객체가 없는 데이터를 복사할 때 적합.</p></li>
+</ul>
+<p>반면 “깊은 복사 (deep copy)”란 객체의 내부 구조까지 모두 새롭게 복제하여, 원본과 복사본이 완전히 독립된 메모리 공간을 가지게 하는 방식이다. 깊은 복사는 “독립성을 보장”하는데, <strong>복사된 객체의 값을 변경해도 원본 객체에 영향을 주지 않는다.</strong> 따라서, 원본 데이터를 보호해야하는 복잡한 객체 구조 복제 시 사용한다.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">new_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="c1"># shallow copy </span>
+<span class="n">new_list</span> <span class="o">=</span> <span class="n">list1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">new_list</span> <span class="o">=</span> <span class="n">list1</span>
+
+<span class="c1"># deep copy </span>
+<span class="n">new_list</span> <span class="o">=</span> <span class="n">new_list</span><span class="p">[:]</span>
+<span class="n">new_list</span> <span class="o">=</span> <span class="n">new_list</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">list의 정렬 파라미터 (parameter) 정리</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">list</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>parameter</p></th>
+<th class="head"><p>설명</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>key</p></td>
+<td><p>정렬 기준 함수</p></td>
+</tr>
+<tr class="row-odd"><td><p>reverse</p></td>
+<td><p>내림차순</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <section id="id8">
-<h3>아이템 추가<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<h3>리스트 정렬<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<p>Python에서 리스트를 정렬할 때 학생들이 자주 헷갈리는 개념들을 정리하면 다음과 같다.</p>
+<hr class="docutils" />
+<section id="sort-vs-sorted">
+<h4>1. <code class="docutils literal notranslate"><span class="pre">sort()</span></code> vs <code class="docutils literal notranslate"><span class="pre">sorted()</span></code><a class="headerlink" href="#sort-vs-sorted" title="Link to this heading">#</a></h4>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>함수</p></th>
+<th class="head"><p>특징</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">list.sort()</span></code></p></td>
+<td><p>리스트 <strong>자체를 변경 (in-place)</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">sorted()</span></code></p></td>
+<td><p><strong>새로운 리스트 반환</strong></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>예:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+
+<span class="n">arr</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>반면,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+
+<span class="n">new_arr</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">new_arr</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>정리</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>sort() → 원본 리스트 변경
+sorted() → 새 리스트 반환
+</pre></div>
+</div>
+</section>
+<section id="sort-return">
+<h4>2. sort()는 return 값이 없다.<a class="headerlink" href="#sort-return" title="Link to this heading">#</a></h4>
+<p>많은 학생들이 아래와 같이 실수한다.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>결과</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kc">None</span>
+</pre></div>
+</div>
+<p>sort()는 in-place 연산이기 때문에 return 값이 없다.</p>
+</section>
+<hr class="docutils" />
+<section id="key-paramter">
+<h4>3. key paramter 는 변환 함수이다.<a class="headerlink" href="#key-paramter" title="Link to this heading">#</a></h4>
+<p>Python 정렬 방식</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>원소 → key 값으로 변환 → key 값 기준 비교
+</pre></div>
+</div>
+<p>예:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;apple&quot;</span><span class="p">,</span><span class="s2">&quot;banana&quot;</span><span class="p">,</span><span class="s2">&quot;kiwi&quot;</span><span class="p">]</span>
+
+<span class="n">arr</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>실제로 비교되는 값</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>apple  → 5
+banana → 6
+kiwi   → 4
+</pre></div>
+</div>
+<p>결과</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s1">&#39;kiwi&#39;</span><span class="p">,</span> <span class="s1">&#39;apple&#39;</span><span class="p">,</span> <span class="s1">&#39;banana&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="tuple-multi-key-sorting">
+<h4>4. tuple을 이용한 multi-key sorting<a class="headerlink" href="#tuple-multi-key-sorting" title="Link to this heading">#</a></h4>
+<p>여러 기준으로 정렬할 때 tuple을 사용한다.</p>
+<p>예:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>이름 → 오름차순
+나이 → 내림차순
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">people</span> <span class="o">=</span> <span class="p">[</span>
+<span class="p">(</span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span><span class="mi">25</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">&quot;Bob&quot;</span><span class="p">,</span><span class="mi">20</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span><span class="mi">30</span><span class="p">)</span>
+<span class="p">]</span>
+
+<span class="n">people</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+</pre></div>
+</div>
+<p>결과</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span><span class="mi">30</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span><span class="mi">25</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span><span class="mi">20</span><span class="p">)]</span>
+</pre></div>
+</div>
+<p>Python은 tuple을 <strong>왼쪽부터 순서대로 비교(lexicographic order)한다.</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(첫 번째 값) → 같으면 → (두 번째 값)
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="python-sort-stable-sort">
+<h4>5. Python sort는 stable sort이다.<a class="headerlink" href="#python-sort-stable-sort" title="Link to this heading">#</a></h4>
+<p>stable sort란 key 값이 같은 원소들의 순서가 유지되는 정렬이다.</p>
+<p>예:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">arr</span> <span class="o">=</span> <span class="p">[</span>
+<span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+<span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="p">]</span>
+
+<span class="n">arr</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>결과</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)]</span>
+</pre></div>
+</div>
+<p>원래 순서가 그대로 유지된다.</p>
+<p>이 성질 덕분에 ㅡulti-pass sorting 도 가능하다.</p>
+<p>예:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">people</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">people</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="id9">
+<h4>6. 서로 다른 타입은 비교할 수 없다.<a class="headerlink" href="#id9" title="Link to this heading">#</a></h4>
+<p>Python3에서는 서로 다른 타입을 직접 비교할 수 없다.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="s2">&quot;apple&quot;</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+<span class="n">arr</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>결과</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="ne">TypeError</span>
+</pre></div>
+</div>
+<p>해결 방법</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">arr</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="reverse-true">
+<h4>7. reverse = True<a class="headerlink" href="#reverse-true" title="Link to this heading">#</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">arr</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>내림차순 정렬을 수행한다.</p>
+<p>예:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">arr</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>결과</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Python list sorting 핵심 정리</p>
+<ol class="arabic simple">
+<li><p>sort()는 리스트 자체를 변경한다.</p></li>
+<li><p>sort()는 return 값이 없다.</p></li>
+<li><p>key는 비교함수가 아니라 변환함수다.</p></li>
+<li><p>Python sort는 stable sort이다.</p></li>
+<li><p>tuple을 이용해 multi-key sorting이 가능하다.</p></li>
+</ol>
+</div>
+</section>
+</section>
+<section id="id10">
+<h3>아이템 추가<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>append() 메서드는 아이템을 마지막에 추가한다.</p></li>
 <li><p>append() 메서드는 반환값이 없다. 따라서 print(shape.append(200))와 같이 쓰면 ‘None’이 출력된다.</p></li>
@@ -1165,8 +1419,8 @@ start &lt; end 이므로 이동할 수 없어 결과는</p>
 </div>
 </div>
 </section>
-<section id="id9">
-<h3>아이템 삽입<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<section id="id11">
+<h3>아이템 삽입<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
 <p>리스트의 인덱스 위치에 값을 삽입한다.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">리스트변수명</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">인덱스</span><span class="p">,</span><span class="n">값</span><span class="p">)</span>
 </pre></div>
@@ -1182,8 +1436,8 @@ start &lt; end 이므로 이동할 수 없어 결과는</p>
 </div>
 </div>
 </section>
-<section id="id10">
-<h3>아이템 인덱스 번호 찾기<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<section id="id12">
+<h3>아이템 인덱스 번호 찾기<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>아이템의 인덱스 번호를 반환한다.</p></li>
 <li><p>아이템이 없으면 에러가 난다.
@@ -1198,8 +1452,8 @@ start &lt; end 이므로 이동할 수 없어 결과는</p>
 </div>
 </div>
 </section>
-<section id="id11">
-<h3>아이템 제거<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<section id="id13">
+<h3>아이템 제거<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>아이템을 제거한다.</p></li>
 <li><p>아이템이 없으면 에러가 난다.
@@ -1299,8 +1553,8 @@ Input Sample</p>
 </div>
 </section>
 </section>
-<section id="id12">
-<h2>리스트 연산자<a class="headerlink" href="#id12" title="Link to this heading">#</a></h2>
+<section id="id14">
+<h2>리스트 연산자<a class="headerlink" href="#id14" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
 <tr class="row-odd"><th class="head text-center"><p>연산 기호</p></th>
@@ -1341,8 +1595,8 @@ Input Sample</p>
 </div>
 </div>
 </section>
-<section id="id13">
-<h2>마무리<a class="headerlink" href="#id13" title="Link to this heading">#</a></h2>
+<section id="id15">
+<h2>마무리<a class="headerlink" href="#id15" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p>list는 다수의 데이터를 묶어 하나의 변수로 처리할 때 유용하다.</p></li>
 <li><p>리스트의 인덱스는 0부터 시작한다.</p></li>
@@ -1437,14 +1691,24 @@ Input Sample</p>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#slicing">슬라이싱(Slicing)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">리스트 주요 메서드</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">아이템 추가</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">아이템 삽입</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">아이템 인덱스 번호 찾기</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">아이템 제거</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">리스트 정렬</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#sort-vs-sorted">1. <code class="docutils literal notranslate"><span class="pre">sort()</span></code> vs <code class="docutils literal notranslate"><span class="pre">sorted()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#sort-return">2. sort()는 return 값이 없다.</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#key-paramter">3. key paramter 는 변환 함수이다.</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#tuple-multi-key-sorting">4. tuple을 이용한 multi-key sorting</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#python-sort-stable-sort">5. Python sort는 stable sort이다.</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">6. 서로 다른 타입은 비교할 수 없다.</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#reverse-true">7. reverse = True</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">리스트 연산자</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">마무리</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">아이템 추가</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">아이템 삽입</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">아이템 인덱스 번호 찾기</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">아이템 제거</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">리스트 연산자</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">마무리</a></li>
 </ul>
   </nav></div>
 
