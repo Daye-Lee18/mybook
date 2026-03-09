@@ -5,17 +5,18 @@ format: jb-book
 root: intro
 
 parts:
-- caption: 기초 
+- caption: 파이썬 기초 
   chapters:
   - file: _pages/basics/6_list
   - file: _pages/basics/7_dict_tuple_set
+  - file: _pages/basics/8_functions
   - file: _pages/basics/Input
   - file: _pages/basics/oop
   - file: _pages/basics/oop-classes_instances_objects
   - file: _pages/basics/regex
   - file: _pages/basics/variable_scope
   
-- caption: 이론
+- caption: 알고리즘 이론
   chapters:
   - file: _pages/theory/0_tips
   - file: _pages/theory/1_implementation
@@ -31,7 +32,7 @@ parts:
   - file: _pages/theory/11_LinkedList
 
 
-- caption: 실습
+- caption: 알고리즘 실습
   chapters:
   - file: _pages/practice/1_implementationPS
   - file: _pages/practice/2_DFS_BFSPS
