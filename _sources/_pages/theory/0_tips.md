@@ -17,10 +17,15 @@ kernelspec:
 - 많이 나오는 유형: Sorting, priority queue, DFS/BFS, hash 
 - 알아야하는 유형: simulation, graph, linked list, DP
 
-0. (사전) 코딩테스트 IDE 준비 
+## 0. (사전) 코딩테스트 IDE 준비 
     - 필수. 빠른 입출력 세팅 (sys.stdin.readline 등), 자주 쓰이는 함수 (예: dfs/bfs, 이분탐색) 미리 준비해두면 좋습니다. 
     - 다만, 온라인 IDE 환경과 로컬 IDE가 다르므로 실제 환경에 맞게 미리 연습해두는 게 핵심입니다. (debug 단축키 확인)
-```python    
+  
+```python   
+# 빠른 입출력 세팅 
+import sys 
+input = sys.stdin.readline 
+
 # VS Code / PyCharm IDE에서 특정 단어를 자동으로 하이라이트 해줌. 
 
 # TODO: 해야할 작업 
@@ -32,26 +37,38 @@ kernelspec:
 # OPTIMIZE: 성능 개선 필요 
 # REVIEW: 검토 필요 사항 
 ```
-1. 복잡도 파악 및 필요한 데이터 구조 파악 
-    - 문제에서 요구하는 찾기, 삭제, 삽입 등의 operation을 진행할 때, 데이터의 개수와 비교하여 어떤 데이터 구조로 설정해야할 지 생각해야한다. 
-      - 예를 들어, dictionary는 key에 str, int 등의 다양한 데이터 타입을 받을 수 있지만,  
-        - **key가 문자열(str)**인 경우:  
-          - 해시 계산과 비교에 **O(len(key))** 시간이 든다.  
-          - 최대 길이가 긴 문자열을 계속 키로 쓰면, 상수항이 커진다.
-        - **key가 0 ~ N-1 범위의 int**이고, **중간 값 없이 빽빽하게** 존재한다면:  
-          - `dict` 대신 `list`로 바로 인덱싱하는 것이 훨씬 빠르고 메모리도 덜 든다. (`a[x]`가 진짜 O(1) 배열 접근)
-    - 문제를 읽고 **제약 조건(입력 크기, 시간 제한)** 먼저 확인 $\rightarrow$ 바로 시간복잡도 상한을 설정해야 합니다. 
-      - 파이썬 기준으로, **1초에 약 $10^7$ 번 연산** 정도를 안전하게 본다고 생각하면 된다.  
-        - 예: $N = 10^5$ 이면, $O(N \log N)$ 은 대략 $10^5 \times 17 \approx 1.7 \times 10^6$ → 충분히 여유.  
-        - 예: $N = 5000$ 이고 $O(N^2)$이면 $2.5 \times 10^7$ → 1초 기준 살짝 위험/언저리.
-      - C/Java의 경우 primitive int 기준 4 byte이지만, **파이썬의 int는 객체(object)**라서 4 byte가 아니다. 
-        - 파이썬의 모든 것(숫자, 문자열, 리스트 원소 등)은  
-          ***객체(Object) = 포인터 + 타입정보 + 길이정보 + 실제 값***  
-          구조로 저장되어, **객체 오버헤드**가 붙는다.
-        - 작은 정수 하나(`int`)는 대략 **28 bytes** 정도를 차지하고, 리스트 안에 들어가면 포인터까지 포함해 **원소 하나당 약 36 bytes** 정도로 생각하면 된다.
-    - **풀이 아이디어 $\rightarrow$ 복잡도 $\rightarrow$ 자료구조** 선택을 메모하는 습관 추천
-    - 또한, ***구현*** 문제의 경우, 여러 개의 command에 대해 다른 작업을 해야하는 경우, 해당 command를 작업하고 다른 command를 할 때, 어떤 영향을 주는 게 있는지, 어떤 작업을 처리해야하는지 유기적으로 보면서 알고리즘을 구현해야 한다. 
-    - 또한, 하나의 cmd가 복잡한 경우 조건을 다 적은 후, 실제 algorithm을 순서대로 적어서 빠짐없이 하도록 한다. 예를 들어 아래처럼 미리 작성해놓으면 실제 구현 시에 편하다. 
+
+VS code 단축키 (F1 > Keyboards Shortcuts 확인 가능) 
+
+```
+F5: DEBUG: Start debugging 
+Shift + F5: DEBUG: STOP 
+F9: DEBUG: Toggle Breakpoint 
+F10: STEP OVER 
+F11: STEP INTO 
+F12: DEBUG: CONTINUE  
+Command + F12: Go to definition (reference)
+```
+
+## 1. 복잡도 파악 및 필요한 데이터 구조 파악 
+
+- 문제에서 요구하는 찾기, 삭제, 삽입 등의 operation을 진행할 때, 데이터의 개수와 비교하여 어떤 데이터 구조로 설정해야할 지 생각해야한다. 
+  - 예를 들어, dictionary는 key에 str, int 등의 다양한 데이터 타입을 받을 수 있지만,  
+    - **key가 문자열(str)**인 경우:  
+      - 해시 계산과 비교에 **O(len(key))** 시간이 든다.  
+      - 최대 길이가 긴 문자열을 계속 키로 쓰면, 상수항이 커진다.
+    - **key가 0 ~ N-1 범위의 int**이고, **중간 값 없이 빽빽하게** 존재한다면:  
+      - `dict` 대신 `list`로 바로 인덱싱하는 것이 훨씬 빠르고 메모리도 덜 든다. (`a[x]`가 진짜 O(1) 배열 접근)
+- 문제를 읽고 **제약 조건(입력 크기, 시간 제한)** 먼저 확인 $\rightarrow$ 바로 시간복잡도 상한을 설정해야 합니다. 
+  - 파이썬 기준으로, **1초에 약 $10^7$ 번 연산** 정도를 안전하게 본다고 생각하면 된다.  
+    - 예: $N = 10^5$ 이면, $O(N \log N)$ 은 대략 $10^5 \times 17 \approx 1.7 \times 10^6$ → 충분히 여유.  
+    - 예: $N = 5000$ 이고 $O(N^2)$이면 $2.5 \times 10^7$ → 1초 기준 살짝 위험/언저리.
+  - C/Java의 경우 primitive int 기준 4 byte이지만, ** 파이썬의 int는 객체(object) **라서 4 byte가 아니다. 
+    - 파이썬의 모든 것(숫자, 문자열, 리스트 원소 등)은 ***객체(Object) = 포인터 + 타입정보 + 길이정보 + 실제 값*** 구조로 저장되어, **객체 오버헤드**가 붙는다.
+    - 작은 정수 하나(`int`)는 대략 **28 bytes** 정도를 차지하고, 리스트 안에 들어가면 포인터까지 포함해 **원소 하나당 약 36 bytes** 정도로 생각하면 된다.
+- **풀이 아이디어 $\rightarrow$ 복잡도 $\rightarrow$ 자료구조** 선택을 메모하는 습관 추천
+- 또한, ***구현*** 문제의 경우, 여러 개의 command에 대해 다른 작업을 해야하는 경우, 해당 command를 작업하고 다른 command를 할 때, 어떤 영향을 주는 게 있는지, 어떤 작업을 처리해야하는지 유기적으로 보면서 알고리즘을 구현해야 한다. 
+- 또한, 하나의 cmd가 복잡한 경우 조건을 다 적은 후, 실제 algorithm을 순서대로 적어서 빠짐없이 하도록 한다. 예를 들어 아래처럼 미리 작성해놓으면 실제 구현 시에 편하다. 
 
 ```text
 Algorithm 
@@ -259,7 +276,7 @@ print(40*N) # 4*1e7 ~ 40 MB  for int
 sys.getsizeof([1] * N) # for a list with int in it 
 ```
 
-1. 에지 케이스 (edge case) 정리 
+## 2. 에지 케이스 (edge case) 정리 
    - 중요 단계! 
      - 크기: N=0,1 / N 최대
      - 값: 음수, 0, 최대값, 오버플로우 경계
@@ -271,7 +288,7 @@ sys.getsizeof([1] * N) # for a list with int in it
      - 결과 없음/여러 개/타이브레이크 요구
      - 시간: 최악 입력 패턴(슬라이딩윈도우가 매번 실패, 이분탐색이 전부 False/전부 True 등)
 
-2. 코드 짜기 및 디버깅
+## 3. 코드 짜기
    - 기본 구조 먼저 (입력 처리 $\rightarrow$ 로직 함수화 $\rightarrow$ 출력)
    - 디버깅하기 편하게 **단계별로 프린트** 넣었다가 제출 직전 삭제 
      - 디버깅하면서 그때그때 바뀌는 것을 확인하는 것도 좋지만, 
@@ -279,12 +296,12 @@ sys.getsizeof([1] * N) # for a list with int in it
      - **출력 형식 오류 (띄어쓰기, 개행)** 체크 필수. 
    - 특히 구현 문제는 `작은 함수 단위`로 쪼개는 게 실수 줄이는 데 도움 됩니다. 
 
-3. 디버깅 
+## 4. 디버깅 
    1. 시간 초과 시: 입력 방식, 자료구조, 알고리즘 복잡도 재확인 
    2. 틀렸습니다 시: 정리해둔 에지 케이스를 넣어서 로컬에서 재현해보기 
 
 
-문제 모음집 
+## 문제 모음집 
 
 1. [프로그래머스 고득점 Kit](https://school.programmers.co.kr/learn/challenges?tab=algorithm_practice_kit)
-2. 코드 트리 삼성 기출 문제 
+2. [코드 트리 삼성 및 현대 기출 문제](https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/street-light-installation/description) 
