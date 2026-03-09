@@ -18,7 +18,7 @@ python -m http.server 8000
 ```
 
 2) Github push 및 deploy 
-3) 
+
 ```bash
 git add .
 git commit -m "update book"
