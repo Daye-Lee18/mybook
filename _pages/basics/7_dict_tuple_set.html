@@ -65,7 +65,7 @@
     <link rel="icon" href="../../_static/favicon.png"/>
     <link rel="index" title="색인" href="../../genindex.html" />
     <link rel="search" title="검색" href="../../search.html" />
-    <link rel="next" title="입력" href="Input.html" />
+    <link rel="next" title="Chapter 8. 함수" href="8_functions.html" />
     <link rel="prev" title="Chapter 6. 리스트" href="6_list.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ko"/>
@@ -184,17 +184,18 @@
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">기초</span></p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">파이썬 기초</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="6_list.html">Chapter 6. 리스트</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Chapter 7. 딕셔너리, 튜플, 셋</a></li>
+<li class="toctree-l1"><a class="reference internal" href="8_functions.html">Chapter 8. 함수</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Input.html">입력</a></li>
 <li class="toctree-l1"><a class="reference internal" href="oop.html">객체 지향 프로그래밍 (OOP)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="oop-classes_instances_objects.html">클래스, 인스턴스, 객체</a></li>
 <li class="toctree-l1"><a class="reference internal" href="regex.html">정규표현식</a></li>
 <li class="toctree-l1"><a class="reference internal" href="variable_scope.html">Variable Scope</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">이론</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">알고리즘 이론</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../theory/0_tips.html">문제 풀이 순서 팁 (Tips)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../theory/1_implementation.html">Lecture 1-1. 구현</a></li>
@@ -209,7 +210,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../theory/10_prefix.html">Lecture 10-1. Prefix Sum (누적 합)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../theory/11_LinkedList.html">Lecture 11-1. Linked List</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">실습</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">알고리즘 실습</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../practice/1_implementationPS.html">Lecture 1-2. 구현 실습</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../practice/2_DFS_BFSPS.html">Lecture 2-2. DFS/BFS 실습</a></li>
@@ -436,7 +437,7 @@ document.write(`
 <ul class="simple">
 <li><p>중괄호 안에 key:value 쌍을 콤마로 나열하여 직접 생성할 수 있다.</p></li>
 <li><p>또한 dict() 함수안에 (key, value) 쌍을 순서적으로 넣어 생성할 수 있다.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">변수명</span> <span class="pre">=</span> <span class="pre">dict()</span></code>나 <code class="docutils literal notranslate"><span class="pre">변수명</span> <span class="pre">=</span> <span class="pre">{}</span></code>와 같이 쓰면 비어있는 딕셔너리를 생성한다.</p></li>
+<li><p>변수명 = dict() 혹은 변수명 = {}와 같이 쓰면 비어있는 딕셔너리를 생성한다.</p></li>
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -461,10 +462,10 @@ document.write(`
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td class="text-center"><p>강좌001</p></td>
+<tr class="row-even"><td class="text-center"><p>lecture_001</p></td>
 <td class="text-left"><p>아이유, BTS, 뉴진스</p></td>
 </tr>
-<tr class="row-odd"><td class="text-center"><p>강좌002</p></td>
+<tr class="row-odd"><td class="text-center"><p>lecture_002</p></td>
 <td class="text-left"><p>박서준, 블랙핑크, 손흥민</p></td>
 </tr>
 </tbody>
@@ -493,14 +494,17 @@ document.write(`
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span> <span class="n">dict1</span><span class="p">[</span><span class="s1">&#39;address&#39;</span><span class="p">]</span> <span class="p">)</span>
 </pre></div>
 </div>
-<p>😄 앞에서 만든 딕셔너리 sugang_dict의 강좌001의 값을 출력하시오.</p>
-<p>😄 앞에서 만든 딕셔너리 sugang_dict의 강좌001의 값의 인덱스 2의 데이터를 출력하시오.</p>
+<p>😄 앞에서 만든 딕셔너리 sugang_dict의 lecture_001의 값을 출력하시오.</p>
+<p>😄 앞에서 만든 딕셔너리 sugang_dict의 lecture_001의 값의 인덱스 2의 데이터를 출력하시오.</p>
 </section>
 <section id="insertion-and-modification">
 <h3>Insertion and modification<a class="headerlink" href="#insertion-and-modification" title="Link to this heading">#</a></h3>
-<ul class="simple">
-<li><p>딕셔너리에 아이템을 추가 또는 수정하려면
-<code class="docutils literal notranslate"><span class="pre">딕셔너리변수명[key]</span> <span class="pre">=</span> <span class="pre">value</span></code>와 같이 하면 된다.</p></li>
+<ul>
+<li><p>딕셔너리에 아이템을 추가 또는 수정하려면 다음과 같이 하면 된다.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">딕셔너리변수명</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+</pre></div>
+</div>
+</li>
 <li><p><font color='red'>이때 key가 없으면 딕셔너리에 추가가 되고, key가 있으면 value가 수정이 된다.</font></p></li>
 </ul>
 <div class="cell docutils container">
@@ -522,13 +526,13 @@ document.write(`
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td class="text-center"><p>강좌003</p></td>
+<tr class="row-even"><td class="text-center"><p>lecture_003</p></td>
 <td class="text-left"><p>유재석, 류현진</p></td>
 </tr>
 </tbody>
 </table>
 </div>
-<p>😄 앞에서 만든 딕셔너리 sugang_dict의 강좌001의 값에 ‘임영웅’을 추가하고 확인하시오.</p>
+<p>😄 앞에서 만든 딕셔너리 sugang_dict의 lecture_001의 값에 ‘임영웅’을 추가하고 확인하시오.</p>
 </section>
 <section id="iteration">
 <h3>딕셔너리 주요 메서드와 iteration<a class="headerlink" href="#iteration" title="Link to this heading">#</a></h3>
@@ -1007,7 +1011,30 @@ document.write(`
 <li><p>집합은 순서가 없으며, 값이 중복되지 않는 특징을 가진다.</p></li>
 <li><p>가변(mutable)이라는 것은 객체가 만들어진 이후에도 데이터의 추가, 삽입, 삭제, 수정이 자유로운 특징을 가진 것을 의미한다. 리스트, 집합, 딕셔너리는 mutable 특징을 가진 데이터 타입이다.</p></li>
 <li><p>불변(immutable)이라는 것은 객체가 한번 만들어진 이후에는 데이터의 추가, 삽입, 삭제, 수정이 불가하다는 것을 의미한다. 정수, 실수, 문자열, 튜플 등은 immutable 특징을 가진 데이터 타입이다.</p></li>
+<li><p>각 데이터 구조 생성 방법 정리</p></li>
 </ul>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-center"><p>data structure</p></th>
+<th class="head text-left"><p>생성 방법</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-center"><p>list</p></td>
+<td class="text-left"><p>list() or [ ]</p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p>dictionary</p></td>
+<td class="text-left"><p>dict() or {key1: value1, key2: value2, …}</p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p>set</p></td>
+<td class="text-left"><p>set() or {item1, item2, … }</p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p>tuple</p></td>
+<td class="text-left"><p>tuple() or ()</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </section>
 </section>
 
@@ -1051,11 +1078,11 @@ document.write(`
       </div>
     </a>
     <a class="right-next"
-       href="Input.html"
+       href="8_functions.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">다음</p>
-        <p class="prev-next-title">입력</p>
+        <p class="prev-next-title">Chapter 8. 함수</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
