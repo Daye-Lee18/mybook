@@ -380,18 +380,18 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">매개변수와 전달인자를 가진 함수 호출과 정의</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">매개변수</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">전달인자</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#parameters">매개변수 (Parameters)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#arguments">전달인자 (Arguments)</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#return">반환(return)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#variable-scope">변수의 유효범위(Variable Scope)</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">지역변수</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">전역변수</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">지역변수</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">전역변수</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#advanced-map">(Advanced)알아두면 유용한 map() 함수</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">마무리</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">마무리</a></li>
 </ul>
             </nav>
         </div>
@@ -535,8 +535,8 @@ document.write(`
 </section>
 <section id="id5">
 <h2>매개변수와 전달인자를 가진 함수 호출과 정의<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
-<section id="id6">
-<h3>매개변수<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<section id="parameters">
+<h3>매개변수 (Parameters)<a class="headerlink" href="#parameters" title="Link to this heading">#</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">함수명</span><span class="p">(</span><span class="n">매개변수1</span><span class="p">,</span> <span class="n">매개변수2</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">매개변수n</span><span class="p">):</span>
     <span class="n">본문</span> <span class="n">실행문장1</span>
     <span class="n">본문</span> <span class="n">실행문장2</span>
@@ -566,8 +566,8 @@ document.write(`
 </div>
 </div>
 </section>
-<section id="id7">
-<h3>전달인자<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<section id="arguments">
+<h3>전달인자 (Arguments)<a class="headerlink" href="#arguments" title="Link to this heading">#</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">함수명</span><span class="p">(</span><span class="n">전달인자1</span><span class="p">,</span> <span class="n">전달인자2</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">전달인자n</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -725,6 +725,29 @@ document.write(`
 </div>
 </div>
 </div>
+<div class="dropdown admonition">
+<p class="admonition-title">asterisk (*)</p>
+<p>In Python, the asterisk(*) has two main roles: <strong>packing</strong> and <strong>unpacking</strong></p>
+<ul class="simple">
+<li><p>Packing: When * is used in a function parameter (e.g. *data), it collects multiple arguments into a <strong>tuple</strong></p></li>
+<li><p>Unpacking: When * is used when calling a function (e.g. *my_data), it expands a list or tuple into separate arguments</p></li>
+</ul>
+<p>In summary, the * symbol works like a converter between multiple values and a tuple. It packs multiple arguments into a tuple, or unpacks a tuple/list into separate arguments.</p>
+<p>The explanation source code for the * role is as follows.</p>
+<div class="highlight-pyhton notranslate"><div class="highlight"><pre><span></span>def my_function(a, b, c):
+    print(a, b, c)
+    
+
+def pack_values(*data): # if values are inserted, * packs them into a tuple 
+    print(data)
+
+if __name__ == &quot;__main__&quot;:
+    pack_values(a, b, c)
+    my_data = [1, 2, 3]
+    my_function(*my_data) # * unpackes items in `my_data` list and pass them into my_function
+</pre></div>
+</div>
+</div>
 <p>😄 메뉴를 입력받는 함수 order()를 정의하세요. 메뉴는 아래와 같이 여러개 입력받을 수 있습니다. 입력받은 메뉴리스트는 반환합니다.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">======================================================================</span>
 <span class="p">[</span><span class="s1">&#39;햄에그&#39;</span><span class="p">,</span> <span class="s1">&#39;BLT&#39;</span><span class="p">,</span> <span class="s1">&#39;치킨샐러드&#39;</span><span class="p">,</span> <span class="s1">&#39;리코타치즈&#39;</span><span class="p">,</span> <span class="s1">&#39;런치샌드위치&#39;</span><span class="p">,</span> <span class="s1">&#39;미니버거&#39;</span><span class="p">]</span>
@@ -777,8 +800,8 @@ document.write(`
 <li><p>반면, 지역변수의 유효범위는 그 변수를 정의한 함수내에서만 유효하다. 즉, 함수가 호출되었을 때 생성되며 함수를 벗어나면 수명을 다한다.</p></li>
 <li><p>아래의 예를 통해 전역변수와 지역변수의 개념을 확실히 이해하도록 하자.</p></li>
 </ul>
-<section id="id8">
-<h3>지역변수<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<section id="id6">
+<h3>지역변수<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>deposit() 함수와 withdraw() 함수를 정의하고, 각 함수 안에 변수 amount를 정의하였다.</p></li>
 <li><p>변수 amount는 지역변수이며 자신이 탄생한 함수 안에서는 유효하다.</p></li>
@@ -829,8 +852,8 @@ document.write(`
 </div>
 </div>
 </section>
-<section id="id9">
-<h3>전역변수<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<section id="id7">
+<h3>전역변수<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>함수밖 Global scope에서 정의되어 있는 변수를 전역변수라 한다.</p></li>
 <li><p>전역변수는 유효범위가 프로그램 전체이므로 함수(또는 내부함수)에서도 전역변수 참조할 수 있다.</p></li>
@@ -997,8 +1020,8 @@ document.write(`
 </div>
 </div>
 </section>
-<section id="id10">
-<h2>마무리<a class="headerlink" href="#id10" title="Link to this heading">#</a></h2>
+<section id="id8">
+<h2>마무리<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p>함수는 프로그램에서 자주 사용되는 소스코드를 만들어두고 필요할 때 사용하는 기능이다.</p></li>
 <li><p>코드를 구조화 체계화 하기 위해서도 정의한다.</p></li>
@@ -1088,18 +1111,18 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">매개변수와 전달인자를 가진 함수 호출과 정의</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">매개변수</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">전달인자</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#parameters">매개변수 (Parameters)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#arguments">전달인자 (Arguments)</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#return">반환(return)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#variable-scope">변수의 유효범위(Variable Scope)</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">지역변수</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">전역변수</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">지역변수</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">전역변수</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#advanced-map">(Advanced)알아두면 유용한 map() 함수</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">마무리</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">마무리</a></li>
 </ul>
   </nav></div>
 
