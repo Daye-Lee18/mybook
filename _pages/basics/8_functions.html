@@ -734,17 +734,17 @@ document.write(`
 </ul>
 <p>In summary, the * symbol works like a converter between multiple values and a tuple. It packs multiple arguments into a tuple, or unpacks a tuple/list into separate arguments.</p>
 <p>The explanation source code for the * role is as follows.</p>
-<div class="highlight-pyhton notranslate"><div class="highlight"><pre><span></span>def my_function(a, b, c):
-    print(a, b, c)
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">my_function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
     
 
-def pack_values(*data): # if values are inserted, * packs them into a tuple 
-    print(data)
+<span class="k">def</span><span class="w"> </span><span class="nf">pack_values</span><span class="p">(</span><span class="o">*</span><span class="n">data</span><span class="p">):</span> <span class="c1"># if values are inserted, * packs them into a tuple </span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
-if __name__ == &quot;__main__&quot;:
-    pack_values(a, b, c)
-    my_data = [1, 2, 3]
-    my_function(*my_data) # * unpackes items in `my_data` list and pass them into my_function
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">pack_values</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+    <span class="n">my_data</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+    <span class="n">my_function</span><span class="p">(</span><span class="o">*</span><span class="n">my_data</span><span class="p">)</span> <span class="c1"># * unpackes items in `my_data` list and pass them into my_function</span>
 </pre></div>
 </div>
 </div>
