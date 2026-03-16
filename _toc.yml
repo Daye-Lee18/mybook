@@ -5,18 +5,24 @@ format: jb-book
 root: intro
 
 parts:
-- caption: 파이썬 기초 
+- caption: Python 
   chapters:
   - file: _pages/basics/6_list
   - file: _pages/basics/7_dict_tuple_set
   - file: _pages/basics/8_functions
-  - file: _pages/basics/Input
-  - file: _pages/basics/oop
-  - file: _pages/basics/oop-classes_instances_objects
-  - file: _pages/basics/regex
-  - file: _pages/basics/variable_scope
+  - file: _pages/basics/9_variable_scope
+  - file: _pages/basics/10_Input
+  - file: _pages/basics/11_oop
+  - file: _pages/basics/12_oop-classes_instances_objects
+  - file: _pages/basics/13_regex
   
-- caption: 알고리즘 이론
+
+- caption: Data Science 
+  chapters:
+  - file: _pages/ds/1_ds
+  - file: _pages/ds/2_numpy 
+
+- caption: Algorithm
   chapters:
   - file: _pages/theory/0_tips
   - file: _pages/theory/1_implementation
@@ -32,7 +38,7 @@ parts:
   - file: _pages/theory/11_LinkedList
 
 
-- caption: 알고리즘 실습
+- caption: Algorithm Exercises
   chapters:
   - file: _pages/practice/1_implementationPS
   - file: _pages/practice/2_DFS_BFSPS
@@ -44,7 +50,7 @@ parts:
   - file: _pages/practice/12_hash_tablesPS
 
 
-- caption: 시험 
+- caption: Exams 
   chapters:
   - file: _pages/exams/midterm_student
   - file: _pages/exams/final_student
