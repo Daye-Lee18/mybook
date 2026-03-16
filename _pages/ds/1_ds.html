@@ -1,0 +1,725 @@
+
+<!DOCTYPE html>
+
+
+<html lang="ko" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Chapter 9. 데이터과학의 이해 &#8212; 말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/proof.css?v=b4b7a797" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8127ecf8" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=ae323b5b"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script src="../../_static/translations.js?v=e33e7ba0"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_pages/ds/1_ds';</script>
+    <script src="https://unpkg.com/jupyterquiz@1.1.8/dist/jupyterquiz.min.js"></script>
+    <link rel="icon" href="../../_static/favicon.png"/>
+    <link rel="index" title="색인" href="../../genindex.html" />
+    <link rel="search" title="검색" href="../../search.html" />
+    <link rel="next" title="Chapter 10. Numpy" href="2_numpy.html" />
+    <link rel="prev" title="정규표현식" href="../basics/13_regex.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="ko"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/mylogo.png" class="logo__image only-light" alt="말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업 - Home"/>
+    <script>document.write(`<img src="../../_static/mylogo.png" class="logo__image only-dark" alt="말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업 - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="검색" aria-label="검색" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">검색</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../intro.html">
+                    Welcome to SNU LEI 한국어교육센터 IT 수업
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Python</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../basics/6_list.html">Chapter 6. 리스트</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/7_dict_tuple_set.html">Chapter 7. 딕셔너리, 튜플, 셋</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/8_functions.html">Chapter 8. 함수</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/9_variable_scope.html">Chapter 9. Variable Scope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/10_Input.html">Chapter 10. 입력</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/11_oop.html">객체 지향 프로그래밍 (OOP)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/12_oop-classes_instances_objects.html">클래스, 인스턴스, 객체</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/13_regex.html">정규표현식</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Data Science</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Chapter 9. 데이터과학의 이해</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_numpy.html">Chapter 10. Numpy</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Algorithm</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../theory/0_tips.html">문제 풀이 순서 팁 (Tips)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/1_implementation.html">Lecture 1-1. 구현</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/2_DFS_BFS.html">Lecture 2-1. DFS/BFS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/3_backtracking.html">Lecture 3-1. Backtracking</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/4_DP.html">Lecture 4-1. Dynamic Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/5_shortest_path.html">Lecture 5-1. Shortest Path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/6_sort.html">Lecture 6-1. Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/7_binarysearch.html">Lecture 7-1. Binary Search</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/8_graph.html">Lecture 8-1. Graph Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/9_greedy.html">Lecture 9-1. Greedy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/10_prefix.html">Lecture 10-1. Prefix Sum (누적 합)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/11_LinkedList.html">Lecture 11-1. Linked List</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Algorithm Exercises</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../practice/1_implementationPS.html">Lecture 1-2. 구현 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/2_DFS_BFSPS.html">Lecture 2-2. DFS/BFS 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/3_backtrackingPS.html">Lecture 3-2. Backtracking 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/4_DPPS.html">Lecture 4-2. DP 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/5_shortest_pathPS.html">Lecture 5-2. Shortest Path &amp; Heap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/6_sortPS.html">Lecture 6-2. Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/11_linked_listPS.html">Lecture 11-2. Linked List</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/12_hash_tablesPS.html">Lecture 12-2. Hash Table</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Exams</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student.html">Midterm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exams/final_student.html">Final</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="이 페이지 다운로드">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/_pages/ds/1_ds.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="소스 파일 다운로드"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="PDF로 인쇄"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="전체 화면으로보기"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="검색" aria-label="검색" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Chapter 9. 데이터과학의 이해</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> 내용 </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">데이터 과학의 이해</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">데이터 과학의 활용</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">기업마케팅</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">범죄예방</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">의료분야</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">교통분야</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">데이터 분석 절차</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8"><font color="red">문제 정의</font></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9"><font color="red">전략 수립</font></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10"><font color="red">데이터 수집(수집, 정제, 집계)</font></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11"><font color="red">데이터 분석</font></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12"><font color="red">결과 적용</font></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">데이터 스토리텔링</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">마무리</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="chapter-9">
+<h1>Chapter 9. 데이터과학의 이해<a class="headerlink" href="#chapter-9" title="Link to this heading">#</a></h1>
+<div class="info admonition">
+<p class="admonition-title">학습목표와 기대효과</p>
+<ul class="simple">
+<li><p>학습목표</p>
+<ul>
+<li><p>데이터 과학을 이해하고 활용 분야를 생각해보자.</p></li>
+<li><p>데이터 분석의 절차를 알아보자.</p></li>
+<li><p>데이터 분석을 위한 스토리텔링을 해보자.</p></li>
+</ul>
+</li>
+<li><p>기대효과</p>
+<ul>
+<li><p>데이터 분석을 위한 절차를 이해하고 스토리텔링해 볼 수 있다.</p></li>
+</ul>
+</li>
+</ul>
+</div>
+<section id="id1">
+<h2>데이터 과학의 이해<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>데이터 과학 분야는 문제 해결을 위해 데이터를 준비하고, 분석하고, 적용하는 방법을 다루는 분야이다.</p></li>
+<li><p>데이터 수집과 분석은 통계학, 컴퓨터과학, 경영학, 경제학, 사회학, 생물학 등 오래 전부터 여러 분야에서 수행되어 왔다.</p></li>
+<li><p>그러나 이전의 데이터과학 분야에서의 과학적 탐구 방식은 원인을 알아내는데 치중했다. 예를 들어, 왜 경제가 어려운지, 왜 바람이 서쪽에서 부는지, 왜 특정 바이러스가 병을 일으키는지 등 현상이 일어난 원인을 알아내고, 이를 설명할 수 있는 원리와 이론을 발견하는 방향으로 다루어졌다.</p></li>
+</ul>
+<ul class="simple">
+<li><p>지금의 데이터 과학은 답을 얻을 수 있는 상관관계를 알아내는 것에 더 가치를 둔다.</p></li>
+<li><p>예를 들어, ‘어떤 특이한 현상이 발생하면 한달 내에 불경기가 온다.’, ‘어떤 키워드를 사람들이 많이 검색하면 그 지역에서 독감이 유행한다.’ 등 분석을 통해 현상에 대한 원인관계를 확인하는 것에 치중한다.</p></li>
+<li><p>하나의 예로, “허리케인이 오면 비상식량으로 생수가 많이 팔린다.”, “허리케인이 오면 손전등과 비상 장비가 많이 팔린다.” 이와 같은 현상은 예상 가능한 결과였다. 그런데, Walmart의 데이터 분석을 통한 수요 예측에 따르면, “허리케인이 오면 탄산음료 판매가 급격하게 상승한다”는 의외의 결과가 나왔다.</p></li>
+<li><p>그 상관관계를 확인해 본 결과, 비상식량 중에는 마른 식품이 많고, 마른 식품은 갈증을 유발하게 되어 탄산음료 판매가 증가하였던 것이다.</p></li>
+<li><p>이와 같이 지금의 데이터 과학은 허리케인과 탄산음료의 상관관계를 알고, 이후 분석에서 원인관계를 확인하는 방향에 더 가치를 두고 있다.</p></li>
+<li><p>데이터 과학은 사건 발생의 정확한 원인은 밝히지 못하더라도 미래를 예측할 수 있는 방법을 찾아내거나 의사결정에도 많은 도움을 준다.</p></li>
+</ul>
+</section>
+<section id="id2">
+<h2>데이터 과학의 활용<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>데이터 과학은 기업마케팅, 범죄예방, 의료분야, 교통분야 등 실제 다양한 분야에서 활용되어지고 있다.</p></li>
+</ul>
+<section id="id3">
+<h3>기업마케팅<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<div align="center"><img src="https://haesunbyun.github.io/common/images/ds1.png" height=250 style="width:600px;"></div><ul class="simple">
+<li><p>기업에서는 고객 들의 구매 관련 데이터를 수집해 놓았다가 고객 정보의 일부를 추출하여 고객들간의 유사성을 파악하고 취향에 맞는 책을 추천해 주는데 데이터 과학을 활용한다.</p></li>
+<li><p>또한 고객 구매 정보들을 추출하여 책들 간의 연관성을 파악하고 연관성 있는 분야의 책을 추천해 주기도 한다.</p></li>
+</ul>
+</section>
+<section id="id4">
+<h3>범죄예방<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<div align="center"><img src="https://haesunbyun.github.io/common/images/ds2.png" height=250 >
+<img src="https://haesunbyun.github.io/common/images/ds8.png" width=200 height=250 >
+</div><ul class="simple">
+<li><p>2002년에 개봉한 탐크루즈 주연의 ‘마이너리티리포트’라는 범죄예방 영화가 있다. 이 영화에서는 2054년 워싱턴를 배경으로 프리크라임이라는 최첨단 치안 시스템이 범죄가 일어날 시간과 장소, 범행을 저지를 사람까지 미리 예측해내고 범죄가 일어나기 전 특수 경찰들이 미래의 범죄자들을 체포한다는 내용이다. 아직 범죄를 저지르지 않았는데 체포한다는 것이 말이 될까 싶다.</p></li>
+<li><p>어쨌든, 데이터과학은 범죄예방에도 사용된다. 지난 수십년간의 범죄자료 데이터를 수집해 놓았다가 범죄시간, 범죄 발생 횟수 등을 토대로 범죄가 일어날 것 같은 시간대, 위험 지역을 선정하는데 데이터 과학을 활용한다.</p></li>
+<li><p>이와 같이 데이터 분석을 토대로 위험지역에 대해 집중적 순찰을 한 결과 범죄 발생률을 감소 시킬 수 있었다고 한다.</p></li>
+</ul>
+</section>
+<section id="id5">
+<h3>의료분야<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<div align="center"><img src="https://haesunbyun.github.io/common/images/ds3.png" width=250 height=250 ></div><ul class="simple">
+<li><p>구글 독감 트렌드(GFT: Google Flu Trends)는 빅데이터의 성공 사례로 곧잘 언급되는 내용이다.</p></li>
+<li><p>구글은 미국 질병관리본부(CDC)가 공개한 2003년부터 2007년까지의 독감 데이터(독감 증상으로 병원을 방문한 환자의 수)와 동일한 시기에 구글 사용자가 입력한 검색어와의 상관관계를 분석하였다.</p></li>
+<li><p>이를 분석하여 과거 독감 데이터와 높은 상관관계를 보이는 사용자의 검색어 45개(고열, 기침 등)를 사용해 질병관리본부보다 2주 빨리 독감 유행을 예측할 수 있는 모형을 개발하는데 데이터과학을 활용하였다.</p></li>
+</ul>
+</section>
+<section id="id6">
+<h3>교통분야<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<div align="center"><img src="https://haesunbyun.github.io/common/images/ds4.png" width=250 height=250></div><ul class="simple">
+<li><p>데이터 과학은 교통분야에서도 요긴하게 사용될 수 있다. 사람들의 휴대폰 사용 기록을 토대로 어느 시각, 어느 지역에서 가장 많이 사용하는지를 조사한 후, 이를 기반으로 새로운 노선을 결정하거나, 노선을 확대하는 등의 결정에 사용되기도 한다.</p></li>
+</ul>
+</section>
+</section>
+<section id="id7">
+<h2>데이터 분석 절차<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>데이터 분석 절차는 데이터 분석을 통해 문제를 해결하는 과정을 일컫는다.</p></li>
+<li><p>다음과 같이 5단계로 정의할 수 있다.</p></li>
+</ul>
+<div align="center"><img src="https://haesunbyun.github.io/common/images/ds5.png"></div><section id="id8">
+<h3><font color='red'>문제 정의</font><a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>해결하려는 문제를 명확히 정의하는 단계이다.</p></li>
+<li><p>큰 문제는 한번에 해결하기 어려우므로, 해결 가능한 크기의 작은 문제로 나누어 접근하는 전략이 필요하다.</p></li>
+<li><p>작은 문제로 나눌 때에는 분석 방법이 널리 알려진 문제 단위로 나눈다.</p></li>
+</ul>
+</section>
+<section id="id9">
+<h3><font color='red'>전략 수립</font><a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>문제해결을 위해 어떤 데이터를 어떻게 분석할지 결정하는 단계이다.</p></li>
+<li><p>문제의 본질을 파악하고 문제 해결 목표를 명확히 정해야 한다. 예를 들어, 비용 20% 줄이기, 문제 영역 3곳 찾기 등</p></li>
+<li><p>전략을 수립하면서 확인해야 할 사항으로는  데이터 수집 비용, 마감일, 최소한의 성능 요건, 가용 자원(인적자원, 사용 데이터 수), 전산 자원, 데이터 분석방법, 데이터 분석에 소요되는 비용 등을 확인해야 한다.</p></li>
+</ul>
+</section>
+<section id="id10">
+<h3><font color='red'>데이터 수집(수집, 정제, 집계)</font><a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>분석에 필요한 데이터를 수집하는 단계이다.</p></li>
+<li><p>목적을 정하고 데이터를 수집하는 것이 일반적이며, 이상적인 절차이다.</p></li>
+<li><p>데이터 수집은 많은 비용과 시간이 필요한 단계이며, 일반적으로 전체 과정의 70~80%는 데이터를 모으고 준비하는데 소요된다.</p></li>
+<li><p>데이터를 수집하면서 수집한 데이터 전체 모습 및 데이터 자체에 문제가 있는지 확인이 필요하다.</p></li>
+</ul>
+</section>
+<section id="id11">
+<h3><font color='red'>데이터 분석</font><a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>패턴 찾기, 분류, 예측 등 분석 모델 구현하는 단계이다.</p></li>
+<li><p>데이터 분석 유형으로는 기초 통계 분석(평균, 분산 등 데이터 분포 파악), 클러스터링(유사 항목 묶음), 연관관계 분석, 분류(정해진 카테고리에서 판별), 예측(주가, 매출 등 수치 예상) 등이 있다.</p></li>
+</ul>
+</section>
+<section id="id12">
+<h3><font color='red'>결과 적용</font><a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>분석 결과를 실제 상황에 적용하고 성능을 개선하는 단계이다.</p></li>
+<li><p>실제로 어떻게 적용할지 미리 시뮬레이션을 해 보는게 필요하다.</p></li>
+<li><p>분석 결과를 쉽게 이해시키기기 위해 시각화(visualization) 필요하다.</p></li>
+</ul>
+</section>
+</section>
+<section id="id13">
+<h2>데이터 스토리텔링<a class="headerlink" href="#id13" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>문제정의</p>
+<ul>
+<li><p>각 구별 CCTV의 수는 인구수 대비 적절한가?</p></li>
+<li><p>CCTV 수가 많은 지역과 적은 지역은 어디인가?</p></li>
+</ul>
+</li>
+</ul>
+<hr class="docutils" />
+<ul>
+<li><p>관련된 자료의 수집</p>
+<ul>
+<li><p>필요한 데이터 정의: 서울시 구별 인구 데이터와 CCTV수 데이터</p></li>
+<li><p>어디서 수집할 것인가: 공공데이터로부터 획득</p>
+<ul class="simple">
+<li><p>서울시 CCTV 현황 데이터 구하기: 공공데이터 포털: <a class="reference external" href="https://www.data.go.kr/">https://www.data.go.kr/</a></p></li>
+</ul>
+<div align="center"><img src="https://haesunbyun.github.io/common/images/web3.png" height=300 style="width:600px;"></div>
+<ul class="simple">
+<li><p>서울시 인구 현황 데이터 구하기 : 서울 열린데이터 광장: <a class="reference external" href="https://data.seoul.go.kr/">https://data.seoul.go.kr/</a></p></li>
+</ul>
+<div align="center"><img src="https://haesunbyun.github.io/common/images/ds7.png" height=300 style="width:600px;"></div>
+</li>
+<li><p>수집한 자료의 가공, 정제, 필터링, 정렬 등</p>
+<ul class="simple">
+<li><p>구별 인구 데이터와 CCTV수 데이터 합치기</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><p>데이터 분석</p>
+<ul>
+<li><p>통계 등을 사용한 요약 테이블 작성</p></li>
+<li><p>구별 인구 데이터와 CCTV수 사이의 상관관계 구하기</p></li>
+<li><p>자료 시각화</p>
+<ul>
+<li><p>구별 인구 데이터와 CCTV수 사이의 관계를 나타내는 대표직선 구하기</p></li>
+<li><p>대표직선으로부터의 오차 구하기</p></li>
+<li><p>인구 데이터와 CCTV수를 산포도로 표현 + 산포도 marker색을 오차로 표현</p></li>
+<li><p>대표직선을 선형 그래프로 표현</p></li>
+<li><p>오차가 큰 상위 10개구의 구 이름 표시</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><p>문제 정의에 대한 결론</p></li>
+<li><p>이 문제는 pandas, numpy, matplotlib, seaborn을 배운 후 종합예제로 다룰 것이다.</p></li>
+</ul>
+</section>
+<section id="id14">
+<h2>마무리<a class="headerlink" href="#id14" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>데이터 과학이란 정형, 비정형 데이터로부터 지식과 인사이트를 추출하는데 과학적 방법론, 프로세스, 알고리즘 및 시스템을 이용하여 데이터에서 가치를 도출하는 통합 학문이다.</p></li>
+<li><p>데이터 분석을 통해 미래를 예측할 수 있는 방법을 찾아내거나 의사결정에 도움을 준다.</p></li>
+<li><p>데이터 분석의 절차는 문제정의 -&gt; 전략수립 -&gt; 데이터 수집 -&gt;  데이터분석 -&gt; 결과적용으로 진행된다.</p></li>
+</ul>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./_pages/ds"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../basics/13_regex.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">이전</p>
+        <p class="prev-next-title">정규표현식</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="2_numpy.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">다음</p>
+        <p class="prev-next-title">Chapter 10. Numpy</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> 내용
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">데이터 과학의 이해</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">데이터 과학의 활용</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">기업마케팅</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">범죄예방</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">의료분야</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">교통분야</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">데이터 분석 절차</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8"><font color="red">문제 정의</font></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9"><font color="red">전략 수립</font></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10"><font color="red">데이터 수집(수집, 정제, 집계)</font></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11"><font color="red">데이터 분석</font></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12"><font color="red">결과 적용</font></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">데이터 스토리텔링</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">마무리</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+으로 Daye Lee
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
