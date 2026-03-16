@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>객체 지향 프로그래밍 (OOP) &#8212; 말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업</title>
+    <title>Chapter 11. 객체 지향 프로그래밍 (OOP) &#8212; 말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업</title>
   
   
   
@@ -65,7 +65,7 @@
     <link rel="icon" href="../../_static/favicon.png"/>
     <link rel="index" title="색인" href="../../genindex.html" />
     <link rel="search" title="검색" href="../../search.html" />
-    <link rel="next" title="클래스, 인스턴스, 객체" href="12_oop-classes_instances_objects.html" />
+    <link rel="next" title="Chapter 12. 클래스, 인스턴스, 객체" href="12_oop-classes_instances_objects.html" />
     <link rel="prev" title="Chapter 10. 입력" href="10_Input.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ko"/>
@@ -191,14 +191,14 @@
 <li class="toctree-l1"><a class="reference internal" href="8_functions.html">Chapter 8. 함수</a></li>
 <li class="toctree-l1"><a class="reference internal" href="9_variable_scope.html">Chapter 9. Variable Scope</a></li>
 <li class="toctree-l1"><a class="reference internal" href="10_Input.html">Chapter 10. 입력</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">객체 지향 프로그래밍 (OOP)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="12_oop-classes_instances_objects.html">클래스, 인스턴스, 객체</a></li>
-<li class="toctree-l1"><a class="reference internal" href="13_regex.html">정규표현식</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Chapter 11. 객체 지향 프로그래밍 (OOP)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12_oop-classes_instances_objects.html">Chapter 12. 클래스, 인스턴스, 객체</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13_regex.html">Chater 13. 정규표현식</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Data Science</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../ds/1_ds.html">Chapter 9. 데이터과학의 이해</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ds/2_numpy.html">Chapter 10. Numpy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/1_ds.html">Chapter 1. 데이터과학의 이해</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/2_numpy.html">Chapter 2. Numpy</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Algorithm</span></p>
 <ul class="nav bd-sidenav">
@@ -368,7 +368,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>객체 지향 프로그래밍 (OOP)</h1>
+    <h1>Chapter 11. 객체 지향 프로그래밍 (OOP)</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -378,16 +378,16 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">OOP란?</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">OOP와 객체</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">객체</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">객체 중심 프로그래밍</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">모든 게 객체!</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#oop">OOP란?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">OOP와 객체</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">객체</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">객체 중심 프로그래밍</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">모든 게 객체!</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">객체 상호 작용</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">예제</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">연습문제</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">객체 상호 작용</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">예제</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">연습문제</a></li>
 </ul>
             </nav>
         </div>
@@ -399,10 +399,10 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="oop">
-<span id="ch-oop"></span><h1>객체 지향 프로그래밍 (OOP)<a class="headerlink" href="#oop" title="Link to this heading">#</a></h1>
-<section id="id1">
-<h2>OOP란?<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+  <section class="tex2jax_ignore mathjax_ignore" id="chapter-11-oop">
+<h1>Chapter 11. 객체 지향 프로그래밍 (OOP)<a class="headerlink" href="#chapter-11-oop" title="Link to this heading">#</a></h1>
+<section id="oop">
+<h2>OOP란?<a class="headerlink" href="#oop" title="Link to this heading">#</a></h2>
 <p><strong>객체 지향 프로그래밍</strong><font size='2'>Object-Oriented Programming</font>은
 객체들 사이의 유기적인 관계를 묘사하는 프로그래밍 기법이며,
 줄여서 보통 <strong>OOP</strong>라고 부른다.
@@ -420,15 +420,15 @@ OOP 역시 예외가 아니다.
 하지만 OOP는 구현해야 할 객체들을 선택하고 객체들 사이의 유기적인 관계를
 이용하는 과정을 논리적으로 묘사하는 데에 보다 많은 방점을 둔다.</p>
 </section>
-<section id="id2">
-<h2>OOP와 객체<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<section id="id1">
+<h2>OOP와 객체<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <p>OOP에 대한 이해는 아래 두 가지 질문과 관련되어 있다.</p>
 <ol class="arabic simple">
 <li><p>객체<font size='2'>object</font>란?</p></li>
 <li><p>“객체를 중심으로 프로그래밍한다”의 의미는?</p></li>
 </ol>
-<section id="id3">
-<h3>객체<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<section id="id2">
+<h3>객체<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
 <p>파이썬에서 객체는 특정 클래스의 <strong>인스턴스</strong><font size='2'>instance</font>로 생성되는 값이다.
 그렇게 생성된 값의 자료형은 값을 생성할 때 사용된 클래스로 지정된다.</p>
 <p>파이썬의 모든 값은 하나의 객체, 즉 어떤 클래스의 인스턴스로 생성된다.
@@ -472,8 +472,8 @@ OOP 역시 예외가 아니다.
 </table>
 </div>
 </section>
-<section id="id4">
-<h3>객체 중심 프로그래밍<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<section id="id3">
+<h3>객체 중심 프로그래밍<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
 <p>객체는 클래스가 제공하는 속성과 기능을 활용할 수 있다.
 리스트의 속성은 예를 들어 항목으로 사용된 값과 항목의 개수 등의 정보를,
 리스트의 기능은 리스트에 포함된 항목과 정보를 활용하고 수정하는 메서드들이다.</p>
@@ -507,8 +507,8 @@ OOP 역시 예외가 아니다.
 </div>
 </div>
 </section>
-<section id="id5">
-<h3>모든 게 객체!<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<section id="id4">
+<h3>모든 게 객체!<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
 <p>파이썬에서는 심지어 함수, 모듈, 클래스 자체도 특정 클래스의 인스턴스다.
 한마디로 파이썬에서 다룰 수 있는 모든 값은 특정 클래스에 속한다.
 <code class="docutils literal notranslate"><span class="pre">turtle</span></code> 모듈을 활용하는 코드를 이용하여 좀 더 자세히 설명한다.</p>
@@ -592,8 +592,8 @@ OOP 역시 예외가 아니다.
 이런 속성들은 터틀 그래픽스가 게임을 실제로 실행되도록 구현할 때 활용된다.</p>
 </section>
 </section>
-<section id="id6">
-<h2>객체 상호 작용<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
+<section id="id5">
+<h2>객체 상호 작용<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
 <p>하나의 클래스를 이용해서 생성된 여러 개의 객체는 기본적으로 상호 독립적이다.
 예를 들어 두 개의 <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">2,</span> <span class="pre">3]</span></code> 과 <code class="docutils literal notranslate"><span class="pre">['a',</span> <span class="pre">'b',</span> <span class="pre">'c']</span></code> 는 둘 모두 <code class="docutils literal notranslate"><span class="pre">list</span></code>의 인스턴스이지만
 기본적으로 서로 아무 연관이 없다.
@@ -628,8 +628,8 @@ OOP 역시 예외가 아니다.
 </ul>
 <p><iframe src="https://trinket.io/embed/python/51822fae918b?runOption=run&start=result" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe></p><p>이어지는 장에서 객체 상호 작용을 보다 다양한 방식으로 구현하는 방식을 소개한다.</p>
 </section>
-<section id="id7">
-<h2>예제<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
+<section id="id6">
+<h2>예제<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
 <p><strong>예제 1</strong></p>
 <p>아래 프로그램에서 <code class="docutils literal notranslate"><span class="pre">polygon()</span></code> 함수는 지정된 길이를 한 변으로 하는 정다각형을 그리도록 하며 두 개의 매개변수를 사용한다.</p>
 <ul class="simple">
@@ -672,8 +672,8 @@ OOP 역시 예외가 아니다.
 <li><p>다각형 파이 그리기 코드</p></li>
 </ul>
 <iframe src="https://trinket.io/embed/python/fbfbaffde1bc?runOption=run&start=result" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe></section>
-<section id="id8">
-<h2>연습문제<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
+<section id="id7">
+<h2>연습문제<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
 <p>참고: <a class="reference external" href="https://colab.research.google.com/github/codingalzi/42H/blob/master/practices/practice-oop.ipynb">(연습) 객체 지향 프로그래밍</a></p>
 </section>
 </section>
@@ -722,7 +722,7 @@ OOP 역시 예외가 아니다.
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">다음</p>
-        <p class="prev-next-title">클래스, 인스턴스, 객체</p>
+        <p class="prev-next-title">Chapter 12. 클래스, 인스턴스, 객체</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -742,16 +742,16 @@ OOP 역시 예외가 아니다.
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">OOP란?</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">OOP와 객체</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">객체</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">객체 중심 프로그래밍</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">모든 게 객체!</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#oop">OOP란?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">OOP와 객체</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">객체</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">객체 중심 프로그래밍</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">모든 게 객체!</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">객체 상호 작용</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">예제</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">연습문제</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">객체 상호 작용</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">예제</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">연습문제</a></li>
 </ul>
   </nav></div>
 
