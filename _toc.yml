@@ -24,6 +24,7 @@ parts:
   chapters:
   - file: _pages/ds/1_ds
   - file: _pages/ds/2_numpy 
+  - file: _pages/ds/3_pandas1 
 
 - caption: Algorithm
   chapters:
