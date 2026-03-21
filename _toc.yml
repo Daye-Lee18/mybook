@@ -15,6 +15,9 @@ parts:
   - file: _pages/basics/11_oop
   - file: _pages/basics/12_oop-classes_instances_objects
   - file: _pages/basics/13_regex
+  - file: _pages/basics/14_decorator
+  - file: _pages/basics/15_getattr
+  - file: _pages/basics/16_pickle
   
 
 - caption: Data Science 
