@@ -195,12 +195,8 @@
 <li class="toctree-l1"><a class="reference internal" href="12_oop-classes_instances_objects.html">Chapter 12. 클래스, 인스턴스, 객체</a></li>
 <li class="toctree-l1"><a class="reference internal" href="13_regex.html">Chapter 13. 정규표현식</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Chapter 14. Decorator</a></li>
-
-
-
-
 <li class="toctree-l1"><a class="reference internal" href="15_getattr.html">Chapter 15. getattr()</a></li>
-<li class="toctree-l1"><a class="reference internal" href="16_pickle.html">16. Pickle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="16_pickle.html">Chapter 16. Pickle</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Data Science</span></p>
 <ul class="nav bd-sidenav">
@@ -385,22 +381,20 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Chapter 14. Decorator</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#decorator">Decorator란?</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Decorator 정의</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">함수를 이용한 decorator 정의</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">클래스를 이용한 decorator 정의</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#decorator">Decorator란?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Decorator 정의</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">함수를 이용한 decorator 정의</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">클래스를 이용한 decorator 정의</a></li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Decorator 사용</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Decorator 사용 사례</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flask">Flask 웹 프레임워크 라우팅</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#logging">로깅(Logging)이 필요할 때</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#authentication">사용자 인증할 때 (Authentication)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Decorator 사용</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Decorator 사용 사례</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flask">Flask 웹 프레임워크 라우팅</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#logging">로깅(Logging)이 필요할 때</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#authentication">사용자 인증할 때 (Authentication)</a></li>
 </ul>
 </li>
 </ul>
-
             </nav>
         </div>
     </div>
@@ -411,17 +405,16 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="chapter-14-decorator">
+  <section class="tex2jax_ignore mathjax_ignore" id="chapter-14-decorator">
 <h1>Chapter 14. Decorator<a class="headerlink" href="#chapter-14-decorator" title="Link to this heading">#</a></h1>
-</section>
 <section id="decorator">
-<h1>Decorator란?<a class="headerlink" href="#decorator" title="Link to this heading">#</a></h1>
+<h2>Decorator란?<a class="headerlink" href="#decorator" title="Link to this heading">#</a></h2>
 <p>decorator는 함수 wrapper로 “함수를 감싸서(wrapper) 실행 흐름을 바꾸는 것”이다. 실제 작동 원리는 wrapper가 argument 받는다</p>
 </section>
 <section id="id1">
-<h1>Decorator 정의<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
+<h2>Decorator 정의<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <section id="id2">
-<h2>함수를 이용한 decorator 정의<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<h3>함수를 이용한 decorator 정의<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">deco</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
@@ -445,11 +438,11 @@ document.write(`
 </div>
 </section>
 <section id="id3">
-<h2>클래스를 이용한 decorator 정의<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<h3>클래스를 이용한 decorator 정의<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
 </section>
 </section>
 <section id="id4">
-<h1>Decorator 사용<a class="headerlink" href="#id4" title="Link to this heading">#</a></h1>
+<h2>Decorator 사용<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span> 
@@ -487,9 +480,9 @@ document.write(`
 </div>
 </section>
 <section id="id5">
-<h1>Decorator 사용 사례<a class="headerlink" href="#id5" title="Link to this heading">#</a></h1>
+<h2>Decorator 사용 사례<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
 <section id="flask">
-<h2>Flask 웹 프레임워크 라우팅<a class="headerlink" href="#flask" title="Link to this heading">#</a></h2>
+<h3>Flask 웹 프레임워크 라우팅<a class="headerlink" href="#flask" title="Link to this heading">#</a></h3>
 <p>python에서는 다양한 decorator가 제공된다. Flask 웹 프레임워크에서는 라우팅을 위한 <code class="docutils literal notranslate"><span class="pre">&#64;app.route</span></code>라는 decorator를 사용한다.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">&#64;app.route</span></code>는 URL 경로를 함수에 연결한다. Flask 어플리케이션은 특정 URL에서 요청이 들어올때, 해당 URL에 연결된 함수를 실행할 수 있다.</p></li>
@@ -509,11 +502,11 @@ document.write(`
 </div>
 </section>
 <section id="logging">
-<h2>로깅(Logging)이 필요할 때<a class="headerlink" href="#logging" title="Link to this heading">#</a></h2>
+<h3>로깅(Logging)이 필요할 때<a class="headerlink" href="#logging" title="Link to this heading">#</a></h3>
 <p>보통 decorator를 사용하여 함수의 호출과 실행 시간을 로깅한다. 이를 통해 프로그램의 실행 흐름을 추적하거나 성능 문제를 진단하는데 도움이 될 수 있다.</p>
 </section>
 <section id="authentication">
-<h2>사용자 인증할 때 (Authentication)<a class="headerlink" href="#authentication" title="Link to this heading">#</a></h2>
+<h3>사용자 인증할 때 (Authentication)<a class="headerlink" href="#authentication" title="Link to this heading">#</a></h3>
 <p>웹 어플리케이션에서 사용자가 특정 기능에 접근하기 전에 인증을 받는 경우가 있다. 이때 decorator를 사용하여 코드의 중복을 줄이고 가독성을 높일 수 있다.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -532,6 +525,7 @@ document.write(`
 </div>
 </div>
 </div>
+</section>
 </section>
 </section>
 
@@ -599,22 +593,20 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Chapter 14. Decorator</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#decorator">Decorator란?</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Decorator 정의</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">함수를 이용한 decorator 정의</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">클래스를 이용한 decorator 정의</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#decorator">Decorator란?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Decorator 정의</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">함수를 이용한 decorator 정의</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">클래스를 이용한 decorator 정의</a></li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Decorator 사용</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Decorator 사용 사례</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flask">Flask 웹 프레임워크 라우팅</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#logging">로깅(Logging)이 필요할 때</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#authentication">사용자 인증할 때 (Authentication)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Decorator 사용</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Decorator 사용 사례</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flask">Flask 웹 프레임워크 라우팅</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#logging">로깅(Logging)이 필요할 때</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#authentication">사용자 인증할 때 (Authentication)</a></li>
 </ul>
 </li>
 </ul>
-
   </nav></div>
 
 </div></div>
