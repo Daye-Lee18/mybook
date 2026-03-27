@@ -204,6 +204,7 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../ds/1_ds.html">Chapter 1. 데이터과학의 이해</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ds/2_numpy.html">Chapter 2. Numpy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/3_pandas1.html">Chapter 11. Pandas I</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Algorithm</span></p>
 <ul class="nav bd-sidenav">
@@ -422,13 +423,12 @@ document.write(`
 <p>들어가기전, DP 문제를 풀 때 아래 정보들에 유념해서 문제를 푼다면 훨씬 도움이 될 것이다.</p>
 <div class="important admonition">
 <p class="admonition-title">Things to think for a DP problem</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 6개 checklist </span>
-<span class="c1"># 1) State: dp[...]</span>
-<span class="c1"># 2) What to store: min/max/count/bool/value (필요시 prev/choice)</span>
-<span class="c1"># 3) Base case init</span>
-<span class="c1"># 4) Fill order: 작은 상태 → 큰 상태 (Top-down/Bottom-up)</span>
-<span class="c1"># 5) Transition</span>
-<span class="c1"># 6) Read answer</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># DP checklist </span>
+<span class="c1"># 1) overlapping small problem: dp[...]</span>
+<span class="c1"># 2) state</span>
+<span class="c1"># 3) what to store</span>
+<span class="c1"># 4) transition </span>
+<span class="c1"># 5) base case</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">(</span><span class="o">...</span><span class="p">):</span>
     <span class="c1"># 예: 2D (i, j)</span>

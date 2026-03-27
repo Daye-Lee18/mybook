@@ -202,6 +202,7 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../ds/1_ds.html">Chapter 1. 데이터과학의 이해</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ds/2_numpy.html">Chapter 2. Numpy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/3_pandas1.html">Chapter 11. Pandas I</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Algorithm</span></p>
 <ul class="nav bd-sidenav">
@@ -358,7 +359,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -374,6 +377,14 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> 내용 </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">코드트리 오마카세</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -390,6 +401,220 @@ document.write(`
 <li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/codetree-omakase/description">코드트리 오마카세</a></p></li>
 <li><p><a class="reference external" href="https://www.codetree.ai/ko/frequent-problems/hsat/problems/grading/description">성적 평가</a></p></li>
 </ul>
+<section id="id1">
+<h2>코드트리 오마카세<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<div class="dropdown admonition">
+<p class="admonition-title">Idea</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">코드트리 오마카세 </span>
+
+<span class="sd">- 초밥 벨트: 1초에 한 칸씩 시계방향으로 회전 </span>
+<span class="sd">    - 벨트는 움직임</span>
+<span class="sd">    - 벨트 위에 초밥이 놓임 </span>
+<span class="sd">- L개의 의자 (0-indexed): x=0을 기점으로 시계방향 등간격으로 놓임. </span>
+<span class="sd">    - 벨트위에 있어서 벨트 움직임 = 의자 움직임 </span>
+<span class="sd">- 회전 초밥: 각 의자 앞에 여러 개 놓일 수 있음 </span>
+
+<span class="sd"># 초기 세팅 (T=0): </span>
+<span class="sd">    - 초밥 벨트의 길이 L 과 명령의 수 Q 공백 </span>
+<span class="sd">        - 벨트는 &quot;원형&quot;이므로 현재 위치 x는 L초 후에 다시 제자리로 돌아오게 됨. </span>
+<span class="sd">        - 즉, x=0이고 초밥 벨트의 길이가 3이면 (0초에 x=0, 1초에 x=1, 2초에 x=2, 3초에 x=0)</span>
+<span class="sd">        - x의 위치는 변함없지만, 벨트가 돌아가서 벨트 위의 초밥들이 돌아감. </span>
+<span class="sd">            - x = 0, ..., L-1 로 그대로 </span>
+<span class="sd">            - 벨트들의 위치가 t초 일때 계속 변함 </span>
+<span class="sd">                - 벨트의 위치 = 시간 (t + 처음 지정 위치 )%L</span>
+<span class="sd">                - 예를 들어, 처음 벨트 위치가 x=0이었고 벨트 길이 3, 현재 시간 4초이면, (4+ 0)%L = 1 의 위치에 존재하게 된다.  </span>
+<span class="sd">                - 다른 예시로, 처음 벨트 위치가 x=2 었고 벨트 길이 3, 현재 시간 4초이면, (4+2)%3 = 0 의 위치에 존재하게 된다. </span>
+<span class="sd">    - 벨트 위에 초밥이 없고, 의자 위에 앉아 있는 사람 역시 없음 </span>
+
+<span class="sd"># XXX: 각 시간 t 1초가 흐르면 제일 먼저, 벨트가 돌아가야함 -&gt; 또한 남아있는 손님 기준으로 벨트가 돌아갔을 때 먹어야하는 n개를 다 먹었는지 확인시키고 사람을 떠나보내야함. </span>
+<span class="sd">    - convert_belt_id_to_location(t, belt_id) -&gt; 현재 belt가 어떤 위치 (x)에 있는 지 반환 </span>
+<span class="sd">    - belt_id_cur_locs_list = list[int]: int </span>
+<span class="sd">        - index: belt_id</span>
+<span class="sd">        - data: current location (위치)</span>
+<span class="sd">    - loc_to_sushi_count_dict: dict(int 위치): 현재 있는 초밥 해쉬 테이블 {name: count}</span>
+<span class="sd">            - 이름은 string으로 문제에서 1&lt;=len(name)&lt;=30 </span>
+<span class="sd">            - hash_function사용해서 unique한 숫자로 mapping {int: count}로 저장 </span>
+<span class="sd">    - person_to_count: dict(int 의자 위치): {name: count} </span>
+<span class="sd">        - 현재 어떤 사람이 있는지, 먹어야하는 초밥 개수는 얼마나 남았는지 </span>
+<span class="sd">        - name도 마찬가지로 암호화된 숫자로 대체 {int: count}</span>
+<span class="sd">        - XXX: t초가 돼서 벨트가 움직이면 먹을 초밥있는 지 확인후 n개 다 먹었으면 제거 필요 </span>
+<span class="sd">        - TODO: count가 0이 되면 이미 없어진 사람으로 간주 </span>
+<span class="sd">    - people_staying_set = set(int): 각 손님이름 -&gt; int (distinct_id)</span>
+<span class="sd">        - 아직 다 못 먹고 남아있는 사람. </span>
+<span class="sd">    - total_sushi_count: int </span>
+<span class="sd">        - command1: 주방장이 만들고 </span>
+<span class="sd">        - 매턴 손님이 먹을 때마다 전체 스시 개수 감소 </span>
+
+<span class="sd"># 모든 명령 전, </span>
+<span class="sd">- 각 시간 t 1초가 흐르면 제일 먼저, 벨트가 돌아가야함</span>
+<span class="sd">    - t초에 위치 x에 어떤 벨트가 있는 지 반환하는 함수 </span>
+<span class="sd">    - convert_location_to_belt_id(x, t) </span>
+<span class="sd">        - convert_belt_id_to_location과 동일 </span>
+<span class="sd">- XXX XXX XXX: 아래 알고리즘 부분 Time complexity bottleneck !!!!! </span>
+<span class="sd">- 또한 남아있는 손님 기준으로 벨트가 돌아갔을 때 먹어야하는 n개를 다 먹었는지 확인시키고 사람을 떠나보내야함. </span>
+<span class="sd">    - 벨트의 길이는 최대 1_000_000_000이고 남아있는 사람 수는 최대 15000명(명령2 개수)이기 때문에, </span>
+<span class="sd">    - `people_staying_set`에서 각 사람에 대하여 name -&gt; int 로 hash function convert </span>
+<span class="sd">        - 사람의 이름 &gt; 사람의 현재 위치 &gt; 현재 위치에서의 그 사람 이름의 스시 개수확인   </span>
+<span class="sd">    - 현재 t에서 </span>
+<span class="sd">        - 사람의 이름 &gt; 사람의 현재 위치 &gt; 현재 위치에서의 그 사람의 이름의 스시 개수 확인 </span>
+<span class="sd">        - command 2에서 사람의 현재 위치 (x=4) 및 사람이 놓인 시간 (t=7)이고, </span>
+<span class="sd">        - 먹어야하는 초밥의 개수가 n개 일 때, </span>
+<span class="sd">        - 현재 시간이 x = 11이면, </span>
+<span class="sd">            # - 각 위치 x에 [0, 1, 0, 2, 3]이 주어져있어야, </span>
+<span class="sd">            - TODO: 즉, idx = bisect_left()를 해서 -&gt; O(logL)</span>
+<span class="sd">                - 현재 시간에서 주방장이 만든 해당 이름에 대한 총 초밥의 개수 &lt; 먹어야하는 초밥의 개수이면, 아직 손님이 남음 </span>
+<span class="sd">                - 현재 시간에서 주방장이 만든 해당 이름에 대한 총 초밥의 개수 = 먹어야하는 초밥의 개수, 해당 손님은 끝남</span>
+<span class="sd">    - total_sushi_count 업데이트 </span>
+<span class="sd">    - 먹어야하는 초밥의 개수가 0이 되면, set에서 remove</span>
+<span class="sd">    - XXX: 위의 개수카운트만 하면 어떤 위치에 어떤 초밥이 있는지를 tracking할 필요가 전혀 없게 될까? </span>
+<span class="sd">        - 아님. </span>
+<span class="sd">        - 만약에 현재 t=10인데, 이제까지 주방장이 만든 스시의 개수 == 사람이 먹어야하는 n 이더라도 </span>
+<span class="sd">        - t = 11이 되어야 다 먹을 수 있는 경우가 있을 수 있음. </span>
+<span class="sd">        - 사람의 현재 위치</span>
+<span class="sd">            - 현재 command 3의 시간 (t=10) - 사람이 놓인 시간 (t=7) = 3초 </span>
+<span class="sd">            - 주방장이 만든 스시의 개수 == 사람이 먹어야하는 n 이 되었을 때, 사람이 있는 위치에서 반 시계 방향으로 최대 멀리있는 스시의 위치까지의 &quot;거리&quot;</span>
+<span class="sd">            - 그 사람이 지워질 수 있는 최소 시간이 됨. (사람이 놓인 시간 + 최대 멀리있는 위치까지의 거리)</span>
+
+
+
+<span class="sd"># 명령 1: 주방장의 초밥 만들기 </span>
+<span class="sd">    - 초밥 회전이 일어난 직후,</span>
+<span class="sd">    - 주방장이 시각 t에 위치 x 앞에 있는 벨트 위에 name 이름을 부착한 회전 초밥 하나를 올려놓음</span>
+<span class="sd">    - 같은 위치에 여러 회전 초밥 올리는 것 가능, 자신의 이름이 적힌 초밥이 같은 위치에 여러 개 놓인 것도 가능 </span>
+<span class="sd">        - 데이터가 중복되는 것을 잘 tracking 해야함. </span>
+<span class="sd">        - XXX: 벨트 자료구조는 일단 list로 저장, 놓은 시간(t)을 id로 해서 동일한 것이 들어갈 수 있도록 함. </span>
+<span class="sd">        - XXX: 벨트 자료구조는 처음 위치 x=0, 1, ... L-1로 distinct id (belt_id) 를 부여 </span>
+<span class="sd">        - XXX: convert_belt_id_to_location(t, belt_id) -&gt; 현재 belt가 어떤 위치 (x)에 있는 지 반환 </span>
+<span class="sd">    - 100 t x name </span>
+<span class="sd">    - 알고리즘 시간 복잡도 </span>
+<span class="sd">        - 최대 Q = 100,000번 들어온다고 가정했을 때, </span>
+<span class="sd">        - O(1)로 만들 수 있을 것 같음. </span>
+
+<span class="sd">```</span>
+
+<span class="sd">***Command 1 &amp; 3 Algorithm ***</span>
+
+<span class="sd">1-1. 손님이 존재할 때 </span>
+<span class="sd">(초기 손님과의 거리, 초기 위치, 놓인 시간) 저장 </span>
+<span class="sd">-&gt; 중요한 건, 손님과의 거리는 매 시간마다 달라지나 </span>
+<span class="sd">-&gt; XXX: 초기 손님과의 거리 vs. (현재 시간 - 놓인 시간) 중 시간의 흐름이 더 크다면, </span>
+<span class="sd">-&gt; 사람이 제거되어야함.  </span>
+<span class="sd">-&gt; XXX: 거리기준으로 MAX로 sorting 해서 max pop했을 때 맨 첫 번째 원소의 &quot;걸리는 시간&quot;의 양이 현재 시간 차와 같거나 작은 경우에 손님이 제거됨. </span>
+<span class="sd">-&gt; remove from people_staying_set </span>
+
+<span class="sd">2-2. 손님이 아직 안 왔을 때, </span>
+<span class="sd">(초기 위치, 놓인 시간, INF거리) 저장 </span>
+
+
+
+
+<span class="sd">***Command 3 Algoithm***</span>
+
+<span class="sd">1. cur_t에서 주방장이 만든 초밥의 개수 &lt; 먹어야 하는 초밥의 개수인 경우,  : 사람 아직 존재 O, 남아있는 초밥의 수? </span>
+
+<span class="sd">2. cur_t에서 주방장이 만든 초밥의 개수 == 먹어야 하는 초밥의 개수인 경우: 사람 아직 존재?, 남아있는 초밥의 수? </span>
+<span class="sd">    - 손님이 입장되어 있는 경우, </span>
+<span class="sd">        - 사람과 초밥과의 반시계 방향 최소 거리는? </span>
+<span class="sd">            - June의 위치에서 현재 &#39;가장 가까운 거리에 있는&#39; 초밥의 위치 계산 </span>
+<span class="sd">            - 각 사람마다 (초밥이 놓인 초기 위치, 놓인 시간 t) = [(1, 놓인 시간 t), (초기 위치, 놓인 시간 t), (초기 위치, 놓인 시간 t 2), 3]을 저장해놓고, </span>
+<span class="sd">                - 위의 두 개의 정보가 주어지면, </span>
+<span class="sd">                    - 초기 위치 + (현재 시간 cur_t - 놓인 시간 placed_t) 전체 위치에 %L 한 값이 </span>
+<span class="sd">                    - 현재 시간 cur_t에서 초밥의 위치 (x)임. </span>
+<span class="sd">                    - 그럼 현재 사람의 위치와 현재 cur_t에서 가장 가까운 초밥의 거리 계산이 가능함. </span>
+<span class="sd">            - 현재 초밥은 x=1의 위치에 존재. </span>
+<span class="sd">            - 즉, (4-1)%L = 3초 의 최소 시간이 지나야 해당 초밥을 먹을 수 있음. </span>
+<span class="sd">        2-1. 모든 초밥이 손님의 위치에 다 도달한 경우:</span>
+<span class="sd">            - 손님이 입장하는 시기보다 초밥이 먼저 놓여있는 경우가 있어서, 초밥을 놓을 때 그 거리를 미리 계산하는 것이 불가능. </span>
+<span class="sd">        2-2. 아직 도달못한 경우 </span>
+<span class="sd">    - 손님이 아직 안온 경우, </span>
+
+
+
+
+
+
+<span class="sd">사람 이름: June </span>
+<span class="sd">예시) 3초에 x=2위치에 june의 이름 초밥 </span>
+<span class="sd">예시) 6초에 June이라는 사람이 없고 초밥만 존재 </span>
+<span class="sd">예시) 7초에 June이 x=4위치에 착석. 2개의 초밥 먹어야함. </span>
+<span class="sd">    - 사람과 초밥과의 반시계 방향 최소 거리는? </span>
+<span class="sd">        - June의 위치에서 현재 &#39;가장 가까운 거리에 있는&#39; 초밥의 위치 계산 </span>
+<span class="sd">        - 각 사람마다 (초밥이 놓인 초기 위치, 놓인 시간 t) = [(1, 놓인 시간 t), (초기 위치, 놓인 시간 t), (초기 위치, 놓인 시간 t 2), 3]을 저장해놓고, </span>
+<span class="sd">            - 위의 두 개의 정보가 주어지면, </span>
+<span class="sd">                - 초기 위치 + (현재 시간 cur_t - 놓인 시간 placed_t) 전체 위치에 %L 한 값이 </span>
+<span class="sd">                - 현재 시간 cur_t에서 초밥의 위치 (x)임. </span>
+<span class="sd">                - 그럼 현재 사람의 위치와 현재 cur_t에서 가장 가까운 초밥의 거리 계산이 가능함. </span>
+<span class="sd">        - 현재 사람의 위치가 x=4이면 반시계 방향으로 가장 가까운 것은 3임. </span>
+<span class="sd">        - 자신의 위치보다 같거나 작 (3 &gt; 2 &gt; 1 &gt; 0 &gt; 4)의 방향으로 스시가 있는 위치를 파악해야함. </span>
+<span class="sd">    - 현재 초밥은 x=1의 위치에 존재. </span>
+<span class="sd">    - 즉, (4-1)%L = 3초 의 최소 시간이 지나야 해당 초밥을 먹을 수 있음. </span>
+<span class="sd">예시) 10초에 자신의 이름이 적힌 초밥을 하나 먹게 됨. (t=7에서 x=1의 위치에 존재했던 초밥)</span>
+<span class="sd">    - 만약에, </span>
+<span class="sd">예시) 11초에 x=4 위치에 june이름의 초밥이 올라가고, june은 해당 초밥을 먹고 떠남.</span>
+
+<span class="sd">location : count </span>
+<span class="sd">0:</span>
+<span class="sd">1:</span>
+<span class="sd">2: 1</span>
+<span class="sd">3:</span>
+<span class="sd">4: June </span>
+
+<span class="sd">```</span>
+
+<span class="sd"># 명령 2: 손님 입장 </span>
+<span class="sd">    - 200 t x name n 형태 </span>
+<span class="sd">    - 시각 t에 초밥 회전이 일어난다. </span>
+<span class="sd">    - 회전 직후,  이름이 name 인 사람이 시각 t에 위치 x에 있는 의자로 가서 앉은 뒤, &quot;정확히 n개&quot;의 초밥을 먹을 때까지 기다리게 된다. </span>
+<span class="sd">        - 현재 있고 앞으로 오는 초밥들 중 자신의 이름이 적혀있는 초밥을 &quot;n&quot;개 먹고 자리를 떠남. </span>
+<span class="sd">        - 자료구조: </span>
+<span class="sd">            - 이름, 먹어야하는 초밥 개수, </span>
+<span class="sd">    - n개의 초밥을 먹게된 직후 -&gt; 자리를 떠남</span>
+<span class="sd">        - 시각 t에 위치 x에 자신 이름이 적혀있는 초밥이 놓여있으면 자리에 착석 즉시 먹음. 동시에 여러개 먹기 가능. 초밥 먹는데 시간 안 걸림. </span>
+<span class="sd">        - XXX: 초밥이 사라지면 지워야함. </span>
+<span class="sd">    - 이 명령이 주어졌을 때 해당 위치에는 사람이 없음을 가정한다. </span>
+<span class="sd">    - 오는 손님의 이름은 전부 다르며, 동일한 손님은 다시 방문하지 않는다. </span>
+<span class="sd">    - constraints에 의하면 이 명령은 최대 15,000번 주어짐. </span>
+<span class="sd">        - O(1): 데이터 저장 </span>
+
+
+<span class="sd"># 명령 3: 사진 촬영 </span>
+<span class="sd">    - 300 t 형태로 주어짐.</span>
+<span class="sd">    - 시각 t에 코드트리 오마카세 집에 있는 &quot;사람 수&quot;와 남아있는 &quot;초밥의 수&quot;를 공백을 사이에 두고 출력 </span>
+<span class="sd">    - 남아있는 스시 수는 total_sushi_count</span>
+<span class="sd">    - 남아있는 사람 수는 len(people_staying_set)</span>
+<span class="sd">    - Time complexity: O(1) </span>
+
+<span class="sd"># Constraints </span>
+<span class="sd">- Time: 2000 ms (1e7 * 2)</span>
+<span class="sd">- Memory Limit: 80MiB </span>
+
+<span class="sd">- 3 &lt;= L &lt;= 1_000_000_000</span>
+<span class="sd">- 1 &lt;= Q &lt;= 100,000</span>
+<span class="sd">- 1 &lt;= t &lt;= 1_000_000_000</span>
+<span class="sd">- 0 &lt;= x &lt;= L-1 </span>
+<span class="sd">- 1 &lt;= len(name) &lt;= 30 </span>
+<span class="sd">- 1 &lt;= 주어지는 서로 다른 name 의 수 &lt;= 15,000 -&gt; 이 말은 command 2는 최대 15000만 들어온다는 얘기 </span>
+<span class="sd">- name은 소문자 알파벳으로만 이루어져있고, 입력 t는 모두 다르며 오름차순으로 정렬되어 주어짐. </span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span> 
+
+<span class="n">N</span> <span class="o">=</span> <span class="mi">15000</span> 
+<span class="nb">print</span><span class="p">(</span><span class="n">N</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">N</span><span class="p">))</span> <span class="c1"># 0.2*10^7</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">N</span><span class="o">*</span><span class="n">N</span><span class="p">)</span> <span class="c1"># 0.2*10^9</span>
+<span class="nb">print</span><span class="p">(</span><span class="mi">100000</span> <span class="o">*</span> <span class="mi">15000</span><span class="p">)</span> <span class="c1"># 2* 10^9 </span>
+<span class="nb">print</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="mi">15000</span><span class="p">))</span> <span class="c1"># ~ 14 </span>
+<span class="nb">print</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="mi">15000</span><span class="p">)</span><span class="o">*</span><span class="mi">15000</span><span class="p">)</span> <span class="c1"># ~ 14 </span>
+
+<span class="c1"># name의 최대 길이 30 </span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">26</span><span class="p">):</span> <span class="c1"># 소문자 알파벳 26개 </span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span><span class="o">+</span><span class="n">i</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -446,6 +671,21 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> 내용
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">코드트리 오마카세</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

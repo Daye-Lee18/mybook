@@ -19,13 +19,12 @@ kernelspec:
 :class: important 
 
 ```{code-block} python 
-# 6개 checklist 
-# 1) State: dp[...]
-# 2) What to store: min/max/count/bool/value (필요시 prev/choice)
-# 3) Base case init
-# 4) Fill order: 작은 상태 → 큰 상태 (Top-down/Bottom-up)
-# 5) Transition
-# 6) Read answer
+# DP checklist 
+# 1) overlapping small problem: dp[...]
+# 2) state
+# 3) what to store
+# 4) transition 
+# 5) base case
 
 def solve(...):
     # 예: 2D (i, j)
