@@ -624,6 +624,20 @@ document.write(`
 <p>Here is a handy “what to store” cheat-sheet for the most popular DP problems. each line tells you the state, what to store, and a one-line transition hint so you know why the storage works.</p>
 <section id="sequence-array-dp">
 <h3>1. Sequence / Array DP<a class="headerlink" href="#sequence-array-dp" title="Link to this heading">#</a></h3>
+<p>일반 DP (Linear/Sequential DP)는 상태가 “현재 위치 i” 중심으로, 이전 상태로부터 확장한다. 문제를 읽었을 때, “현재 이전까지의 최적해를 이어붙인다”는 느낌이다.</p>
+<ul class="simple">
+<li><p>상태: dp[i]</p>
+<ul>
+<li><p>i 번째까지 고려했을 때의 최적 상태</p></li>
+</ul>
+</li>
+<li><p>분류 질문:</p>
+<ol class="arabic simple">
+<li><p>앞에서부터 쌓는가?</p></li>
+<li><p>dp[i]의 형태인가?</p></li>
+</ol>
+</li>
+</ul>
 <div class="dropdown admonition">
 <p class="admonition-title">sequence 1D DP</p>
 <ol class="arabic simple">
@@ -635,7 +649,7 @@ document.write(`
 <li><p>Transition: <code class="docutils literal notranslate"><span class="pre">dp[n]</span> <span class="pre">=</span> <span class="pre">dp[n-1]</span> <span class="pre">+</span> <span class="pre">dp[n-2]</span></code></p></li>
 <li><p>Reference: LC 70 (Climbing Stairs), LC 509 (Fibonacci Number)</p></li>
 </ul>
-<ol class="arabic simple" start="2">
+<ol class="arabic simple">
 <li><p>Maximum Subarray (Kadane)</p></li>
 </ol>
 <ul class="simple">
@@ -644,7 +658,7 @@ document.write(`
 <li><p>Transition: <code class="docutils literal notranslate"><span class="pre">dp[i]</span> <span class="pre">=</span> <span class="pre">max(a[i],</span> <span class="pre">dp[i-1]</span> <span class="pre">+</span> <span class="pre">a[i])</span></code></p></li>
 <li><p>Reference: LC 53 (Maximum Subarray)</p></li>
 </ul>
-<ol class="arabic simple" start="3">
+<ol class="arabic simple">
 <li><p>House Robber</p></li>
 </ol>
 <ul class="simple">
@@ -653,7 +667,7 @@ document.write(`
 <li><p>Transition: <code class="docutils literal notranslate"><span class="pre">dp[i]</span> <span class="pre">=</span> <span class="pre">max(dp[i-1],</span> <span class="pre">dp[i-2]</span> <span class="pre">+</span> <span class="pre">val[i])</span></code></p></li>
 <li><p>Reference: LC 198 (House Robber), LC 213 (House Robber II)</p></li>
 </ul>
-<ol class="arabic simple" start="4">
+<ol class="arabic simple">
 <li><p>Longest Increasing Subsequence (LIS)</p></li>
 </ol>
 <ul class="simple">
@@ -662,7 +676,7 @@ document.write(`
 <li><p>Transition: <code class="docutils literal notranslate"><span class="pre">dp[i]</span> <span class="pre">=</span> <span class="pre">1</span> <span class="pre">+</span> <span class="pre">max(dp[j])</span> <span class="pre">for</span> <span class="pre">j&lt;i</span> <span class="pre">&amp;</span> <span class="pre">a[j]&lt;a[i]</span></code></p></li>
 <li><p>Reference: LC 300 (LIS), LC 354 (Russian Doll Envelopes)</p></li>
 </ul>
-<ol class="arabic simple" start="5">
+<ol class="arabic simple">
 <li><p>Partition Equal Subset / Subset Sum</p></li>
 </ol>
 <ul class="simple">
@@ -675,6 +689,22 @@ document.write(`
 </section>
 <section id="subsequence-string-dp">
 <h3>2. Subsequence/String DP<a class="headerlink" href="#subsequence-string-dp" title="Link to this heading">#</a></h3>
+<p>문자열 두 개를 비교한다면, string/subsequence DP를 떠올 릴 수 있다.</p>
+<ul class="simple">
+<li><p>상태: dp[i][j]</p>
+<ul>
+<li><p>문자열 prefix 비교 상태</p></li>
+<li><p>i: A의 앞에서 i개</p></li>
+<li><p>j: B의 앞에서 j개</p></li>
+</ul>
+</li>
+<li><p>질문:</p>
+<ol class="arabic simple">
+<li><p>“두 문자열 비교?”</p></li>
+<li><p>“삭제/삽입/공통 부분?”</p></li>
+</ol>
+</li>
+</ul>
 <div class="dropdown admonition">
 <p class="admonition-title">dp table</p>
 <ol class="arabic simple">
@@ -686,7 +716,7 @@ document.write(`
 <li><p>Transition: if match: <code class="docutils literal notranslate"><span class="pre">1+dp[i-1][j-1]</span></code> else <code class="docutils literal notranslate"><span class="pre">max(dp[i-1][j],</span> <span class="pre">dp[i][j-1])</span></code></p></li>
 <li><p>Reference: LC 1143 (LCS)</p></li>
 </ul>
-<ol class="arabic simple" start="2">
+<ol class="arabic simple">
 <li><p>Edit Distance (Levenshtein)</p></li>
 </ol>
 <ul class="simple">
@@ -695,7 +725,7 @@ document.write(`
 <li><p>Transition: <code class="docutils literal notranslate"><span class="pre">min(replace,</span> <span class="pre">insert,</span> <span class="pre">delete)</span></code></p></li>
 <li><p>Reference: LC 72 (Edit Distance)</p></li>
 </ul>
-<ol class="arabic simple" start="3">
+<ol class="arabic simple">
 <li><p>Longest Palindromic Subsequence (LPS)</p></li>
 </ol>
 <ul class="simple">
@@ -704,7 +734,7 @@ document.write(`
 <li><p>Transition: if <code class="docutils literal notranslate"><span class="pre">s[l]==s[r]</span></code> → <code class="docutils literal notranslate"><span class="pre">2+dp[l+1][r-1]</span></code> else <code class="docutils literal notranslate"><span class="pre">max(dp[l+1][r],</span> <span class="pre">dp[l][r-1])</span></code></p></li>
 <li><p>Reference: LC 516 (Longest Palindromic Subsequence)</p></li>
 </ul>
-<ol class="arabic simple" start="4">
+<ol class="arabic simple">
 <li><p>Longest Palindromic Substring</p></li>
 </ol>
 <ul class="simple">
@@ -713,7 +743,7 @@ document.write(`
 <li><p>Transition: <code class="docutils literal notranslate"><span class="pre">dp[l][r]</span> <span class="pre">=</span> <span class="pre">(s[l]==s[r]</span> <span class="pre">&amp;&amp;</span> <span class="pre">(r-l&lt;2</span> <span class="pre">||</span> <span class="pre">dp[l+1][r-1]))</span></code></p></li>
 <li><p>Reference: LC 5 (Longest Palindromic Substring)</p></li>
 </ul>
-<ol class="arabic simple" start="5">
+<ol class="arabic simple">
 <li><p>Distinct Subsequences (count ways A→B)</p></li>
 </ol>
 <ul class="simple">
@@ -726,6 +756,27 @@ document.write(`
 </section>
 <section id="knapsack-family">
 <h3>3. Knapsack Family<a class="headerlink" href="#knapsack-family" title="Link to this heading">#</a></h3>
+<p>보통 용량/선택/담기 문제이면, Knapsack DP문제이다.</p>
+<ul class="simple">
+<li><p>상태: dp[w] 또는 dp[i][w]</p>
+<ul>
+<li><p>의미: 용량 w에서 만들 수 있는 최적값</p>
+<ul>
+<li><p>i: 몇 번째 물건까지 고려</p></li>
+<li><p>w: 현재 용량</p></li>
+<li><p>dp[i][w]: i개 물건까지 고려했을 때 w에서 최대 가치</p></li>
+</ul>
+</li>
+<li><p>얼마나 썻는가/남았는가</p></li>
+</ul>
+</li>
+<li><p>질문:</p>
+<ol class="arabic simple">
+<li><p>“이걸 선택할까 말까?”</p></li>
+<li><p>“무게/금액 제한 있는가?”</p></li>
+</ol>
+</li>
+</ul>
 <div class="dropdown admonition">
 <p class="admonition-title">DP table</p>
 <ol class="arabic simple">
@@ -737,7 +788,7 @@ document.write(`
 <li><p>Transition: <code class="docutils literal notranslate"><span class="pre">dp[w]</span> <span class="pre">=</span> <span class="pre">max(dp[w],</span> <span class="pre">dp[w-weight]</span> <span class="pre">+</span> <span class="pre">value)</span></code></p></li>
 <li><p>Reference: LC 474 (Ones and Zeroes)</p></li>
 </ul>
-<ol class="arabic simple" start="2">
+<ol class="arabic simple">
 <li><p>Unbounded Knapsack / Coin Change (min coins)</p></li>
 </ol>
 <ul class="simple">
@@ -746,7 +797,7 @@ document.write(`
 <li><p>Transition: <code class="docutils literal notranslate"><span class="pre">dp[w]</span> <span class="pre">=</span> <span class="pre">min(dp[w],</span> <span class="pre">dp[w-c]</span> <span class="pre">+</span> <span class="pre">1)</span></code></p></li>
 <li><p>Reference: LC 322 (Coin Change)</p></li>
 </ul>
-<ol class="arabic simple" start="3">
+<ol class="arabic simple">
 <li><p>Coin Change (count ways)</p></li>
 </ol>
 <ul class="simple">
@@ -759,6 +810,19 @@ document.write(`
 </section>
 <section id="grid-dp">
 <h3>4. Grid DP<a class="headerlink" href="#grid-dp" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>상태: dp[row][col]</p>
+<ul>
+<li><p>(row, col)에 도달했을 때 상태</p></li>
+</ul>
+</li>
+<li><p>질문:</p>
+<ol class="arabic simple">
+<li><p>“위/왼쪽에서 온다?”</p></li>
+<li><p>“경로 개수/최소 비용?”</p></li>
+</ol>
+</li>
+</ul>
 <div class="dropdown admonition">
 <p class="admonition-title">DP table for Grid DP</p>
 <ol class="arabic simple">
@@ -770,7 +834,7 @@ document.write(`
 <li><p>Transition: <code class="docutils literal notranslate"><span class="pre">dp[i][j]</span> <span class="pre">=</span> <span class="pre">(obstacle?0</span> <span class="pre">:</span> <span class="pre">dp[i-1][j]</span> <span class="pre">+</span> <span class="pre">dp[i][j-1])</span></code></p></li>
 <li><p>Reference: LC 62 (Unique Paths), LC 63 (Unique Paths II)</p></li>
 </ul>
-<ol class="arabic simple" start="2">
+<ol class="arabic simple">
 <li><p>Minimum Path Sum</p></li>
 </ol>
 <ul class="simple">
@@ -783,6 +847,23 @@ document.write(`
 </section>
 <section id="interval-dp">
 <h3>5. Interval DP<a class="headerlink" href="#interval-dp" title="Link to this heading">#</a></h3>
+<p>일반 DP와 다르게, “순서대로 결정하면 되나?”라는 질문을 했을 때 문제가 풀리지 않는다. “괄호/연산 순서/그룹핑”이 중요하다면, 구간 DP이다.</p>
+<ul class="simple">
+<li><p>상태: dp[i][j]</p>
+<ul>
+<li><p>[i, j] 구간의 시작과 끝</p></li>
+</ul>
+</li>
+<li><p>질문:</p>
+<ol class="arabic simple">
+<li><p>“어디서 나누냐가 중요함?”</p></li>
+<li><p>(a+b)+c vs. a+(b+c) 다름?</p></li>
+</ol>
+</li>
+</ul>
+<ol class="arabic simple">
+<li></li>
+</ol>
 <div class="dropdown admonition">
 <p class="admonition-title">DP table for Interval DP</p>
 <ol class="arabic simple">
@@ -794,7 +875,7 @@ document.write(`
 <li><p>Transition: split at <code class="docutils literal notranslate"><span class="pre">k</span></code></p></li>
 <li><p>Reference: LC 1547 (Minimum Cost to Cut a Stick)</p></li>
 </ul>
-<ol class="arabic simple" start="2">
+<ol class="arabic simple">
 <li><p>Burst Balloons</p></li>
 </ol>
 <ul class="simple">
@@ -803,7 +884,7 @@ document.write(`
 <li><p>Transition: pick last balloon <code class="docutils literal notranslate"><span class="pre">k</span></code></p></li>
 <li><p>Reference: LC 312 (Burst Balloons)</p></li>
 </ul>
-<ol class="arabic simple" start="3">
+<ol class="arabic simple">
 <li><p>Palindrome Partitioning (min cuts)</p></li>
 </ol>
 <ul class="simple">
@@ -816,6 +897,14 @@ document.write(`
 </section>
 <section id="tree-dp">
 <h3>6. Tree DP<a class="headerlink" href="#tree-dp" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>상태: dp[u] 또는 dp[u][state]</p>
+<ul>
+<li><p>노드 u 기준의 서브트리 정보</p></li>
+<li><p>예를 들어, dp[u][0]: u안 선택, dp[u][1]: u 선택</p></li>
+</ul>
+</li>
+</ul>
 <div class="dropdown admonition">
 <p class="admonition-title">DP table for Tree</p>
 <ol class="arabic simple">
@@ -827,7 +916,7 @@ document.write(`
 <li><p>Transition: combine two largest child depths</p></li>
 <li><p>Reference: LC 543 (Diameter of Binary Tree), LC 124 (Binary Tree Max Path Sum)</p></li>
 </ul>
-<ol class="arabic simple" start="2">
+<ol class="arabic simple">
 <li><p>Maximum Independent Set on Tree</p></li>
 </ol>
 <ul class="simple">

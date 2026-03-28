@@ -114,6 +114,8 @@ def solve(...):
 ````{admonition} Solution
 :class: dropdown 
 
+구간 DP (interval DP)로 접근해야한다. 
+
 ```{literalinclude} ../solutions/DPPS/18.py
 :language: python
 ```

@@ -670,7 +670,14 @@ document.write(`
 <h3>사칙연산<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
 <p class="admonition-title">Solution</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<p>구간 DP (interval DP)로 접근해야한다.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">overlapping problem: dp[i][j] = i번째 ~ j번째까지 계산했을 때 만들 수 있는 (최솟값, 최댓값)</span>
+<span class="sd">state: 구간 [i, j]</span>
+<span class="sd">what to store: [i, j]구간에서 만들 수 있는 최소, 최댓값 </span>
+<span class="sd">base case: </span>
+
+<span class="sd">&#39;&#39;&#39;</span>
 </pre></div>
 </div>
 </div>
