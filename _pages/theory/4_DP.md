@@ -151,6 +151,7 @@ print(d[n])
 
 ```
 ````
+
 ## DP Table
 
 What you choose to store in your DP table (list, dict, array, etc.) is the most important design decision in solving a DP problem. 
@@ -198,6 +199,14 @@ Here is a handy "what to store" cheat-sheet for the most popular DP problems. ea
 
 ### 1. Sequence / Array DP 
 
+일반 DP (Linear/Sequential DP)는 상태가 "현재 위치 i" 중심으로, 이전 상태로부터 확장한다. 문제를 읽었을 때, "현재 이전까지의 최적해를 이어붙인다"는 느낌이다. 
+
+- 상태: dp[i]
+    - i 번째까지 고려했을 때의 최적 상태 
+- 분류 질문:
+  1) 앞에서부터 쌓는가?
+  2) dp[i]의 형태인가? 
+
 ````{admonition} sequence 1D DP
 :class: dropdown
 
@@ -207,25 +216,25 @@ Here is a handy "what to store" cheat-sheet for the most popular DP problems. ea
 - Transition: `dp[n] = dp[n-1] + dp[n-2]`  
 - Reference: LC 70 (Climbing Stairs), LC 509 (Fibonacci Number)
 
-2. Maximum Subarray (Kadane)  
+1. Maximum Subarray (Kadane)  
 - State: end index `i`  
 - Store: best sum of subarray ending at `i`  
 - Transition: `dp[i] = max(a[i], dp[i-1] + a[i])`  
 - Reference: LC 53 (Maximum Subarray)
 
-3. House Robber  
+1. House Robber  
 - State: first `i` houses  
 - Store: max money using up to `i`  
 - Transition: `dp[i] = max(dp[i-1], dp[i-2] + val[i])`  
 - Reference: LC 198 (House Robber), LC 213 (House Robber II)
 
-4. Longest Increasing Subsequence (LIS)  
+1. Longest Increasing Subsequence (LIS)  
 - State: end index `i`  
 - Store: LIS length ending at `i`  
 - Transition: `dp[i] = 1 + max(dp[j]) for j<i & a[j]<a[i]`  
 - Reference: LC 300 (LIS), LC 354 (Russian Doll Envelopes)
 
-5. Partition Equal Subset / Subset Sum  
+1. Partition Equal Subset / Subset Sum  
 - State: capacity `s`  
 - Store: reachable boolean at sum `s`  
 - Transition: `dp[s] |= dp[s-w]`  
@@ -234,6 +243,16 @@ Here is a handy "what to store" cheat-sheet for the most popular DP problems. ea
 ````
 
 ### 2. Subsequence/String DP
+
+문자열 두 개를 비교한다면, string/subsequence DP를 떠올 릴 수 있다. 
+
+- 상태: dp[i][j]
+    - 문자열 prefix 비교 상태 
+    - i: A의 앞에서 i개
+    - j: B의 앞에서 j개
+- 질문:
+  1) "두 문자열 비교?"
+  2) "삭제/삽입/공통 부분?" 
 
 ````{admonition} dp table
 :class: dropdown
@@ -244,25 +263,25 @@ Here is a handy "what to store" cheat-sheet for the most popular DP problems. ea
 - Transition: if match: `1+dp[i-1][j-1]` else `max(dp[i-1][j], dp[i][j-1])`  
 - Reference: LC 1143 (LCS)
 
-2. Edit Distance (Levenshtein)  
+1. Edit Distance (Levenshtein)  
 - State: `(i, j)`  
 - Store: min edits to convert `A[:i]` → `B[:j]`  
 - Transition: `min(replace, insert, delete)`  
 - Reference: LC 72 (Edit Distance)
 
-3. Longest Palindromic Subsequence (LPS)  
+1. Longest Palindromic Subsequence (LPS)  
 - State: `(l, r)`  
 - Store: LPS length in `s[l..r]`  
 - Transition: if `s[l]==s[r]` → `2+dp[l+1][r-1]` else `max(dp[l+1][r], dp[l][r-1])`  
 - Reference: LC 516 (Longest Palindromic Subsequence)
 
-4. Longest Palindromic Substring  
+1. Longest Palindromic Substring  
 - State: `(l, r)`  
 - Store: palindrome boolean or length  
 - Transition: `dp[l][r] = (s[l]==s[r] && (r-l<2 || dp[l+1][r-1]))`  
 - Reference: LC 5 (Longest Palindromic Substring)
 
-5. Distinct Subsequences (count ways A→B)  
+1. Distinct Subsequences (count ways A→B)  
 - State: `(i, j)`  
 - Store: #ways `A[:i]` forms `B[:j]`  
 - Transition: `dp[i][j] = dp[i-1][j] + (A[i-1]==B[j-1] ? dp[i-1][j-1] : 0)`  
@@ -272,6 +291,19 @@ Here is a handy "what to store" cheat-sheet for the most popular DP problems. ea
 
 ### 3. Knapsack Family 
 
+보통 용량/선택/담기 문제이면, Knapsack DP문제이다. 
+
+- 상태: dp[w] 또는 dp[i][w] 
+  - 의미: 용량 w에서 만들 수 있는 최적값 
+    - i: 몇 번째 물건까지 고려 
+    - w: 현재 용량 
+    - dp[i][w]: i개 물건까지 고려했을 때 w에서 최대 가치 
+  - 얼마나 썻는가/남았는가 
+- 질문: 
+  1) "이걸 선택할까 말까?"
+  2) "무게/금액 제한 있는가?"
+
+   
 ````{admonition} DP table
 :class: dropdown
 
@@ -281,13 +313,13 @@ Here is a handy "what to store" cheat-sheet for the most popular DP problems. ea
 - Transition: `dp[w] = max(dp[w], dp[w-weight] + value)`  
 - Reference: LC 474 (Ones and Zeroes)
 
-2. Unbounded Knapsack / Coin Change (min coins)  
+1. Unbounded Knapsack / Coin Change (min coins)  
 - State: capacity `w`  
 - Store: min coins for `w`  
 - Transition: `dp[w] = min(dp[w], dp[w-c] + 1)`  
 - Reference: LC 322 (Coin Change)
 
-3. Coin Change (count ways)  
+1. Coin Change (count ways)  
 - State: amount `a`  
 - Store: #ways to make `a`  
 - Transition: `dp[a] += dp[a-c]`  
@@ -296,6 +328,12 @@ Here is a handy "what to store" cheat-sheet for the most popular DP problems. ea
 ````
 ### 4. Grid DP 
 
+
+- 상태: dp[row][col]
+  - (row, col)에 도달했을 때 상태 
+- 질문:
+  1) "위/왼쪽에서 온다?"
+  2) "경로 개수/최소 비용?"
 ````{admonition} DP table for Grid DP
 :class: dropdown 
 :class: dropdown
@@ -306,7 +344,7 @@ Here is a handy "what to store" cheat-sheet for the most popular DP problems. ea
 - Transition: `dp[i][j] = (obstacle?0 : dp[i-1][j] + dp[i][j-1])`  
 - Reference: LC 62 (Unique Paths), LC 63 (Unique Paths II)
 
-2. Minimum Path Sum  
+1. Minimum Path Sum  
 - State: `(i, j)`  
 - Store: min cost to `(i, j)`  
 - Transition: `dp[i][j] = grid[i][j] + min(dp[i-1][j], dp[i][j-1])`  
@@ -316,6 +354,14 @@ Here is a handy "what to store" cheat-sheet for the most popular DP problems. ea
 
 ### 5. Interval DP 
 
+일반 DP와 다르게, "순서대로 결정하면 되나?"라는 질문을 했을 때 문제가 풀리지 않는다. "괄호/연산 순서/그룹핑"이 중요하다면, 구간 DP이다. 
+
+- 상태: dp[i][j]
+  - [i, j] 구간의 시작과 끝 
+- 질문:
+  1) "어디서 나누냐가 중요함?"
+  2) (a+b)+c vs. a+(b+c) 다름?
+1) 
 ````{admonition} DP table for Interval DP
 :class: dropdown
 
@@ -325,13 +371,13 @@ Here is a handy "what to store" cheat-sheet for the most popular DP problems. ea
 - Transition: split at `k`  
 - Reference: LC 1547 (Minimum Cost to Cut a Stick)
 
-2. Burst Balloons  
+1. Burst Balloons  
 - State: `(l, r)` open interval  
 - Store: max coins from `(l, r)`  
 - Transition: pick last balloon `k`  
 - Reference: LC 312 (Burst Balloons)
 
-3. Palindrome Partitioning (min cuts)  
+1. Palindrome Partitioning (min cuts)  
 - State: prefix `i`  
 - Store: min cuts for `s[:i]`  
 - Transition: `dp[i] = min(dp[j]+1)` for palindromic `s[j:i]`  
@@ -340,6 +386,10 @@ Here is a handy "what to store" cheat-sheet for the most popular DP problems. ea
 ````
 ### 6. Tree DP 
 
+- 상태: dp[u] 또는 dp[u][state]
+  - 노드 u 기준의 서브트리 정보 
+  - 예를 들어, dp[u][0]: u안 선택, dp[u][1]: u 선택 
+  
 ````{admonition} DP table for Tree 
 :class: dropdown
 
@@ -349,7 +399,7 @@ Here is a handy "what to store" cheat-sheet for the most popular DP problems. ea
 - Transition: combine two largest child depths  
 - Reference: LC 543 (Diameter of Binary Tree), LC 124 (Binary Tree Max Path Sum)
 
-2. Maximum Independent Set on Tree  
+1. Maximum Independent Set on Tree  
 - State: `(u, take)`  
 - Store: best sum if `u` is taken or skipped  
 - Transition: if take `u`, skip children; else best of children  

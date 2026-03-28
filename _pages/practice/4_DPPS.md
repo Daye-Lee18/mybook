@@ -76,6 +76,50 @@ def solve(...):
     - [백준 13511 트리와 쿼리 2](https://www.acmicpc.net/problem/13511) 
   - [String Compression II](https://leetcode.com/problems/string-compression-ii/description/)
 
+## DP 고득점 Kit 
+
+### N으로 표현 
+
+````{admonition} Sol
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/15.py
+:language: python
+```
+````
+
+### 정수 삼각형 
+
+````{admonition} Solution
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/16.py
+:language: python 
+
+```
+````
+
+### 등굣길 
+
+````{admonition} Solution
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/17.py
+:language: python
+```
+````
+
+### 사칙연산 
+
+````{admonition} Solution
+:class: dropdown 
+
+구간 DP (interval DP)로 접근해야한다. 
+
+```{literalinclude} ../solutions/DPPS/18.py
+:language: python
+```
+````
 
 ## TreeDP
 
