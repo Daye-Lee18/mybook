@@ -384,6 +384,10 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dp-kit">DP 고득점 Kit</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#n">N으로 표현</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#treedp">TreeDP</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">서브트리의 정점 개수 세기</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">우수 마을</a></li>
@@ -491,6 +495,77 @@ document.write(`
 </ul>
 </li>
 </ul>
+<section id="dp-kit">
+<h2>DP 고득점 Kit<a class="headerlink" href="#dp-kit" title="Link to this heading">#</a></h2>
+<section id="n">
+<h3>N으로 표현<a class="headerlink" href="#n" title="Link to this heading">#</a></h3>
+<div class="dropdown admonition">
+<p class="admonition-title">Sol</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Idea: </span>
+<span class="sd">- 현재 &quot;숫자가 얼마냐&quot;보다 &quot;N을 몇 개 썼느냐&quot;가 더 중요하다. </span>
+<span class="sd">- dp[k]는 k개를 사용했을 때 min 이면, min()안에 계산해야할 경우의 수가 너무 많다. </span>
+<span class="sd">- dp[k]는 N을 정확히 k개 사용해서 만들 수 있는 숫자들의 집합으로 하면, </span>
+<span class="sd">- dp[k] = set() of </span>
+<span class="sd">    - concat(k)</span>
+<span class="sd">    - 모든 a in dp[i] and b in dp[k-i]에 대해 </span>
+<span class="sd">        - a + b</span>
+<span class="sd">        - a - b</span>
+<span class="sd">        - a * b </span>
+<span class="sd">        - a // b (b != 0)</span>
+<span class="sd">    을 전부 넣으면 된다. </span>
+
+<span class="sd">&lt;DP steps&gt;</span>
+<span class="sd">- overlapping small problem: dp[k]는 N이 k번 사용되었을 때 만들어지는 수 </span>
+<span class="sd">- state: dp[k], k = N이 사용된 개수 </span>
+<span class="sd">- what to store: k개만큼 N이 사용되었을 때 나올 수 있는 수들의 set </span>
+<span class="sd">- transition: dp[k] = set(concat(k))</span>
+<span class="sd">    for i in range(1, k): # k개보다 작은 개수가 사용된 모든 (i, k-1) pair에 대해</span>
+<span class="sd">        # a와 b의 조합 </span>
+<span class="sd">        for a in dp[i]:</span>
+<span class="sd">            for b in dp[k-i]:</span>
+<span class="sd">                set.add(dp[i] + dp[k-i])</span>
+<span class="sd">                set.add(dp[i] - dp[k-i])</span>
+<span class="sd">                set.add(dp[i] * dp[k-i])</span>
+<span class="sd">                set.add(dp[i] // dp[k-i])</span>
+
+<span class="sd">- base case: dp[1] = 1 </span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">solution</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">number</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">concat</span><span class="p">(</span><span class="n">cnt</span><span class="p">):</span>
+        <span class="k">nonlocal</span> <span class="n">N</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="o">*</span> <span class="n">cnt</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">N</span> <span class="o">==</span> <span class="n">number</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    
+    <span class="c1"># return 값은 8보다 크면 -1을 리턴한다. </span>
+    <span class="c1"># 즉, dp table은 dp[8]까지 채우면 된다. </span>
+    <span class="n">dp</span> <span class="o">=</span> <span class="p">[</span><span class="nb">set</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">9</span><span class="p">)]</span> <span class="c1"># 1~8 사용 </span>
+    
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">):</span>
+        <span class="c1"># 현재 개수 k에 대해 </span>
+        <span class="n">dp</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">concat</span><span class="p">(</span><span class="n">k</span><span class="p">))</span> <span class="c1"># 이어붙인 수: 5, 55, 555 ...</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">dp</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="n">i</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">dp</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="n">dp</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
+                    <span class="n">dp</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> 
+                    <span class="n">dp</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">a</span> <span class="o">*</span> <span class="n">b</span><span class="p">)</span> 
+                    <span class="k">if</span> <span class="n">b</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">dp</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">a</span> <span class="o">//</span> <span class="n">b</span><span class="p">)</span> 
+        <span class="k">if</span> <span class="n">number</span> <span class="ow">in</span> <span class="n">dp</span><span class="p">[</span><span class="n">k</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">k</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">solution</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
 <section id="treedp">
 <h2>TreeDP<a class="headerlink" href="#treedp" title="Link to this heading">#</a></h2>
 <section id="id1">
@@ -2301,6 +2376,10 @@ return <span class="gs">**the shortest possible length of the compressed represe
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dp-kit">DP 고득점 Kit</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#n">N으로 표현</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#treedp">TreeDP</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">서브트리의 정점 개수 세기</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">우수 마을</a></li>

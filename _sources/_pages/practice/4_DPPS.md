@@ -76,6 +76,17 @@ def solve(...):
     - [백준 13511 트리와 쿼리 2](https://www.acmicpc.net/problem/13511) 
   - [String Compression II](https://leetcode.com/problems/string-compression-ii/description/)
 
+## DP 고득점 Kit 
+
+### N으로 표현 
+
+````{admonition} Sol
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/15.py
+:language: python
+```
+````
 
 ## TreeDP
 
