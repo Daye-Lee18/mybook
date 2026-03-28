@@ -386,12 +386,15 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dp-kit">DP 고득점 Kit</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#n">N으로 표현</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">정수 삼각형</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">등굣길</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">사칙연산</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#treedp">TreeDP</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">서브트리의 정점 개수 세기</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">우수 마을</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">사회망 서비스</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">서브트리의 정점 개수 세기</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">우수 마을</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">사회망 서비스</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#diameter-of-binary-tree">Diameter of Binary Tree</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#longest-path-with-different-adjacent-character">Longest Path with Different Adjacent Character</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#binary-tree-max-path-sum">Binary Tree Max Path Sum</a></li>
@@ -401,9 +404,9 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#binary-tree-cameras">Binary Tree Cameras</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">코테 기출</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">색깔 트리</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">코드트리 메신저</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">코테 기출</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">색깔 트리</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">코드트리 메신저</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#kth-ancestor-of-a-node">Kth Ancestor of a node</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#operations-on-tree">Operations on Tree</a></li>
 </ul>
@@ -565,11 +568,118 @@ document.write(`
 </div>
 </div>
 </section>
+<section id="id1">
+<h3>정수 삼각형<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<div class="dropdown admonition">
+<p class="admonition-title">Solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">overlapping problem: dp[row][col] = root부터 해당 노드까지 path의 최댓값 </span>
+<span class="sd">state: [row][col]</span>
+<span class="sd">what to store: root부터 해당 노드까지 path 합의 최댓값</span>
+<span class="sd">base case: dp[0][0] = triangle[0][0] # root 값 </span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">solution</span><span class="p">(</span><span class="n">triangle</span><span class="p">):</span>
+    <span class="c1"># INIT DP table </span>
+    <span class="n">dp</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">triangle</span><span class="p">)):</span>
+        <span class="n">dp</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">triangle</span><span class="p">[</span><span class="n">i</span><span class="p">])):</span>
+            <span class="n">dp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># base case </span>
+    <span class="n">dp</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">triangle</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">cur_h</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">triangle</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">cur_c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">triangle</span><span class="p">[</span><span class="n">cur_h</span><span class="p">])):</span>
+            <span class="c1"># 현재 index i -&gt; 왼쪽 위, 오른쪽 위</span>
+            <span class="k">if</span> <span class="n">cur_c</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">cur_c</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="n">cur_h</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>   
+                <span class="n">dp</span><span class="p">[</span><span class="n">cur_h</span><span class="p">][</span><span class="n">cur_c</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="n">cur_h</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">cur_c</span><span class="p">],</span> <span class="n">dp</span><span class="p">[</span><span class="n">cur_h</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">cur_c</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="n">triangle</span><span class="p">[</span><span class="n">cur_h</span><span class="p">][</span><span class="n">cur_c</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">cur_c</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># 왼쪽 위만 있는 경우 </span>
+                <span class="n">dp</span><span class="p">[</span><span class="n">cur_h</span><span class="p">][</span><span class="n">cur_c</span><span class="p">]</span> <span class="o">=</span> <span class="n">dp</span><span class="p">[</span><span class="n">cur_h</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">cur_c</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">triangle</span><span class="p">[</span><span class="n">cur_h</span><span class="p">][</span><span class="n">cur_c</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span> <span class="c1"># 오른쪽 위만 있는 경우 </span>
+                <span class="n">dp</span><span class="p">[</span><span class="n">cur_h</span><span class="p">][</span><span class="n">cur_c</span><span class="p">]</span> <span class="o">=</span> <span class="n">dp</span><span class="p">[</span><span class="n">cur_h</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">cur_c</span><span class="p">]</span> <span class="o">+</span> <span class="n">triangle</span><span class="p">[</span><span class="n">cur_h</span><span class="p">][</span><span class="n">cur_c</span><span class="p">]</span>
+
+
+    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">triangle</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">tri</span><span class="o">=</span> <span class="p">[[</span><span class="mi">7</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">]]</span> <span class="c1"># 30</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">solution</span><span class="p">(</span><span class="n">tri</span><span class="p">))</span> 
+</pre></div>
+</div>
+</div>
+</section>
+<section id="id2">
+<h3>등굣길<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<div class="dropdown admonition">
+<p class="admonition-title">Solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">보통은 최단 경로를 물어보는데, 개수를 물어보네요. 해당 경로까지의 최단 경로를 append로 정리하여 </span>
+<span class="sd">[1][1]까지 도착하는 경로들의 cost가 a= [3, 4, 5, 3]이면 답은 a.count(min(a)) 가 될 수 있을 듯. </span>
+
+<span class="sd">overlapping subproblems: dp[col][row] = 해당 지점까지 도착하는 경로들의 최소 합의 집합. </span>
+<span class="sd">보통은 </span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">solution</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">puddles</span><span class="p">):</span>
+    <span class="c1"># 1-indexed (1,1) ~ (m, n) # 주의! col을 앞에 작성 </span>
+    <span class="c1"># 오른쪽과 아래쪽으로만 움직여 집에서 학교까지 갈 수 있는 최단 경로의 개수 </span>
+    <span class="c1"># start = (1, 1)</span>
+    <span class="c1"># target = (m, n)</span>
+
+    <span class="c1"># INIT DP</span>
+    <span class="c1"># 주의! dp[m][n]에는 [최단 경로 weight, 개수] 리스트가 들어있음 </span>
+    <span class="n">dp</span> <span class="o">=</span> <span class="p">[[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+    <span class="n">INF_MAX</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1e9</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">puddle</span> <span class="ow">in</span> <span class="n">puddles</span><span class="p">:</span>
+        <span class="n">dp</span><span class="p">[</span><span class="n">puddle</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="n">puddle</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="n">INF_MAX</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> 
+
+    <span class="k">for</span> <span class="n">cur_col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">cur_row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="c1"># 해당 지점까지 &quot;왼쪽&quot; 혹은 &quot;위에서&quot; 온다. </span>
+            <span class="c1"># 왼쪽 [cur_col-1][cur_row]</span>
+            <span class="c1"># 위 [cur_col][cur_row-1]</span>
+            <span class="c1"># paddle인 경우 pass </span>
+            <span class="k">if</span> <span class="n">dp</span><span class="p">[</span><span class="n">cur_col</span><span class="p">][</span><span class="n">cur_row</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="n">INF_MAX</span><span class="p">,</span> <span class="mi">0</span><span class="p">]:</span>
+                <span class="k">continue</span> 
+            <span class="k">if</span> <span class="n">cur_row</span> <span class="o">-</span> <span class="mi">1</span><span class="o">&gt;=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">cur_col</span><span class="o">-</span><span class="mi">1</span><span class="o">&gt;=</span><span class="mi">1</span><span class="p">:</span> <span class="c1"># 시작은 1,1부터임! </span>
+                <span class="n">lowest_cost</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="n">cur_col</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">cur_row</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">dp</span><span class="p">[</span><span class="n">cur_col</span><span class="p">][</span><span class="n">cur_row</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+                <span class="c1"># if lowest_cost == dp[cur_col-1][cur_row][0] == dp[cur_col][cur_row-1][0]:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">lowest_cost</span> <span class="o">==</span> <span class="n">dp</span><span class="p">[</span><span class="n">cur_col</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">cur_row</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span><span class="n">lowest_cost</span> <span class="o">==</span> <span class="n">dp</span><span class="p">[</span><span class="n">cur_col</span><span class="p">][</span><span class="n">cur_row</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]):</span>
+                    <span class="n">dp</span><span class="p">[</span><span class="n">cur_col</span><span class="p">][</span><span class="n">cur_row</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">lowest_cost</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dp</span><span class="p">[</span><span class="n">cur_col</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">cur_row</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">dp</span><span class="p">[</span><span class="n">cur_col</span><span class="p">][</span><span class="n">cur_row</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]]</span> 
+                <span class="k">elif</span> <span class="n">lowest_cost</span> <span class="o">==</span> <span class="n">dp</span><span class="p">[</span><span class="n">cur_col</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">cur_row</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span> 
+                    <span class="n">dp</span><span class="p">[</span><span class="n">cur_col</span><span class="p">][</span><span class="n">cur_row</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">lowest_cost</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>  <span class="n">dp</span><span class="p">[</span><span class="n">cur_col</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">cur_row</span><span class="p">][</span><span class="mi">1</span><span class="p">]]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">dp</span><span class="p">[</span><span class="n">cur_col</span><span class="p">][</span><span class="n">cur_row</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">lowest_cost</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>  <span class="n">dp</span><span class="p">[</span><span class="n">cur_col</span><span class="p">][</span><span class="n">cur_row</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="k">elif</span> <span class="n">cur_row</span> <span class="o">-</span> <span class="mi">1</span><span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span> <span class="c1"># 왼쪽에서 오는 경우만 있는 경우 </span>
+                <span class="n">dp</span><span class="p">[</span><span class="n">cur_col</span><span class="p">][</span><span class="n">cur_row</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">dp</span><span class="p">[</span><span class="n">cur_col</span><span class="p">][</span><span class="n">cur_row</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dp</span><span class="p">[</span><span class="n">cur_col</span><span class="p">][</span><span class="n">cur_row</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="k">else</span><span class="p">:</span> <span class="c1"># 위에서 오는 경우만 있는 경우 </span>
+                <span class="n">dp</span><span class="p">[</span><span class="n">cur_col</span><span class="p">][</span><span class="n">cur_row</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">dp</span><span class="p">[</span><span class="n">cur_col</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">cur_row</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dp</span><span class="p">[</span><span class="n">cur_col</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">cur_row</span><span class="p">][</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="k">return</span> <span class="n">dp</span><span class="p">[</span><span class="n">m</span><span class="p">][</span><span class="n">n</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">%</span> <span class="mi">1_000_000_007</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">solution</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]))</span><span class="c1"># 4</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="id3">
+<h3>사칙연산<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<div class="dropdown admonition">
+<p class="admonition-title">Solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
 </section>
 <section id="treedp">
 <h2>TreeDP<a class="headerlink" href="#treedp" title="Link to this heading">#</a></h2>
-<section id="id1">
-<h3>서브트리의 정점 개수 세기<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<section id="id4">
+<h3>서브트리의 정점 개수 세기<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
 <p class="admonition-title">Tree DP에서 Bottom-up 방식으로 구현하는 이유</p>
 <ul class="simple">
@@ -719,8 +829,8 @@ print(f”children list: {children_list}”)</p>
 </div>
 </div>
 </section>
-<section id="id2">
-<h3>우수 마을<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<section id="id5">
+<h3>우수 마을<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
 <p class="admonition-title">Top-down Solution</p>
 <p>이것을 DP로 구현하기 위해서 두 가지 경우를 생각하면 됩니다. 자신이 우수 마을인 경우와, 자신이 일반 마을인 경우 입니다.
@@ -800,8 +910,8 @@ dp[parent][1] += max(dp[child][0], dp[child][1])</p></li>
 </div>
 </div>
 </section>
-<section id="id3">
-<h3>사회망 서비스<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<section id="id6">
+<h3>사회망 서비스<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
 <p class="admonition-title">Idea</p>
 <p><img alt="" src="../../_images/315.png" /></p>
@@ -1712,10 +1822,10 @@ dp[parent][1] += max(dp[child][0], dp[child][1])</p></li>
 </div>
 </section>
 </section>
-<section id="id4">
-<h2>코테 기출<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
-<section id="id5">
-<h3>색깔 트리<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<section id="id7">
+<h2>코테 기출<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
+<section id="id8">
+<h3>색깔 트리<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
 <p class="admonition-title">Explanation</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
@@ -1896,8 +2006,8 @@ dp[parent][1] += max(dp[child][0], dp[child][1])</p></li>
 </div>
 </div>
 </section>
-<section id="id6">
-<h3>코드트리 메신저<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<section id="id9">
+<h3>코드트리 메신저<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>중요: depth가 최대 O(20)이고, N은 최대 1e5이므로, depth를 이용해 알고리즘을 구현해야 시간초과를 안나는 것을 간접적으로 말해준다.</p></li>
 </ul>
@@ -1905,8 +2015,8 @@ dp[parent][1] += max(dp[child][0], dp[child][1])</p></li>
 <h4>Kth Ancestor of a node<a class="headerlink" href="#kth-ancestor-of-a-node" title="Link to this heading">#</a></h4>
 <div class="dropdown admonition">
 <p class="admonition-title">Idea</p>
-<div class="pst-scrollable-table-container"><table class="full-width-table table table-center" id="id7">
-<caption><span class="caption-number">표 29 </span><span class="caption-text">10진수의 성질</span><a class="headerlink" href="#id7" title="Link to this table">#</a></caption>
+<div class="pst-scrollable-table-container"><table class="full-width-table table table-center" id="id10">
+<caption><span class="caption-number">표 29 </span><span class="caption-text">10진수의 성질</span><a class="headerlink" href="#id10" title="Link to this table">#</a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>10진수 (decimal)</p></th>
 <th class="head"><p>bits (이진수)</p></th>
@@ -2378,12 +2488,15 @@ return <span class="gs">**the shortest possible length of the compressed represe
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dp-kit">DP 고득점 Kit</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#n">N으로 표현</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">정수 삼각형</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">등굣길</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">사칙연산</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#treedp">TreeDP</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">서브트리의 정점 개수 세기</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">우수 마을</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">사회망 서비스</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">서브트리의 정점 개수 세기</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">우수 마을</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">사회망 서비스</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#diameter-of-binary-tree">Diameter of Binary Tree</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#longest-path-with-different-adjacent-character">Longest Path with Different Adjacent Character</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#binary-tree-max-path-sum">Binary Tree Max Path Sum</a></li>
@@ -2393,9 +2506,9 @@ return <span class="gs">**the shortest possible length of the compressed represe
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#binary-tree-cameras">Binary Tree Cameras</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">코테 기출</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">색깔 트리</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">코드트리 메신저</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">코테 기출</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">색깔 트리</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">코드트리 메신저</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#kth-ancestor-of-a-node">Kth Ancestor of a node</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#operations-on-tree">Operations on Tree</a></li>
 </ul>

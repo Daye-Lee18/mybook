@@ -88,6 +88,37 @@ def solve(...):
 ```
 ````
 
+### 정수 삼각형 
+
+````{admonition} Solution
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/16.py
+:language: python 
+
+```
+````
+
+### 등굣길 
+
+````{admonition} Solution
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/17.py
+:language: python
+```
+````
+
+### 사칙연산 
+
+````{admonition} Solution
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/18.py
+:language: python
+```
+````
+
 ## TreeDP
 
 ### 서브트리의 정점 개수 세기 
