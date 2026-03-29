@@ -568,7 +568,7 @@ document.write(`
 <p>What you choose to store in your DP table (list, dict, array, etc.) is the most important design decision in solving a DP problem.</p>
 <p>DP is about <code class="docutils literal notranslate"><span class="pre">state</span> <span class="pre">representation</span></code>. DP works by </u>breaking a big problem into smaller overlapping subproblems</u>. To reuse solutions, you must define a <code class="docutils literal notranslate"><span class="pre">state</span></code> that fully describes a subproblem. That “state” is exactly what you store in the DP table.</p>
 <p>How can we decide <strong>what to store</strong>? You should ask yourself <strong>1. What subproblem do I need to solve repeatdly?</strong> and <strong>2. What result of that subproblem helps me build the next one?</strong>. The first question deinfes the state and the next question is the value you should store.</p>
-<div class="tip admonition">
+<div class="dropdown admonition">
 <p class="admonition-title">A Checklist for DP problems</p>
 <ol class="arabic simple">
 <li><p>overlapping subproblems</p></li>
@@ -621,6 +621,18 @@ document.write(`
 <li><p>base case</p></li>
 </ol>
 </div>
+<div class="tip admonition">
+<p class="admonition-title">Length-based Interval Iteration</p>
+<ol class="arabic simple">
+<li><p>First, iterate over the length of interval</p></li>
+<li><p>Then, iterate over the start index of the interval</p></li>
+<li><p>The end index is determined as:</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">length</span> <span class="o">-</span> <span class="mi">1</span> 
+</pre></div>
+</div>
+<p><img alt="interval image" src="../../_images/411.png" /></p>
+</div>
 <p>Here is a handy “what to store” cheat-sheet for the most popular DP problems. each line tells you the state, what to store, and a one-line transition hint so you know why the storage works.</p>
 <section id="sequence-array-dp">
 <h3>1. Sequence / Array DP<a class="headerlink" href="#sequence-array-dp" title="Link to this heading">#</a></h3>
@@ -649,7 +661,7 @@ document.write(`
 <li><p>Transition: <code class="docutils literal notranslate"><span class="pre">dp[n]</span> <span class="pre">=</span> <span class="pre">dp[n-1]</span> <span class="pre">+</span> <span class="pre">dp[n-2]</span></code></p></li>
 <li><p>Reference: LC 70 (Climbing Stairs), LC 509 (Fibonacci Number)</p></li>
 </ul>
-<ol class="arabic simple">
+<ol class="arabic simple" start="2">
 <li><p>Maximum Subarray (Kadane)</p></li>
 </ol>
 <ul class="simple">
@@ -658,7 +670,7 @@ document.write(`
 <li><p>Transition: <code class="docutils literal notranslate"><span class="pre">dp[i]</span> <span class="pre">=</span> <span class="pre">max(a[i],</span> <span class="pre">dp[i-1]</span> <span class="pre">+</span> <span class="pre">a[i])</span></code></p></li>
 <li><p>Reference: LC 53 (Maximum Subarray)</p></li>
 </ul>
-<ol class="arabic simple">
+<ol class="arabic simple" start="3">
 <li><p>House Robber</p></li>
 </ol>
 <ul class="simple">
@@ -667,7 +679,7 @@ document.write(`
 <li><p>Transition: <code class="docutils literal notranslate"><span class="pre">dp[i]</span> <span class="pre">=</span> <span class="pre">max(dp[i-1],</span> <span class="pre">dp[i-2]</span> <span class="pre">+</span> <span class="pre">val[i])</span></code></p></li>
 <li><p>Reference: LC 198 (House Robber), LC 213 (House Robber II)</p></li>
 </ul>
-<ol class="arabic simple">
+<ol class="arabic simple" start="4">
 <li><p>Longest Increasing Subsequence (LIS)</p></li>
 </ol>
 <ul class="simple">
@@ -676,7 +688,7 @@ document.write(`
 <li><p>Transition: <code class="docutils literal notranslate"><span class="pre">dp[i]</span> <span class="pre">=</span> <span class="pre">1</span> <span class="pre">+</span> <span class="pre">max(dp[j])</span> <span class="pre">for</span> <span class="pre">j&lt;i</span> <span class="pre">&amp;</span> <span class="pre">a[j]&lt;a[i]</span></code></p></li>
 <li><p>Reference: LC 300 (LIS), LC 354 (Russian Doll Envelopes)</p></li>
 </ul>
-<ol class="arabic simple">
+<ol class="arabic simple" start="5">
 <li><p>Partition Equal Subset / Subset Sum</p></li>
 </ol>
 <ul class="simple">
@@ -716,7 +728,7 @@ document.write(`
 <li><p>Transition: if match: <code class="docutils literal notranslate"><span class="pre">1+dp[i-1][j-1]</span></code> else <code class="docutils literal notranslate"><span class="pre">max(dp[i-1][j],</span> <span class="pre">dp[i][j-1])</span></code></p></li>
 <li><p>Reference: LC 1143 (LCS)</p></li>
 </ul>
-<ol class="arabic simple">
+<ol class="arabic simple" start="2">
 <li><p>Edit Distance (Levenshtein)</p></li>
 </ol>
 <ul class="simple">
@@ -725,7 +737,7 @@ document.write(`
 <li><p>Transition: <code class="docutils literal notranslate"><span class="pre">min(replace,</span> <span class="pre">insert,</span> <span class="pre">delete)</span></code></p></li>
 <li><p>Reference: LC 72 (Edit Distance)</p></li>
 </ul>
-<ol class="arabic simple">
+<ol class="arabic simple" start="3">
 <li><p>Longest Palindromic Subsequence (LPS)</p></li>
 </ol>
 <ul class="simple">
@@ -734,7 +746,7 @@ document.write(`
 <li><p>Transition: if <code class="docutils literal notranslate"><span class="pre">s[l]==s[r]</span></code> → <code class="docutils literal notranslate"><span class="pre">2+dp[l+1][r-1]</span></code> else <code class="docutils literal notranslate"><span class="pre">max(dp[l+1][r],</span> <span class="pre">dp[l][r-1])</span></code></p></li>
 <li><p>Reference: LC 516 (Longest Palindromic Subsequence)</p></li>
 </ul>
-<ol class="arabic simple">
+<ol class="arabic simple" start="4">
 <li><p>Longest Palindromic Substring</p></li>
 </ol>
 <ul class="simple">
@@ -743,7 +755,7 @@ document.write(`
 <li><p>Transition: <code class="docutils literal notranslate"><span class="pre">dp[l][r]</span> <span class="pre">=</span> <span class="pre">(s[l]==s[r]</span> <span class="pre">&amp;&amp;</span> <span class="pre">(r-l&lt;2</span> <span class="pre">||</span> <span class="pre">dp[l+1][r-1]))</span></code></p></li>
 <li><p>Reference: LC 5 (Longest Palindromic Substring)</p></li>
 </ul>
-<ol class="arabic simple">
+<ol class="arabic simple" start="5">
 <li><p>Distinct Subsequences (count ways A→B)</p></li>
 </ol>
 <ul class="simple">
@@ -788,7 +800,7 @@ document.write(`
 <li><p>Transition: <code class="docutils literal notranslate"><span class="pre">dp[w]</span> <span class="pre">=</span> <span class="pre">max(dp[w],</span> <span class="pre">dp[w-weight]</span> <span class="pre">+</span> <span class="pre">value)</span></code></p></li>
 <li><p>Reference: LC 474 (Ones and Zeroes)</p></li>
 </ul>
-<ol class="arabic simple">
+<ol class="arabic simple" start="2">
 <li><p>Unbounded Knapsack / Coin Change (min coins)</p></li>
 </ol>
 <ul class="simple">
@@ -797,7 +809,7 @@ document.write(`
 <li><p>Transition: <code class="docutils literal notranslate"><span class="pre">dp[w]</span> <span class="pre">=</span> <span class="pre">min(dp[w],</span> <span class="pre">dp[w-c]</span> <span class="pre">+</span> <span class="pre">1)</span></code></p></li>
 <li><p>Reference: LC 322 (Coin Change)</p></li>
 </ul>
-<ol class="arabic simple">
+<ol class="arabic simple" start="3">
 <li><p>Coin Change (count ways)</p></li>
 </ol>
 <ul class="simple">
@@ -834,7 +846,7 @@ document.write(`
 <li><p>Transition: <code class="docutils literal notranslate"><span class="pre">dp[i][j]</span> <span class="pre">=</span> <span class="pre">(obstacle?0</span> <span class="pre">:</span> <span class="pre">dp[i-1][j]</span> <span class="pre">+</span> <span class="pre">dp[i][j-1])</span></code></p></li>
 <li><p>Reference: LC 62 (Unique Paths), LC 63 (Unique Paths II)</p></li>
 </ul>
-<ol class="arabic simple">
+<ol class="arabic simple" start="2">
 <li><p>Minimum Path Sum</p></li>
 </ol>
 <ul class="simple">
@@ -861,9 +873,6 @@ document.write(`
 </ol>
 </li>
 </ul>
-<ol class="arabic simple">
-<li></li>
-</ol>
 <div class="dropdown admonition">
 <p class="admonition-title">DP table for Interval DP</p>
 <ol class="arabic simple">
@@ -875,7 +884,7 @@ document.write(`
 <li><p>Transition: split at <code class="docutils literal notranslate"><span class="pre">k</span></code></p></li>
 <li><p>Reference: LC 1547 (Minimum Cost to Cut a Stick)</p></li>
 </ul>
-<ol class="arabic simple">
+<ol class="arabic simple" start="2">
 <li><p>Burst Balloons</p></li>
 </ol>
 <ul class="simple">
@@ -884,7 +893,7 @@ document.write(`
 <li><p>Transition: pick last balloon <code class="docutils literal notranslate"><span class="pre">k</span></code></p></li>
 <li><p>Reference: LC 312 (Burst Balloons)</p></li>
 </ul>
-<ol class="arabic simple">
+<ol class="arabic simple" start="3">
 <li><p>Palindrome Partitioning (min cuts)</p></li>
 </ol>
 <ul class="simple">
@@ -916,7 +925,7 @@ document.write(`
 <li><p>Transition: combine two largest child depths</p></li>
 <li><p>Reference: LC 543 (Diameter of Binary Tree), LC 124 (Binary Tree Max Path Sum)</p></li>
 </ul>
-<ol class="arabic simple">
+<ol class="arabic simple" start="2">
 <li><p>Maximum Independent Set on Tree</p></li>
 </ol>
 <ul class="simple">

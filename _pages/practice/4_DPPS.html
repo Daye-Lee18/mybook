@@ -669,16 +669,109 @@ document.write(`
 <section id="id3">
 <h3>사칙연산<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
+<p class="admonition-title">Idea</p>
+<ul class="simple">
+<li><p>숫자 개수: <code class="docutils literal notranslate"><span class="pre">n</span></code></p></li>
+<li><p>연산자 개수: <code class="docutils literal notranslate"><span class="pre">n-1</span></code></p></li>
+</ul>
+<p>예를 들어,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;5&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;8&quot;</span><span class="p">]</span>
+<span class="n">nums</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[::</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+<span class="n">ops</span>  <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>여기서,</p>
+<ul class="simple">
+<li><p>ops[0]는 nums[0] 와 nums[1] 사이 연산자</p></li>
+<li><p>ops[1]는 nums[1] 와 nums[2] 사이 연산자</p></li>
+<li><p>ops[2]는 nums[2] 와 nums[3] 사이 연산자</p></li>
+</ul>
+<p>따라서, 구간 [start, end]를 k에서 나눈다는 건</p>
+<ul class="simple">
+<li><p>왼쪽: nums[start ..k]</p></li>
+<li><p>오른쪽 nums[k+1, end]
+이고, 이 둘 사이의 연산자가 정확히 ops[k]이다.</p></li>
+</ul>
+</div>
+<div class="dropdown admonition">
 <p class="admonition-title">Solution</p>
 <p>구간 DP (interval DP)로 접근해야한다.</p>
+<div class="toggle docutils container">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">overlapping problem: dp[i][j] = i번째 ~ j번째까지 계산했을 때 만들 수 있는 (최솟값, 최댓값)</span>
-<span class="sd">state: 구간 [i, j]</span>
-<span class="sd">what to store: [i, j]구간에서 만들 수 있는 최소, 최댓값 </span>
-<span class="sd">base case: </span>
+<span class="sd">이 문제는 괄호를 어디에 치느냐에 따라 결과가 달라진다.</span>
+<span class="sd">즉, 앞에서부터 누적하는 문제가 아니라 어떤 구간 [i, j]를 어디서 나눌지(k)가 중요하므로 구간 DP로 푼다.</span>
 
+<span class="sd">state:</span>
+<span class="sd">dp[i][j] = nums[i] ~ nums[j] 구간을 계산해서 만들 수 있는</span>
+<span class="sd">           (최솟값, 최댓값)</span>
+
+<span class="sd">왜 min/max 둘 다 필요한가?</span>
+<span class="sd">- &#39;+&#39; 는 min끼리, max끼리 보면 되지만</span>
+<span class="sd">- &#39;-&#39; 는 최댓값을 만들 때 &quot;왼쪽 최대 - 오른쪽 최소&quot;,</span>
+<span class="sd">        최솟값을 만들 때 &quot;왼쪽 최소 - 오른쪽 최대&quot;가 필요하다.</span>
+<span class="sd">따라서 각 구간의 min/max를 모두 저장해야 한다.</span>
+
+<span class="sd">transition:</span>
+<span class="sd">구간 [i, j]를 k에서 나누면</span>
+<span class="sd">(i ~ k) op[k] (k+1 ~ j)</span>
+
+<span class="sd">for k in range(i, j):</span>
+<span class="sd">    left = dp[i][k]</span>
+<span class="sd">    right = dp[k+1][j]</span>
+<span class="sd">    op = ops[k]</span>
 <span class="sd">&#39;&#39;&#39;</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">solution</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculator</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span>
+        <span class="c1"># [start, end] 구간에서 </span>
+        <span class="k">nonlocal</span> <span class="n">dp</span><span class="p">,</span> <span class="n">arr</span>
+       
+        <span class="n">res_min</span><span class="p">,</span> <span class="n">res_max</span> <span class="o">=</span> <span class="n">INF_MAX</span><span class="p">,</span> <span class="n">INF_MIN</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span> <span class="c1"># XXX: [start, end-1]</span>
+            <span class="n">left</span> <span class="o">=</span> <span class="n">dp</span><span class="p">[</span><span class="n">start</span><span class="p">][</span><span class="n">k</span><span class="p">]</span>
+            <span class="n">right</span> <span class="o">=</span> <span class="n">dp</span><span class="p">[</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="n">end</span><span class="p">]</span>
+            <span class="c1"># NOTE: ops의 개수 = 숫자의 개수 -1 </span>
+            <span class="k">if</span> <span class="n">ops</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;+&quot;</span><span class="p">:</span>
+                <span class="n">cur_max</span> <span class="o">=</span> <span class="n">left</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">right</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">cur_min</span> <span class="o">=</span> <span class="n">left</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">right</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span> <span class="c1"># 뺄셈 </span>
+                <span class="n">cur_max</span> <span class="o">=</span> <span class="n">left</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">right</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># 왼쪽 큰 거 - 오른쪽 작은거 </span>
+                <span class="n">cur_min</span> <span class="o">=</span> <span class="n">left</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">right</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="c1"># 왼쪽 작은 거 - 오른쪽 큰 거</span>
+
+            <span class="n">res_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">res_min</span><span class="p">,</span> <span class="n">cur_min</span><span class="p">)</span>
+            <span class="n">res_max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">res_max</span><span class="p">,</span> <span class="n">cur_max</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">res_min</span><span class="p">,</span> <span class="n">res_max</span><span class="p">]</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">)</span> <span class="o">//</span> <span class="mi">2</span> <span class="c1"># 숫자 개수 </span>
+
+    <span class="n">nums</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">arr</span><span class="p">[::</span><span class="mi">2</span><span class="p">]))</span>
+    <span class="n">ops</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="c1"># DP INIT [min, max]</span>
+    <span class="n">INF_MIN</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1e9</span><span class="p">)</span>
+    <span class="n">INF_MAX</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1e9</span><span class="p">)</span>
+    <span class="n">dp</span> <span class="o">=</span> <span class="p">[[[</span><span class="n">INF_MAX</span><span class="p">,</span> <span class="n">INF_MIN</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span> <span class="c1"># NOTE: 숫자 개수만큼의 dp table 생성</span>
+
+    <span class="c1"># base case: dp[i][i] = [arr[i], arr[i]]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">dp</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">nums</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">nums</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+
+    <span class="c1"># 길이 늘려가면서</span>
+    <span class="k">for</span> <span class="n">length</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span> <span class="c1"># range: [2, n]</span>
+        <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="o">-</span><span class="n">length</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span> <span class="c1"># range: [0, n-length]</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">length</span> <span class="o">-</span><span class="mi">1</span>  
+            <span class="n">dp</span><span class="p">[</span><span class="n">start</span><span class="p">][</span><span class="n">end</span><span class="p">]</span> <span class="o">=</span> <span class="n">calculator</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span> <span class="c1"># dp[i][j] = 해당 구간 interval </span>
+
+    <span class="k">return</span> <span class="n">dp</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># 숫자 구간 (0, n)에서의 최댓값 </span>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;5&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;8&quot;</span><span class="p">]</span> <span class="c1"># result: 1 </span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">solution</span><span class="p">(</span><span class="n">arr</span><span class="p">))</span>
 </pre></div>
+</div>
 </div>
 </div>
 </section>

@@ -111,11 +111,34 @@ def solve(...):
 
 ### 사칙연산 
 
+````{admonition} Idea
+:class: dropdown 
+
+- 숫자 개수: `n`
+- 연산자 개수: `n-1`
+
+예를 들어, 
+```python
+arr = ["1", "-", "3", "+", "5", "-", "8"]
+nums = arr[::2] = [1, 3, 5, 8]
+ops  = arr[1::2] = ["-", "+", "-"]
+```
+여기서, 
+- ops[0]는 nums[0] 와 nums[1] 사이 연산자 
+- ops[1]는 nums[1] 와 nums[2] 사이 연산자 
+- ops[2]는 nums[2] 와 nums[3] 사이 연산자 
+
+따라서, 구간 [start, end]를 k에서 나눈다는 건
+* 왼쪽: nums[start ..k]
+* 오른쪽 nums[k+1, end]
+이고, 이 둘 사이의 연산자가 정확히 ops[k]이다. 
+````
 ````{admonition} Solution
 :class: dropdown 
 
 구간 DP (interval DP)로 접근해야한다. 
 
+```{toggle}
 ```{literalinclude} ../solutions/DPPS/18.py
 :language: python
 ```
