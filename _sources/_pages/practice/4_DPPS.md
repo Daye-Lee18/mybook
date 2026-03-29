@@ -44,10 +44,10 @@ def solve(...):
 ````
 
 - DP 고득점 Kit 
-  - [N으로 표현](https://school.programmers.co.kr/learn/courses/30/lessons/42895)
+  - 🚨 [N으로 표현](https://school.programmers.co.kr/learn/courses/30/lessons/42895)
   - [정수 삼각형](https://school.programmers.co.kr/learn/courses/30/lessons/43105)
   - [등굣길](https://school.programmers.co.kr/learn/courses/30/lessons/42898)
-  - [사칙연산](https://school.programmers.co.kr/learn/courses/30/lessons/1843)
+  - 🚨 [사칙연산](https://school.programmers.co.kr/learn/courses/30/lessons/1843)
   - [도둑질](https://school.programmers.co.kr/learn/courses/30/lessons/42897)
 
 - Tree DP 
@@ -74,7 +74,7 @@ def solve(...):
     - [백준 14267 회사 문화 1](https://www.acmicpc.net/problem/14267)
     - [백준 17435 합성함수와 쿼리](https://www.acmicpc.net/problem/17435) 
     - [백준 13511 트리와 쿼리 2](https://www.acmicpc.net/problem/13511) 
-  - [String Compression II](https://leetcode.com/problems/string-compression-ii/description/)
+  - 🚨 [String Compression II](https://leetcode.com/problems/string-compression-ii/description/)
 
 ## DP 고득점 Kit 
 
@@ -133,13 +133,23 @@ ops  = arr[1::2] = ["-", "+", "-"]
 * 오른쪽 nums[k+1, end]
 이고, 이 둘 사이의 연산자가 정확히 ops[k]이다. 
 ````
+
 ````{admonition} Solution
 :class: dropdown 
 
 구간 DP (interval DP)로 접근해야한다. 
 
-```{toggle}
 ```{literalinclude} ../solutions/DPPS/18.py
+:language: python
+```
+````
+
+### 도둑질 
+
+````{admonition} Solution
+:class: dropdown 
+
+```{literalinclude} ../solutions/DPPS/19.py
 :language: python
 ```
 ````

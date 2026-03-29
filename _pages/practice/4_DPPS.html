@@ -389,12 +389,13 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">정수 삼각형</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">등굣길</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">사칙연산</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">도둑질</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#treedp">TreeDP</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">서브트리의 정점 개수 세기</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">우수 마을</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">사회망 서비스</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">서브트리의 정점 개수 세기</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">우수 마을</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">사회망 서비스</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#diameter-of-binary-tree">Diameter of Binary Tree</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#longest-path-with-different-adjacent-character">Longest Path with Different Adjacent Character</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#binary-tree-max-path-sum">Binary Tree Max Path Sum</a></li>
@@ -404,9 +405,9 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#binary-tree-cameras">Binary Tree Cameras</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">코테 기출</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">색깔 트리</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">코드트리 메신저</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">코테 기출</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">색깔 트리</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">코드트리 메신저</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#kth-ancestor-of-a-node">Kth Ancestor of a node</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#operations-on-tree">Operations on Tree</a></li>
 </ul>
@@ -457,10 +458,10 @@ document.write(`
 <ul class="simple">
 <li><p>DP 고득점 Kit</p>
 <ul>
-<li><p><a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/lessons/42895">N으로 표현</a></p></li>
+<li><p>🚨 <a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/lessons/42895">N으로 표현</a></p></li>
 <li><p><a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/lessons/43105">정수 삼각형</a></p></li>
 <li><p><a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/lessons/42898">등굣길</a></p></li>
-<li><p><a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/lessons/1843">사칙연산</a></p></li>
+<li><p>🚨 <a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/lessons/1843">사칙연산</a></p></li>
 <li><p><a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/lessons/42897">도둑질</a></p></li>
 </ul>
 </li>
@@ -494,7 +495,7 @@ document.write(`
 <li><p><a class="reference external" href="https://www.acmicpc.net/problem/13511">백준 13511 트리와 쿼리 2</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference external" href="https://leetcode.com/problems/string-compression-ii/description/">String Compression II</a></p></li>
+<li><p>🚨 <a class="reference external" href="https://leetcode.com/problems/string-compression-ii/description/">String Compression II</a></p></li>
 </ul>
 </li>
 </ul>
@@ -696,7 +697,6 @@ document.write(`
 <div class="dropdown admonition">
 <p class="admonition-title">Solution</p>
 <p>구간 DP (interval DP)로 접근해야한다.</p>
-<div class="toggle docutils container">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">이 문제는 괄호를 어디에 치느냐에 따라 결과가 달라진다.</span>
 <span class="sd">즉, 앞에서부터 누적하는 문제가 아니라 어떤 구간 [i, j]를 어디서 나눌지(k)가 중요하므로 구간 DP로 푼다.</span>
@@ -773,13 +773,71 @@ document.write(`
 </pre></div>
 </div>
 </div>
+</section>
+<section id="id4">
+<h3>도둑질<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<div class="dropdown admonition">
+<p class="admonition-title">Solution</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">인접한 두 집을 털면 경보 </span>
+<span class="sd">money: 각 집에 있는 돈이 담긴 배열 money 가 주어진다. </span>
+<span class="sd">return: 도둑이 훔칠 수 있는 돈의 최댓값 </span>
+
+<span class="sd">- constraints:</span>
+<span class="sd">    - 집의 개수 3&lt;= &lt;= 1e6</span>
+<span class="sd">    - 0 &lt;= money elements &lt; 1e3 </span>
+
+<span class="sd">- &quot;동그랗게 배치되어 있는 집&quot;: cycle </span>
+<span class="sd">- XXX: 시작과 end가 연결되어있음에 주의 (0과 len(moeny)-1는 연결)</span>
+<span class="sd">- linear DP 이지만, cycle이 있음에 유의 </span>
+<span class="sd">    - cycle을 다룰 땐, 항상 % (mod)를 사용한다.</span>
+<span class="sd">    - XXX: %로 사이클을 직접 처리하려고 하면 안된다. </span>
+
+<span class="sd">- dp[시작] = [해당 노드는 안전할때 max, 해당 노드가 털릴 때 max]</span>
+<span class="sd">- transition:</span>
+<span class="sd">    dp[현재노드][0] = max(dp[이전집][털림], dp[이전집][안털림]) + 현재 집에 있는 돈 </span>
+<span class="sd">    dp[현재노드][1] = dp[이전집][안털림] + 현재 집에 있는 돈 </span>
+<span class="sd">- base case:</span>
+<span class="sd">    dp[시작] = [0, money[시작]]</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">solution</span><span class="p">(</span><span class="n">money</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rob_linear</span><span class="p">(</span><span class="n">nums</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">nums</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">nums</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">nums</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">nums</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="n">dp</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>
+        <span class="n">dp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">nums</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">dp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">nums</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">nums</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+            <span class="n">dp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">dp</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">nums</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">dp</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># 경우 1: 첫 집 포함, 마지막 집 제외</span>
+    <span class="n">case1</span> <span class="o">=</span> <span class="n">rob_linear</span><span class="p">(</span><span class="n">money</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="c1"># 경우 2: 첫 집 제외, 마지막 집 포함 가능</span>
+    <span class="n">case2</span> <span class="o">=</span> <span class="n">rob_linear</span><span class="p">(</span><span class="n">money</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+
+    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">case1</span><span class="p">,</span> <span class="n">case2</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">money</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="c1"># 4 </span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">solution</span><span class="p">(</span><span class="n">money</span><span class="p">))</span>
+</pre></div>
+</div>
 </div>
 </section>
 </section>
 <section id="treedp">
 <h2>TreeDP<a class="headerlink" href="#treedp" title="Link to this heading">#</a></h2>
-<section id="id4">
-<h3>서브트리의 정점 개수 세기<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<section id="id5">
+<h3>서브트리의 정점 개수 세기<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
 <p class="admonition-title">Tree DP에서 Bottom-up 방식으로 구현하는 이유</p>
 <ul class="simple">
@@ -929,8 +987,8 @@ print(f”children list: {children_list}”)</p>
 </div>
 </div>
 </section>
-<section id="id5">
-<h3>우수 마을<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<section id="id6">
+<h3>우수 마을<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
 <p class="admonition-title">Top-down Solution</p>
 <p>이것을 DP로 구현하기 위해서 두 가지 경우를 생각하면 됩니다. 자신이 우수 마을인 경우와, 자신이 일반 마을인 경우 입니다.
@@ -1010,8 +1068,8 @@ dp[parent][1] += max(dp[child][0], dp[child][1])</p></li>
 </div>
 </div>
 </section>
-<section id="id6">
-<h3>사회망 서비스<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<section id="id7">
+<h3>사회망 서비스<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
 <p class="admonition-title">Idea</p>
 <p><img alt="" src="../../_images/315.png" /></p>
@@ -1922,10 +1980,10 @@ dp[parent][1] += max(dp[child][0], dp[child][1])</p></li>
 </div>
 </section>
 </section>
-<section id="id7">
-<h2>코테 기출<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
 <section id="id8">
-<h3>색깔 트리<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<h2>코테 기출<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
+<section id="id9">
+<h3>색깔 트리<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
 <p class="admonition-title">Explanation</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
@@ -2106,8 +2164,8 @@ dp[parent][1] += max(dp[child][0], dp[child][1])</p></li>
 </div>
 </div>
 </section>
-<section id="id9">
-<h3>코드트리 메신저<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<section id="id10">
+<h3>코드트리 메신저<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>중요: depth가 최대 O(20)이고, N은 최대 1e5이므로, depth를 이용해 알고리즘을 구현해야 시간초과를 안나는 것을 간접적으로 말해준다.</p></li>
 </ul>
@@ -2115,8 +2173,8 @@ dp[parent][1] += max(dp[child][0], dp[child][1])</p></li>
 <h4>Kth Ancestor of a node<a class="headerlink" href="#kth-ancestor-of-a-node" title="Link to this heading">#</a></h4>
 <div class="dropdown admonition">
 <p class="admonition-title">Idea</p>
-<div class="pst-scrollable-table-container"><table class="full-width-table table table-center" id="id10">
-<caption><span class="caption-number">표 29 </span><span class="caption-text">10진수의 성질</span><a class="headerlink" href="#id10" title="Link to this table">#</a></caption>
+<div class="pst-scrollable-table-container"><table class="full-width-table table table-center" id="id11">
+<caption><span class="caption-number">표 29 </span><span class="caption-text">10진수의 성질</span><a class="headerlink" href="#id11" title="Link to this table">#</a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>10진수 (decimal)</p></th>
 <th class="head"><p>bits (이진수)</p></th>
@@ -2591,12 +2649,13 @@ return <span class="gs">**the shortest possible length of the compressed represe
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">정수 삼각형</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">등굣길</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">사칙연산</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">도둑질</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#treedp">TreeDP</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">서브트리의 정점 개수 세기</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">우수 마을</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">사회망 서비스</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">서브트리의 정점 개수 세기</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">우수 마을</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">사회망 서비스</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#diameter-of-binary-tree">Diameter of Binary Tree</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#longest-path-with-different-adjacent-character">Longest Path with Different Adjacent Character</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#binary-tree-max-path-sum">Binary Tree Max Path Sum</a></li>
@@ -2606,9 +2665,9 @@ return <span class="gs">**the shortest possible length of the compressed represe
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#binary-tree-cameras">Binary Tree Cameras</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">코테 기출</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">색깔 트리</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">코드트리 메신저</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">코테 기출</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">색깔 트리</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">코드트리 메신저</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#kth-ancestor-of-a-node">Kth Ancestor of a node</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#operations-on-tree">Operations on Tree</a></li>
 </ul>

@@ -418,7 +418,8 @@ Here is a handy "what to store" cheat-sheet for the most popular DP problems. ea
 - Transition: if take `u`, skip children; else best of children  
 - Reference: classic Tree DP (not direct LC, but similar to LC 337 House Robber III)
 ````
-### Summary 
+
+## Summary 
 ````{admonition} Summary for DP table
 :class: important 
 
