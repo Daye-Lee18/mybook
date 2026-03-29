@@ -462,7 +462,7 @@ document.write(`
 <li><p><a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/lessons/43105">정수 삼각형</a></p></li>
 <li><p><a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/lessons/42898">등굣길</a></p></li>
 <li><p>🚨 <a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/lessons/1843">사칙연산</a></p></li>
-<li><p><a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/lessons/42897">도둑질</a></p></li>
+<li><p>🚨 <a class="reference external" href="https://school.programmers.co.kr/learn/courses/30/lessons/42897">도둑질</a></p></li>
 </ul>
 </li>
 <li><p>Tree DP</p>
@@ -779,26 +779,44 @@ document.write(`
 <div class="dropdown admonition">
 <p class="admonition-title">Solution</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">인접한 두 집을 털면 경보 </span>
-<span class="sd">money: 각 집에 있는 돈이 담긴 배열 money 가 주어진다. </span>
-<span class="sd">return: 도둑이 훔칠 수 있는 돈의 최댓값 </span>
+<span class="sd">이 문제는 &quot;동그랗게 배치된 집 (cycle)&quot;에서 인접한 집을 털 수 없는 문제이다.</span>
 
-<span class="sd">- constraints:</span>
-<span class="sd">    - 집의 개수 3&lt;= &lt;= 1e6</span>
-<span class="sd">    - 0 &lt;= money elements &lt; 1e3 </span>
+<span class="sd">하지만 사이클을 직접 처리하기보다, 다음과 같이 두 가지 경우로 나누어 해결한다:</span>
 
-<span class="sd">- &quot;동그랗게 배치되어 있는 집&quot;: cycle </span>
-<span class="sd">- XXX: 시작과 end가 연결되어있음에 주의 (0과 len(moeny)-1는 연결)</span>
-<span class="sd">- linear DP 이지만, cycle이 있음에 유의 </span>
-<span class="sd">    - cycle을 다룰 땐, 항상 % (mod)를 사용한다.</span>
-<span class="sd">    - XXX: %로 사이클을 직접 처리하려고 하면 안된다. </span>
+<span class="sd">1. 첫 번째 집을 턴 경우</span>
+<span class="sd">   → 마지막 집은 털 수 없음</span>
+<span class="sd">   → money[0 : n-1] 구간에서 선형 DP 수행</span>
 
-<span class="sd">- dp[시작] = [해당 노드는 안전할때 max, 해당 노드가 털릴 때 max]</span>
+<span class="sd">2. 첫 번째 집을 털지 않은 경우</span>
+<span class="sd">   → 마지막 집을 털 수 있음</span>
+<span class="sd">   → money[1 : n] 구간에서 선형 DP 수행</span>
+
+<span class="sd">이렇게 두 경우를 각각 계산한 뒤, 최댓값을 선택한다.</span>
+
+<span class="sd">---</span>
+
+<span class="sd">[선형 도둑질 문제 (House Robber)]</span>
+
+<span class="sd">- state:</span>
+<span class="sd">    dp[i] = i번째 집까지 고려했을 때 훔칠 수 있는 최대 금액</span>
+
 <span class="sd">- transition:</span>
-<span class="sd">    dp[현재노드][0] = max(dp[이전집][털림], dp[이전집][안털림]) + 현재 집에 있는 돈 </span>
-<span class="sd">    dp[현재노드][1] = dp[이전집][안털림] + 현재 집에 있는 돈 </span>
+<span class="sd">    dp[i] = max(</span>
+<span class="sd">        dp[i-1],              # 현재 집을 털지 않음</span>
+<span class="sd">        dp[i-2] + money[i]    # 현재 집을 털음</span>
+<span class="sd">    )</span>
+
 <span class="sd">- base case:</span>
-<span class="sd">    dp[시작] = [0, money[시작]]</span>
+<span class="sd">    dp[0] = money[0]</span>
+<span class="sd">    dp[1] = max(money[0], money[1])</span>
+
+<span class="sd">---</span>
+
+<span class="sd">[핵심 포인트]</span>
+
+<span class="sd">- 이 문제는 &quot;사이클 DP&quot;처럼 % 연산으로 처리하는 문제가 아님</span>
+<span class="sd">- 핵심은 &quot;첫 집과 마지막 집이 동시에 선택될 수 없다&quot;는 제약</span>
+<span class="sd">- 따라서 두 개의 선형 문제로 분리하는 것이 정답 접근</span>
 <span class="sd">&#39;&#39;&#39;</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">solution</span><span class="p">(</span><span class="n">money</span><span class="p">):</span>
