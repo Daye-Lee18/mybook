@@ -161,7 +161,7 @@ DP is about `state representation`. DP works by </u>breaking a big problem into 
 How can we decide **what to store**? You should ask yourself **1. What subproblem do I need to solve repeatdly?** and **2. What result of that subproblem helps me build the next one?**. The first question deinfes the state and the next question is the value you should store. 
 
 ````{admonition} A Checklist for DP problems 
-:class: tip
+:class: dropdown
 
 1) overlapping subproblems  
 2) state (상태)
@@ -195,6 +195,19 @@ How can we decide **what to store**? You should ask yourself **1. What subproble
 5) base case 
 ````
 
+````{admonition} Length-based Interval Iteration 
+:class: tip 
+
+1. First, iterate over the length of interval
+2. Then, iterate over the start index of the interval 
+3. The end index is determined as:
+```
+end = start + length - 1 
+```
+
+![interval image](../../assets/img/DP/4.png "How to iterate over intervals (i,j) using Length-based DP")
+
+````
 Here is a handy "what to store" cheat-sheet for the most popular DP problems. each line tells you the state, what to store, and a one-line transition hint so you know why the storage works. 
 
 ### 1. Sequence / Array DP 
@@ -216,25 +229,25 @@ Here is a handy "what to store" cheat-sheet for the most popular DP problems. ea
 - Transition: `dp[n] = dp[n-1] + dp[n-2]`  
 - Reference: LC 70 (Climbing Stairs), LC 509 (Fibonacci Number)
 
-1. Maximum Subarray (Kadane)  
+2. Maximum Subarray (Kadane)  
 - State: end index `i`  
 - Store: best sum of subarray ending at `i`  
 - Transition: `dp[i] = max(a[i], dp[i-1] + a[i])`  
 - Reference: LC 53 (Maximum Subarray)
 
-1. House Robber  
+3. House Robber  
 - State: first `i` houses  
 - Store: max money using up to `i`  
 - Transition: `dp[i] = max(dp[i-1], dp[i-2] + val[i])`  
 - Reference: LC 198 (House Robber), LC 213 (House Robber II)
 
-1. Longest Increasing Subsequence (LIS)  
+4. Longest Increasing Subsequence (LIS)  
 - State: end index `i`  
 - Store: LIS length ending at `i`  
 - Transition: `dp[i] = 1 + max(dp[j]) for j<i & a[j]<a[i]`  
 - Reference: LC 300 (LIS), LC 354 (Russian Doll Envelopes)
 
-1. Partition Equal Subset / Subset Sum  
+5. Partition Equal Subset / Subset Sum  
 - State: capacity `s`  
 - Store: reachable boolean at sum `s`  
 - Transition: `dp[s] |= dp[s-w]`  
@@ -263,25 +276,25 @@ Here is a handy "what to store" cheat-sheet for the most popular DP problems. ea
 - Transition: if match: `1+dp[i-1][j-1]` else `max(dp[i-1][j], dp[i][j-1])`  
 - Reference: LC 1143 (LCS)
 
-1. Edit Distance (Levenshtein)  
+2. Edit Distance (Levenshtein)  
 - State: `(i, j)`  
 - Store: min edits to convert `A[:i]` → `B[:j]`  
 - Transition: `min(replace, insert, delete)`  
 - Reference: LC 72 (Edit Distance)
 
-1. Longest Palindromic Subsequence (LPS)  
+3. Longest Palindromic Subsequence (LPS)  
 - State: `(l, r)`  
 - Store: LPS length in `s[l..r]`  
 - Transition: if `s[l]==s[r]` → `2+dp[l+1][r-1]` else `max(dp[l+1][r], dp[l][r-1])`  
 - Reference: LC 516 (Longest Palindromic Subsequence)
 
-1. Longest Palindromic Substring  
+4. Longest Palindromic Substring  
 - State: `(l, r)`  
 - Store: palindrome boolean or length  
 - Transition: `dp[l][r] = (s[l]==s[r] && (r-l<2 || dp[l+1][r-1]))`  
 - Reference: LC 5 (Longest Palindromic Substring)
 
-1. Distinct Subsequences (count ways A→B)  
+5. Distinct Subsequences (count ways A→B)  
 - State: `(i, j)`  
 - Store: #ways `A[:i]` forms `B[:j]`  
 - Transition: `dp[i][j] = dp[i-1][j] + (A[i-1]==B[j-1] ? dp[i-1][j-1] : 0)`  
@@ -313,13 +326,13 @@ Here is a handy "what to store" cheat-sheet for the most popular DP problems. ea
 - Transition: `dp[w] = max(dp[w], dp[w-weight] + value)`  
 - Reference: LC 474 (Ones and Zeroes)
 
-1. Unbounded Knapsack / Coin Change (min coins)  
+2. Unbounded Knapsack / Coin Change (min coins)  
 - State: capacity `w`  
 - Store: min coins for `w`  
 - Transition: `dp[w] = min(dp[w], dp[w-c] + 1)`  
 - Reference: LC 322 (Coin Change)
 
-1. Coin Change (count ways)  
+3. Coin Change (count ways)  
 - State: amount `a`  
 - Store: #ways to make `a`  
 - Transition: `dp[a] += dp[a-c]`  
@@ -344,7 +357,7 @@ Here is a handy "what to store" cheat-sheet for the most popular DP problems. ea
 - Transition: `dp[i][j] = (obstacle?0 : dp[i-1][j] + dp[i][j-1])`  
 - Reference: LC 62 (Unique Paths), LC 63 (Unique Paths II)
 
-1. Minimum Path Sum  
+2. Minimum Path Sum  
 - State: `(i, j)`  
 - Store: min cost to `(i, j)`  
 - Transition: `dp[i][j] = grid[i][j] + min(dp[i-1][j], dp[i][j-1])`  
@@ -361,7 +374,7 @@ Here is a handy "what to store" cheat-sheet for the most popular DP problems. ea
 - 질문:
   1) "어디서 나누냐가 중요함?"
   2) (a+b)+c vs. a+(b+c) 다름?
-1) 
+
 ````{admonition} DP table for Interval DP
 :class: dropdown
 
@@ -371,13 +384,13 @@ Here is a handy "what to store" cheat-sheet for the most popular DP problems. ea
 - Transition: split at `k`  
 - Reference: LC 1547 (Minimum Cost to Cut a Stick)
 
-1. Burst Balloons  
+2. Burst Balloons  
 - State: `(l, r)` open interval  
 - Store: max coins from `(l, r)`  
 - Transition: pick last balloon `k`  
 - Reference: LC 312 (Burst Balloons)
 
-1. Palindrome Partitioning (min cuts)  
+3. Palindrome Partitioning (min cuts)  
 - State: prefix `i`  
 - Store: min cuts for `s[:i]`  
 - Transition: `dp[i] = min(dp[j]+1)` for palindromic `s[j:i]`  
@@ -399,13 +412,14 @@ Here is a handy "what to store" cheat-sheet for the most popular DP problems. ea
 - Transition: combine two largest child depths  
 - Reference: LC 543 (Diameter of Binary Tree), LC 124 (Binary Tree Max Path Sum)
 
-1. Maximum Independent Set on Tree  
+2. Maximum Independent Set on Tree  
 - State: `(u, take)`  
 - Store: best sum if `u` is taken or skipped  
 - Transition: if take `u`, skip children; else best of children  
 - Reference: classic Tree DP (not direct LC, but similar to LC 337 House Robber III)
 ````
-### Summary 
+
+## Summary 
 ````{admonition} Summary for DP table
 :class: important 
 
