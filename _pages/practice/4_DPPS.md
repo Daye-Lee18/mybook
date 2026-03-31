@@ -48,7 +48,7 @@ def solve(...):
   - [정수 삼각형](https://school.programmers.co.kr/learn/courses/30/lessons/43105)
   - [등굣길](https://school.programmers.co.kr/learn/courses/30/lessons/42898)
   - 🚨 [사칙연산](https://school.programmers.co.kr/learn/courses/30/lessons/1843)
-  - [도둑질](https://school.programmers.co.kr/learn/courses/30/lessons/42897)
+  - 🚨 [도둑질](https://school.programmers.co.kr/learn/courses/30/lessons/42897)
 
 - Tree DP 
   - [서브트리에 포함된 정점의 개수 세기](https://www.acmicpc.net/problem/15681): [정답](https://wikidocs.net/272872)
