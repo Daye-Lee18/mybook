@@ -1,0 +1,1674 @@
+
+<!DOCTYPE html>
+
+
+<html lang="ko" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Chapter 12. Pandas II &#8212; 말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/proof.css?v=b4b7a797" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8127ecf8" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=ae323b5b"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script src="../../_static/translations.js?v=e33e7ba0"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_pages/ds/4_pandas2';</script>
+    <script src="https://unpkg.com/jupyterquiz@1.1.8/dist/jupyterquiz.min.js"></script>
+    <link rel="icon" href="../../_static/favicon.png"/>
+    <link rel="index" title="색인" href="../../genindex.html" />
+    <link rel="search" title="검색" href="../../search.html" />
+    <link rel="next" title="문제 풀이 순서 팁 (Tips)" href="../theory/0_tips.html" />
+    <link rel="prev" title="Chapter 11. Pandas I" href="3_pandas1.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="ko"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/mylogo.png" class="logo__image only-light" alt="말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업 - Home"/>
+    <script>document.write(`<img src="../../_static/mylogo.png" class="logo__image only-dark" alt="말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업 - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="검색" aria-label="검색" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">검색</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../intro.html">
+                    Welcome to SNU LEI 한국어교육센터 IT 수업
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Python</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../basics/6_list.html">Chapter 6. 리스트</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/7_dict_tuple_set.html">Chapter 7. 딕셔너리, 튜플, 셋</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/8_functions.html">Chapter 8. 함수</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/9_variable_scope.html">Chapter 9. Variable Scope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/10_Input.html">Chapter 10. 입력</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/11_oop.html">Chapter 11. 객체 지향 프로그래밍 (OOP)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/12_oop-classes_instances_objects.html">Chapter 12. 클래스, 인스턴스, 객체</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/13_regex.html">Chapter 13. 정규표현식</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/14_decorator.html">Chapter 14. Decorator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/15_getattr.html">Chapter 15. getattr()</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/16_pickle.html">Chapter 16. Pickle</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Data Science</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="1_ds.html">Chapter 1. 데이터과학의 이해</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_numpy.html">Chapter 2. Numpy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_pandas1.html">Chapter 11. Pandas I</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Chapter 12. Pandas II</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Algorithm</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../theory/0_tips.html">문제 풀이 순서 팁 (Tips)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/1_implementation.html">Lecture 1-1. 구현</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/2_DFS_BFS.html">Lecture 2-1. DFS/BFS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/3_backtracking.html">Lecture 3-1. Backtracking</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/4_DP.html">Lecture 4-1. Dynamic Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/5_shortest_path.html">Lecture 5-1. Shortest Path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/6_sort.html">Lecture 6-1. Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/7_binarysearch.html">Lecture 7-1. Binary Search</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/8_graph.html">Lecture 8-1. Graph Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/9_greedy.html">Lecture 9-1. Greedy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/10_prefix.html">Lecture 10-1. Prefix Sum (누적 합)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/11_LinkedList.html">Lecture 11-1. Linked List</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Algorithm Exercises</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../practice/1_implementationPS.html">Lecture 1-2. 구현 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/2_DFS_BFSPS.html">Lecture 2-2. DFS/BFS 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/3_backtrackingPS.html">Lecture 3-2. Backtracking 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/4_DPPS.html">Lecture 4-2. DP 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/5_shortest_pathPS.html">Lecture 5-2. Shortest Path &amp; Heap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/6_sortPS.html">Lecture 6-2. Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/11_linked_listPS.html">Lecture 11-2. Linked List</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/12_hash_tablesPS.html">Lecture 12-2. Hash Table</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Exams</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student.html">Midterm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exams/final_student.html">Final</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="이 페이지 다운로드">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/_pages/ds/4_pandas2.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="소스 파일 다운로드"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="PDF로 인쇄"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="전체 화면으로보기"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="검색" aria-label="검색" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Chapter 12. Pandas II</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> 내용 </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">파일 입출력</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">정렬하기</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">자료형 다루기</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">누락값 처리하기</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">중복데이터 처리</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">그룹핑하기</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">시계열 데이터</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">피벗 테이블을 이용한 데이터 정리</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ai">AI코딩 활용하기</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chatgpt">ChatGPT에게 질문하기</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">코랩의 AI코딩</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#practice-1-chat-gpt">Practice-1: Chat-GPT로 서울인구데이터 활용해보기</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">연습 문제</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="chapter-12-pandas-ii">
+<h1>Chapter 12. Pandas II<a class="headerlink" href="#chapter-12-pandas-ii" title="Link to this heading">#</a></h1>
+<div class="info admonition">
+<p class="admonition-title">학습목표와 기대효과</p>
+<ul class="simple">
+<li><p>학습목표</p>
+<ul>
+<li><p>파일 입출력 방법을 익혀보자.</p></li>
+<li><p>데이터 처리에 관련된 함수를 익혀보자.</p></li>
+<li><p>ChatGPT를 활용하여 파이썬 코드를 작성해보자.</p></li>
+</ul>
+</li>
+<li><p>기대효과</p>
+<ul>
+<li><p>ChatGPT와 pandas를 활용하여 다양한 데이터 연산 및 분석에 필요한 기능을 쉽고 빠르게 코딩할 수 있다.</p></li>
+</ul>
+</li>
+</ul>
+</div>
+<section id="id1">
+<h2>파일 입출력<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-center"><p>파일 형식</p></th>
+<th class="head text-left"><p>읽기</p></th>
+<th class="head text-left"><p>쓰기</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-center"><p>MS Excel</p></td>
+<td class="text-left"><p>read_excel</p></td>
+<td class="text-left"><p>to_excel</p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p>CSV</p></td>
+<td class="text-left"><p>read_csv</p></td>
+<td class="text-left"><p>to_csv</p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p>JSON</p></td>
+<td class="text-left"><p>read_json</p></td>
+<td class="text-left"><p>to_json</p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p>HTML</p></td>
+<td class="text-left"><p>read_html</p></td>
+<td class="text-left"><p>to_html</p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p>Local clipboard</p></td>
+<td class="text-left"><p>read_clipboard</p></td>
+<td class="text-left"><p>to_clipboard</p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p>HDF5 format</p></td>
+<td class="text-left"><p>read_hdf</p></td>
+<td class="text-left"><p>to_hdf</p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p>SQL</p></td>
+<td class="text-left"><p>read_sql</p></td>
+<td class="text-left"><p>to_sql</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul class="simple">
+<li><p>csv 파일을 불러올 때</p>
+<ul>
+<li><p>pd.read_csv(‘파일명’, index_col=칼럼번호, encoding=’인코딩방법’)</p>
+<ul>
+<li><p>index_col:칼럼번호를 설정인덱스로 지정한다.</p></li>
+<li><p>usecols: 사용할 칼럼번호를 지정한다.</p></li>
+<li><p>header: 헤더(칼럼)으로 선택할 헤더를 지정한다.</p></li>
+<li><p>encoding: 한글이 깨질때에는 encoding 옵션에 ‘euc-kr’을 넣어준다.</p></li>
+<li><p>이 외에도 많은 옵션이 있다.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>excel파일을 불러올 때</p>
+<ul>
+<li><p>pd.read_excel(‘파일명’, encoding=’인코딩방법’)</p></li>
+</ul>
+</li>
+</ul>
+<div class="tip admonition">
+<p class="admonition-title">인코딩 &amp; 디코딩</p>
+<ul class="simple">
+<li><p>인코딩(encoding)는 코드화 또는 암호화로 불리우며, 문자열을 바이트코드로 변환하는 것을 의미한다.</p></li>
+<li><p>인코딩을 하는 이유는 언어마다 표준화된 규격으로 문자집합을 만들고, 이러한 문자집합을 가지고 정보의 형태 표준화, 보안, 저장 공간 절약 등의 다양한 목적으로 부호화하여 사용하기 위한 것이다.</p></li>
+<li><p>파이썬에서는 문자열을 유니코드로 처리하는데 유니코드를 utf-8, euc-kr, ascii 형식의 인코딩방식을 사용하여 바이트코드로 변환한다. 예를 들어,</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;한글&#39;</span>
+<span class="n">encoded</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Output: </span><span class="si">{</span><span class="n">encoded</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output: b’\xed\x95\x9c\xea\xb8\x80’</p>
+<ul class="simple">
+<li><p>여기서 결과로 나온 b’\xed\x95\x9c\xea\xb8\x80’가 바이트 코드이다.</p></li>
+<li><p>디코딩(decoding)은 역코드화 또는 복호화로 불리우며, 바이트코드를 문자열로 변환하는 것을 의미한다.</p></li>
+<li><p>이때 디코딩에서도 인코딩 시 사용했던 것과 동일한 인코딩 방식(utf-8, euc-kr, ascii 등)이 사용되어야 한다.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">decoded</span> <span class="o">=</span> <span class="n">encoded</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Output: </span><span class="si">{</span><span class="n">decoded</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output: 한글</p>
+</div>
+<ul class="simple">
+<li><p>파일 읽고 저장하기</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="n">scores</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">84</span><span class="p">,</span><span class="mi">87</span><span class="p">,</span><span class="mi">78</span><span class="p">],</span> <span class="p">[</span><span class="mi">21</span><span class="p">,</span><span class="mi">15</span><span class="p">,</span><span class="mi">84</span><span class="p">],</span> <span class="p">[</span><span class="mi">87</span><span class="p">,</span><span class="mi">84</span><span class="p">,</span><span class="mi">76</span><span class="p">],</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span><span class="mi">87</span><span class="p">,</span><span class="mi">99</span><span class="p">],[</span><span class="mi">59</span><span class="p">,</span><span class="mi">99</span><span class="p">,</span><span class="mi">59</span><span class="p">],[</span><span class="mi">46</span><span class="p">,</span><span class="mi">77</span><span class="p">,</span><span class="mi">56</span><span class="p">]]</span>
+<span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;철수&#39;</span><span class="p">,</span><span class="s1">&#39;영이&#39;</span><span class="p">,</span><span class="s1">&#39;길동&#39;</span><span class="p">,</span><span class="s1">&#39;미영&#39;</span><span class="p">,</span><span class="s1">&#39;순이&#39;</span><span class="p">,</span><span class="s1">&#39;철이&#39;</span><span class="p">]</span>
+<span class="n">lectures</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;국어&#39;</span><span class="p">,</span><span class="s1">&#39;수학&#39;</span><span class="p">,</span><span class="s1">&#39;영어&#39;</span><span class="p">]</span>
+<span class="n">d1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">names</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">lectures</span><span class="p">)</span>
+<span class="n">d1</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 엑셀로 저장하기</span>
+<span class="n">d1</span><span class="o">.</span><span class="n">to_excel</span><span class="p">(</span><span class="s1">&#39;sample.xlsx&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 엑셀 읽어오기</span>
+<span class="n">d2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s2">&quot;sample.xlsx&quot;</span><span class="p">)</span>
+<span class="n">d2</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>index_col 옵션은 인덱스 칼럼을 지정하여 읽어올 수 있게 해준다.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s2">&quot;sample.xlsx&quot;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">d2</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># csv로 저장하기</span>
+<span class="n">d2</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;sample.csv&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;euc-kr&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;sample.csv&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;euc-kr&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">d2</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="id2">
+<h2>정렬하기<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>sort_index()를 통해 인덱스를 기준으로 정렬한다.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d2</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>특정 칼럼명을 기준으로 정렬한다.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d2</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;국어&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="id3">
+<h2>자료형 다루기<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>.astype(자료형): 데이터의 타입을 변경한다.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d2</span> <span class="o">=</span> <span class="n">d1</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;str&#39;</span><span class="p">)</span>
+<span class="n">d2</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d2</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="id4">
+<h2>누락값 처리하기<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>누락 데이터 확인</p>
+<ul>
+<li><p>isnull(): 누락 데이터이면 True, 유효한 데이터이면 False를 반환</p></li>
+<li><p>notnull():유효한 데이터이면 True, 누락데이터이면 False를 반환</p></li>
+</ul>
+</li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">scores</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">84</span><span class="p">,</span><span class="mi">87</span><span class="p">,</span><span class="mi">78</span><span class="p">],</span> <span class="p">[</span><span class="mi">21</span><span class="p">,</span><span class="mi">15</span><span class="p">,</span><span class="mi">84</span><span class="p">],</span> <span class="p">[</span><span class="mi">87</span><span class="p">,</span><span class="mi">84</span><span class="p">,</span><span class="mi">76</span><span class="p">],</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span><span class="mi">87</span><span class="p">,</span><span class="mi">99</span><span class="p">],[</span><span class="mi">59</span><span class="p">,</span><span class="mi">99</span><span class="p">,</span><span class="mi">59</span><span class="p">],[</span><span class="mi">46</span><span class="p">,</span><span class="mi">77</span><span class="p">,</span><span class="mi">56</span><span class="p">]]</span>
+<span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;철수&#39;</span><span class="p">,</span><span class="s1">&#39;영이&#39;</span><span class="p">,</span><span class="s1">&#39;길동&#39;</span><span class="p">,</span><span class="s1">&#39;슬기&#39;</span><span class="p">,</span><span class="s1">&#39;순이&#39;</span><span class="p">,</span><span class="s1">&#39;철이&#39;</span><span class="p">]</span>
+<span class="n">lectures</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;국어&#39;</span><span class="p">,</span><span class="s1">&#39;수학&#39;</span><span class="p">,</span><span class="s1">&#39;영어&#39;</span><span class="p">]</span>
+<span class="n">d2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">names</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">lectures</span><span class="p">)</span>
+<span class="n">d2</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>d1과 d2를 더해서 일부러 누락값을 만들어서 테스트해보자.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d3</span><span class="o">=</span><span class="n">d1</span><span class="o">+</span><span class="n">d2</span>
+<span class="n">d3</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d3</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span>
+<span class="c1">#d3.notnull()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>누락데이터의 개수를 확인하려면 .isnull().sum()으로 null인 데이터의 개수를 합한다.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d3</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>누락 데이터 제거</p>
+<ul>
+<li><p>행제거: .dropna(subset=[‘열1’,’열2’] axis=0)</p>
+<ul>
+<li><p>‘열1’ 또는 ‘열2’ 중 하나라도 NaN이면 해당 행(row)을 제거</p></li>
+<li><p>생략하면 모든 열을 기준으로 NaN이 있는 행을 제거</p></li>
+<li><p>dropna는 기본적으로 행제거하는 함수</p></li>
+</ul>
+</li>
+<li><p>열제거: .dropna(axis=1)</p>
+<ul>
+<li><p>NaN이 하나라도 있는 열 전체를 제거</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d4</span><span class="o">=</span><span class="n">d3</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">d4</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>누락 데이터 치환</p>
+<ul>
+<li><p>.fillna(값)</p></li>
+</ul>
+</li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">min_kor</span> <span class="o">=</span> <span class="n">d3</span><span class="p">[</span><span class="s1">&#39;국어&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+<span class="n">d3</span><span class="p">[</span><span class="s1">&#39;국어&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">min_kor</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">d3</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="id5">
+<h2>중복데이터 처리<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>.duplicated(): 중복된 행이면 True, 아니면 False이다.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d3</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d3</span><span class="p">[</span><span class="s1">&#39;국어&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>중복행 제거:  .drop_duplicates(subset=[‘열1’, ‘열2])</p>
+<ul>
+<li><p>‘열1’과 ‘열2’ 값이 모두 같은 행들 중에서 중복을 제거함</p></li>
+</ul>
+</li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d3</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;국어&#39;</span><span class="p">,</span> <span class="s1">&#39;영어&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="id6">
+<h2>그룹핑하기<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>groupby(): 특정 열의 값을 기준으로 데이터를 그룹화하고, 각 그룹에 대해 집계(합계, 평균 등)를 적용할 수 있는 메서드</p></li>
+<li><p>groupby 결과는 인덱스가 그룹 기준으로 설정</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;학급&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;이름&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;철수&#39;</span><span class="p">,</span> <span class="s1">&#39;영희&#39;</span><span class="p">,</span> <span class="s1">&#39;민수&#39;</span><span class="p">,</span> <span class="s1">&#39;지민&#39;</span><span class="p">,</span> <span class="s1">&#39;수지&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;수학&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">90</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">85</span><span class="p">,</span> <span class="mi">95</span><span class="p">],</span>
+    <span class="s1">&#39;영어&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">85</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">82</span><span class="p">,</span> <span class="mi">88</span><span class="p">,</span> <span class="mi">90</span><span class="p">]</span>
+<span class="p">})</span>
+
+<span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;학급&#39;</span><span class="p">)[</span><span class="s1">&#39;수학&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;학급&#39;</span><span class="p">)[[</span><span class="s1">&#39;수학&#39;</span><span class="p">,</span> <span class="s1">&#39;영어&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="id7">
+<h2>시계열 데이터<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>다른 자료형을 시계열 객체로 변환</p></li>
+<li><p>to_datetime(): 문자열을 timestamp로 변환</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;1990-03-02&#39;</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;1991-08-08&#39;</span><span class="p">,</span> <span class="mi">95</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;1990-11-22&#39;</span><span class="p">,</span><span class="mi">90</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;1991-01-05&#39;</span><span class="p">,</span> <span class="mi">88</span><span class="p">]]</span>
+<span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;철수&#39;</span><span class="p">,</span><span class="s1">&#39;영이&#39;</span><span class="p">,</span><span class="s1">&#39;길동&#39;</span><span class="p">,</span><span class="s1">&#39;미영&#39;</span><span class="p">]</span>
+<span class="n">column</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;생년월일&#39;</span><span class="p">,</span><span class="s1">&#39;점수&#39;</span><span class="p">]</span>
+<span class="n">d1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">names</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">column</span><span class="p">)</span>
+<span class="n">d1</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>생년월일을 확인해보면 object 타입이다.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d1</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>object 타입의 생년월일을 시계열 데이터타입인 datetime형으로 바꿔보자.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d1</span><span class="p">[</span><span class="s1">&#39;생년월일&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">d1</span><span class="p">[</span><span class="s1">&#39;생년월일&#39;</span><span class="p">])</span>
+<span class="n">d1</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>datetime으로 변환후 확인해보면 타입이 변경된 것을 알 수 있다.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d1</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>시계열 데이터 활용</p>
+<ul>
+<li><p>날짜 데이터를 분리할 수 있다.</p></li>
+<li><p>연-월-일 정보에서 연,월,일 추출: dt.year, dt.month, dt.day를 사용</p></li>
+</ul>
+</li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d1</span><span class="p">[</span><span class="s1">&#39;년&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d1</span><span class="p">[</span><span class="s1">&#39;생년월일&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">year</span>
+<span class="n">d1</span><span class="p">[</span><span class="s1">&#39;월&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d1</span><span class="p">[</span><span class="s1">&#39;생년월일&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">month</span>
+<span class="n">d1</span><span class="p">[</span><span class="s1">&#39;일&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d1</span><span class="p">[</span><span class="s1">&#39;생년월일&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">day</span>
+<span class="n">d1</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>연-월-일 정보에서 연-월 추출: dt.to_period()를 사용</p></li>
+<li><p>df.to_period(freq=None, axis=0)</p></li>
+<li><p>freq : 원하는 시간 단위로 변환(‘Y’,’M’,’D’, ‘W’)</p></li>
+<li><p>axis : 변환할 기준 축</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d1</span><span class="p">[</span><span class="s1">&#39;년월&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d1</span><span class="p">[</span><span class="s1">&#39;생년월일&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">to_period</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="s1">&#39;M&#39;</span><span class="p">)</span>
+<span class="n">d1</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>날짜 인덱스 활용</p>
+<ul>
+<li><p>set_index(칼럼명): 칼럼을 인덱스로 만든다.</p></li>
+</ul>
+</li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d2</span> <span class="o">=</span> <span class="n">d1</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;생년월일&#39;</span><span class="p">)</span>
+<span class="n">d2</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d2</span><span class="p">[</span><span class="n">d2</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">year</span> <span class="o">==</span> <span class="mi">1990</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;1990&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">today</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="s1">&#39;2025-05-20&#39;</span><span class="p">)</span>
+<span class="n">today</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d2</span><span class="p">[</span><span class="s1">&#39;날짜_차이&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">today</span><span class="o">-</span><span class="n">d2</span><span class="o">.</span><span class="n">index</span>
+<span class="n">d2</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="id8">
+<h2>피벗 테이블을 이용한 데이터 정리<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>피벗(pivot): 농구 등에서, 한 발을 붙인 채 남은 한 발을 이리 저리 돌려 방향을 바꾸는 것 의미가 확장되어 분야를 막론하고 ‘방향을 바꾼다’라는 의미. 사전적으로 ‘축을 중심으로 회전하다’ 또는 ‘중심축’이라는 의미</p></li>
+<li><p>피벗 테이블: 데이터를 요약하고 분석하는 데 사용하는 테이블</p></li>
+<li><p>원시 데이터를 한눈에 볼 수 있도록 재구성하고, 필요에 따라 특정 변수에 따라 데이터를 그룹화하거나 집계할 수 있음</p></li>
+<li><p>.pivot_table(df, index=인덱스리스트, values=값리스트)</p></li>
+</ul>
+<ul class="simple">
+<li><p>salesfunnel.xlsx: 판매 거래 데이터</p>
+<ul>
+<li><p>Account: 거래를 진행한 고객의 계정 번호</p></li>
+<li><p>Name: 고객의 이름</p></li>
+<li><p>Rep: 거래를 진행한 판매 대표</p></li>
+<li><p>Manager: 판매 대표를 관리하는 매니저</p></li>
+<li><p>Product: 거래된 제품</p></li>
+<li><p>Quantity: 거래된 제품의 수량</p></li>
+<li><p>Price: 제품 단가</p></li>
+<li><p>Status: 거래의 상태 (presented, pending, declined 등)</p></li>
+</ul>
+</li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/HaesunByun/common/main/data/salesfunnel.xlsx&#39;</span><span class="p">)</span>
+<span class="n">df</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html">
+  <div id="df-57ea1448-2c50-46f7-b8e3-af88ecf6d551" class="colab-df-container">
+    <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Account</th>
+      <th>Name</th>
+      <th>Rep</th>
+      <th>Manager</th>
+      <th>Product</th>
+      <th>Quantity</th>
+      <th>Price</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>714466</td>
+      <td>Trantow-Barrows</td>
+      <td>Craig Booker</td>
+      <td>Debra Henley</td>
+      <td>CPU</td>
+      <td>1</td>
+      <td>30000</td>
+      <td>presented</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>714466</td>
+      <td>Trantow-Barrows</td>
+      <td>Craig Booker</td>
+      <td>Debra Henley</td>
+      <td>Software</td>
+      <td>1</td>
+      <td>10000</td>
+      <td>presented</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>714466</td>
+      <td>Trantow-Barrows</td>
+      <td>Craig Booker</td>
+      <td>Debra Henley</td>
+      <td>Maintenance</td>
+      <td>2</td>
+      <td>5000</td>
+      <td>pending</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>737550</td>
+      <td>Fritsch, Russel and Anderson</td>
+      <td>Craig Booker</td>
+      <td>Debra Henley</td>
+      <td>CPU</td>
+      <td>1</td>
+      <td>35000</td>
+      <td>declined</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>146832</td>
+      <td>Kiehn-Spinka</td>
+      <td>Daniel Hilton</td>
+      <td>Debra Henley</td>
+      <td>CPU</td>
+      <td>2</td>
+      <td>65000</td>
+      <td>won</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>218895</td>
+      <td>Kulas Inc</td>
+      <td>Daniel Hilton</td>
+      <td>Debra Henley</td>
+      <td>CPU</td>
+      <td>2</td>
+      <td>40000</td>
+      <td>pending</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>218895</td>
+      <td>Kulas Inc</td>
+      <td>Daniel Hilton</td>
+      <td>Debra Henley</td>
+      <td>Software</td>
+      <td>1</td>
+      <td>10000</td>
+      <td>presented</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>412290</td>
+      <td>Jerde-Hilpert</td>
+      <td>John Smith</td>
+      <td>Debra Henley</td>
+      <td>Maintenance</td>
+      <td>2</td>
+      <td>5000</td>
+      <td>pending</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>740150</td>
+      <td>Barton LLC</td>
+      <td>John Smith</td>
+      <td>Debra Henley</td>
+      <td>CPU</td>
+      <td>1</td>
+      <td>35000</td>
+      <td>declined</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>141962</td>
+      <td>Herman LLC</td>
+      <td>Cedric Moss</td>
+      <td>Fred Anderson</td>
+      <td>CPU</td>
+      <td>2</td>
+      <td>65000</td>
+      <td>won</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>163416</td>
+      <td>Purdy-Kunde</td>
+      <td>Cedric Moss</td>
+      <td>Fred Anderson</td>
+      <td>CPU</td>
+      <td>1</td>
+      <td>30000</td>
+      <td>presented</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>239344</td>
+      <td>Stokes LLC</td>
+      <td>Cedric Moss</td>
+      <td>Fred Anderson</td>
+      <td>Maintenance</td>
+      <td>1</td>
+      <td>5000</td>
+      <td>pending</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>239344</td>
+      <td>Stokes LLC</td>
+      <td>Cedric Moss</td>
+      <td>Fred Anderson</td>
+      <td>Software</td>
+      <td>1</td>
+      <td>10000</td>
+      <td>presented</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>307599</td>
+      <td>Kassulke, Ondricka and Metz</td>
+      <td>Wendy Yule</td>
+      <td>Fred Anderson</td>
+      <td>Maintenance</td>
+      <td>3</td>
+      <td>7000</td>
+      <td>won</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>688981</td>
+      <td>Keeling LLC</td>
+      <td>Wendy Yule</td>
+      <td>Fred Anderson</td>
+      <td>CPU</td>
+      <td>5</td>
+      <td>100000</td>
+      <td>won</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>729833</td>
+      <td>Koepp Ltd</td>
+      <td>Wendy Yule</td>
+      <td>Fred Anderson</td>
+      <td>CPU</td>
+      <td>2</td>
+      <td>65000</td>
+      <td>declined</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>729833</td>
+      <td>Koepp Ltd</td>
+      <td>Wendy Yule</td>
+      <td>Fred Anderson</td>
+      <td>Monitor</td>
+      <td>2</td>
+      <td>5000</td>
+      <td>presented</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+    <div class="colab-df-buttons">
+
+  <div class="colab-df-container">
+    <button class="colab-df-convert" onclick="convertToInteractive('df-57ea1448-2c50-46f7-b8e3-af88ecf6d551')"
+            title="Convert this dataframe to an interactive table."
+            style="display:none;">
+
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960">
+    <path d="M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z"/>
+  </svg>
+    </button>
+
+  <style>
+    .colab-df-container {
+      display:flex;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    .colab-df-buttons div {
+      margin-bottom: 4px;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+    <script>
+      const buttonEl =
+        document.querySelector('#df-57ea1448-2c50-46f7-b8e3-af88ecf6d551 button.colab-df-convert');
+      buttonEl.style.display =
+        google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+      async function convertToInteractive(key) {
+        const element = document.querySelector('#df-57ea1448-2c50-46f7-b8e3-af88ecf6d551');
+        const dataTable =
+          await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                    [key], {});
+        if (!dataTable) return;
+
+        const docLinkHtml = 'Like what you see? Visit the ' +
+          '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+          + ' to learn more about interactive tables.';
+        element.innerHTML = '';
+        dataTable['output_type'] = 'display_data';
+        await google.colab.output.renderOutput(dataTable, element);
+        const docLink = document.createElement('div');
+        docLink.innerHTML = docLinkHtml;
+        element.appendChild(docLink);
+      }
+    </script>
+  </div>
+
+
+    <div id="df-1ef60763-9cdc-4e90-9c53-d52937adc425">
+      <button class="colab-df-quickchart" onclick="quickchart('df-1ef60763-9cdc-4e90-9c53-d52937adc425')"
+                title="Suggest charts"
+                style="display:none;">
+
+<svg xmlns="http://www.w3.org/2000/svg" height="24px"viewBox="0 0 24 24"
+     width="24px">
+    <g>
+        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+    </g>
+</svg>
+      </button>
+
+<style>
+  .colab-df-quickchart {
+      --bg-color: #E8F0FE;
+      --fill-color: #1967D2;
+      --hover-bg-color: #E2EBFA;
+      --hover-fill-color: #174EA6;
+      --disabled-fill-color: #AAA;
+      --disabled-bg-color: #DDD;
+  }
+
+  [theme=dark] .colab-df-quickchart {
+      --bg-color: #3B4455;
+      --fill-color: #D2E3FC;
+      --hover-bg-color: #434B5C;
+      --hover-fill-color: #FFFFFF;
+      --disabled-bg-color: #3B4455;
+      --disabled-fill-color: #666;
+  }
+
+  .colab-df-quickchart {
+    background-color: var(--bg-color);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: none;
+    fill: var(--fill-color);
+    height: 32px;
+    padding: 0;
+    width: 32px;
+  }
+
+  .colab-df-quickchart:hover {
+    background-color: var(--hover-bg-color);
+    box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+    fill: var(--button-hover-fill-color);
+  }
+
+  .colab-df-quickchart-complete:disabled,
+  .colab-df-quickchart-complete:disabled:hover {
+    background-color: var(--disabled-bg-color);
+    fill: var(--disabled-fill-color);
+    box-shadow: none;
+  }
+
+  .colab-df-spinner {
+    border: 2px solid var(--fill-color);
+    border-color: transparent;
+    border-bottom-color: var(--fill-color);
+    animation:
+      spin 1s steps(1) infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      border-color: transparent;
+      border-bottom-color: var(--fill-color);
+      border-left-color: var(--fill-color);
+    }
+    20% {
+      border-color: transparent;
+      border-left-color: var(--fill-color);
+      border-top-color: var(--fill-color);
+    }
+    30% {
+      border-color: transparent;
+      border-left-color: var(--fill-color);
+      border-top-color: var(--fill-color);
+      border-right-color: var(--fill-color);
+    }
+    40% {
+      border-color: transparent;
+      border-right-color: var(--fill-color);
+      border-top-color: var(--fill-color);
+    }
+    60% {
+      border-color: transparent;
+      border-right-color: var(--fill-color);
+    }
+    80% {
+      border-color: transparent;
+      border-right-color: var(--fill-color);
+      border-bottom-color: var(--fill-color);
+    }
+    90% {
+      border-color: transparent;
+      border-bottom-color: var(--fill-color);
+    }
+  }
+</style>
+
+      <script>
+        async function quickchart(key) {
+          const quickchartButtonEl =
+            document.querySelector('#' + key + ' button');
+          quickchartButtonEl.disabled = true;  // To prevent multiple clicks.
+          quickchartButtonEl.classList.add('colab-df-spinner');
+          try {
+            const charts = await google.colab.kernel.invokeFunction(
+                'suggestCharts', [key], {});
+          } catch (error) {
+            console.error('Error during call to suggestCharts:', error);
+          }
+          quickchartButtonEl.classList.remove('colab-df-spinner');
+          quickchartButtonEl.classList.add('colab-df-quickchart-complete');
+        }
+        (() => {
+          let quickchartButtonEl =
+            document.querySelector('#df-1ef60763-9cdc-4e90-9c53-d52937adc425 button');
+          quickchartButtonEl.style.display =
+            google.colab.kernel.accessAllowed ? 'block' : 'none';
+        })();
+      </script>
+    </div>
+
+  <div id="id_f38660d2-39a6-4e85-a995-7a2792dca443">
+    <style>
+      .colab-df-generate {
+        background-color: #E8F0FE;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        display: none;
+        fill: #1967D2;
+        height: 32px;
+        padding: 0 0 0 0;
+        width: 32px;
+      }
+
+      .colab-df-generate:hover {
+        background-color: #E2EBFA;
+        box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+        fill: #174EA6;
+      }
+
+      [theme=dark] .colab-df-generate {
+        background-color: #3B4455;
+        fill: #D2E3FC;
+      }
+
+      [theme=dark] .colab-df-generate:hover {
+        background-color: #434B5C;
+        box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+        filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+        fill: #FFFFFF;
+      }
+    </style>
+    <button class="colab-df-generate" onclick="generateWithVariable('df')"
+            title="Generate code using this dataframe."
+            style="display:none;">
+
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px"viewBox="0 0 24 24"
+       width="24px">
+    <path d="M7,19H8.4L18.45,9,17,7.55,7,17.6ZM5,21V16.75L18.45,3.32a2,2,0,0,1,2.83,0l1.4,1.43a1.91,1.91,0,0,1,.58,1.4,1.91,1.91,0,0,1-.58,1.4L9.25,21ZM18.45,9,17,7.55Zm-12,3A5.31,5.31,0,0,0,4.9,8.1,5.31,5.31,0,0,0,1,6.5,5.31,5.31,0,0,0,4.9,4.9,5.31,5.31,0,0,0,6.5,1,5.31,5.31,0,0,0,8.1,4.9,5.31,5.31,0,0,0,12,6.5,5.46,5.46,0,0,0,6.5,12Z"/>
+  </svg>
+    </button>
+    <script>
+      (() => {
+      const buttonEl =
+        document.querySelector('#id_f38660d2-39a6-4e85-a995-7a2792dca443 button.colab-df-generate');
+      buttonEl.style.display =
+        google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+      buttonEl.onclick = () => {
+        google.colab.notebook.generateWithVariable('df');
+      }
+      })();
+    </script>
+  </div>
+
+    </div>
+  </div>
+</div></div>
+</div>
+<ul class="simple">
+<li><p>index는 그룹핑할 열의 이름이다.</p></li>
+<li><p>아래 예제에서는 Manager와 Rep를 index로 하여 그룹핑하며, 그룹핑할 values는 ‘price’이다.</p></li>
+<li><p>value를 pivot_table로 합친 경우 디폴트로 평균치로 계산된다.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Manager&#39;</span><span class="p">,</span> <span class="s1">&#39;Rep&#39;</span><span class="p">],</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Price&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>value의 값을 합산으로 하고 싶을 때 aggfunc옵션에 sum함수의 이름을 쓴다.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Manager&#39;</span><span class="p">,</span> <span class="s1">&#39;Rep&#39;</span><span class="p">],</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Price&#39;</span><span class="p">],</span> <span class="n">aggfunc</span><span class="o">=</span><span class="s1">&#39;sum&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="ai">
+<h2>AI코딩 활용하기<a class="headerlink" href="#ai" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>ChatGPT(Generative Pre-trained Transformer)는 미국의 AI 연구재단 OpenAI가 2022년 11월 공개한 초거대 언어모델 GPT-3.5 기반 대화형 인공지능 챗봇이다.</p></li>
+<li><p>Generative(생성형), Pre-trained(미리 학습된) Transformer(변환기)</p></li>
+<li><p>현재 Chat GPT 홈페이지(<a class="reference external" href="https://chat.openai.com/chat">https://chat.openai.com/chat</a>) 에서 누구나 가입 후 사용 가능하다.</p></li>
+<li><p>사용자가 채팅 하듯 질문을 입력하면 ChatGPT는 학습한 데이터를 기반으로 ‘사람처럼’ 문장을 만들어 답을 해준다.</p></li>
+<li><p>마치 진짜 사람과 대화하는 것처럼 자연스럽게 질문과 답변을 주고받을 수 있다.</p></li>
+<li><p>단순 정보 짜깁기뿐 아니라 에세이・소설・시 등 다양한 창작물, 심지어 프로그래밍 코드까지 생성한다는 점에서 화제가 되고 있다.</p></li>
+</ul>
+<p>출시일</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>2022.11 — ChatGPT 출시 (GPT-3.5 기반)
+2023.02 — ChatGPT Plus 유료 요금제 도입
+2023.03 — GPT-4 모델 공개 (Plus 사용자에 한해 제공)
+2024.05 — GPT-4o(Omni) 출시: 멀티모달 지원 (텍스트·음성·이미지)
+2025.02 — GPT-4.5 출시 (코드명: Orion)
+2025.04 — o3, o4-mini 모델 출시
+2025.05 — GPT-4.1 및 GPT-4.1 mini 출시
+</pre></div>
+</div>
+<div align="center"><img src="https://haesunbyun.github.io/common/images/chatGPT_logo.png" width="300"></div>
+<p>ChatGPT</p>
+<p><a class="reference external" href="https://chatgpt.com/">https://chatgpt.com/</a></p>
+<section id="chatgpt">
+<h3>ChatGPT에게 질문하기<a class="headerlink" href="#chatgpt" title="Link to this heading">#</a></h3>
+<p>Q. ChatGPT에게 질문해보세요.</p>
+<ul class="simple">
+<li><p>ChatGPT란 뭐야?</p></li>
+<li><p>인공지능에 대한 시를 작성해줘</p></li>
+<li><p>ChatGPT 활용 분야를 알려줘</p></li>
+<li><p>Chat GPT는 접속이 원활한 시간이 언제야?</p></li>
+<li><p>Chat GPT 유료와 무료의 차이를 설명해줘</p></li>
+<li><p>세상에서 가장 아름다운 곳은?</p></li>
+<li><p>세익스피어 작품에 대해 가르쳐 줘</p></li>
+</ul>
+</section>
+<section id="id9">
+<h3>코랩의 AI코딩<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>코랩에서도 AI로 코드를 생성할 수 있다. 설정(톱니바퀴) &gt; AI 지원</p>
+<ul>
+<li><p>☑ AI 기반 인라인 완성 표시, ☑ 생성형 AI 기능 사용에 동의했습니다.</p></li>
+</ul>
+</li>
+</ul>
+<div align="center"><img src="https://haesunbyun.github.io/common/images/AIcoding.PNG" width=400>
+</div>
+</section>
+<section id="practice-1-chat-gpt">
+<h3>Practice-1: Chat-GPT로 서울인구데이터 활용해보기<a class="headerlink" href="#practice-1-chat-gpt" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>데이터 다운로드 사이트 : <a class="reference external" href="https://data.seoul.go.kr/">https://data.seoul.go.kr/</a></p></li>
+<li><p>검색어: 서울시 자치구별 인구수</p></li>
+<li><p>목표:</p>
+<ul>
+<li><p>각 구별 한국인의 비율 구하기</p></li>
+<li><p>각 구별 외국인의 비율 구하기</p></li>
+<li><p>각 구별 고령자의 비율 구하기</p></li>
+<li><p>인구수가 적은 순서대로 5개 구 출력하기</p></li>
+<li><p>외국인 수 내림차순 정렬하기</p></li>
+<li><p>고령자 비율 오름차순 정렬하기</p></li>
+<li><p>인구수가 가장 많은 자치구와 인구수 최대값 구하기</p></li>
+<li><p>인구수가 가장 적은 자치구와 인구수 최소값 구하기</p></li>
+<li><p>인구수와 고령자수 간의 상관 관계 구하기</p></li>
+</ul>
+</li>
+</ul>
+<p>😄 필요한 칼럼만 불러와서 데이타프레임 생성하기</p>
+<ul class="simple">
+<li><p>다운로드한 파일을 열어서 아래의 옵션에 사용할 칼럼을 살펴본다.</p></li>
+<li><p>header: 칼럼 이름 지정</p></li>
+<li><p>index_col: index로 지정할 칼럼 지정</p></li>
+<li><p>use_cols: 사용할 칼럼 지정</p></li>
+</ul>
+<p>😄 데이타프레임 칼럼명 변경하기</p>
+<p>😄 데이타프레임 인덱스 설정하기</p>
+<p>😄 불필요한 행 삭제하기</p>
+<p>😄 값 구하기</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">각</span> <span class="n">구별</span> <span class="n">한국인의</span> <span class="n">비율</span> <span class="n">구하기</span>
+<span class="n">각</span> <span class="n">구별</span> <span class="n">외국인의</span> <span class="n">비율</span> <span class="n">구하기</span>
+<span class="n">각</span> <span class="n">구별</span> <span class="n">고령자의</span> <span class="n">비율</span> <span class="n">구하기</span>
+</pre></div>
+</div>
+<p>😄 값에 따라 정렬하기</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">인구수가</span> <span class="n">적은</span> <span class="n">순서대로</span> <span class="mi">5</span><span class="n">개</span> <span class="n">구</span> <span class="n">출력하기</span>
+<span class="o">-</span> <span class="n">외국인</span> <span class="n">수</span> <span class="n">내림차순</span> <span class="n">정렬하기</span>
+<span class="o">-</span> <span class="n">고령자</span> <span class="n">비율</span> <span class="n">오름차순</span> <span class="n">정렬하기</span>
+</pre></div>
+</div>
+<p>😄 데이타프레임 필요한 통계내기</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">인구수가</span> <span class="n">가장</span> <span class="n">많은</span> <span class="n">자치구와</span> <span class="n">인구수</span> <span class="n">최대값</span> <span class="n">구하기</span>
+<span class="o">-</span> <span class="n">인구수가</span> <span class="n">가장</span> <span class="n">적은</span> <span class="n">자치구와</span> <span class="n">인구수</span> <span class="n">최소값</span> <span class="n">구하기</span>
+<span class="o">-</span> <span class="n">인구수와</span> <span class="n">고령자수</span> <span class="n">간의</span> <span class="n">상관</span> <span class="n">관계</span> <span class="n">구하기</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id10">
+<h2>연습 문제<a class="headerlink" href="#id10" title="Link to this heading">#</a></h2>
+<p>참고: <a class="reference external" href="https://colab.research.google.com/github/daye-lee18/mybook/blob/main/_pages/ds/assignments/pandas2_prac.ipynb">(연습) pandas 2</a></p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./_pages/ds"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="3_pandas1.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">이전</p>
+        <p class="prev-next-title">Chapter 11. Pandas I</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../theory/0_tips.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">다음</p>
+        <p class="prev-next-title">문제 풀이 순서 팁 (Tips)</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> 내용
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">파일 입출력</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">정렬하기</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">자료형 다루기</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">누락값 처리하기</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">중복데이터 처리</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">그룹핑하기</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">시계열 데이터</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">피벗 테이블을 이용한 데이터 정리</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ai">AI코딩 활용하기</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chatgpt">ChatGPT에게 질문하기</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">코랩의 AI코딩</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#practice-1-chat-gpt">Practice-1: Chat-GPT로 서울인구데이터 활용해보기</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">연습 문제</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+으로 Daye Lee
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
