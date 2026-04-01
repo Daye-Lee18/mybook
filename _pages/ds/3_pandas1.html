@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Chapter 11. Pandas I &#8212; 말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업</title>
+    <title>Chapter 3. Pandas I &#8212; 말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업</title>
   
   
   
@@ -65,7 +65,7 @@
     <link rel="icon" href="../../_static/favicon.png"/>
     <link rel="index" title="색인" href="../../genindex.html" />
     <link rel="search" title="검색" href="../../search.html" />
-    <link rel="next" title="Chapter 12. Pandas II" href="4_pandas2.html" />
+    <link rel="next" title="Chapter 4. Pandas II" href="4_pandas2.html" />
     <link rel="prev" title="Chapter 2. Numpy" href="2_numpy.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ko"/>
@@ -202,8 +202,8 @@
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="1_ds.html">Chapter 1. 데이터과학의 이해</a></li>
 <li class="toctree-l1"><a class="reference internal" href="2_numpy.html">Chapter 2. Numpy</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Chapter 11. Pandas I</a></li>
-<li class="toctree-l1"><a class="reference internal" href="4_pandas2.html">Chapter 12. Pandas II</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Chapter 3. Pandas I</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_pandas2.html">Chapter 4. Pandas II</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Algorithm</span></p>
 <ul class="nav bd-sidenav">
@@ -373,7 +373,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Chapter 11. Pandas I</h1>
+    <h1>Chapter 3. Pandas I</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -403,10 +403,11 @@ document.write(`
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">데이터프레임 행/열 추가</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">데이터프레임 정렬</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">데이터프레임 그룹화</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">마무리</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">연습문제</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">마무리</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">연습문제</a></li>
 </ul>
             </nav>
         </div>
@@ -418,8 +419,8 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="chapter-11-pandas-i">
-<h1>Chapter 11. Pandas I<a class="headerlink" href="#chapter-11-pandas-i" title="Link to this heading">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="chapter-3-pandas-i">
+<h1>Chapter 3. Pandas I<a class="headerlink" href="#chapter-3-pandas-i" title="Link to this heading">#</a></h1>
 <div class="info admonition">
 <p class="admonition-title">학습목표와 기대효과</p>
 <ul class="simple">
@@ -1125,9 +1126,19 @@ document.write(`
 </div>
 </div>
 </section>
-</section>
 <section id="id13">
-<h2>마무리<a class="headerlink" href="#id13" title="Link to this heading">#</a></h2>
+<h3>데이터프레임 그룹화<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;수학&#39;</span><span class="p">,</span> <span class="s1">&#39;영어&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="id14">
+<h2>마무리<a class="headerlink" href="#id14" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p>pandas는 파이썬에서 사용하는 데이터 분석 라이브러리이다.</p></li>
 <li><p>Pandas는 Series와 DataFrame이라는 자료구조를 제공한다.</p></li>
@@ -1137,8 +1148,8 @@ document.write(`
 <li><p>iloc를 이용한 행열선택 : 데이터프레임명.iloc[index번호, column번호]</p></li>
 </ul>
 </section>
-<section id="id14">
-<h2>연습문제<a class="headerlink" href="#id14" title="Link to this heading">#</a></h2>
+<section id="id15">
+<h2>연습문제<a class="headerlink" href="#id15" title="Link to this heading">#</a></h2>
 <p>참고: <a class="reference external" href="https://colab.research.google.com/github/daye-lee18/mybook/blob/main/_pages/ds/assignments/pandas_prac.ipynb">(연습) Pandas1</a></p>
 </section>
 </section>
@@ -1187,7 +1198,7 @@ document.write(`
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">다음</p>
-        <p class="prev-next-title">Chapter 12. Pandas II</p>
+        <p class="prev-next-title">Chapter 4. Pandas II</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1227,10 +1238,11 @@ document.write(`
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">데이터프레임 행/열 추가</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">데이터프레임 정렬</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">데이터프레임 그룹화</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">마무리</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">연습문제</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">마무리</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">연습문제</a></li>
 </ul>
   </nav></div>
 
