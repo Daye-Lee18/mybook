@@ -65,7 +65,7 @@
     <link rel="icon" href="../../_static/favicon.png"/>
     <link rel="index" title="색인" href="../../genindex.html" />
     <link rel="search" title="검색" href="../../search.html" />
-    <link rel="next" title="Chapter 13. Visualization" href="5_visualization.html" />
+    <link rel="next" title="Chapter 5. Visualization" href="5_visualization.html" />
     <link rel="prev" title="Chapter 3. Pandas I" href="3_pandas1.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="ko"/>
@@ -204,7 +204,7 @@
 <li class="toctree-l1"><a class="reference internal" href="2_numpy.html">Chapter 2. Numpy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="3_pandas1.html">Chapter 3. Pandas I</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Chapter 4. Pandas II</a></li>
-<li class="toctree-l1"><a class="reference internal" href="5_visualization.html">Chapter 13. Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_visualization.html">Chapter 5. Visualization</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Algorithm</span></p>
 <ul class="nav bd-sidenav">
@@ -657,6 +657,15 @@ document.write(`
 </pre></div>
 </div>
 </div>
+</div>
+<div class="dropdown admonition">
+<p class="admonition-title">d3 = d1 + d2</p>
+<p>pandas에서 <code class="docutils literal notranslate"><span class="pre">DataFrame</span> <span class="pre">+</span> <span class="pre">DataFrame</span></code> 연산은 같은 인덱스와 같은 컬럼이 모두 있을 때만 계산됩니다. 둘 중 하나라도 없으면 <code class="docutils literal notranslate"><span class="pre">NaN</span></code>이 됩니다.
+위 예시에서 미영이와 슬기는 각각 하나의 DataFrame에만 존재하므로 결과가 <code class="docutils literal notranslate"><span class="pre">NaN</span></code>으로 나타납니다.</p>
+<p>참고로, 없는 값을 0으로 처리하고 싶다면,</p>
+<p>d3 = d1.add(d2, fill_value=0)</p>
+<p>을 하시면 됩니다.
+또한 공통된 부분만 계산하고 싶다면 inner join을 생각할 수 있습니다.</p>
 </div>
 <ul class="simple">
 <li><p>누락데이터의 개수를 확인하려면 .isnull().sum()으로 null인 데이터의 개수를 합한다.</p></li>
@@ -1590,7 +1599,7 @@ document.write(`
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">다음</p>
-        <p class="prev-next-title">Chapter 13. Visualization</p>
+        <p class="prev-next-title">Chapter 5. Visualization</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
