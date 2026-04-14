@@ -1,0 +1,13 @@
+project:
+  type: default
+  output-dir: _quarto_output
+
+format:
+  html:
+    toc: true
+    theme: cosmo
+    embed-resources: true   # single self-contained HTML file (no asset folders)
+
+execute:
+  echo: false
+  warning: false

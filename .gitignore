@@ -2,6 +2,10 @@
 _build/
 .jupyter_cache/
 
+# --- Quarto build artifacts ---
+_quarto_output/
+.quarto/
+
 # Jupyter/Notebook
 **/.ipynb_checkpoints/
 

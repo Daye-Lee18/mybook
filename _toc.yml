@@ -58,6 +58,6 @@ parts:
 
 - caption: Exams 
   chapters:
+  - file: _pages/exams/midterm_student_2026_1st_sol.md
   - file: _pages/exams/midterm_student
   - file: _pages/exams/final_student
-
