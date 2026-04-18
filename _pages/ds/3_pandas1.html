@@ -204,7 +204,7 @@
 <li class="toctree-l1"><a class="reference internal" href="2_numpy.html">Chapter 2. Numpy</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Chapter 3. Pandas I</a></li>
 <li class="toctree-l1"><a class="reference internal" href="4_pandas2.html">Chapter 4. Pandas II</a></li>
-<li class="toctree-l1"><a class="reference internal" href="5_visualization.html">Chapter 13. Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_visualization.html">Chapter 5. Visualization</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Algorithm</span></p>
 <ul class="nav bd-sidenav">
@@ -234,7 +234,8 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Exams</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student.html">Midterm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student_2026_1st_sol.html">Midterm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student.html">Midterm (2025 3rd semester)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../exams/final_student.html">Final</a></li>
 </ul>
 
@@ -391,24 +392,25 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">시리즈 슬라이싱</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">시리즈 데이터 추가, 수정, 삭제</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">시리즈 비교연산과 필터링</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">시리즈 중복값 처리</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataframe">DataFrame</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">데이타프레임 생성</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">데이터프레임 확인</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">데이터프레임 인덱싱과 슬라이싱</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">데이타프레임 생성</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">데이터프레임 확인</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">데이터프레임 인덱싱과 슬라이싱</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#iloc">.iloc[]</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#loc">.loc[]</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">데이터프레임명</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">데이터프레임명</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">데이터프레임 행/열 추가</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">데이터프레임 정렬</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">데이터프레임 그룹화</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">데이터프레임 행/열 추가</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">데이터프레임 정렬</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">데이터프레임 그룹화</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">마무리</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">연습문제</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">마무리</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">연습문제</a></li>
 </ul>
             </nav>
         </div>
@@ -720,13 +722,18 @@ document.write(`
 </div>
 </div>
 </section>
+<section id="id7">
+<h3>시리즈 중복값 처리<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<p>Series.unique()가 존재한다. 후에 배울 DataFrame에는 unique() method가 없으므로 DataFrame[‘column_name’].unique()로 numpy.ndarary (배열)을 반환받을 수 있다.</p>
+<p>참고로, DataFrame.nunique()는 각 컬럼의 unique 개수 (Series)가 반환된다.</p>
+</section>
 </section>
 <section id="dataframe">
 <h2>DataFrame<a class="headerlink" href="#dataframe" title="Link to this heading">#</a></h2>
 <p>DataFrame은 행과 열로 이루어진 2차원 형태의 배열이다.
 이때 한 개의 열(칼럼)은 하나의 시리즈이며, DataFrame은 시리즈들의 묶음이다.</p>
-<section id="id7">
-<h3>데이타프레임 생성<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<section id="id8">
+<h3>데이타프레임 생성<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>데이타프레임 생성 형식은 다음과 같다.</p></li>
 </ul>
@@ -838,8 +845,8 @@ document.write(`
 </div>
 </div>
 </section>
-<section id="id8">
-<h3>데이터프레임 확인<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<section id="id9">
+<h3>데이터프레임 확인<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>데이터프레임의 정보를 확인하기 위해 다음과 같은 변수 또는 메서드를 사용한다.</p>
 <ul>
@@ -882,8 +889,8 @@ document.write(`
 </div>
 </div>
 </section>
-<section id="id9">
-<h3>데이터프레임 인덱싱과 슬라이싱<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<section id="id10">
+<h3>데이터프레임 인덱싱과 슬라이싱<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>데이터 추출은 df.iloc[ ], df.loc[ ], df[열][행] 세 가지 방법으로 추출할 수 있다.</p></li>
 <li><p>행을 추출할 때는 df.iloc[] 또는 df.loc[]를 사용하는 것이 편리하며, 열을 추출할 때는 df[열] 방식이 간단하다.</p></li>
@@ -987,8 +994,8 @@ document.write(`
 </div>
 </div>
 </section>
-<section id="id10">
-<h4>데이터프레임명<a class="headerlink" href="#id10" title="Link to this heading">#</a></h4>
+<section id="id11">
+<h4>데이터프레임명<a class="headerlink" href="#id11" title="Link to this heading">#</a></h4>
 <ul class="simple">
 <li><p>데이터프레임명만 사용하여 추출하는 방법이 조금 복잡하다.</p></li>
 </ul>
@@ -1051,8 +1058,8 @@ document.write(`
 </div>
 </section>
 </section>
-<section id="id11">
-<h3>데이터프레임 행/열 추가<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<section id="id12">
+<h3>데이터프레임 행/열 추가<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>‘컴기’ 열을 추가해보자.</p></li>
 <li><p>‘컴기’라는 칼럼이 없으면 추가되고, 있으면 업데이트 된다.</p></li>
@@ -1110,8 +1117,8 @@ document.write(`
 </div>
 </div>
 </section>
-<section id="id12">
-<h3>데이터프레임 정렬<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
+<section id="id13">
+<h3>데이터프레임 정렬<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;국어&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -1127,8 +1134,8 @@ document.write(`
 </div>
 </div>
 </section>
-<section id="id13">
-<h3>데이터프레임 그룹화<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
+<section id="id14">
+<h3>데이터프레임 그룹화<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;수학&#39;</span><span class="p">,</span> <span class="s1">&#39;영어&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
@@ -1138,8 +1145,8 @@ document.write(`
 </div>
 </section>
 </section>
-<section id="id14">
-<h2>마무리<a class="headerlink" href="#id14" title="Link to this heading">#</a></h2>
+<section id="id15">
+<h2>마무리<a class="headerlink" href="#id15" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p>pandas는 파이썬에서 사용하는 데이터 분석 라이브러리이다.</p></li>
 <li><p>Pandas는 Series와 DataFrame이라는 자료구조를 제공한다.</p></li>
@@ -1149,8 +1156,8 @@ document.write(`
 <li><p>iloc를 이용한 행열선택 : 데이터프레임명.iloc[index번호, column번호]</p></li>
 </ul>
 </section>
-<section id="id15">
-<h2>연습문제<a class="headerlink" href="#id15" title="Link to this heading">#</a></h2>
+<section id="id16">
+<h2>연습문제<a class="headerlink" href="#id16" title="Link to this heading">#</a></h2>
 <p>참고: <a class="reference external" href="https://colab.research.google.com/github/daye-lee18/mybook/blob/main/_pages/ds/assignments/pandas_prac.ipynb">(연습) Pandas1</a></p>
 </section>
 </section>
@@ -1226,24 +1233,25 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">시리즈 슬라이싱</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">시리즈 데이터 추가, 수정, 삭제</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">시리즈 비교연산과 필터링</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">시리즈 중복값 처리</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataframe">DataFrame</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">데이타프레임 생성</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">데이터프레임 확인</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">데이터프레임 인덱싱과 슬라이싱</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">데이타프레임 생성</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">데이터프레임 확인</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">데이터프레임 인덱싱과 슬라이싱</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#iloc">.iloc[]</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#loc">.loc[]</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">데이터프레임명</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">데이터프레임명</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">데이터프레임 행/열 추가</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">데이터프레임 정렬</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">데이터프레임 그룹화</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">데이터프레임 행/열 추가</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">데이터프레임 정렬</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">데이터프레임 그룹화</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">마무리</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">연습문제</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">마무리</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">연습문제</a></li>
 </ul>
   </nav></div>
 

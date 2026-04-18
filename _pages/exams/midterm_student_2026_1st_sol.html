@@ -1,0 +1,1017 @@
+
+<!DOCTYPE html>
+
+
+<html lang="ko" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Midterm (2026 1st semester) &#8212; 말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/proof.css?v=b4b7a797" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8127ecf8" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=ae323b5b"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script src="../../_static/translations.js?v=e33e7ba0"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_pages/exams/midterm_student_2026_1st_sol';</script>
+    <script src="https://unpkg.com/jupyterquiz@1.1.8/dist/jupyterquiz.min.js"></script>
+    <link rel="icon" href="../../_static/favicon.png"/>
+    <link rel="index" title="색인" href="../../genindex.html" />
+    <link rel="search" title="검색" href="../../search.html" />
+    <link rel="next" title="Midterm (2025 3rd semester)" href="midterm_student.html" />
+    <link rel="prev" title="Lecture 12-2. Hash Table" href="../practice/12_hash_tablesPS.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="ko"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/mylogo.png" class="logo__image only-light" alt="말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업 - Home"/>
+    <script>document.write(`<img src="../../_static/mylogo.png" class="logo__image only-dark" alt="말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업 - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="검색" aria-label="검색" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">검색</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../intro.html">
+                    Welcome to SNU LEI 한국어교육센터 IT 수업
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Python</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../basics/6_list.html">Chapter 6. 리스트</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/7_dict_tuple_set.html">Chapter 7. 딕셔너리, 튜플, 셋</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/8_functions.html">Chapter 8. 함수</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/9_variable_scope.html">Chapter 9. Variable Scope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/10_Input.html">Chapter 10. 입력</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/11_oop.html">Chapter 11. 객체 지향 프로그래밍 (OOP)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/12_oop-classes_instances_objects.html">Chapter 12. 클래스, 인스턴스, 객체</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/13_regex.html">Chapter 13. 정규표현식</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/14_decorator.html">Chapter 14. Decorator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/15_getattr.html">Chapter 15. getattr()</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/16_pickle.html">Chapter 16. Pickle</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Data Science</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../ds/1_ds.html">Chapter 1. 데이터과학의 이해</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/2_numpy.html">Chapter 2. Numpy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/3_pandas1.html">Chapter 3. Pandas I</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/4_pandas2.html">Chapter 4. Pandas II</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/5_visualization.html">Chapter 5. Visualization</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Algorithm</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../theory/0_tips.html">문제 풀이 순서 팁 (Tips)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/1_implementation.html">Lecture 1-1. 구현</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/2_DFS_BFS.html">Lecture 2-1. DFS/BFS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/3_backtracking.html">Lecture 3-1. Backtracking</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/4_DP.html">Lecture 4-1. Dynamic Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/5_shortest_path.html">Lecture 5-1. Shortest Path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/6_sort.html">Lecture 6-1. Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/7_binarysearch.html">Lecture 7-1. Binary Search</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/8_graph.html">Lecture 8-1. Graph Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/9_greedy.html">Lecture 9-1. Greedy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/10_prefix.html">Lecture 10-1. Prefix Sum (누적 합)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/11_LinkedList.html">Lecture 11-1. Linked List</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Algorithm Exercises</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../practice/1_implementationPS.html">Lecture 1-2. 구현 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/2_DFS_BFSPS.html">Lecture 2-2. DFS/BFS 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/3_backtrackingPS.html">Lecture 3-2. Backtracking 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/4_DPPS.html">Lecture 4-2. DP 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/5_shortest_pathPS.html">Lecture 5-2. Shortest Path &amp; Heap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/6_sortPS.html">Lecture 6-2. Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/11_linked_listPS.html">Lecture 11-2. Linked List</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/12_hash_tablesPS.html">Lecture 12-2. Hash Table</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Exams</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Midterm (2026 1st semester)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="midterm_student.html">Midterm (2025 3rd semester)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="final_student.html">Final (2025 3rd Semester)</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="이 페이지 다운로드">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/_pages/exams/midterm_student_2026_1st_sol.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="소스 파일 다운로드"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="PDF로 인쇄"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="전체 화면으로보기"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="검색" aria-label="검색" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Midterm (2026 1st semester)</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> 내용 </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#short-answer-problems">Short answer problems</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q1-list-indexing-and-nested-list-access">Q1. List indexing and nested list access</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q2-list-slicing-and-direction">Q2. List slicing and direction</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q3-list-methods-and-return-values">Q3. List methods and return values</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q4-shallow-copy-of-list">Q4. Shallow copy of list</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q5-dictionary-access-and-safe-lookup">Q5. Dictionary access and safe lookup</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q6-dictionary-update-vs-insertion">Q6. Dictionary update vs insertion</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q7-tuple-vs-list">Q7. Tuple vs list</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q8-set-properties">Q8. Set properties</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q9-default-parameter-and-multiple-return-values">Q9. Default parameter and multiple return values</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q10-return-and-early-exit">Q10. Return and early exit</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q11-packing-with-asterisk">Q11. Packing with asterisk</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q12-variable-scope">Q12. Variable scope</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q13-missing-value-handling">Q13. Missing value handling</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q14-numpy-array-vs-list">Q14. Numpy array vs list</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q15-numpy-indexing-and-slicing">Q15. Numpy indexing and slicing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q16-pandas-series-slicing">Q16. Pandas Series slicing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q17-dataframe-selection-iloc-vs-loc">Q17. DataFrame selection: <code class="docutils literal notranslate"><span class="pre">iloc</span></code> vs <code class="docutils literal notranslate"><span class="pre">loc</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q18-missing-values-after-dataframe-addition">Q18. Missing values after DataFrame addition</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q19-groupby-and-aggregation">Q19. Groupby and aggregation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q20-datetime-conversion-and-extraction">Q20. Datetime conversion and extraction</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="midterm-2026-1st-semester">
+<h1>Midterm (2026 1st semester)<a class="headerlink" href="#midterm-2026-1st-semester" title="Link to this heading">#</a></h1>
+<section id="short-answer-problems">
+<h2>Short answer problems<a class="headerlink" href="#short-answer-problems" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>For each question below, fill in the blanks labeled <code class="docutils literal notranslate"><span class="pre">(1)</span></code>, <code class="docutils literal notranslate"><span class="pre">(2)</span></code>, <code class="docutils literal notranslate"><span class="pre">(3)</span></code>, …, or briefly write the requested result.</p></li>
+<li><p>Record all short-answer responses on your own answer sheet, clearly numbered to match the questions.</p></li>
+<li><p>Each correctly completed blank is worth 2 points unless otherwise noted.</p></li>
+<li><p>Assume Python 3 syntax.</p></li>
+</ul>
+<section id="q1-list-indexing-and-nested-list-access">
+<h3>Q1. List indexing and nested list access<a class="headerlink" href="#q1-list-indexing-and-nested-list-access" title="Link to this heading">#</a></h3>
+<p>Consider the following code.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">]],</span> <span class="s1">&#39;F&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Fill in the blanks so that the code prints <code class="docutils literal notranslate"><span class="pre">E</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">[(</span><span class="mi">1</span><span class="p">)][(</span><span class="mi">2</span><span class="p">)][(</span><span class="mi">3</span><span class="p">)])</span>
+</pre></div>
+</div>
+<div class="{.callout-note docutils">
+<p>A1. <br>
+(1) 1 <br>
+(2) 2 <br>
+(3) 1 <br></p>
+</div>
+</section>
+<section id="q2-list-slicing-and-direction">
+<h3>Q2. List slicing and direction<a class="headerlink" href="#q2-list-slicing-and-direction" title="Link to this heading">#</a></h3>
+<p>Consider the following code.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">70</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">5</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Fill in the blanks.</p>
+<ul class="simple">
+<li><p>The first print result is (1).</p></li>
+<li><p>The second print result is (2), because (3) and (4) do not match.</p></li>
+</ul>
+<div class="{.callout-note docutils">
+<p>A2. <br>
+(1) [60, 40] <br>
+(2) [] <br>
+(3) start/end direction <br>
+(4) step direction <br></p>
+</div>
+</section>
+<section id="q3-list-methods-and-return-values">
+<h3>Q3. List methods and return values<a class="headerlink" href="#q3-list-methods-and-return-values" title="Link to this heading">#</a></h3>
+<p>Consider the following code.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">nums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">nums</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+<span class="n">b</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">nums</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Fill in the blanks.</p>
+<ul class="simple">
+<li><p>After the code runs, <code class="docutils literal notranslate"><span class="pre">nums</span></code> is (1).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">a</span></code> is (2).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">b</span></code> is (3).</p></li>
+<li><p>The reason <code class="docutils literal notranslate"><span class="pre">a</span></code> is not a sorted list is that <code class="docutils literal notranslate"><span class="pre">list.sort()</span></code> sorts the list (4).</p></li>
+</ul>
+<div class="{.callout-note docutils">
+<p>A3. <br>
+(1) [1, 2, 3] <br>
+(2) None <br>
+(3) [3, 2, 1] <br>
+(4) in-place <br></p>
+</div>
+</section>
+<section id="q4-shallow-copy-of-list">
+<h3>Q4. Shallow copy of list<a class="headerlink" href="#q4-shallow-copy-of-list" title="Link to this heading">#</a></h3>
+<p>Consider the following code.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">origin</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]]</span>
+<span class="n">copied</span> <span class="o">=</span> <span class="n">origin</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">copied</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span>
+</pre></div>
+</div>
+<p>Fill in the blanks.</p>
+<ul class="simple">
+<li><p>After execution, <code class="docutils literal notranslate"><span class="pre">origin</span></code> becomes (1).</p></li>
+<li><p>This happens because <code class="docutils literal notranslate"><span class="pre">copy()</span></code> performs a (2) copy, so the nested list is still (3).</p></li>
+</ul>
+<div class="{.callout-note docutils">
+<p>A4. <br>
+(1) [1, 2, [100, 4]] <br>
+(2) shallow <br>
+(3) shared / referenced by both lists <br></p>
+</div>
+</section>
+<section id="q5-dictionary-access-and-safe-lookup">
+<h3>Q5. Dictionary access and safe lookup<a class="headerlink" href="#q5-dictionary-access-and-safe-lookup" title="Link to this heading">#</a></h3>
+<p>Consider the following code.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">scores</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;철수&#39;</span><span class="p">:</span> <span class="mi">90</span><span class="p">,</span> <span class="s1">&#39;영희&#39;</span><span class="p">:</span> <span class="mi">85</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>Fill in the blanks.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">scores['민수']</span></code> causes a (1).</p></li>
+<li><p>To avoid an error and receive <code class="docutils literal notranslate"><span class="pre">None</span></code> when the key does not exist, use (2).</p></li>
+<li><p>If you want to check existence first, use the operator (3).</p></li>
+</ul>
+<div class="{.callout-note docutils">
+<p>A5. <br>
+(1) KeyError <br>
+(2) scores.get(‘민수’) <br>
+(3) in <br></p>
+</div>
+</section>
+<section id="q6-dictionary-update-vs-insertion">
+<h3>Q6. Dictionary update vs insertion<a class="headerlink" href="#q6-dictionary-update-vs-insertion" title="Link to this heading">#</a></h3>
+<p>Consider the following code.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fruit</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;apple&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;banana&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
+<span class="n">fruit</span><span class="p">[</span><span class="s1">&#39;banana&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">fruit</span><span class="p">[</span><span class="s1">&#39;grape&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">4</span>
+</pre></div>
+</div>
+<p>Fill in the blanks.</p>
+<ul class="simple">
+<li><p>After execution, <code class="docutils literal notranslate"><span class="pre">fruit['banana']</span></code> is (1).</p></li>
+<li><p>Key <code class="docutils literal notranslate"><span class="pre">'grape'</span></code> is (2).</p></li>
+<li><p>The statement <code class="docutils literal notranslate"><span class="pre">dict[key]</span> <span class="pre">=</span> <span class="pre">value</span></code> does (3) if the key exists, and does (4) if the key does not exist.</p></li>
+</ul>
+<div class="{.callout-note docutils">
+<p>A6. <br>
+(1) 10 <br>
+(2) added / inserted <br>
+(3) update / modify <br>
+(4) insertion / addition <br></p>
+</div>
+</section>
+<section id="q7-tuple-vs-list">
+<h3>Q7. Tuple vs list<a class="headerlink" href="#q7-tuple-vs-list" title="Link to this heading">#</a></h3>
+<p>State True or False.</p>
+<p>(1) A tuple can be used to store values that should not be modified.<br />
+(2) A tuple supports <code class="docutils literal notranslate"><span class="pre">append()</span></code> just like a list.<br />
+(3) To make a one-element tuple, a trailing comma is needed.<br />
+(4) A tuple is immutable.</p>
+<div class="{.callout-note docutils">
+<p>A7. <br>
+(1) True <br>
+(2) False <br>
+(3) True <br>
+(4) True <br></p>
+</div>
+</section>
+<section id="q8-set-properties">
+<h3>Q8. Set properties<a class="headerlink" href="#q8-set-properties" title="Link to this heading">#</a></h3>
+<p>Consider the following code.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">s</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;apple&#39;</span><span class="p">,</span> <span class="s1">&#39;banana&#39;</span><span class="p">,</span> <span class="s1">&#39;apple&#39;</span><span class="p">,</span> <span class="s1">&#39;kiwi&#39;</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>Fill in the blanks.</p>
+<ul class="simple">
+<li><p>The number of elements in <code class="docutils literal notranslate"><span class="pre">s</span></code> is (1).</p></li>
+<li><p>A set removes (2) values automatically.</p></li>
+<li><p>A set does not support indexing because it has no (3).</p></li>
+</ul>
+<div class="{.callout-note docutils">
+<p>A8. <br>
+(1) 3 <br>
+(2) duplicate <br>
+(3) order / index <br></p>
+</div>
+</section>
+<section id="q9-default-parameter-and-multiple-return-values">
+<h3>Q9. Default parameter and multiple return values<a class="headerlink" href="#q9-default-parameter-and-multiple-return-values" title="Link to this heading">#</a></h3>
+<p>Consider the following code.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">calc</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
+    <span class="k">return</span> <span class="n">total</span><span class="p">,</span> <span class="n">total</span> <span class="o">*</span> <span class="mi">2</span>
+
+<span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">calc</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">calc</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Fill in the blanks.</p>
+<ul class="simple">
+<li><p>After <code class="docutils literal notranslate"><span class="pre">a,</span> <span class="pre">b</span> <span class="pre">=</span> <span class="pre">calc(3)</span></code>, <code class="docutils literal notranslate"><span class="pre">a</span></code> is (1) and <code class="docutils literal notranslate"><span class="pre">b</span></code> is (2).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">c</span></code> is of type (3), with value (4).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y=5</span></code> in the function definition is a (5), which is used when no corresponding argument is provided by the caller.</p></li>
+</ul>
+<div class="{.callout-note docutils">
+<p>A9. <br>
+(1) 8 <br>
+(2) 16 <br>
+(3) tuple <br>
+(4) (10, 20) <br>
+(5) default parameter (기본값 매개변수) <br></p>
+</div>
+</section>
+<section id="q10-return-and-early-exit">
+<h3>Q10. Return and early exit<a class="headerlink" href="#q10-return-and-early-exit" title="Link to this heading">#</a></h3>
+<p>Consider the following code.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">2</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Fill in the blanks.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">f(3)</span></code> returns (1).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">f(0)</span></code> prints (2) and returns (3).</p></li>
+<li><p>The line <code class="docutils literal notranslate"><span class="pre">print('B')</span></code> is never executed because <code class="docutils literal notranslate"><span class="pre">return</span></code> makes the function (4).</p></li>
+</ul>
+<div class="{.callout-note docutils">
+<p>A10. <br>
+(1) 6 <br>
+(2) A <br>
+(3) -1 <br>
+(4) exit / terminate immediately <br></p>
+</div>
+</section>
+<section id="q11-packing-with-asterisk">
+<h3>Q11. Packing with asterisk<a class="headerlink" href="#q11-packing-with-asterisk" title="Link to this heading">#</a></h3>
+<p>Consider the following code.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">mydata</span><span class="p">(</span><span class="o">*</span><span class="n">values</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">values</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">mydata</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Fill in the blanks.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">result</span></code> is stored as a (1) type.</p></li>
+<li><p>Its value is (2).</p></li>
+<li><p>In a function parameter, <code class="docutils literal notranslate"><span class="pre">*</span></code> plays the role of (3) multiple arguments into one tuple.</p></li>
+</ul>
+<div class="{.callout-note docutils">
+<p>A11. <br>
+(1) tuple <br>
+(2) (10, 20, 30) <br>
+(3) packing <br></p>
+</div>
+</section>
+<section id="q12-variable-scope">
+<h3>Q12. Variable scope<a class="headerlink" href="#q12-variable-scope" title="Link to this heading">#</a></h3>
+<p>Consider the following code.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">balance</span> <span class="o">=</span> <span class="mi">100</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">deposit</span><span class="p">():</span>
+    <span class="n">balance</span> <span class="o">=</span> <span class="mi">50</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">balance</span><span class="p">)</span>
+
+<span class="n">deposit</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">balance</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Fill in the blanks.</p>
+<ul class="simple">
+<li><p>The first printed value is (1).</p></li>
+<li><p>The second printed value is (2).</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">balance</span></code> inside <code class="docutils literal notranslate"><span class="pre">deposit()</span></code> is a (3) variable.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">balance</span></code> outside the function is a (4) variable.</p></li>
+</ul>
+<div class="{.callout-note docutils">
+<p>A12. <br>
+(1) 50 <br>
+(2) 100 <br>
+(3) local <br>
+(4) global <br></p>
+</div>
+</section>
+<section id="q13-missing-value-handling">
+<h3>Q13. Missing value handling<a class="headerlink" href="#q13-missing-value-handling" title="Link to this heading">#</a></h3>
+<p>Consider the following code.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;이름&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;철수&#39;</span><span class="p">,</span> <span class="s1">&#39;영희&#39;</span><span class="p">,</span> <span class="s1">&#39;민수&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;수학&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">85</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">72</span><span class="p">],</span>
+    <span class="s1">&#39;영어&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">90</span><span class="p">,</span> <span class="mi">88</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+<p>Fill in the blanks.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">df.isnull().sum().sum()</span></code> returns (1).</p></li>
+<li><p>To remove all rows that contain at least one NaN value, use (2).</p></li>
+<li><p>To replace all NaN values in <code class="docutils literal notranslate"><span class="pre">df['수학']</span></code> with <code class="docutils literal notranslate"><span class="pre">0</span></code>, use (3).</p></li>
+<li><p>To sort <code class="docutils literal notranslate"><span class="pre">df</span></code> by <code class="docutils literal notranslate"><span class="pre">수학</span></code> in descending order, use (4).</p></li>
+</ul>
+<div class="{.callout-note docutils">
+<p>A13. <br>
+(1) 2 <br>
+(2) df.dropna() <br>
+(3) df[‘수학’] = df[‘수학’].fillna(0) <br>
+(4) df.sort_values(by=’수학’, ascending=False) <br></p>
+</div>
+</section>
+<section id="q14-numpy-array-vs-list">
+<h3>Q14. Numpy array vs list<a class="headerlink" href="#q14-numpy-array-vs-list" title="Link to this heading">#</a></h3>
+<p>State True or False.</p>
+<p>(1) A numpy array usually stores elements of the same data type.<br />
+(2) For <code class="docutils literal notranslate"><span class="pre">arr</span> <span class="pre">=</span> <span class="pre">np.array([1,2,3])</span></code>, <code class="docutils literal notranslate"><span class="pre">arr</span> <span class="pre">*</span> <span class="pre">2</span></code> repeats the array like a Python list.<br />
+(3) Vectorized operations are one reason numpy is faster than Python lists for large numeric computation.<br />
+(4) <code class="docutils literal notranslate"><span class="pre">['a',</span> <span class="pre">'b']</span> <span class="pre">*</span> <span class="pre">2</span></code> and <code class="docutils literal notranslate"><span class="pre">np.array([1,2])</span> <span class="pre">*</span> <span class="pre">2</span></code> behave in exactly the same way.</p>
+<div class="{.callout-note docutils">
+<p>A14. <br>
+(1) True <br>
+(2) False <br>
+(3) True <br>
+(4) False <br></p>
+</div>
+</section>
+<section id="q15-numpy-indexing-and-slicing">
+<h3>Q15. Numpy indexing and slicing<a class="headerlink" href="#q15-numpy-indexing-and-slicing" title="Link to this heading">#</a></h3>
+<p>Consider the following code.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">ar</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="mi">1</span><span class="p">:][</span><span class="mi">1</span><span class="p">:])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ar</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="mi">1</span><span class="p">:])</span>
+</pre></div>
+</div>
+<p>Fill in the blanks.</p>
+<ul class="simple">
+<li><p>The first result has shape (1).</p></li>
+<li><p>The second result has shape (2).</p></li>
+<li><p>These results are different because <code class="docutils literal notranslate"><span class="pre">ar[1:][1:]</span></code> applies slicing (3), while <code class="docutils literal notranslate"><span class="pre">ar[1:,</span> <span class="pre">1:]</span></code> slices the original array by (4) and (5) at the same time.</p></li>
+</ul>
+<div class="{.callout-note docutils">
+<p>A15. <br>
+(1) (1, 4) <br>
+(2) (2, 3) <br>
+(3) sequentially / in two steps <br>
+(4) rows <br>
+(5) columns <br></p>
+</div>
+</section>
+<section id="q16-pandas-series-slicing">
+<h3>Q16. Pandas Series slicing<a class="headerlink" href="#q16-pandas-series-slicing" title="Link to this heading">#</a></h3>
+<p>Consider the following code.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">s</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">:</span><span class="s1">&#39;c&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Fill in the blanks.</p>
+<ul class="simple">
+<li><p>Label-based slicing in a Series includes the (1) label.</p></li>
+<li><p>Therefore the printed values are (2) and (3).</p></li>
+</ul>
+<div class="{.callout-note docutils">
+<p>A16. <br>
+(1) end / last <br>
+(2) 20 <br>
+(3) 30 <br></p>
+</div>
+</section>
+<section id="q17-dataframe-selection-iloc-vs-loc">
+<h3>Q17. DataFrame selection: <code class="docutils literal notranslate"><span class="pre">iloc</span></code> vs <code class="docutils literal notranslate"><span class="pre">loc</span></code><a class="headerlink" href="#q17-dataframe-selection-iloc-vs-loc" title="Link to this heading">#</a></h3>
+<p>Consider the following code.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">[[</span><span class="mi">90</span><span class="p">,</span> <span class="mi">80</span><span class="p">],</span> <span class="p">[</span><span class="mi">70</span><span class="p">,</span> <span class="mi">60</span><span class="p">],</span> <span class="p">[</span><span class="mi">50</span><span class="p">,</span> <span class="mi">40</span><span class="p">]],</span>
+    <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;철수&#39;</span><span class="p">,</span> <span class="s1">&#39;영희&#39;</span><span class="p">,</span> <span class="s1">&#39;민수&#39;</span><span class="p">],</span>
+    <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;수학&#39;</span><span class="p">,</span> <span class="s1">&#39;영어&#39;</span><span class="p">]</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Fill in the blanks.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">df.iloc[1,</span> <span class="pre">0]</span></code> returns (1).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">df.loc['영희',</span> <span class="pre">'수학']</span></code> returns (2).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">iloc</span></code> uses (3)-based indexing, while <code class="docutils literal notranslate"><span class="pre">loc</span></code> uses (4)-based indexing.</p></li>
+</ul>
+<div class="{.callout-note docutils">
+<p>A17. <br>
+(1) 70 <br>
+(2) 70 <br>
+(3) position <br>
+(4) label <br></p>
+</div>
+</section>
+<section id="q18-missing-values-after-dataframe-addition">
+<h3>Q18. Missing values after DataFrame addition<a class="headerlink" href="#q18-missing-values-after-dataframe-addition" title="Link to this heading">#</a></h3>
+<p>Consider the following code.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">d1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;국어&#39;</span><span class="p">:[</span><span class="mi">80</span><span class="p">,</span> <span class="mi">90</span><span class="p">]},</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;철수&#39;</span><span class="p">,</span> <span class="s1">&#39;영희&#39;</span><span class="p">])</span>
+<span class="n">d2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;국어&#39;</span><span class="p">:[</span><span class="mi">70</span><span class="p">,</span> <span class="mi">60</span><span class="p">]},</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;영희&#39;</span><span class="p">,</span> <span class="s1">&#39;민수&#39;</span><span class="p">])</span>
+<span class="n">d3</span> <span class="o">=</span> <span class="n">d1</span> <span class="o">+</span> <span class="n">d2</span>
+</pre></div>
+</div>
+<p>Fill in the blanks.</p>
+<ul class="simple">
+<li><p>In <code class="docutils literal notranslate"><span class="pre">d3</span></code>, the row for <code class="docutils literal notranslate"><span class="pre">'영희'</span></code> becomes (1).</p></li>
+<li><p>The row for <code class="docutils literal notranslate"><span class="pre">'철수'</span></code> becomes (2).</p></li>
+<li><p>The row for <code class="docutils literal notranslate"><span class="pre">'민수'</span></code> becomes (3).</p></li>
+<li><p>This is because pandas aligns data by matching (4) and (5) before calculation.</p></li>
+</ul>
+<div class="{.callout-note docutils">
+<p>A18. <br>
+(1) 160 <br>
+(2) NaN <br>
+(3) NaN <br>
+(4) index <br>
+(5) column labels <br></p>
+</div>
+</section>
+<section id="q19-groupby-and-aggregation">
+<h3>Q19. Groupby and aggregation<a class="headerlink" href="#q19-groupby-and-aggregation" title="Link to this heading">#</a></h3>
+<p>Consider the following code.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;학급&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;수학&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">90</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">60</span><span class="p">]</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+<p>Fill in the blanks.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">df.groupby('학급')['수학'].mean()</span></code> computes the (1) of <code class="docutils literal notranslate"><span class="pre">수학</span></code> for each (2).</p></li>
+<li><p>For class <code class="docutils literal notranslate"><span class="pre">A</span></code>, the result is (3).</p></li>
+<li><p>For class <code class="docutils literal notranslate"><span class="pre">B</span></code>, the result is (4).</p></li>
+</ul>
+<div class="{.callout-note docutils">
+<p>A19. <br>
+(1) mean / average <br>
+(2) group / class <br>
+(3) 230/3 ≈ 76.67 <br>
+(4) 85 <br></p>
+</div>
+</section>
+<section id="q20-datetime-conversion-and-extraction">
+<h3>Q20. Datetime conversion and extraction<a class="headerlink" href="#q20-datetime-conversion-and-extraction" title="Link to this heading">#</a></h3>
+<p>Consider the following code.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;생년월일&#39;</span><span class="p">:[</span><span class="s1">&#39;1990-03-02&#39;</span><span class="p">,</span> <span class="s1">&#39;1991-08-08&#39;</span><span class="p">]})</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;생년월일&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;생년월일&#39;</span><span class="p">])</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;년&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;생년월일&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">year</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;월&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;생년월일&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">month</span>
+</pre></div>
+</div>
+<p>Fill in the blanks.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pd.to_datetime()</span></code> converts text data into (1) type.</p></li>
+<li><p>The values in column <code class="docutils literal notranslate"><span class="pre">년</span></code> are (2).</p></li>
+<li><p>The values in column <code class="docutils literal notranslate"><span class="pre">월</span></code> are (3).</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">.dt</span></code> accessor is used to extract (4) information from datetime data.</p></li>
+</ul>
+<div class="{.callout-note docutils">
+<p>A20. <br>
+(1) datetime <br>
+(2) 1990, 1991 <br>
+(3) 3, 8 <br>
+(4) date / time component <br></p>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./_pages/exams"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../practice/12_hash_tablesPS.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">이전</p>
+        <p class="prev-next-title">Lecture 12-2. Hash Table</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="midterm_student.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">다음</p>
+        <p class="prev-next-title">Midterm (2025 3rd semester)</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> 내용
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#short-answer-problems">Short answer problems</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q1-list-indexing-and-nested-list-access">Q1. List indexing and nested list access</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q2-list-slicing-and-direction">Q2. List slicing and direction</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q3-list-methods-and-return-values">Q3. List methods and return values</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q4-shallow-copy-of-list">Q4. Shallow copy of list</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q5-dictionary-access-and-safe-lookup">Q5. Dictionary access and safe lookup</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q6-dictionary-update-vs-insertion">Q6. Dictionary update vs insertion</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q7-tuple-vs-list">Q7. Tuple vs list</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q8-set-properties">Q8. Set properties</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q9-default-parameter-and-multiple-return-values">Q9. Default parameter and multiple return values</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q10-return-and-early-exit">Q10. Return and early exit</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q11-packing-with-asterisk">Q11. Packing with asterisk</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q12-variable-scope">Q12. Variable scope</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q13-missing-value-handling">Q13. Missing value handling</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q14-numpy-array-vs-list">Q14. Numpy array vs list</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q15-numpy-indexing-and-slicing">Q15. Numpy indexing and slicing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q16-pandas-series-slicing">Q16. Pandas Series slicing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q17-dataframe-selection-iloc-vs-loc">Q17. DataFrame selection: <code class="docutils literal notranslate"><span class="pre">iloc</span></code> vs <code class="docutils literal notranslate"><span class="pre">loc</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q18-missing-values-after-dataframe-addition">Q18. Missing values after DataFrame addition</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q19-groupby-and-aggregation">Q19. Groupby and aggregation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#q20-datetime-conversion-and-extraction">Q20. Datetime conversion and extraction</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+으로 Daye Lee
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
