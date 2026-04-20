@@ -206,7 +206,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../ds/2_numpy.html">Chapter 2. Numpy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ds/3_pandas1.html">Chapter 3. Pandas I</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ds/4_pandas2.html">Chapter 4. Pandas II</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ds/5_visualization.html">Chapter 5. Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/5_EDA.html">Chapter 5. EDA (탐색적 데이터 분석)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/6_0_Viz.html">Chapter 6. 데이터 시각화 (Visualization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/6_1_Viz_practice.html">Chapter 7. Visualization Practice — 파라미터 실험</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/7_Analysis.html">Chapter 5. 데이터 분석하기</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Algorithm</span></p>
 <ul class="nav bd-sidenav">
@@ -236,9 +239,9 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Exams</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student_2026_1st_sol.html">Midterm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student_2026_1st_sol.html">Midterm (2026 1st semester)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student.html">Midterm (2025 3rd semester)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exams/final_student.html">Final</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exams/final_student.html">Final (2025 3rd Semester)</a></li>
 </ul>
 
     </div>
@@ -2003,9 +2006,9 @@ warriors_graph: dict[tuple(int, int), list[int]] defaultdict(list) # warriors_gr
 <div class="dropdown admonition">
 <p class="admonition-title">메두사의 시야각</p>
 <p>특정 전사에 의해 메두사에게 가려지는 범위는 메두사와 해당 전사의 상대적인 위치에 의해 결정된다. 상하좌우 대각선 8방향을 나누었을 때, 메두사로부터 8방향 중 한 방향에 전사가 위치해있다면, 그 전사가 “동일한 방향으로 바라본 범위”에 포함된 모든 칸은 메두사에게 보이지 않습니다.</p>
-<p><img alt="" src="../../_images/145.png" /></p>
+<p><img alt="" src="../../_images/14.png" /></p>
 <p>또한, 메두사의 전체 시야각을 계산할 때, 아래와 같은 상황이 있으므로, 순차적으로 메두사의 전체 시야각을 1로 지정한뒤, 전사들의 시야각을 바라보는 “방향”에 맞춰 0으로 제거해주는 것이 포인트가 된다.</p>
-<p><img alt="" src="../../_images/155.png" /></p>
+<p><img alt="" src="../../_images/15.png" /></p>
 </div>
 <div class="dropdown admonition">
 <p class="admonition-title">Solution</p>
@@ -2560,11 +2563,11 @@ Answer:
 </ol>
 </li>
 </ol>
-<p><img alt="" src="../../_images/174.png" /></p>
+<p><img alt="" src="../../_images/17.png" /></p>
 <ol class="arabic simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">find_next_cell()</span></code> 시간의 벽 (3M x 3M )그래프에서 4방향 말고, 변끼리 닿는 격자끼리 이동할 수 있도록 해야함.</p></li>
 </ol>
-<p><img alt="" src="../../_images/165.png" /></p>
+<p><img alt="" src="../../_images/16.png" /></p>
 <ol class="arabic simple" start="6">
 <li><p><code class="docutils literal notranslate"><span class="pre">debug()</span></code> : test case에서 잘못 된 경우, 디버깅을 한 후 코드 제출할 때 debug() 실행만 지워서 편하게 코드 제출할 수 있도록 print() 명령들을 모아놓음.</p></li>
 </ol>
@@ -3156,7 +3159,7 @@ Answer:
 </div>
 <div class="dropdown admonition">
 <p class="admonition-title">graph의 확장</p>
-<p><img alt="3-1" src="../../_images/11.png" /></p>
+<p><img alt="3-1" src="../../_images/18.png" /></p>
 <p>In the beginning, the golem may extend up to <code class="docutils literal notranslate"><span class="pre">3</span> <span class="pre">cells</span></code> above the forest. To handle this, we add 3 buffer rows at the top of the grid. These buffer rows are not part of the forest but provide enough room for the golem to move and settle safely.</p>
 </div>
 <div class="dropdown admonition">
@@ -3399,7 +3402,7 @@ Answer:
 <li><p><strong>Visited</strong>: 물체 (Robot)이 차지하는 셀이 한 개 초과 즉, 이경우에는 board에 표시하면 memory가 초과되기 때문에 visited={} set으로 방문 여부를 체크해주면 좋다.</p></li>
 <li><p><strong>Normalization</strong>: 상태 정규화(순서 고정)도 존재해야한다. 즉, (y,x,t,v)와 (t,v,y,x)는 같은 로봇 상태인데, visited가 다르게 취급해 중복 상태 폭증하며 시간도 초과된다. 매번 (a,b) 두 좌표를 정렬해서 (small,big)로 저장하거나, frozenset({pos1,pos2})로 관리해야 한다. 즉, 정규화를 통해 (P1, P2) 중 작은 것이 앞에 오도록하여 같은 위치에 있는 로봇의 상태 체크를 잘 할 수 있게 된다.</p></li>
 </ul>
-<p><img alt="" src="../../_images/111.png" /></p>
+<p><img alt="" src="../../_images/19.png" /></p>
 <p>When we run BFS, each robot state is represented as the positions of its two blocks and the current time. But we need consistency: which block should be stored first? To avoid duplicates, we always order the two coordinates so that the smaller one comes first. This normalization guarantees that the same robot configuration is stored uniquely in the queue.</p>
 </div>
 <div class="dropdown admonition">
@@ -3585,7 +3588,7 @@ center가 (1,2)일때 CW 90도 회전 이후 결과
 center가 (1,3)일때 CW 90도 회전 이후 결과
 <img alt="" src="../../_images/10.png" /> <br>
 center가 (2,1)일때 CW 90도 회전 이후 결과
-<img alt="" src="../../_images/1111.png" /> <br></p>
+<img alt="" src="../../_images/111.png" /> <br></p>
 </div>
 <div class="dropdown admonition">
 <p class="admonition-title"><a class="reference external" href="http://rotation.py">rotation.py</a> degugging file</p>

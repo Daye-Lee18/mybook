@@ -206,7 +206,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../ds/2_numpy.html">Chapter 2. Numpy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ds/3_pandas1.html">Chapter 3. Pandas I</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ds/4_pandas2.html">Chapter 4. Pandas II</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ds/5_visualization.html">Chapter 5. Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/5_EDA.html">Chapter 5. EDA (탐색적 데이터 분석)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/6_0_Viz.html">Chapter 6. 데이터 시각화 (Visualization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/6_1_Viz_practice.html">Chapter 7. Visualization Practice — 파라미터 실험</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/7_Analysis.html">Chapter 5. 데이터 분석하기</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Algorithm</span></p>
 <ul class="current nav bd-sidenav">
@@ -236,9 +239,9 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Exams</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student_2026_1st_sol.html">Midterm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student_2026_1st_sol.html">Midterm (2026 1st semester)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student.html">Midterm (2025 3rd semester)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exams/final_student.html">Final</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exams/final_student.html">Final (2025 3rd Semester)</a></li>
 </ul>
 
     </div>
@@ -445,7 +448,7 @@ document.write(`
 <section id="dp">
 <h2>DP 조건<a class="headerlink" href="#dp" title="Link to this heading">#</a></h2>
 <p>DFS를 배울 때, 피보나치 수열을 구현하는 방법을 배웠다. 피보나치 수열은 다음 그림과 같은 형태로 끝없이 이어진다.</p>
-<p><img alt="1" src="../../_images/113.png" /></p>
+<p><img alt="1" src="../../_images/117.png" /></p>
 <p>점화식을 통해 인접한 항들 사이의 관계식을 의미하는데, 예를 들어 수열 <span class="math notranslate nohighlight">\({a_{n}}\)</span>이 있을 때 수열에서의 각 항을 <span class="math notranslate nohighlight">\(a_{n}\)</span>이라고 부른다고 가정하자. 우리는 점화식을 통해 현재의 항을 이전의 항에 대한 식으로 표현할 수 있다. 예를 들어, 피보나치 수열의 점화식은 다음과 같이 표현할 수 있다.</p>
 <p><span class="math notranslate nohighlight">\(a_{n+2} = a_{n} + a_{n+1}, a_{1} =1, a_{2} = 2\)</span></p>
 <p>위와 같은 점화식은 인접 3항간 점화식이라고 부르는데, 인접한 총 3개의 항에 대해서 식이 정의되기 때문이다.</p>
@@ -527,7 +530,7 @@ document.write(`
 <p>즉, “중복되는 부분 문제 (overlapping subproblems)”를 효율적으로 처리하는 방식</p>
 </div>
 <p>아래 그림을 보면, f(6)을 호출할 때는 다음 그림처럼 색칠된 노드만 방문하게 되어, 효율적으로 문제를 풀 수 있다.</p>
-<p><img alt="3" src="../../_images/36.png" /></p>
+<p><img alt="3" src="../../_images/38.png" /></p>
 </section>
 <section id="id1">
 <h2>메모이제이션<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
@@ -634,7 +637,7 @@ document.write(`
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">length</span> <span class="o">-</span> <span class="mi">1</span> 
 </pre></div>
 </div>
-<p><img alt="interval image" src="../../_images/411.png" /></p>
+<p><img alt="interval image" src="../../_images/47.png" /></p>
 </div>
 <p>Here is a handy “what to store” cheat-sheet for the most popular DP problems. each line tells you the state, what to store, and a one-line transition hint so you know why the storage works.</p>
 <section id="sequence-array-dp">

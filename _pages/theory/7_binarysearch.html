@@ -204,7 +204,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../ds/2_numpy.html">Chapter 2. Numpy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ds/3_pandas1.html">Chapter 3. Pandas I</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ds/4_pandas2.html">Chapter 4. Pandas II</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ds/5_visualization.html">Chapter 5. Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/5_EDA.html">Chapter 5. EDA (탐색적 데이터 분석)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/6_0_Viz.html">Chapter 6. 데이터 시각화 (Visualization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/6_1_Viz_practice.html">Chapter 7. Visualization Practice — 파라미터 실험</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/7_Analysis.html">Chapter 5. 데이터 분석하기</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Algorithm</span></p>
 <ul class="current nav bd-sidenav">
@@ -234,9 +237,9 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Exams</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student_2026_1st_sol.html">Midterm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student_2026_1st_sol.html">Midterm (2026 1st semester)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student.html">Midterm (2025 3rd semester)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exams/final_student.html">Final</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exams/final_student.html">Final (2025 3rd Semester)</a></li>
 </ul>
 
     </div>
@@ -449,7 +452,7 @@ document.write(`
 <p>이진 탐색은 배열 내부의 <em><strong>데이터가 정렬되어 있어야만</strong></em> 사용할 수 있는 알고리즘이다. 이진 탐색은 탐색 범위를 절반씩 좁혀가며 데이터를 탐색하는 특징이 있다.
 이진 탐색은 위치를 나타내는 변수 3개를 사용하는데 탐색하고자 하는 범위의 <em><strong>시작점, 끝점, 그리고 중간점</strong></em> 이다. 찾으려는 데이터와 중간점 (Middle) 위치에 있는 데이터를 반복적으로 비교해서 원하는 데이터를 찾는다.</p>
 <p>“이미 정렬된” 9개의 데이터 중에서 값이 6인 원소를 찾는 예시를 살펴보자. 아래 그림에서 중요한 것은 end가 찾는 range에 inclusive한지 exclusive한지이다. 즉 아래의 예시는 [start: end)로 구현했을 때 결과를 보여준다.</p>
-<p><img alt="1" src="../../_images/118.png" /></p>
+<p><img alt="1" src="../../_images/124.png" /></p>
 <p>데이터의 개수는 9개이지만 총 3번의 탐색으로 원소를 찾을 수 있었다. 이진 탐색은 한 번 확인할때마다 확인하는 원소의 개수가 절반씩 줄어든다는 점에서 시간 복잡도가 O(logN)이다.
 코딩 테스트에서 이진 탐색 문제는 탐색 범위가 큰 상황에서의 탐색을 가정하는 문제가 많다. 따라서 탐색 범위가 2,000만을 넘어가면 이진 탐색으로 문제에 접근해보길 바란다.</p>
 <section id="id1">
@@ -566,7 +569,7 @@ document.write(`
 </a>
 <p>일반적으로 그래프에서는 정점의 위치나 간선의 모양 등에 대한 조건은 전혀 고려하지 않으며, 오직 연결성만을 고려하므로, 간선의 집합이 변하지 않는다는 가정 하에 그래프를 얼마든지 다시 그릴 수가 있다. 위의 트리에서 <em><strong>5번 정점을 잡고 위로 들어올리는</strong></em> 예시를 생각해보자. 아래쪽에 중력이 작용한다고 생각하고 5번 정점을 위쪽으로 들어올리게 되면 트리의 모양은 아래와 같이 변할 것이다.</p>
 <!-- ![3](../../assets/img/binarySearch/3.png) -->
-<a class="reference internal image-reference" href="../../_images/39.png"><img alt="../../_images/39.png" src="../../_images/39.png" style="width: 500px;" />
+<a class="reference internal image-reference" href="../../_images/313.png"><img alt="../../_images/313.png" src="../../_images/313.png" style="width: 500px;" />
 </a>
 <p>트리에는 루트 (root)가 있을 수도 없을 수도 있지만, 편의를 위해서 아무 정점이나 루트로 선택할 수 있다. 트리는 항상 루트를 기준으로 다시 그릴 수 있기 때문에, 루트가 고정되지 않는 한 어떤 정점이 ‘위에’ 있는지 판정할 수 없다. 하지만 루트가 고정된다면, 우리는 정점 간에 ‘부모’와 ‘자식’의 관계를 정의할 수 있다.</p>
 <p><strong>용어 정리</strong></p>
@@ -607,7 +610,7 @@ document.write(`
 <p class="admonition-title">helper function for Tree</p>
 <p>아래 <code class="docutils literal notranslate"><span class="pre">build_tree()</span></code> 함수는 LeetCode 스타일 (level-order + 필요한 None만)로 배열이 들어올 때, 트리를 만드는 구조이다.
 즉, [1, None, 2, 3, 4]의 형태로, 필요한 부분만 None으로 채워져있고, 그 뒤의 None은 사용하지 않은 배열을 argument로 받았을 때이다.</p>
-<p><img alt="" src="../../_images/87.png" /></p>
+<p><img alt="" src="../../_images/86.png" /></p>
 <div class="literal-block-wrapper docutils container" id="id9">
 <div class="code-block-caption"><span class="caption-number">예시 40 </span><span class="caption-text">Helper Functions for Tree Problems. This script provides utility functions to build a binary tree from a level-order list representation (<code class="docutils literal notranslate"><span class="pre">build_tree</span></code>) and convert a tree back into a list (<code class="docutils literal notranslate"><span class="pre">tree_to_list</span></code>). It is commonly used when solving tree problems on LeetCode or similar platforms for easy input/output handling.</span><a class="headerlink" href="#id9" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span> 
@@ -680,7 +683,7 @@ document.write(`
 <div class="dropdown admonition">
 <p class="admonition-title">helper function for Tree 2</p>
 <p>반면, None도 인덱스로 사용할 때는 완전이진트리 배열 표현 (힙 표현)을 사용하겠다는 것으로, 인덱스 i의 왼쪽 자식 -&gt; 2<em>i + 1, 인덱스 i의 오른쪽 자식 -&gt; 2</em>i +2 를 사용한다. 즉, 값이 None이어도 자식 칸 두개는 인덱스로 “존재”한다고 치는 방식에서는 다음 코드를 이용할 수 있다.</p>
-<p><img alt="" src="../../_images/96.png" /></p>
+<p><img alt="" src="../../_images/95.png" /></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">build_tree</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">idx</span> <span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="c1"># 범위 밖이거나, 해당 위치가 None이면 노드 없음 </span>
     <span class="k">if</span> <span class="n">idx</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="ow">or</span> <span class="n">arr</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -879,11 +882,11 @@ document.write(`
 </div>
 <p>이진 탐색 트리에 데이터를 넣고 빼는 방법은 알고리즘보다 자료구조에 가까우며, 이진 탐색 트리 자료구조를 구현하도록 요구하는 문제는 출제 빈도가 낮으므로, 이 책에서는 이진 탐색 트리 구현 방법은 소개하지 않는다. (위에서 소개한 것은 전체적인 트리 구조이다.)</p>
 <p>이진 탐색 트리가 미리 구현되어 있다고 가정하고, 다음 그림과 같은 이진 탐색 트리에서 데이터를 조회하는 과정을 살펴보자.</p>
-<a class="reference internal image-reference" href="../../_images/47.png"><img alt="../../_images/47.png" src="../../_images/47.png" style="width: 500px;" />
+<a class="reference internal image-reference" href="../../_images/410.png"><img alt="../../_images/410.png" src="../../_images/410.png" style="width: 500px;" />
 </a>
-<a class="reference internal image-reference" href="../../_images/57.png"><img alt="../../_images/57.png" src="../../_images/57.png" style="width: 500px;" />
+<a class="reference internal image-reference" href="../../_images/59.png"><img alt="../../_images/59.png" src="../../_images/59.png" style="width: 500px;" />
 </a>
-<a class="reference internal image-reference" href="../../_images/66.png"><img alt="../../_images/66.png" src="../../_images/66.png" style="width: 500px;" />
+<a class="reference internal image-reference" href="../../_images/67.png"><img alt="../../_images/67.png" src="../../_images/67.png" style="width: 500px;" />
 </a>
 <p>이진 탐색 트리에서 데이터 조회는 루트 노드부터 왼쪽 자식 혹은 오른쪽 자식 노드로 이동하며 반복적으로 방문한다. 자식 노드가 없을 때까지 찾지 못했다면, 이진 탐색 트리에 원소가 없는 것이다.</p>
 <div class="dropdown admonition">
@@ -989,7 +992,7 @@ document.write(`
 <h3>2. Find Mode in Binary Search Tree<a class="headerlink" href="#find-mode-in-binary-search-tree" title="Link to this heading">#</a></h3>
 <p><a class="reference external" href="https://leetcode.com/problems/find-mode-in-binary-search-tree/description/?envType=problem-list-v2&amp;amp;envId=binary-search-tree">문제 링크</a></p>
 <div class="toggle docutils container">
-<p><img alt="7" src="../../_images/76.png" />
+<p><img alt="7" src="../../_images/77.png" />
 위의 예시처럼 같은 수임에도 직접적으로 연결되어 있지 않은 예시도 존재.</p>
 </div>
 <div class="dropdown admonition">

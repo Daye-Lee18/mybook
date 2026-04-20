@@ -206,7 +206,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../ds/2_numpy.html">Chapter 2. Numpy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ds/3_pandas1.html">Chapter 3. Pandas I</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ds/4_pandas2.html">Chapter 4. Pandas II</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ds/5_visualization.html">Chapter 5. Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/5_EDA.html">Chapter 5. EDA (탐색적 데이터 분석)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/6_0_Viz.html">Chapter 6. 데이터 시각화 (Visualization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/6_1_Viz_practice.html">Chapter 7. Visualization Practice — 파라미터 실험</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/7_Analysis.html">Chapter 5. 데이터 분석하기</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Algorithm</span></p>
 <ul class="nav bd-sidenav">
@@ -236,9 +239,9 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Exams</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student_2026_1st_sol.html">Midterm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student_2026_1st_sol.html">Midterm (2026 1st semester)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student.html">Midterm (2025 3rd semester)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exams/final_student.html">Final</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exams/final_student.html">Final (2025 3rd Semester)</a></li>
 </ul>
 
     </div>
@@ -882,7 +885,7 @@ parent-child 관계를 유지하며 DP 값을 계산한다.</p></li>
 </pre></div>
 </div>
 <p>아래의 그림처럼, acyclic graph를 트리로 변환하는 함수를 구현할 수 있다.</p>
-<p><img alt="1" src="../../_images/14.png" /></p>
+<p><img alt="1" src="../../_images/110.png" /></p>
 <div class="toggle docutils container">
 <p>‘’’
 예시)
@@ -1093,7 +1096,7 @@ dp[parent][1] += max(dp[child][0], dp[child][1])</p></li>
 <h3>사회망 서비스<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
 <p class="admonition-title">Idea</p>
-<p><img alt="" src="../../_images/315.png" /></p>
+<p><img alt="" src="../../_images/33.png" /></p>
 <p>Top-down으로 풀 경우, 트리에 3개의 노드가 있는 경우 위의 그림처럼 경우의수를 구할 수 있다.
 즉, 현재 노드가 early adopter여야만 하는 경우는 딱 한 가지 경우이다.
 반면, 현재 노드가 early adopter인 경우에는 children노드가 어떤 상황인지 전혀 상관없고, 그저 최소한의 경우를 가지고 오면 된다.</p>
@@ -2245,7 +2248,7 @@ dp[parent][1] += max(dp[child][0], dp[child][1])</p></li>
 <p>위와 같이 bits 자리 (j)가 1인 경우, <span class="math notranslate nohighlight">\(2^j\)</span>th ancestor로 이동하면 된다. <code class="docutils literal notranslate"><span class="pre">k</span> <span class="pre">&amp;</span> <span class="pre">1</span></code>은 항상 현재 LSB (Least Significant Bit) 만 검사하지만, <code class="docutils literal notranslate"><span class="pre">k</span> <span class="pre">&gt;&gt;=</span> <span class="pre">1</span></code>로 비트를 하나씩 밀어내기 때문에
 결과적으로 k의 모든 비트를 낮은 자리부터 차례대로 처리한다.</p>
 <p>예를 들어, 아래 예시를 보자.</p>
-<p><img alt="img" src="../../_images/410.png" /></p>
+<p><img alt="img" src="../../_images/43.png" /></p>
 <p>그래서, j = “지금보고 있는 비트의 원래 위치” 이므로, k&gt;&gt;= 1로 비트를 하나 없앴기 때문에, “다음 비트로 넘어간다”는 의미로 j+=1이 항상 필요하다. 만약 이 과정을 안하면 계속 2^0 점프만 시도하게 돼서 틀리게 됨.</p>
 </div>
 <div class="note admonition">
@@ -2346,7 +2349,7 @@ dp[parent][1] += max(dp[child][0], dp[child][1])</p></li>
 <li><p>주로 사용되는 방식</p></li>
 <li><p>k를 이진수로 보고, 1이 서있는 비트 위치 j마다 한 번에 <span class="math notranslate nohighlight">\(2^j\)</span>만큼 점프한다.</p></li>
 </ul>
-<p><img alt="img" src="../../_images/510.png" /></p>
+<p><img alt="img" src="../../_images/53.png" /></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span> 
 

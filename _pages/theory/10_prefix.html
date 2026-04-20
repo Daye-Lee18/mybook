@@ -206,7 +206,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../ds/2_numpy.html">Chapter 2. Numpy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ds/3_pandas1.html">Chapter 3. Pandas I</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ds/4_pandas2.html">Chapter 4. Pandas II</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ds/5_visualization.html">Chapter 5. Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/5_EDA.html">Chapter 5. EDA (탐색적 데이터 분석)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/6_0_Viz.html">Chapter 6. 데이터 시각화 (Visualization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/6_1_Viz_practice.html">Chapter 7. Visualization Practice — 파라미터 실험</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/7_Analysis.html">Chapter 5. 데이터 분석하기</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Algorithm</span></p>
 <ul class="current nav bd-sidenav">
@@ -236,9 +239,9 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Exams</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student_2026_1st_sol.html">Midterm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student_2026_1st_sol.html">Midterm (2026 1st semester)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student.html">Midterm (2025 3rd semester)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exams/final_student.html">Final</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exams/final_student.html">Final (2025 3rd Semester)</a></li>
 </ul>
 
     </div>
@@ -441,7 +444,7 @@ document.write(`
 <section id="prefix">
 <h2>Prefix란?<a class="headerlink" href="#prefix" title="Link to this heading">#</a></h2>
 <p><strong>Prefix</strong>는 “접두사”라는 뜻으로, 어떤 수열의 <strong>처음부터 특정 위치까지의 부분 구간</strong>을 의미한다.</p>
-<a class="reference internal image-reference" href="../../_images/125.png"><img alt="../../_images/125.png" src="../../_images/125.png" style="width: 500px;" />
+<a class="reference internal image-reference" href="../../_images/112.png"><img alt="../../_images/112.png" src="../../_images/112.png" style="width: 500px;" />
 </a>
 <p>예를 들어,  배열이 [1, 2, 3, 4]일 때</p>
 <div class="pst-scrollable-table-container"><table class="table">
@@ -523,7 +526,7 @@ document.write(`
 <p>arr[0]~arr[3] 구간합 = px[3]
 arr[1]~arr[3] 구간합 = px[3] - px[0]</p>
 <p>으로 prefix[0]이 arr[0]을 포함하고 있어 인덱스 계산이 번거롭게 달라져 계산 실수할 수 있다.</p>
-<a class="reference internal image-reference" href="../../_images/86.png"><img alt="../../_images/86.png" src="../../_images/86.png" style="width: 500px;" />
+<a class="reference internal image-reference" href="../../_images/82.png"><img alt="../../_images/82.png" src="../../_images/82.png" style="width: 500px;" />
 </a>
 <p>따라서 위의 그림처럼 prefix[0]= 0을 포함하여 일관성있게 1-indexed problems에서 [i:j]구간합을 prefix[j+1]-prefix[i]로 계산할 수 있게 코드를 구현한다. 여기서 1-indexed problems</p>
 <div class="proof definition admonition" id="definition-0">
@@ -581,7 +584,7 @@ Sum<span class="w"> </span>from<span class="w"> </span><span class="m">1</span><
 <h3>Prefix Sum을 왜 쓰는가? 구간합<a class="headerlink" href="#prefix-sum" title="Link to this heading">#</a></h3>
 <p>어떤 구간의 합을 구해야할 때, 매번 for문을 돌면 <span class="math notranslate nohighlight">\(O(N)\)</span>이 걸린다. 하지만 prefix sum을 미리 계산하면 한 번의 뺄셈으로 구간 합을 <span class="math notranslate nohighlight">\(O(1)\)</span>에 계산 가능하다.</p>
 <p>아래 예시를 보자.</p>
-<a class="reference internal image-reference" href="../../_images/219.png"><img alt="../../_images/219.png" src="../../_images/219.png" style="width: 500px;" />
+<a class="reference internal image-reference" href="../../_images/24.png"><img alt="../../_images/24.png" src="../../_images/24.png" style="width: 500px;" />
 </a>
 <div class="amsmath math notranslate nohighlight">
 \[\begin{gather*}
@@ -622,12 +625,12 @@ prefix[i] = \sum_{k=0}^{i-1} A[k]
 <li><p>원본 행렬: A[1…H][1…W]</p></li>
 <li><p>누적 합: P[0..H][0..W], 경계는 0</p></li>
 </ul>
-<img alt="../../_images/313.png" src="../../_images/313.png" />
+<img alt="../../_images/34.png" src="../../_images/34.png" />
 <p><strong>Step 2</strong><br></p>
 <p>나머지 prefix P 어레이의 빈칸은 어떻게 계산할 수 있을까?</p>
-<img alt="../../_images/49.png" src="../../_images/49.png" />
+<img alt="../../_images/44.png" src="../../_images/44.png" />
 <p>나머지 prefix[i][j]는 아래 수식으로 계산하여 채워놓으면 된다.</p>
-<img alt="../../_images/59.png" src="../../_images/59.png" />
+<img alt="../../_images/54.png" src="../../_images/54.png" />
 <div class="amsmath math notranslate nohighlight">
 \[\begin{align*}
 P[y][x] = P[y-1][x] + P[y][x-1] - P[y-1][x-1] + A[y-1][x-1]
@@ -658,7 +661,7 @@ P[y][x] = P[y-1][x] + P[y][x-1] - P[y-1][x-1] + A[y-1][x-1]
 \sum_{(y1, x1,y2, x2)} = prefix[y2][x2] - prefix[y1-1][x2] - prefix[y2][x1-1] + prefix[y1-1][x1-1]
 \end{align*}\]</div>
 <p>외우기 쉬운 방법은, 시작점인 (y1, x1)이 inclusive 사각형의 덧셈 뺄셈을 할 때 y1-1과 x1-1과 관련된 사각형을 더하고 빼주는 것이다.</p>
-<a class="reference internal image-reference" href="../../_images/68.png"><img alt="../../_images/68.png" src="../../_images/68.png" style="width: 500px;" />
+<a class="reference internal image-reference" href="../../_images/62.png"><img alt="../../_images/62.png" src="../../_images/62.png" style="width: 500px;" />
 </a>
 <div class="dropdown admonition">
 <p class="admonition-title">prefix example 1</p>
@@ -946,14 +949,14 @@ XOR(i..j) = px[j] \; \hat{\ } \; px[i-1]
 </section>
 <section id="id5">
 <h2>2D Prefix XOR<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
-<img alt="../../_images/78.png" src="../../_images/78.png" />
+<img alt="../../_images/72.png" src="../../_images/72.png" />
 <p>위의 그림을 보면, 1-based XOR array에서 (0,0) ~ (i, j) 까지 구간 XOR을 계산하려면 prefix sum을 계산할 때와 비슷하게 계산가능하다. 다만 이경우에는 모두 ‘^’로 처리해주면된다. 그림을 잘 살펴보면 구간 XOR에서 총 4개의 구간을 XOR 연산 시켜줬을 경우 모든 구간이 <em><strong>홀수번</strong></em> 만 반복되어 정확히 한번에 계산가능하다.</p>
 <div class="amsmath math notranslate nohighlight">
 \[\begin{align*}
 PX[y][x] = A[y][x] \;\hat{\ }\; PX[y-1][x] \;\hat{\ }\; PX[y][x-1] \;\hat{\ }\; PX[y-1][x-1]
 \end{align*}\]</div>
 <p>또한 구간 XOR은 아래 그림과 같이 계산가능하다.</p>
-<a class="reference internal image-reference" href="../../_images/95.png"><img alt="../../_images/95.png" src="../../_images/95.png" style="width: 500px;" />
+<a class="reference internal image-reference" href="../../_images/91.png"><img alt="../../_images/91.png" src="../../_images/91.png" style="width: 500px;" />
 </a>
 <p>\begin{algin*}
 RectXOR(y_1,x_1,y_2,x_2)

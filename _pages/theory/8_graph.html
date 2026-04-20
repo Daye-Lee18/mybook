@@ -206,7 +206,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../ds/2_numpy.html">Chapter 2. Numpy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ds/3_pandas1.html">Chapter 3. Pandas I</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ds/4_pandas2.html">Chapter 4. Pandas II</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ds/5_visualization.html">Chapter 5. Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/5_EDA.html">Chapter 5. EDA (탐색적 데이터 분석)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/6_0_Viz.html">Chapter 6. 데이터 시각화 (Visualization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/6_1_Viz_practice.html">Chapter 7. Visualization Practice — 파라미터 실험</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/7_Analysis.html">Chapter 5. 데이터 분석하기</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Algorithm</span></p>
 <ul class="current nav bd-sidenav">
@@ -236,9 +239,9 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Exams</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student_2026_1st_sol.html">Midterm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student_2026_1st_sol.html">Midterm (2026 1st semester)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student.html">Midterm (2025 3rd semester)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exams/final_student.html">Final</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exams/final_student.html">Final (2025 3rd Semester)</a></li>
 </ul>
 
     </div>
@@ -440,7 +443,7 @@ document.write(`
 <section id="disjoint-set">
 <h2>서로소 집합 (Disjoint Set)<a class="headerlink" href="#disjoint-set" title="Link to this heading">#</a></h2>
 <p>수학에서 <em><strong>서로소 집합</strong></em> <font size='2'>Disjoint Sets</font>이란 공통 원소가 없는 두 집합을 의미한다.</p>
-<a class="reference internal image-reference" href="../../_images/119.png"><img alt="../../_images/119.png" src="../../_images/119.png" style="width: 500px;" />
+<a class="reference internal image-reference" href="../../_images/125.png"><img alt="../../_images/125.png" src="../../_images/125.png" style="width: 500px;" />
 </a>
 <section id="id1">
 <h3>서로소 집합 자료구조<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
@@ -749,7 +752,7 @@ union(1,5) → 5의 높이 낮으므로 5를 1 밑으로
 <a class="reference internal image-reference" href="../../_images/217.png"><img alt="../../_images/217.png" src="../../_images/217.png" style="width: 500px;" />
 </a>
 <p>위의 그림의 오른쪽은 왼쪽 그래프의 신장 트리를 찾을 수 있다. 하나의 그래프에서 여러 개의 신장 트리를 찾을 수 있다. 아래 그림을 보면, 신장 트리가 아닌 부분 그래프 예시를 볼 수 있다.</p>
-<a class="reference internal image-reference" href="../../_images/310.png"><img alt="../../_images/310.png" src="../../_images/310.png" style="width: 500px;" />
+<a class="reference internal image-reference" href="../../_images/314.png"><img alt="../../_images/314.png" src="../../_images/314.png" style="width: 500px;" />
 </a>
 <p><em><strong>최소 신장 트리(Minimum Spanning Tree)</strong></em> 란, “하나의 그래프에서 모든 노드를 연결하면서, 그 중 <strong>간선의 가중치 합이 최소가 되는</strong> 신장 트리”를 의미한다.</p>
 <p>즉, 그래프의 모든 노드를 연결하되,</p>
@@ -781,32 +784,32 @@ union(1,5) → 5의 높이 낮으므로 5를 1 밑으로
 </div>
 <p>위의 알고리즘에서 cycle 판별을 구현할때, 앞서 배운 서로소 집합 (disjoint set) 구조를 이용한다. 즉, 이전에 배운 Union-Find 알고리즘을 사용하여 cycle을 판별하면 된다.</p>
 <p><strong>예시</strong> <br></p>
-<a class="reference internal image-reference" href="../../_images/48.png"><img alt="../../_images/48.png" src="../../_images/48.png" style="width: 500px;" />
+<a class="reference internal image-reference" href="../../_images/411.png"><img alt="../../_images/411.png" src="../../_images/411.png" style="width: 500px;" />
 </a>
 <p>위의 그래프에서 MST를 구해보자. 먼저 MST는 트리 자료 구조인데, 트리 자료 구조는 노드의 개수가 N개일 때, 항상 간선의 개수가 N-1개임을 알아야한다.</p>
 <p><strong>Step 1</strong><br>
-<a class="reference internal" href="../../_images/58.png"><img alt="../../_images/58.png" src="../../_images/58.png" style="width: 500px;" /></a></p>
+<a class="reference internal" href="../../_images/510.png"><img alt="../../_images/510.png" src="../../_images/510.png" style="width: 500px;" /></a></p>
 <p>간선 정보들을 모은 리스트를 간선 비용에 대하여 오름차순으로 정리한다.</p>
 <p><strong>Step 2</strong><br>
-<a class="reference internal" href="../../_images/67.png"><img alt="../../_images/67.png" src="../../_images/67.png" style="width: 500px;" /></a></p>
+<a class="reference internal" href="../../_images/68.png"><img alt="../../_images/68.png" src="../../_images/68.png" style="width: 500px;" /></a></p>
 <p>가장 짧은 간선을 처리한다. (3, 4)가 선택되고 이것을 집합에 포함하면 된다. 다시 말해 노드 3과 노드 4에 대해서 union함수를 실행하여 동일한 집합에 속하도록 만든다.</p>
 <p><strong>Step 3</strong><br>
-<a class="reference internal" href="../../_images/77.png"><img alt="../../_images/77.png" src="../../_images/77.png" style="width: 500px;" /></a></p>
+<a class="reference internal" href="../../_images/78.png"><img alt="../../_images/78.png" src="../../_images/78.png" style="width: 500px;" /></a></p>
 <p>그 다음 가장 짧은 간선을 처리한다. (4, 7)가 선택되고 이것을 집합에 포함하면 된다. 노드 4과 노드 7는 같은 집합에 속해있는지 확인하고 같은 집합에 속해있지 않기 때문에, union함수를 호출한다.</p>
 <p><strong>Step 4</strong><br>
-<a class="reference internal" href="../../_images/85.png"><img alt="../../_images/85.png" src="../../_images/85.png" style="width: 500px;" /></a></p>
+<a class="reference internal" href="../../_images/87.png"><img alt="../../_images/87.png" src="../../_images/87.png" style="width: 500px;" /></a></p>
 <p>그 다음 가장 짧은 간선을 처리한다. (4, 6)가 선택한다. 노드 4과 노드 6는 같은 집합에 속해있는지 확인하고 같은 집합에 속해있지 않기 때문에, union함수를 호출한다.</p>
 <p><strong>Step 4</strong><br>
-<a class="reference internal" href="../../_images/94.png"><img alt="../../_images/94.png" src="../../_images/94.png" style="width: 500px;" /></a></p>
+<a class="reference internal" href="../../_images/96.png"><img alt="../../_images/96.png" src="../../_images/96.png" style="width: 500px;" /></a></p>
 <p>그 다음 가장 짧은 간선을 처리한다. (6, 7)가 선택한다. 노드 6과 노드 7는 이미 같은 집합에 속해있으므로 union함수를 호출하지 않아 신장 트리에 포함하지 않는다. 그림에서 처리된 간선만 파란색 점선으로 표시된다.</p>
 <p><strong>Step 5</strong><br>
 <a class="reference internal" href="../../_images/104.png"><img alt="../../_images/104.png" src="../../_images/104.png" style="width: 500px;" /></a></p>
 <p>그 다음 가장 짧은 간선을 처리한다. (1, 2)가 선택한다. 노드 1과 노드 2는 같은 집합에 속해있는지 확인하고 같은 집합에 속해있지 않기 때문에, union함수를 호출한다.</p>
 <p><strong>Step 6</strong><br>
-<a class="reference internal" href="../../_images/1110.png"><img alt="../../_images/1110.png" src="../../_images/1110.png" style="width: 500px;" /></a></p>
+<a class="reference internal" href="../../_images/1111.png"><img alt="../../_images/1111.png" src="../../_images/1111.png" style="width: 500px;" /></a></p>
 <p>그 다음 가장 짧은 간선을 처리한다. (2, 6)가 선택한다. 노드 2과 노드 6는 같은 집합에 속해있는지 확인하고 같은 집합에 속해있지 않기 때문에, union함수를 호출한다.</p>
 <p><strong>Step 7</strong><br>
-<a class="reference internal" href="../../_images/124.png"><img alt="../../_images/124.png" src="../../_images/124.png" style="width: 500px;" /></a></p>
+<a class="reference internal" href="../../_images/126.png"><img alt="../../_images/126.png" src="../../_images/126.png" style="width: 500px;" /></a></p>
 <p>그 다음 가장 짧은 간선을 처리한다. (2, 3)가 선택한다.  노드 2과 노드 3는 이미 같은 집합에 속해있으므로 union함수를 호출하지 않아 신장 트리에 포함하지 않는다.</p>
 <p><strong>Step 8</strong><br>
 <a class="reference internal" href="../../_images/134.png"><img alt="../../_images/134.png" src="../../_images/134.png" style="width: 500px;" /></a></p>
@@ -1021,13 +1024,13 @@ union(1,5) → 5의 높이 낮으므로 5를 1 밑으로
 </a>
 <p>위의 그래프에 대하여 위상 정렬을 해보자.</p>
 <p><strong>Step 1</strong> <br>
-<a class="reference internal" href="../../_images/173.png"><img alt="../../_images/173.png" src="../../_images/173.png" style="width: 500px;" /></a></p>
+<a class="reference internal" href="../../_images/174.png"><img alt="../../_images/174.png" src="../../_images/174.png" style="width: 500px;" /></a></p>
 <p>간선을 돌면서, 진입 차수들을 계산하고 진입 차수가 0인 노드를 queue에 집어넣는다.</p>
 <p><strong>Step 2</strong> <br>
-<a class="reference internal" href="../../_images/183.png"><img alt="../../_images/183.png" src="../../_images/183.png" style="width: 500px;" /></a></p>
+<a class="reference internal" href="../../_images/184.png"><img alt="../../_images/184.png" src="../../_images/184.png" style="width: 500px;" /></a></p>
 <p>1을 큐에서 꺼내고 결과에 추가한다 (result=[1]). 노드 1과 연결된 2, 3 노드의 진입 차수를 각각 1씩 감소한다. 노드 2와 노드 3의 진입 차수가 0이 되었으므로 큐에 추가한다.</p>
 <p><strong>Step 3</strong> <br>
-<a class="reference internal" href="../../_images/193.png"><img alt="../../_images/193.png" src="../../_images/193.png" style="width: 500px;" /></a></p>
+<a class="reference internal" href="../../_images/194.png"><img alt="../../_images/194.png" src="../../_images/194.png" style="width: 500px;" /></a></p>
 <p>2를 큐에서 꺼내고 결과에 추가한다. (result=[1, 2]). 노드 2와 연결된 노드 4의 진입 차수를 1씩 감소한다. 진입 차수가 0이 된 노드가 없으니 다음 스텝을 진행한다.</p>
 <p><strong>Step 4</strong> <br>
 <a class="reference internal" href="../../_images/202.png"><img alt="../../_images/202.png" src="../../_images/202.png" style="width: 500px;" /></a></p>
@@ -1216,7 +1219,7 @@ union(1,5) → 5의 높이 낮으므로 5를 1 밑으로
 </li>
 </ul>
 <p><strong>Step 5</strong> <br></p>
-<a class="reference internal image-reference" href="../../_images/262.png"><img alt="../../_images/262.png" src="../../_images/262.png" style="width: 500px;" />
+<a class="reference internal image-reference" href="../../_images/263.png"><img alt="../../_images/263.png" src="../../_images/263.png" style="width: 500px;" />
 </a>
 <ul class="simple">
 <li><p>stack[-1]: “ATL”</p></li>
@@ -1271,7 +1274,7 @@ union(1,5) → 5의 높이 낮으므로 5를 1 밑으로
 </li>
 </ul>
 <p><strong>Step 10</strong> <br></p>
-<a class="reference internal image-reference" href="../../_images/314.png"><img alt="../../_images/314.png" src="../../_images/314.png" style="width: 500px;" />
+<a class="reference internal image-reference" href="../../_images/315.png"><img alt="../../_images/315.png" src="../../_images/315.png" style="width: 500px;" />
 </a>
 <ul class="simple">
 <li><p>stack[-1]: “ATL”</p></li>

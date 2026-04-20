@@ -206,7 +206,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../ds/2_numpy.html">Chapter 2. Numpy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ds/3_pandas1.html">Chapter 3. Pandas I</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ds/4_pandas2.html">Chapter 4. Pandas II</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ds/5_visualization.html">Chapter 5. Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/5_EDA.html">Chapter 5. EDA (탐색적 데이터 분석)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/6_0_Viz.html">Chapter 6. 데이터 시각화 (Visualization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/6_1_Viz_practice.html">Chapter 7. Visualization Practice — 파라미터 실험</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/7_Analysis.html">Chapter 5. 데이터 분석하기</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Algorithm</span></p>
 <ul class="current nav bd-sidenav">
@@ -236,9 +239,9 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Exams</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student_2026_1st_sol.html">Midterm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student_2026_1st_sol.html">Midterm (2026 1st semester)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student.html">Midterm (2025 3rd semester)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exams/final_student.html">Final</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exams/final_student.html">Final (2025 3rd Semester)</a></li>
 </ul>
 
     </div>
@@ -641,7 +644,7 @@ start &lt; end 이므로 이동할 수 없어 결과는</p>
 <h3>선택 정렬 예시<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
 <p>앞으로 그림에서, 회색 카드는 ‘현재 정렬되지 않은 데이터 중에서 가장 작은 데이터’를 의미하며, 하늘색 카드는 ‘이미 정렬된 데이터’를 의미한다.</p>
 <p><strong>Step 1</strong>
-<img alt="1" src="../../_images/116.png" /></p>
+<img alt="1" src="../../_images/120.png" /></p>
 <p>초기 단계에서는 모든 데이터가 정렬되어 있지 않으므로, 전체 중에서 가장 작은 데이터를 선택한다.</p>
 <ul class="simple">
 <li><p>‘7’: current element to be swapped (the first element in the remaining unordered section)</p></li>
@@ -656,49 +659,49 @@ start &lt; end 이므로 이동할 수 없어 결과는</p>
 <li><p>‘1’: smallest element in the remaining unsorted section</p></li>
 </ul>
 <p><strong>Step 3</strong></p>
-<p><img alt="3" src="../../_images/38.png" /></p>
+<p><img alt="3" src="../../_images/310.png" /></p>
 <p>데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다.</p>
 <ul class="simple">
 <li><p>‘9’: current element to be swapped (the first element in the remaining unordered section)</p></li>
 <li><p>‘2’: smallest element in the remaining unsorted section</p></li>
 </ul>
 <p><strong>Step 4</strong></p>
-<p><img alt="4" src="../../_images/46.png" /></p>
+<p><img alt="4" src="../../_images/49.png" /></p>
 <p>데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다.</p>
 <ul class="simple">
 <li><p>‘7’: current element to be swapped (the first element in the remaining unordered section)</p></li>
 <li><p>‘3’: smallest element in the remaining unsorted section</p></li>
 </ul>
 <p><strong>Step 5</strong></p>
-<p><img alt="5" src="../../_images/56.png" /></p>
+<p><img alt="5" src="../../_images/58.png" /></p>
 <p>데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다.</p>
 <ul class="simple">
 <li><p>‘7’: current element to be swapped (the first element in the remaining unordered section)</p></li>
 <li><p>‘4’: smallest element in the remaining unsorted section</p></li>
 </ul>
 <p><strong>Step 6</strong></p>
-<p><img alt="6" src="../../_images/65.png" /></p>
+<p><img alt="6" src="../../_images/66.png" /></p>
 <p>데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다.</p>
 <ul class="simple">
 <li><p>‘5’: current element to be swapped (the first element in the remaining unordered section)</p></li>
 <li><p>‘5’: smallest element in the remaining unsorted section</p></li>
 </ul>
 <p><strong>Step 7</strong></p>
-<p><img alt="7" src="../../_images/75.png" /></p>
+<p><img alt="7" src="../../_images/76.png" /></p>
 <p>데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다.</p>
 <ul class="simple">
 <li><p>‘6’: current element to be swapped (the first element in the remaining unordered section)</p></li>
 <li><p>‘6’: smallest element in the remaining unsorted section</p></li>
 </ul>
 <p><strong>Step 8</strong></p>
-<p><img alt="8" src="../../_images/84.png" /></p>
+<p><img alt="8" src="../../_images/85.png" /></p>
 <p>데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다.</p>
 <ul class="simple">
 <li><p>‘9’: current element to be swapped (the first element in the remaining unordered section)</p></li>
 <li><p>‘7’: smallest element in the remaining unsorted section</p></li>
 </ul>
 <p><strong>Step 9</strong></p>
-<p><img alt="9" src="../../_images/93.png" /></p>
+<p><img alt="9" src="../../_images/94.png" /></p>
 <p>데이터가 정렬되어 있지 않은 범위 중 가장 작은 데이터를 선택하여 현재 원소와 바꾼다.</p>
 <ul class="simple">
 <li><p>‘9’: current element to be swapped (the first element in the remaining unordered section)</p></li>
@@ -749,7 +752,7 @@ start &lt; end 이므로 이동할 수 없어 결과는</p>
 <section id="id6">
 <h3>삽입 정렬 예시<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
 <p><strong>Step 1</strong></p>
-<p><img alt="11" src="../../_images/117.png" /></p>
+<p><img alt="11" src="../../_images/1110.png" /></p>
 <p>삽입 정렬은 두 번째 데이터부터 시작한다. 왜냐하면 첫번째 데이터는 그 자체로 정렬되어 있다고 판단하기 때문이다.</p>
 <p><strong>Step 2</strong>
 <img alt="12" src="../../_images/123.png" /></p>
@@ -770,13 +773,13 @@ start &lt; end 이므로 이동할 수 없어 결과는</p>
 <p><strong>중략</strong>
 중간 과정을 생략한다.</p>
 <p><strong>Step 7</strong>
-<img alt="17" src="../../_images/172.png" />
+<img alt="17" src="../../_images/173.png" />
 ‘4’가 들어갈 위치를 판단한다. ‘5’의 자리에 삽입한다.</p>
 <p><strong>Step 8</strong>
-<img alt="18" src="../../_images/182.png" />
+<img alt="18" src="../../_images/183.png" />
 ‘8’이 들어갈 위치를 판단한다. ‘9’의 자리에 삽입한다.</p>
 <p><strong>Step 9</strong>
-<img alt="19" src="../../_images/192.png" />
+<img alt="19" src="../../_images/193.png" />
 이와 같이 적절한 위치에 삽입하는 과정을 N-1번 반복하게 되면 위와 같이 모든 데이터가 정렬된 것을 확인할 수 있다.</p>
 </section>
 <section id="id7">
@@ -870,7 +873,7 @@ start &lt; end 이므로 이동할 수 없어 결과는</p>
 <section id="id10">
 <h3>파트 3: 분할 완료된 피벗의 오른쪽 리스트<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
 <p>분할 완료된 피벗의 오른쪽 리스트에서는 다음과 같이 정렬이 진행되며 구체적인 정렬과정은 동일하다. 아래 그림에서는 첫 단계에서, 오른쪽과 왼쪽의 데이터가 서로 엇갈리는 지점에는 작은 데이터와 피벗의 데이터가 동일하다. 따라서, swap하고 난 후 분할 완료된 리스트는 첫 리스트와 동일함을 알 수 있다.
-<img alt="26" src="../../_images/261.png" /></p>
+<img alt="26" src="../../_images/262.png" /></p>
 <p>특정한 리스트에서 피벗을 설정하여 정렬을 수행한 이후, 피벗을 기준으로 왼쪽 리스트와 오른쪽 리스트에서 각각 다시 정렬 수행한다. 재귀 함수와 동작 원리가 같고, 따라서, 종료 조건이 필요하다. 퀵 정렬이 끝나는 조건은 <em><strong>리스트의 개수가 1개</strong></em>인 경우이다. 리스트의 원소가 1개라면, 이미 정렬되어 있다고 간주할 수 있으며 분할이 불가능하다.</p>
 </section>
 <section id="id11">

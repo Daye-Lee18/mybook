@@ -206,7 +206,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../ds/2_numpy.html">Chapter 2. Numpy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ds/3_pandas1.html">Chapter 3. Pandas I</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ds/4_pandas2.html">Chapter 4. Pandas II</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ds/5_visualization.html">Chapter 5. Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/5_EDA.html">Chapter 5. EDA (탐색적 데이터 분석)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/6_0_Viz.html">Chapter 6. 데이터 시각화 (Visualization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/6_1_Viz_practice.html">Chapter 7. Visualization Practice — 파라미터 실험</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/7_Analysis.html">Chapter 5. 데이터 분석하기</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Algorithm</span></p>
 <ul class="current nav bd-sidenav">
@@ -236,9 +239,9 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Exams</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student_2026_1st_sol.html">Midterm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student_2026_1st_sol.html">Midterm (2026 1st semester)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student.html">Midterm (2025 3rd semester)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exams/final_student.html">Final</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exams/final_student.html">Final (2025 3rd Semester)</a></li>
 </ul>
 
     </div>
@@ -456,34 +459,34 @@ document.write(`
 <h3>Dijkstra Algorithm 예시<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
 <p>다음과 같은 그래프가 있을 때, 1번 노드에서 다른 모든 노드로 가는 최단 경로를 구하는 문제를 생각해보자. 출발 노드는 1이라 가정한다. 즉, 1번 노드에서 다른 모든 노드로 가는 최단 거리를 계산할 것이다. 최단 경로 테이블을 보면, “<strong>초기 상태에서는 다른 모든 노드로 가는 최단 거리</strong>”를 “INF”로 초기화한다. 즉, 테이블의 각 값은
 <strong>해당 노드로 도달하는 가장 짧은 값</strong>”을 저장한다. 파이썬에서 기본으로 1e9를 실수 자료형으로 처리하므로 모든 간선이 정수형으로 표현되는 문제에서는 <code class="docutils literal notranslate"><span class="pre">int(1e9)</span></code>로 초기화한다. (대부분의 문제에서는 그래프의 간신 길이 정보를 줄 때 1억 미만의 값으로 준다.)</p>
-<p><img alt="image" src="../../_images/114.png" /></p>
+<p><img alt="image" src="../../_images/118.png" /></p>
 <p><strong>Step 1</strong></p>
 <p>먼저 방문하지 않은 노드 중에서 최단 거리가 가장 짧은 노드를 선택하는데, “출발 노드에서 출발 노드”로의 거리는 0으로 보기 때문에, 처음에는 출발 노드가 선택된다.</p>
 <p>이제 1번 노드를 거쳐 다른 노드로 가는 비용을 계산한다. 1번 노드와 연결된 모든 간선을 하나씩 확인한다. 현재 1번 노드까지 오는 비용은 0이므로, 1번 노드를 거쳐 2번, 3번, 4번 노드로 가는 최소 비용은 차례대로 2(0+2), 5(0+5), 1(0+1)이다. 현재 2, 3, 4번 노드로 가는 비용이 ‘무한’이므로 세 노드에 도달하는 더 짧은 경로를 찾았으므로 각각 새로운 값으로 갱신한다.</p>
 <p><img alt="2" src="../../_images/213.png" /></p>
 <p><strong>Step 2</strong></p>
 <p>이후의 모든 단계에서도 마찬가지로 방문하지 않은 노드 중에서 최단 거리가 가장 짧은 노드를 선택한다. 따라서 4번 노드가 선택된다. 이어서 4번 노드를 거쳐서 갈 수 있는 노드를 확인한다. 4번 노드에서 갈 수 있는 노드는 3번과 5번이고, 4번 노드까지의 거리는 1이므로 4번 노드를 거쳐서 3번과 5번 노드로 가는 최소 비용은 차례대로 4(1+3), 2(1+1)이다. 이 두 값은 기존의 리스트에 담겨 있던 값보다 작으므로 다음처럼 리스트가 갱신된다.</p>
-<p><img alt="3" src="../../_images/37.png" /></p>
+<p><img alt="3" src="../../_images/39.png" /></p>
 <p><strong>Step 3</strong></p>
 <p>방문하지 않은 노드 중 최단 거리가 가장 짧은 노드 선택: 2번
 2번 노드를 거쳐 갈 수 있는 노드들 중 방문하지 않은 노드들: 3번, 4번
 2번 노드를 거쳐 가는 경우 각 노드들까지의 최종 비용 계산: 3번 (2+3 vs. 4 -&gt; 갱신 x), 4번 (2+2 vs. 1 -&gt; 갱신 x)</p>
-<p><img alt="4" src="../../_images/45.png" /></p>
+<p><img alt="4" src="../../_images/48.png" /></p>
 <p><strong>Step 4</strong></p>
 <p>방문하지 않은 노드 중 최단 거리가 가장 짧은 노드 선택: 5번
 2번 노드를 거쳐 갈 수 있는 노드들 중 방문하지 않은 노드들: 3번, 6번
 2번 노드를 거쳐 가는 경우 각 노드들까지의 최종 비용 계산: 3번 (2+1 vs. 4 -&gt; 갱신), 6번 (2+2 vs. INF -&gt; 갱신)</p>
-<p><img alt="5" src="../../_images/55.png" /></p>
+<p><img alt="5" src="../../_images/57.png" /></p>
 <p><strong>Step 5</strong></p>
 <p>방문하지 않은 노드 중 최단 거리가 가장 짧은 노드 선택: 3번
 2번 노드를 거쳐 갈 수 있는 노드들 중 방문하지 않은 노드들: 2번, 6번
 2번 노드를 거쳐 가는 경우 각 노드들까지의 최종 비용 계산: 2번 (3+3 vs. 4 -&gt; 갱신 x), 6번 (3+5 vs. 4 -&gt; 갱신 x)</p>
-<p><img alt="6" src="../../_images/64.png" /></p>
+<p><img alt="6" src="../../_images/65.png" /></p>
 <p><strong>Step 6</strong></p>
 <p>방문하지 않은 노드 중 최단 거리가 가장 짧은 노드 선택: 6번
 2번 노드를 거쳐 갈 수 있는 노드들 중 방문하지 않은 노드들: x
 2번 노드를 거쳐 가는 경우 각 노드들까지의 최종 비용 계산: x</p>
-<p><img alt="7" src="../../_images/74.png" /></p>
+<p><img alt="7" src="../../_images/75.png" /></p>
 <p><strong>Summary</strong></p>
 <p>최단 거리 테이블이 의미하는 바는 1번 노드 **(시작 노드)**로부터 출발했을 때 2번, 3번, 4번, 5번, 6번 노드까지 가기 위한 최단 경로 (비용 최단 경로) 가 각각 2, 3, 1, 2, 4라는 의미이다.</p>
 <p>다익스트라 최단 경로 알고리즘에서는 ‘방문하지 않은 노드 중에서 가장 최단 거리가 짧은 노드를 선택’하는 과정을 반복하는데, 이렇게 선택된 노드는 ‘최단 거리’가 완전히 선택된 노드이므로, 더 이상 알고리즘을 반복해도 최단 거리가 줄어들지 않는다. 앞서 [Step 6]까지의 모든 경우를 확인해보면 실제로 한 번 선택된 노드는 최단 거리가 감소하지 않는다. 예를 들어, [step 2]에서는 4번 노드가 선택되어서 4번 노드를 거쳐서 이동할 수 있는 경로를 확인했다. 이후에 [step 3] ~ [step 6]이 진행되었지만, 4번 노드에 대한 최단 거리는 더 이상 감소하지 않았음을 확인할 수 있다. 다시 말해 다익스트라 알고리즘은 <strong>한 단계당 하나의 노드에 대한 최단 거리를 확실히 찾는 것</strong>으로 이해할 수 있다. 즉, 이미 방문한 노드는 이후에도 테이블 값이 바뀌지 않는다.</p>
@@ -728,7 +731,7 @@ document.write(`
 <h3>힙 구현<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
 <div class="dropdown admonition">
 <p class="admonition-title">부모, 자식 인덱스</p>
-<p><img alt="17" src="../../_images/171.png" /></p>
+<p><img alt="17" src="../../_images/172.png" /></p>
 <ul class="simple">
 <li><p>parent = (pos - 1) // 2 # (pos-1) &gt;&gt; 1</p></li>
 <li><p>left = 2 * pos + 1</p></li>
@@ -919,16 +922,16 @@ document.write(`
 <p><strong>Step 1</strong></p>
 <p>1번 노드가 출발 노드인 경우를 가정했을 때, 앞의 과정과 다른 것은 우선순위 큐를 따로 만들어 1번 노드를 넣는 것이다. 파이썬에서는 간단히 튜플 (0, 1)을 우선순위 큐에 넣는다. 파이썬의 heapq 라이브러리는 원소로 튜플을 입력받으면 <strong>튜플의 첫 번째 원소를 우선순위 큐로 구성</strong>한다. 따라서 (거리, 노드 번호) 순서대로 튜플 데이터를 구성해 우선순위 큐에 넣으면 거리순으로 정렬된다.</p>
 <p>다시 말하지만, 다익스트라는 <strong>현재까지 발견된 최단 거리 후보들</strong>을 계속 관리하는 알고리즘이다. 현재 방문하는 노드의 모든 인접 노드를 확인하고, <strong>짧아진 경우에만</strong> 전부 큐에 넣어야 합니다.</p>
-<p><img alt="8" src="../../_images/83.png" /></p>
+<p><img alt="8" src="../../_images/84.png" /></p>
 <p><strong>Step 2</strong>
 우선순위 큐를 이용하고 있으므로 거리가 가장 짧은 노드를 선택하기 위해서는 우선순위 큐에서 그냥 노드를 꺼내면 된다. 따라서 우선순위 큐에서 노드를 꺼낸 뒤에 <strong>해당 노드를 이미 처리한 적이 있다면</strong> 무시하면 되고, 아직 처리하지 않은 노드에 대해서만 처리하면 된다. Step 1의 우선순위 큐에서 원소를 꺼내면 (0, 1)이 나오고, 1번 노드를 거쳐서 2번, 3번, 4번 노드로 가는 최소 비용을 계산한다. 각각 테이블 값을 갱신한 후, 더 짧은 경로를 찾은 노드 정보들은 다시 우선순위 큐에 넣는다.
-<img alt="9" src="../../_images/92.png" /></p>
+<img alt="9" src="../../_images/93.png" /></p>
 <p><strong>Step 3</strong>
 다음으로 (1, 4)의 값을 갖는 원소가 우선순위 큐에서 추출되며, 아직 노드 4를 방문하지 않았고 현재 최단 거리가 가장 짧은 노드가 4이다. 따라서 노드 4를 기준으로 연결된 간선들을 확인한다. 4번 노드를 거쳐서 3번과 5번 노드로 가는 최소 비용은 차례대로 4와 2이다. 이는 기존의 리스트에 다겨있던 값들보다 작기 때문에, 리스트의 값을 갱신하고 우선순위 큐에 두 원소 (4, 3), (2, 5)를 추가로 넣어준다.
 <img alt="10" src="../../_images/102.png" /></p>
 <p><strong>Step 4</strong></p>
 <p>우선순위 큐에서 원소를 pop하면 노드 2가 꺼내진다. 2번 노드를 거쳐서 가는 경우 중 다음 노드에서 현재의 최단 거리를 더 짧게 갱신할 수 있는 방법은 없다. 따라서 우선순위 큐에 어떠한 원소도 들어가지 않고 다음과 같이 리스트가 갱신된다.</p>
-<p><img alt="11" src="../../_images/115.png" /></p>
+<p><img alt="11" src="../../_images/119.png" /></p>
 <p><strong>Step 5</strong></p>
 <p>이번 단계에서는 노드 5에 대해 처리한다. 5번 노드를 거쳐서 3번과 6번 노드로 갈 수 있다. 현재 5번 노드까지 가는 최단 거리가 2이므로 5번 노드에서 3번 노드로 가는 거리인 1을 더한 3이 기존의 값인 4보다 작다. 따라서 새로운 값인 3으로 갱신한다. 또한 6번 노드로 가는 최단 거리 역시 마찬가지로 갱신된다. 그래서 이번에는 (3, 3)과 (4, 6)이 우선순위 큐에 들어간다. 우선순위 큐를 보면, 작을 때마다 원소를 넣어주는데, 같은 노드이지만 이전에 넣어서 (거리) 값이 더 큰 원소가 있음을 확인할 수 있다. 따라서, heappop()으로 원소를 빼준 후, 가장 최신으로 업데이트된 값보다 큰 경우에는 무시하고 넘어가주면 된다.</p>
 <p><img alt="12" src="../../_images/122.png" /></p>
@@ -1063,8 +1066,8 @@ document.write(`
 <section id="floyd-warshall-algorihtm-example">
 <h3>Floyd-Warshall Algorihtm Example<a class="headerlink" href="#floyd-warshall-algorihtm-example" title="Link to this heading">#</a></h3>
 <p>아래의 예시를 공부해보자.</p>
-<p><img alt="18" src="../../_images/181.png" /></p>
-<p><img alt="19" src="../../_images/191.png" /></p>
+<p><img alt="18" src="../../_images/182.png" /></p>
+<p><img alt="19" src="../../_images/192.png" /></p>
 <div class="dropdown admonition">
 <p class="admonition-title">Code for Floyd Warshall Algorithm</p>
 <p>위 예시에 해당하는 알고리즘을 파이썬으로 작성하였다.</p>

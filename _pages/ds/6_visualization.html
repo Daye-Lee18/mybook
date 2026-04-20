@@ -1,0 +1,1543 @@
+
+<!DOCTYPE html>
+
+
+<html lang="ko" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Chapter 6. Visualization &#8212; 말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/proof.css?v=b4b7a797" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8127ecf8" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=ae323b5b"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script src="../../_static/translations.js?v=e33e7ba0"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_pages/ds/6_visualization';</script>
+    <script src="https://unpkg.com/jupyterquiz@1.1.8/dist/jupyterquiz.min.js"></script>
+    <link rel="icon" href="../../_static/favicon.png"/>
+    <link rel="index" title="색인" href="../../genindex.html" />
+    <link rel="search" title="검색" href="../../search.html" />
+    <link rel="next" title="Chapter 7. Data Analysis" href="7_analysis.html" />
+    <link rel="prev" title="Chapter 5. EDA (Exploratory Data Analysis)" href="5_EDA.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="ko"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/mylogo.png" class="logo__image only-light" alt="말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업 - Home"/>
+    <script>document.write(`<img src="../../_static/mylogo.png" class="logo__image only-dark" alt="말레이시아 5급 학생들을 위한 파이썬 알고리즘 수업 - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="검색" aria-label="검색" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">검색</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../intro.html">
+                    Welcome to SNU LEI 한국어교육센터 IT 수업
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Python</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../basics/6_list.html">Chapter 6. 리스트</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/7_dict_tuple_set.html">Chapter 7. 딕셔너리, 튜플, 셋</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/8_functions.html">Chapter 8. 함수</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/9_variable_scope.html">Chapter 9. Variable Scope</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/10_Input.html">Chapter 10. 입력</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/11_oop.html">Chapter 11. 객체 지향 프로그래밍 (OOP)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/12_oop-classes_instances_objects.html">Chapter 12. 클래스, 인스턴스, 객체</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/13_regex.html">Chapter 13. 정규표현식</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/14_decorator.html">Chapter 14. Decorator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/15_getattr.html">Chapter 15. getattr()</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics/16_pickle.html">Chapter 16. Pickle</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Data Science</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="1_ds.html">Chapter 1. 데이터과학의 이해</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_numpy.html">Chapter 2. Numpy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_pandas1.html">Chapter 3. Pandas I</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4_pandas2.html">Chapter 4. Pandas II</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_EDA.html">Chapter 5. EDA (Exploratory Data Analysis)</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Chapter 6. Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="7_analysis.html">Chapter 7. Data Analysis</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Algorithm</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../theory/0_tips.html">문제 풀이 순서 팁 (Tips)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/1_implementation.html">Lecture 1-1. 구현</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/2_DFS_BFS.html">Lecture 2-1. DFS/BFS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/3_backtracking.html">Lecture 3-1. Backtracking</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/4_DP.html">Lecture 4-1. Dynamic Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/5_shortest_path.html">Lecture 5-1. Shortest Path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/6_sort.html">Lecture 6-1. Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/7_binarysearch.html">Lecture 7-1. Binary Search</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/8_graph.html">Lecture 8-1. Graph Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/9_greedy.html">Lecture 9-1. Greedy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/10_prefix.html">Lecture 10-1. Prefix Sum (누적 합)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../theory/11_LinkedList.html">Lecture 11-1. Linked List</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Algorithm Exercises</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../practice/1_implementationPS.html">Lecture 1-2. 구현 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/2_DFS_BFSPS.html">Lecture 2-2. DFS/BFS 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/3_backtrackingPS.html">Lecture 3-2. Backtracking 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/4_DPPS.html">Lecture 4-2. DP 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/5_shortest_pathPS.html">Lecture 5-2. Shortest Path &amp; Heap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/6_sortPS.html">Lecture 6-2. Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/11_linked_listPS.html">Lecture 11-2. Linked List</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../practice/12_hash_tablesPS.html">Lecture 12-2. Hash Table</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Exams</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student_2026_1st_sol.html">Midterm (2026 1st semester)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student.html">Midterm (2025 3rd semester)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exams/final_student.html">Final (2025 3rd Semester)</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="이 페이지 다운로드">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../_sources/_pages/ds/6_visualization.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="소스 파일 다운로드"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="PDF로 인쇄"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="전체 화면으로보기"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="검색" aria-label="검색" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Chapter 6. Visualization</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> 내용 </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">한글 폰트 설치 및 설정</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">기본 설정 및 데이터 준비</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#matplotlib">Matplotlib 기본 구조</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">자주 쓰는 공통 설정 함수</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparison">비교 (Comparison)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">언제 어떤 차트를?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">주요 파라미터</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribution">분포 (Distribution)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">언제 어떤 차트를?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">주요 파라미터</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#trend">추세 / 시계열 (Trend)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">언제 어떤 차트를?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">주요 파라미터</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#relationship">관계 (Relationship)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">언제 어떤 차트를?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">주요 파라미터</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#composition">구성 (Composition)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">언제 어떤 차트를?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">주요 파라미터 (파이 차트)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#specialized">특수 (Specialized)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#heatmap">히트맵 (Heatmap)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#combo-chart">콤보 차트 (Combo Chart)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-reference">빠른 참조표 (Quick Reference)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">데이터 구성 → 차트 선택 가이드</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#matplotlib-vs-seaborn">matplotlib vs seaborn 선택 기준</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">색상 팔레트 참조</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="chapter-6-visualization">
+<h1>Chapter 6. Visualization<a class="headerlink" href="#chapter-6-visualization" title="Link to this heading">#</a></h1>
+<p>데이터 시각화는 EDA에서 발견한 패턴과 인사이트를 직관적으로 전달하는 도구입니다.<br />
+참고: <a class="reference external" href="https://wikidocs.net/216440">https://wikidocs.net/216440</a></p>
+<p>시각화 목적에 따라 아래 6가지 유형으로 나눌 수 있습니다.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>시각화 유형</p></th>
+<th class="head"><p>핵심 질문</p></th>
+<th class="head"><p>대표 차트</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>비교 (Comparison)</strong></p></td>
+<td><p>그룹 간 크기·순위를 비교하고 싶다</p></td>
+<td><p>막대그래프, 그룹 막대그래프</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>분포 (Distribution)</strong></p></td>
+<td><p>데이터가 어떻게 퍼져 있는지 보고 싶다</p></td>
+<td><p>히스토그램, KDE, 박스플롯, 바이올린</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>추세 (Trend)</strong></p></td>
+<td><p>시간에 따른 변화를 보고 싶다</p></td>
+<td><p>라인차트</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>관계 (Relationship)</strong></p></td>
+<td><p>두 변수가 어떤 상관이 있는지 보고 싶다</p></td>
+<td><p>산점도, 스트립, 스웜</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>구성 (Composition)</strong></p></td>
+<td><p>전체에서 각 부분의 비율을 보고 싶다</p></td>
+<td><p>파이차트, 도넛, 누적 막대</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>특수 (Specialized)</strong></p></td>
+<td><p>상관관계 행렬, 복합 차트 등</p></td>
+<td><p>히트맵, 콤보 차트</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<section id="id1">
+<h2>한글 폰트 설치 및 설정<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>그래프 제목, 축 이름에 한글이 들어갈 경우 폰트 설정이 필요합니다.</p>
+<div class="highlight-admonition notranslate"><div class="highlight"><pre><span></span>:class: dropdown 
+
+* Step1: 아래 셀을 실행시켜 폰트를 설치해준다.
+```bash
+!sudo apt-get install -y fonts-nanum
+!sudo fc-cache -fv
+!rm ~/.cache/matplotlib -rf
+```
+* Step2: Colab 메뉴에서 런타임 -&gt; 세션 다시 시작을 해준다.
+* Step3: 폰트를 설정한다.
+```python
+import matplotlib.pyplot as plt
+plt.rc(&#39;font&#39;, family=&#39;NanumBarunGothic&#39;)
+```
+* Step4. 폰트 설정이 잘 되었는지 확인해본다.
+```python
+plt.text(0.3, 0.3, &#39;한글&#39;, size=100)
+plt.show()
+```
+</pre></div>
+</div>
+</section>
+<section id="id2">
+<h2>기본 설정 및 데이터 준비<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+
+<span class="c1"># 한글 폰트 설정 (Colab에서 폰트 설치 후 주석 해제)</span>
+<span class="c1"># plt.rc(&#39;font&#39;, family=&#39;NanumBarunGothic&#39;)</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">load_dataset</span><span class="p">(</span><span class="s1">&#39;mpg&#39;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="matplotlib">
+<h2>Matplotlib 기본 구조<a class="headerlink" href="#matplotlib" title="Link to this heading">#</a></h2>
+<p>모든 그래프는 아래 구조로 작성합니다.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">가로</span><span class="p">,</span> <span class="n">세로</span><span class="p">))</span>  <span class="c1"># Figure·Axes 생성</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>                                   <span class="c1"># 그래프 그리기</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;제목&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;X축&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Y축&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<section id="id3">
+<h3>자주 쓰는 공통 설정 함수<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>함수</p></th>
+<th class="head"><p>역할</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">plt.figure(figsize=(w,</span> <span class="pre">h))</span></code></p></td>
+<td><p>캔버스 크기 설정</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ax.set_title('제목')</span></code></p></td>
+<td><p>차트 제목</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ax.set_xlabel('이름')</span></code></p></td>
+<td><p>X축 레이블</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ax.set_ylabel('이름')</span></code></p></td>
+<td><p>Y축 레이블</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ax.set_xlim(min,</span> <span class="pre">max)</span></code></p></td>
+<td><p>X축 범위 고정</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ax.set_ylim(min,</span> <span class="pre">max)</span></code></p></td>
+<td><p>Y축 범위 고정</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ax.legend()</span></code></p></td>
+<td><p>범례 표시</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ax.grid(True)</span></code></p></td>
+<td><p>격자선 표시</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">plt.tight_layout()</span></code></p></td>
+<td><p>여백 자동 조정</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">plt.savefig('파일명.png',</span> <span class="pre">dpi=150)</span></code></p></td>
+<td><p>파일로 저장</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="comparison">
+<h2>비교 (Comparison)<a class="headerlink" href="#comparison" title="Link to this heading">#</a></h2>
+<p>값의 <strong>크기, 순위, 차이</strong>를 그룹 간에 비교할 때 사용합니다.</p>
+<section id="id4">
+<h3>언제 어떤 차트를?<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>상황</p></th>
+<th class="head"><p>차트</p></th>
+<th class="head"><p>matplotlib</p></th>
+<th class="head"><p>seaborn</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>범주별 값 비교 (단일 그룹)</p></td>
+<td><p>막대그래프</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ax.bar(x,</span> <span class="pre">height)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sns.barplot(data,</span> <span class="pre">x,</span> <span class="pre">y)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>범주별 값 비교 (다중 그룹)</p></td>
+<td><p>그룹 막대그래프</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ax.bar()</span></code> 여러 번</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sns.barplot(hue=...)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>항목이 많아 가로가 더 읽기 쉬울 때</p></td>
+<td><p>수평 막대그래프</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ax.barh(y,</span> <span class="pre">width)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sns.barplot(orient='h')</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>범주별 빈도수 비교</p></td>
+<td><p>카운트 플롯</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ax.bar()</span></code> + <code class="docutils literal notranslate"><span class="pre">value_counts()</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sns.countplot(data,</span> <span class="pre">x)</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="id5">
+<h3>주요 파라미터<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>파라미터</p></th>
+<th class="head"><p>설명</p></th>
+<th class="head"><p>예시</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">x</span></code></p></td>
+<td><p>X축 컬럼명</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">x='origin'</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">y</span></code></p></td>
+<td><p>Y축 컬럼명</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">y='mpg'</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">hue</span></code></p></td>
+<td><p>그룹 구분 컬럼 (색상 분리)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hue='origin'</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">estimator</span></code></p></td>
+<td><p>집계 함수 (기본: mean)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">estimator=np.sum</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">errorbar</span></code></p></td>
+<td><p>오차 막대 (<code class="docutils literal notranslate"><span class="pre">'ci'</span></code>, <code class="docutils literal notranslate"><span class="pre">'sd'</span></code>, <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">errorbar=None</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">palette</span></code></p></td>
+<td><p>색상 팔레트</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">palette='Set2'</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">edgecolor</span></code></p></td>
+<td><p>막대 테두리 색</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">edgecolor='black'</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+<span class="c1"># 막대그래프: 원산지별 평균 연비</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;origin&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;mpg&#39;</span><span class="p">,</span> <span class="n">errorbar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s1">&#39;Set2&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;원산지별 평균 연비&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;원산지&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;평균 mpg&#39;</span><span class="p">)</span>
+
+<span class="c1"># 그룹 막대그래프: 원산지 × 실린더 수별 (4·6실린더만)</span>
+<span class="n">df_sub</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;cylinders&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">])]</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df_sub</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;origin&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;mpg&#39;</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s1">&#39;cylinders&#39;</span><span class="p">,</span> <span class="n">errorbar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s1">&#39;pastel&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;원산지 × 실린더별 평균 연비&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;원산지&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;평균 mpg&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;실린더&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="distribution">
+<h2>분포 (Distribution)<a class="headerlink" href="#distribution" title="Link to this heading">#</a></h2>
+<p>단일 변수의 <strong>분포 형태, 중심, 퍼짐, 이상치</strong>를 확인할 때 사용합니다.</p>
+<section id="id6">
+<h3>언제 어떤 차트를?<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>상황</p></th>
+<th class="head"><p>차트</p></th>
+<th class="head"><p>matplotlib</p></th>
+<th class="head"><p>seaborn</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>구간별 빈도 확인</p></td>
+<td><p>히스토그램</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ax.hist(data,</span> <span class="pre">bins)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sns.histplot(data,</span> <span class="pre">x,</span> <span class="pre">bins)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>부드러운 분포 곡선</p></td>
+<td><p>KDE 플롯</p></td>
+<td><p>—</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sns.kdeplot(data,</span> <span class="pre">x)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>히스토그램 + KDE 동시</p></td>
+<td><p>—</p></td>
+<td><p>—</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sns.histplot(...,</span> <span class="pre">kde=True)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>사분위수·이상치 확인</p></td>
+<td><p>박스플롯</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ax.boxplot(data)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sns.boxplot(data,</span> <span class="pre">x,</span> <span class="pre">y)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>분포 밀도 + 사분위수 동시</p></td>
+<td><p>바이올린 플롯</p></td>
+<td><p>—</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sns.violinplot(data,</span> <span class="pre">x,</span> <span class="pre">y)</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="id7">
+<h3>주요 파라미터<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>파라미터</p></th>
+<th class="head"><p>설명</p></th>
+<th class="head"><p>적용 함수</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bins</span></code></p></td>
+<td><p>구간 수 (기본 auto)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hist</span></code>, <code class="docutils literal notranslate"><span class="pre">histplot</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">kde</span></code></p></td>
+<td><p>KDE 곡선 오버레이</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sns.histplot</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fill</span></code></p></td>
+<td><p>곡선 아래 채우기</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sns.kdeplot</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">hue</span></code></p></td>
+<td><p>그룹별 분포 겹쳐 보기</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">histplot</span></code>, <code class="docutils literal notranslate"><span class="pre">kdeplot</span></code>, <code class="docutils literal notranslate"><span class="pre">boxplot</span></code>, <code class="docutils literal notranslate"><span class="pre">violinplot</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">inner</span></code></p></td>
+<td><p>바이올린 내부 표시 (<code class="docutils literal notranslate"><span class="pre">'box'</span></code>, <code class="docutils literal notranslate"><span class="pre">'point'</span></code>, <code class="docutils literal notranslate"><span class="pre">'quart'</span></code>)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sns.violinplot</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">showfliers</span></code></p></td>
+<td><p>이상치 점 표시 여부</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sns.boxplot</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+
+<span class="c1"># 히스토그램 + KDE</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;mpg&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;연비 분포 (히스토그램 + KDE)&#39;</span><span class="p">)</span>
+
+<span class="c1"># 그룹별 KDE</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;mpg&#39;</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s1">&#39;origin&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;원산지별 연비 분포 (KDE)&#39;</span><span class="p">)</span>
+
+<span class="c1"># 박스플롯</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;origin&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;mpg&#39;</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s1">&#39;Set3&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;원산지별 연비 (박스플롯)&#39;</span><span class="p">)</span>
+
+<span class="c1"># 바이올린 플롯</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">violinplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;origin&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;mpg&#39;</span><span class="p">,</span> <span class="n">inner</span><span class="o">=</span><span class="s1">&#39;box&#39;</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s1">&#39;pastel&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;원산지별 연비 (바이올린 플롯)&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="trend">
+<h2>추세 / 시계열 (Trend)<a class="headerlink" href="#trend" title="Link to this heading">#</a></h2>
+<p><strong>시간 또는 순서</strong>에 따른 값의 변화를 확인할 때 사용합니다.</p>
+<section id="id8">
+<h3>언제 어떤 차트를?<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>상황</p></th>
+<th class="head"><p>차트</p></th>
+<th class="head"><p>matplotlib</p></th>
+<th class="head"><p>seaborn</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>시간에 따른 단일 변수 추세</p></td>
+<td><p>라인차트</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ax.plot(x,</span> <span class="pre">y)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sns.lineplot(data,</span> <span class="pre">x,</span> <span class="pre">y)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>시간에 따른 다중 그룹 추세</p></td>
+<td><p>멀티 라인</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ax.plot()</span></code> 여러 번</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sns.lineplot(hue=...)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>추세 + 신뢰 구간</p></td>
+<td><p>—</p></td>
+<td><p>—</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sns.lineplot(errorbar='ci')</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>면적 강조</p></td>
+<td><p>영역 차트</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ax.fill_between(x,</span> <span class="pre">y1,</span> <span class="pre">y2)</span></code></p></td>
+<td><p>—</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="id9">
+<h3>주요 파라미터<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>파라미터</p></th>
+<th class="head"><p>설명</p></th>
+<th class="head"><p>예시</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">y</span></code></p></td>
+<td><p>축 데이터</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">x='model_year'</span></code>, <code class="docutils literal notranslate"><span class="pre">y='mpg'</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">hue</span></code></p></td>
+<td><p>그룹별 선 분리</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hue='origin'</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">errorbar</span></code></p></td>
+<td><p>신뢰 구간 (<code class="docutils literal notranslate"><span class="pre">'ci'</span></code>, <code class="docutils literal notranslate"><span class="pre">'sd'</span></code>, <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">errorbar='sd'</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">marker</span></code></p></td>
+<td><p>데이터 포인트 마커</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">marker='o'</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">linewidth</span></code></p></td>
+<td><p>선 두께</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">linewidth=2</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">linestyle</span></code></p></td>
+<td><p>선 스타일 (<code class="docutils literal notranslate"><span class="pre">'-'</span></code>, <code class="docutils literal notranslate"><span class="pre">'--'</span></code>, <code class="docutils literal notranslate"><span class="pre">':'</span></code>)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">linestyle='--'</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+<span class="c1"># 연도별 평균 연비 추세</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">lineplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;model_year&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;mpg&#39;</span><span class="p">,</span> <span class="n">errorbar</span><span class="o">=</span><span class="s1">&#39;sd&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;연도별 평균 연비 추세&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;모델 연도&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;mpg&#39;</span><span class="p">)</span>
+
+<span class="c1"># 원산지별 연도별 추세</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">lineplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;model_year&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;mpg&#39;</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s1">&#39;origin&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">errorbar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;원산지별 연도별 연비 추세&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;모델 연도&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;mpg&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;원산지&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="relationship">
+<h2>관계 (Relationship)<a class="headerlink" href="#relationship" title="Link to this heading">#</a></h2>
+<p><strong>두 변수 간의 상관관계 또는 패턴</strong>을 확인할 때 사용합니다.</p>
+<section id="id10">
+<h3>언제 어떤 차트를?<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>상황</p></th>
+<th class="head"><p>차트</p></th>
+<th class="head"><p>matplotlib</p></th>
+<th class="head"><p>seaborn</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>두 수치형 변수 관계 확인</p></td>
+<td><p>산점도</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ax.scatter(x,</span> <span class="pre">y)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sns.scatterplot(data,</span> <span class="pre">x,</span> <span class="pre">y)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>산점도 + 회귀선 동시</p></td>
+<td><p>회귀 산점도</p></td>
+<td><p>—</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sns.regplot(data,</span> <span class="pre">x,</span> <span class="pre">y)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>범주형 × 수치형 관계 (점)</p></td>
+<td><p>스트립 플롯</p></td>
+<td><p>—</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sns.stripplot(data,</span> <span class="pre">x,</span> <span class="pre">y)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>스트립 플롯 (점 겹침 방지)</p></td>
+<td><p>스웜 플롯</p></td>
+<td><p>—</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sns.swarmplot(data,</span> <span class="pre">x,</span> <span class="pre">y)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>여러 변수 쌍 관계 한 번에</p></td>
+<td><p>페어플롯</p></td>
+<td><p>—</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sns.pairplot(df)</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="id11">
+<h3>주요 파라미터<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>파라미터</p></th>
+<th class="head"><p>설명</p></th>
+<th class="head"><p>예시</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">y</span></code></p></td>
+<td><p>두 변수</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">x='weight'</span></code>, <code class="docutils literal notranslate"><span class="pre">y='mpg'</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">hue</span></code></p></td>
+<td><p>색상으로 그룹 구분</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hue='origin'</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">size</span></code></p></td>
+<td><p>점 크기로 세 번째 변수 표현</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">size='cylinders'</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">alpha</span></code></p></td>
+<td><p>점 투명도 (0~1)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">alpha=0.5</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">jitter</span></code></p></td>
+<td><p>점 겹침 방지용 흔들기</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">jitter=True</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">vars</span></code></p></td>
+<td><p>pairplot에서 볼 컬럼 지정</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">vars=['mpg','weight']</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+<span class="c1"># 산점도: 무게 vs 연비 (원산지별 색상)</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;weight&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;mpg&#39;</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s1">&#39;origin&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;차량 무게 vs 연비&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;weight&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;mpg&#39;</span><span class="p">)</span>
+
+<span class="c1"># 스트립 플롯: 원산지별 연비</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">stripplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;origin&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;mpg&#39;</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s1">&#39;origin&#39;</span><span class="p">,</span> <span class="n">jitter</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;원산지별 연비 (스트립 플롯)&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;원산지&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;mpg&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get_legend</span><span class="p">()</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="composition">
+<h2>구성 (Composition)<a class="headerlink" href="#composition" title="Link to this heading">#</a></h2>
+<p><strong>전체에서 각 부분이 차지하는 비율</strong>을 표현할 때 사용합니다.</p>
+<section id="id12">
+<h3>언제 어떤 차트를?<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>상황</p></th>
+<th class="head"><p>차트</p></th>
+<th class="head"><p>matplotlib</p></th>
+<th class="head"><p>seaborn</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>범주별 비율 (항목 ≤5)</p></td>
+<td><p>파이 차트</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ax.pie(sizes)</span></code></p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p>파이 차트 + 중앙 비우기</p></td>
+<td><p>도넛 차트</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ax.pie(wedgeprops={'width':0.5})</span></code></p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-even"><td><p>그룹 간 구성 비율 비교</p></td>
+<td><p>누적 막대 (100%)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">df.plot(kind='bar',</span> <span class="pre">stacked=True)</span></code></p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p>시간에 따른 구성 변화</p></td>
+<td><p>누적 영역 차트</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ax.stackplot(x,</span> <span class="pre">y1,</span> <span class="pre">y2,</span> <span class="pre">...)</span></code></p></td>
+<td><p>—</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="id13">
+<h3>주요 파라미터 (파이 차트)<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>파라미터</p></th>
+<th class="head"><p>설명</p></th>
+<th class="head"><p>예시</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">labels</span></code></p></td>
+<td><p>각 조각 레이블</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">labels=['usa','japan','europe']</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">autopct</span></code></p></td>
+<td><p>비율 표시 형식</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">autopct='%1.1f%%'</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">explode</span></code></p></td>
+<td><p>조각 분리 효과</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">explode=[0.05,</span> <span class="pre">0,</span> <span class="pre">0]</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">startangle</span></code></p></td>
+<td><p>시작 각도</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">startangle=90</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">wedgeprops</span></code></p></td>
+<td><p>도넛 차트용 두께</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">wedgeprops={'width':</span> <span class="pre">0.5}</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">origin_counts</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;origin&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+
+<span class="c1"># 파이 차트</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span>
+    <span class="n">origin_counts</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">labels</span><span class="o">=</span><span class="n">origin_counts</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+    <span class="n">autopct</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%1.1f%%</span><span class="s1">&#39;</span><span class="p">,</span>
+    <span class="n">startangle</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span>
+    <span class="n">colors</span><span class="o">=</span><span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s1">&#39;Set2&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;원산지 비율 (파이 차트)&#39;</span><span class="p">)</span>
+
+<span class="c1"># 도넛 차트</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span>
+    <span class="n">origin_counts</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">labels</span><span class="o">=</span><span class="n">origin_counts</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+    <span class="n">autopct</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%1.1f%%</span><span class="s1">&#39;</span><span class="p">,</span>
+    <span class="n">startangle</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span>
+    <span class="n">colors</span><span class="o">=</span><span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s1">&#39;pastel&#39;</span><span class="p">),</span>
+    <span class="n">wedgeprops</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">}</span>
+<span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;원산지 비율 (도넛 차트)&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 누적 막대그래프: 연도별 원산지 구성 비율</span>
+<span class="n">year_origin</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;model_year&#39;</span><span class="p">,</span> <span class="s1">&#39;origin&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="o">.</span><span class="n">unstack</span><span class="p">(</span><span class="n">fill_value</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">year_origin_pct</span> <span class="o">=</span> <span class="n">year_origin</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">year_origin</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">year_origin_pct</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="n">stacked</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">colormap</span><span class="o">=</span><span class="s1">&#39;Set2&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;연도별 원산지 구성 비율 (누적 막대)&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;모델 연도&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;비율 (%)&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;원산지&#39;</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.01</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="specialized">
+<h2>특수 (Specialized)<a class="headerlink" href="#specialized" title="Link to this heading">#</a></h2>
+<section id="heatmap">
+<h3>히트맵 (Heatmap)<a class="headerlink" href="#heatmap" title="Link to this heading">#</a></h3>
+<p><strong>수치형 변수 간 상관관계</strong> 또는 <strong>2차원 행렬 데이터</strong>를 색상으로 표현합니다.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>파라미터</p></th>
+<th class="head"><p>설명</p></th>
+<th class="head"><p>예시</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">data</span></code></p></td>
+<td><p>2D 데이터프레임 (상관행렬 등)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">df.corr()</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">annot</span></code></p></td>
+<td><p>셀에 값 표시 여부</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">annot=True</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fmt</span></code></p></td>
+<td><p>표시 형식</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">fmt='.2f'</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cmap</span></code></p></td>
+<td><p>색상 팔레트</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">cmap='coolwarm'</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">center</span></code></p></td>
+<td><p>색상 기준점</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">center=0</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">vmin</span></code>, <code class="docutils literal notranslate"><span class="pre">vmax</span></code></p></td>
+<td><p>색상 범위 고정</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">vmin=-1,</span> <span class="pre">vmax=1</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">linewidths</span></code></p></td>
+<td><p>셀 구분선 두께</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">linewidths=0.5</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">mask</span></code></p></td>
+<td><p>특정 셀 가리기</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mask=np.triu(np.ones_like(corr))</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">corr</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="s1">&#39;number&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">corr</span><span class="p">()</span>
+<span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">triu</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">corr</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">))</span>  <span class="c1"># 상삼각 마스크 (중복 제거)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span>
+    <span class="n">corr</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;.2f&#39;</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;coolwarm&#39;</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">linewidths</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span>
+<span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;수치형 변수 간 상관관계 히트맵&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="combo-chart">
+<h3>콤보 차트 (Combo Chart)<a class="headerlink" href="#combo-chart" title="Link to this heading">#</a></h3>
+<p><strong>두 가지 차트 유형을 한 그래프에</strong> 겹쳐 표현합니다. 주로 막대 + 라인 조합에 사용합니다.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>사용 방법</p></th>
+<th class="head"><p>설명</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ax2</span> <span class="pre">=</span> <span class="pre">ax.twinx()</span></code></p></td>
+<td><p>Y축을 공유하는 두 번째 Axes 생성</p></td>
+</tr>
+<tr class="row-odd"><td><p>첫 번째 <code class="docutils literal notranslate"><span class="pre">ax</span></code></p></td>
+<td><p>막대그래프 등 주 데이터</p></td>
+</tr>
+<tr class="row-even"><td><p>두 번째 <code class="docutils literal notranslate"><span class="pre">ax2</span></code></p></td>
+<td><p>라인차트 등 보조 데이터 (다른 Y축 스케일)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">year_data</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;model_year&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span>
+    <span class="n">mpg</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;mpg&#39;</span><span class="p">,</span> <span class="s1">&#39;mean&#39;</span><span class="p">),</span>
+    <span class="n">count</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;mpg&#39;</span><span class="p">,</span> <span class="s1">&#39;size&#39;</span><span class="p">)</span>
+<span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+<span class="c1"># 막대그래프: 연도별 차량 수</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">year_data</span><span class="p">[</span><span class="s1">&#39;model_year&#39;</span><span class="p">],</span> <span class="n">year_data</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;steelblue&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;차량 수&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;모델 연도&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;차량 수&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;steelblue&#39;</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">labelcolor</span><span class="o">=</span><span class="s1">&#39;steelblue&#39;</span><span class="p">)</span>
+
+<span class="c1"># 라인차트: 연도별 평균 연비 (보조 Y축)</span>
+<span class="n">ax2</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">twinx</span><span class="p">()</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">year_data</span><span class="p">[</span><span class="s1">&#39;model_year&#39;</span><span class="p">],</span> <span class="n">year_data</span><span class="p">[</span><span class="s1">&#39;mpg&#39;</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;tomato&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;평균 연비&#39;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;평균 mpg&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;tomato&#39;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">labelcolor</span><span class="o">=</span><span class="s1">&#39;tomato&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;연도별 차량 수 &amp; 평균 연비 (콤보 차트)&#39;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper left&#39;</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="quick-reference">
+<h2>빠른 참조표 (Quick Reference)<a class="headerlink" href="#quick-reference" title="Link to this heading">#</a></h2>
+<section id="id14">
+<h3>데이터 구성 → 차트 선택 가이드<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>변수 구성</p></th>
+<th class="head"><p>목적</p></th>
+<th class="head"><p>추천 차트</p></th>
+<th class="head"><p>함수</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>범주형 1개</p></td>
+<td><p>빈도 비교</p></td>
+<td><p>막대그래프</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sns.countplot(x=범주)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>범주형 1개</p></td>
+<td><p>비율</p></td>
+<td><p>파이/도넛</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ax.pie(sizes)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>수치형 1개</p></td>
+<td><p>분포</p></td>
+<td><p>히스토그램</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sns.histplot(x=수치)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>수치형 1개</p></td>
+<td><p>분포 + 밀도</p></td>
+<td><p>히스토그램+KDE</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sns.histplot(kde=True)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>수치형 1개</p></td>
+<td><p>사분위수·이상치</p></td>
+<td><p>박스플롯</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sns.boxplot(y=수치)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>수치형 2개</p></td>
+<td><p>상관관계</p></td>
+<td><p>산점도</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sns.scatterplot(x=수치1,</span> <span class="pre">y=수치2)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>수치형 다수</p></td>
+<td><p>상관관계 행렬</p></td>
+<td><p>히트맵</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sns.heatmap(df.corr())</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>수치형 다수 쌍</p></td>
+<td><p>쌍별 관계</p></td>
+<td><p>페어플롯</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sns.pairplot(df)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>범주형 × 수치형</p></td>
+<td><p>그룹별 분포</p></td>
+<td><p>박스/바이올린</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sns.boxplot(x=범주,</span> <span class="pre">y=수치)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>범주형 × 수치형</p></td>
+<td><p>그룹별 평균 비교</p></td>
+<td><p>막대그래프</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sns.barplot(x=범주,</span> <span class="pre">y=수치)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>시간 × 수치형</p></td>
+<td><p>추세</p></td>
+<td><p>라인차트</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sns.lineplot(x=시간,</span> <span class="pre">y=수치)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>시간 × 범주 × 수치</p></td>
+<td><p>그룹별 추세</p></td>
+<td><p>멀티 라인</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sns.lineplot(hue=범주)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>범주 구성 변화 (시간)</p></td>
+<td><p>비율 변화</p></td>
+<td><p>누적 막대</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">df.plot(kind='bar',</span> <span class="pre">stacked=True)</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="matplotlib-vs-seaborn">
+<h3>matplotlib vs seaborn 선택 기준<a class="headerlink" href="#matplotlib-vs-seaborn" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>상황</p></th>
+<th class="head"><p>추천</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>세밀한 커스터마이징이 필요할 때</p></td>
+<td><p>matplotlib</p></td>
+</tr>
+<tr class="row-odd"><td><p>통계적 시각화 (신뢰 구간, KDE 등)</p></td>
+<td><p>seaborn</p></td>
+</tr>
+<tr class="row-even"><td><p>빠르게 탐색용 그래프를 그릴 때</p></td>
+<td><p>seaborn</p></td>
+</tr>
+<tr class="row-odd"><td><p>파이 차트, 영역 차트</p></td>
+<td><p>matplotlib</p></td>
+</tr>
+<tr class="row-even"><td><p>히트맵, 페어플롯, 바이올린</p></td>
+<td><p>seaborn</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="id15">
+<h3>색상 팔레트 참조<a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>팔레트</p></th>
+<th class="head"><p>특징</p></th>
+<th class="head"><p>사용 예</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'Set1'</span></code>, <code class="docutils literal notranslate"><span class="pre">'Set2'</span></code>, <code class="docutils literal notranslate"><span class="pre">'Set3'</span></code></p></td>
+<td><p>범주형, 색 구분 명확</p></td>
+<td><p>그룹 구분</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">'pastel'</span></code></p></td>
+<td><p>밝고 부드러운 색</p></td>
+<td><p>배경 강조 없을 때</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'coolwarm'</span></code></p></td>
+<td><p>파랑↔빨강 발산형</p></td>
+<td><p>히트맵 (상관관계)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">'Blues'</span></code>, <code class="docutils literal notranslate"><span class="pre">'Greens'</span></code></p></td>
+<td><p>단색 순차형</p></td>
+<td><p>값 크기 강조</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">'viridis'</span></code>, <code class="docutils literal notranslate"><span class="pre">'plasma'</span></code></p></td>
+<td><p>시각적으로 균일한 순차형</p></td>
+<td><p>연속형 데이터</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./_pages/ds"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="5_EDA.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">이전</p>
+        <p class="prev-next-title">Chapter 5. EDA (Exploratory Data Analysis)</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="7_analysis.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">다음</p>
+        <p class="prev-next-title">Chapter 7. Data Analysis</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> 내용
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">한글 폰트 설치 및 설정</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">기본 설정 및 데이터 준비</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#matplotlib">Matplotlib 기본 구조</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">자주 쓰는 공통 설정 함수</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparison">비교 (Comparison)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">언제 어떤 차트를?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">주요 파라미터</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribution">분포 (Distribution)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">언제 어떤 차트를?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">주요 파라미터</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#trend">추세 / 시계열 (Trend)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">언제 어떤 차트를?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">주요 파라미터</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#relationship">관계 (Relationship)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">언제 어떤 차트를?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">주요 파라미터</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#composition">구성 (Composition)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">언제 어떤 차트를?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">주요 파라미터 (파이 차트)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#specialized">특수 (Specialized)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#heatmap">히트맵 (Heatmap)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#combo-chart">콤보 차트 (Combo Chart)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-reference">빠른 참조표 (Quick Reference)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">데이터 구성 → 차트 선택 가이드</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#matplotlib-vs-seaborn">matplotlib vs seaborn 선택 기준</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">색상 팔레트 참조</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+으로 Daye Lee
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -206,7 +206,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../ds/2_numpy.html">Chapter 2. Numpy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ds/3_pandas1.html">Chapter 3. Pandas I</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ds/4_pandas2.html">Chapter 4. Pandas II</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ds/5_visualization.html">Chapter 5. Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/5_EDA.html">Chapter 5. EDA (탐색적 데이터 분석)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/6_0_Viz.html">Chapter 6. 데이터 시각화 (Visualization)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/6_1_Viz_practice.html">Chapter 7. Visualization Practice — 파라미터 실험</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/7_Analysis.html">Chapter 5. 데이터 분석하기</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Algorithm</span></p>
 <ul class="current nav bd-sidenav">
@@ -236,9 +239,9 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Exams</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student_2026_1st_sol.html">Midterm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student_2026_1st_sol.html">Midterm (2026 1st semester)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../exams/midterm_student.html">Midterm (2025 3rd semester)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exams/final_student.html">Final</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exams/final_student.html">Final (2025 3rd Semester)</a></li>
 </ul>
 
     </div>
@@ -442,7 +445,7 @@ Step 3. <strong>Unchoose / Backtrack</strong>: Remove the last chosen candidate 
 </pre></div>
 </div>
 <p>Without <code class="docutils literal notranslate"><span class="pre">pop</span></code> (unchoose), it is impossible to prevent duplicate solutions or correctly restore the state.</p>
-<a class="bg-primary mb-1 reference internal image-reference" href="../../_images/110.png"><img alt="backtracking diagram" class="bg-primary mb-1 align-center" src="../../_images/110.png" style="width: 400px;" />
+<a class="bg-primary mb-1 reference internal image-reference" href="../../_images/116.png"><img alt="backtracking diagram" class="bg-primary mb-1 align-center" src="../../_images/116.png" style="width: 400px;" />
 </a>
 <section id="combination">
 <h2>Combination (조합)<a class="headerlink" href="#combination" title="Link to this heading">#</a></h2>
@@ -538,7 +541,7 @@ For instance, when index=1, <code class="docutils literal notranslate"><span cla
 </div>
 </div>
 <p>저번 시간에 배웠듯이, 조합 역시 DFS 기반으로 재귀 호출을 반복하며, 내부적으로는 stack 구조로 동작한다. 아래 그림처럼 함수가 호출될 때 스택에 쌓이고, 종료되면 스택에서 빠져나오면서 상태가 되돌려진다.</p>
-<a class="bg-primary mb-1 reference internal image-reference" href="../../_images/35.png"><img alt="stack for DFS" class="bg-primary mb-1 align-center" src="../../_images/35.png" style="width: 400px;" />
+<a class="bg-primary mb-1 reference internal image-reference" href="../../_images/37.png"><img alt="stack for DFS" class="bg-primary mb-1 align-center" src="../../_images/37.png" style="width: 400px;" />
 </a>
 </section>
 </section>
@@ -553,10 +556,10 @@ For instance, when index=1, <code class="docutils literal notranslate"><span cla
 <li><p>In the <code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">loop</span></code> range, if <code class="docutils literal notranslate"><span class="pre">start</span> <span class="pre">&gt;</span> <span class="pre">len(nums)</span></code>, the function ends automatically, so no explicit base case (termination condition) is needed.</p></li>
 </ul>
 <p>This is the same as <a class="reference external" href="https://leetcode.com/problems/subsets-ii/description/">Subset II</a>.</p>
-<p><img alt="" src="../../_images/54.png" /></p>
+<p><img alt="" src="../../_images/56.png" /></p>
 <p>If you see the below picture, the arr is <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">2,</span> <span class="pre">2]</span></code>. In this case, we must allow the path to continue at least once — that is, even if there are duplicate values, <code class="docutils literal notranslate"><span class="pre">the</span> <span class="pre">first</span> <span class="pre">occurrence</span></code> should be <strong>included</strong> to form a new subset. That’s why <code class="docutils literal notranslate"><span class="pre">the</span> <span class="pre">condition</span> <span class="pre">n_idx</span> <span class="pre">&gt;</span> <span class="pre">start</span></code> is added: we allow the first element, but skip subsequent duplicates at the same depth.</p>
 <p>Since the array is sorted in increasing order, if at the same depth we select a value identical to the one chosen in the previous index, the result would be the same subset (e.g., [1] == [1]). To avoid generating duplicate subsets, we skip that choice.</p>
-<p><img alt="" src="../../_images/63.png" /></p>
+<p><img alt="" src="../../_images/64.png" /></p>
 <div class="literal-block-wrapper docutils container" id="id10">
 <div class="code-block-caption"><span class="caption-number">예시 17 </span><span class="caption-text">Multiset Implementation</span><a class="headerlink" href="#id10" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
@@ -604,7 +607,7 @@ For instance, when index=1, <code class="docutils literal notranslate"><span cla
 The collection of all subsets is called the Powerset, with <span class="math notranslate nohighlight">\(2^n\)</span> subsets. A set originally has no duplicate elements, and the collection of all its subsets is called the powerset. The powerset can be easily generated by considering two cases for each element: “choose” or “do not choose.” In other words, each element creates a branch, resulting in a total of <span class="math notranslate nohighlight">\(2^n\)</span> possible subsets.</p>
 </section>
 <section id="id1">
-<h2><img alt="" src="../../_images/44.png" /><a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<h2><img alt="" src="../../_images/46.png" /><a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <div class="literal-block-wrapper docutils container" id="id12">
 <div class="code-block-caption"><span class="caption-number">예시 19 </span><span class="caption-text">Powerset</span><a class="headerlink" href="#id12" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ========= 1) Subset (powerset) — 인덱스 기준(중복 값이 있으면 같은 값 모양이 중복 출력될 수 있음)</span>
@@ -752,7 +755,7 @@ c
 <section id="permutation">
 <h2>Permutation (순열)<a class="headerlink" href="#permutation" title="Link to this heading">#</a></h2>
 <p>A permutation, denoted as <span class="math notranslate nohighlight">\({n}P{k}\)</span>, refers to the number of ways to choose <span class="math notranslate nohighlight">\(k\)</span> elements from <span class="math notranslate nohighlight">\(n\)</span> elements while considering order. Similar to combinations, it has a target depth of <span class="math notranslate nohighlight">\(k\)</span>, but since order matters, <span class="math notranslate nohighlight">\((1, 2)\)</span> and <span class="math notranslate nohighlight">\((2, 1)\)</span> are recognized as different results.</p>
-<p><img alt="" src="../../_images/73.png" /></p>
+<p><img alt="" src="../../_images/74.png" /></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 길이 k, 중복 불허 → 방문 체크 필요</span>
 <span class="n">array</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 <span class="n">k</span> <span class="o">=</span> <span class="mi">2</span>
