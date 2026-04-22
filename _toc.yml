@@ -27,9 +27,9 @@ parts:
   - file: _pages/ds/3_pandas1 
   - file: _pages/ds/4_pandas2
   - file: _pages/ds/5_EDA
-  - file: _pages/ds/6_0_Viz
-  - file: _pages/ds/6_1_Viz_practice
-  - file: _pages/ds/7_Analysis
+  - file: _pages/ds/6_Viz
+  - file: _pages/ds/7_Viz_practice
+  - file: _pages/ds/8_Analysis
 
 - caption: Algorithm
   chapters:
