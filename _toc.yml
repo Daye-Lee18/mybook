@@ -59,8 +59,9 @@ parts:
   - file: _pages/practice/12_hash_tablesPS
 
 
-- caption: Exams 
+- caption: Exams
   chapters:
   - file: _pages/exams/midterm_student_2026_1st_sol.md
   - file: _pages/exams/midterm_student
-  - file: _pages/exams/final_student
+  - file: _pages/exams/final_student_2026_1st_sol
+  - file: _pages/exams/final_student_2026_1st
